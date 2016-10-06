@@ -13,13 +13,13 @@ plot(x, z, 'k');
 axis equal;
 hold on;
 
-x_grid = - myCeil(a, dx): dx: myCeil(a, dx);
-z_grid = - myCeil(b, dz): dz: myCeil(b, dz);
+% x_grid = - myCeil(a, dx): dx: myCeil(a, dx);
+% z_grid = - myCeil(b, dz): dz: myCeil(b, dz);
 
-[ X_grid, Z_grid ] = meshgrid(x_grid, z_grid);
-for idx = 1: 1: size(Z_grid, 1)
-    scatter( x_grid, Z_grid(idx, :) );
-    hold on;
-end
+% [ X_grid, Z_grid ] = meshgrid(x_grid, z_grid);
+% for idx = 1: 1: size(Z_grid, 1)
+%     scatter( x_grid, Z_grid(idx, :) );
+%     hold on;
+% end
 
 end
