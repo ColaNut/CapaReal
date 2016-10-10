@@ -12,7 +12,13 @@ for idx = 1: 1: lx
     if x_grid_table_idx(3) ~= 0
         x_idx = int16(x_grid_table_idx(1) / dx + myCeil(air_x / 2, dx) / dx + 1);
         z_idx = int16(x_grid_table_idx(2) / dz + myCeil(air_z / 2, dz) / dz + 1);
-        tmp_GridShiftTable = GridShiftTable{ x_idx, z_idx };
+        try
+            tmp_GridShiftTable = GridShiftTable{ x_idx, z_idx };
+        catch
+            idx
+            x_grid_table_idx(1)
+            x_grid_table_idx(2)
+        end
         if isempty(tmp_GridShiftTable)
             GridShiftTable{ x_idx, z_idx } = [ 2, x_grid_table_idx(3) ];
         elseif abs(x_grid_table_idx(3)) < abs(tmp_GridShiftTable(2))
