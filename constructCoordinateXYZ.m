@@ -5,7 +5,7 @@ air_x = paras(2);
 air_z = paras(3);
 
 x_grid = - myCeil(air_x / 2, dx): dx: myCeil(air_x / 2, dx);
-y_grid = - myCeil(h_torso / 2, dy): dx: myCeil(h_torso / 2, dy);
+y_grid = - myCeil(h_torso / 2, dy): dy: myCeil(h_torso / 2, dy);
 z_grid = - myCeil(air_z / 2, dz): dz: myCeil(air_z / 2, dz);
 
 % construct shifted coordinate
