@@ -1,24 +1,27 @@
 function plotMap( paras, dx, dz )
 
-air_x = paras(1);
-air_z = paras(2);
-bolus_a = paras(3);
-bolus_b = paras(4);
-skin_a = paras(5);
-skin_b = paras(6);
-muscle_a = paras(7);
-muscle_b = paras(8);
-l_lung_x = paras(9);
-l_lung_z = paras(10);
-l_lung_a = paras(11);
-l_lung_c = paras(12);
-r_lung_x = paras(13);
-r_lung_z = paras(14);
-r_lung_a = paras(15);
-r_lung_c = paras(16);
-tumor_x = paras(17);
-tumor_z = paras(18);
-tumor_r = paras(19);
+air_x = paras(1) * 100;
+air_z = paras(2) * 100;
+bolus_a = paras(3) * 100;
+bolus_b = paras(4) * 100;
+skin_a = paras(5) * 100;
+skin_b = paras(6) * 100;
+muscle_a = paras(7) * 100;
+muscle_b = paras(8) * 100;
+l_lung_x = paras(9) * 100;
+l_lung_z = paras(10) * 100;
+l_lung_a = paras(11) * 100;
+l_lung_c = paras(12) * 100;
+r_lung_x = paras(13) * 100;
+r_lung_z = paras(14) * 100;
+r_lung_a = paras(15) * 100;
+r_lung_c = paras(16) * 100;
+tumor_x = paras(17) * 100;
+tumor_z = paras(18) * 100;
+tumor_r = paras(19) * 100;
+
+dx = 100 * dx;
+dz = 100 * dz;
 
 plotEllipse( bolus_a, 0, - bolus_a, 0, bolus_b, dx, dz );
 plotEllipse( skin_a, 0, - skin_a, 0, skin_b, dx, dz );

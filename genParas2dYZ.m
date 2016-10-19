@@ -1,4 +1,4 @@
-function [ paras2dYZ ] = genParas2dYZ( x, paras, dx, dy, dz )
+function [ paras2dYZ ] = genParas2dYZ( x, paras, dy, dz )
 
 h_torso     = paras(1);
 air_x       = paras(2);
