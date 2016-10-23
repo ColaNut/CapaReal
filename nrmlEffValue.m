@@ -1,6 +1,6 @@
-function [ effArea ] = nrmlEffValue( MidPntsCrdnt, p0Crdt, pxCrdt, medValue )
+function [ effValue ] = nrmlEffValue( MidPntsCrdnt, p0Crdt, pxCrdt, medValue )
 
-effArea = 0;
+effValue = 0;
 TriArea = zeros(8, 1);
 u = ( pxCrdt - p0Crdt ) ./ norm( pxCrdt - p0Crdt );
 
@@ -13,6 +13,7 @@ u = ( pxCrdt - p0Crdt ) ./ norm( pxCrdt - p0Crdt );
     TriArea(7) = calTriArea( MidPntsCrdnt(5, :), MidPntsCrdnt(2, :), MidPntsCrdnt(3, :), u );
     TriArea(8) = calTriArea( MidPntsCrdnt(5, :), MidPntsCrdnt(3, :), MidPntsCrdnt(6, :), u );
 
-effArea = medValue * sum( TriArea );
+% effValue = effArea / distance;
+effValue = medValue * sum( TriArea ) / norm( p0Crdt - pxCrdt );
 
 end

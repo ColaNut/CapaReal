@@ -1,7 +1,8 @@
-function [ effArea ] = bndrEffValue( MidPntsCrdnt, p0Crdt, pxCrdt, tmpMed2Layers, epsilon_r )
+function [ effValue, SegMed ] = bndrEffValue( MidPntsCrdnt, p0Crdt, pxCrdt, tmpMed2Layers, epsilon_r )
 
-effArea = 0;
+effValue = 0;
 TriArea = zeros(8, 1);
+SegMed  = ones( 1, 8, 'uint8' );
 weight = zeros(8, 1);
 u = ( pxCrdt - p0Crdt ) ./ norm( pxCrdt - p0Crdt );
 
@@ -14,7 +15,8 @@ u = ( pxCrdt - p0Crdt ) ./ norm( pxCrdt - p0Crdt );
     TriArea(7) = calTriArea( MidPntsCrdnt(5, :), MidPntsCrdnt(2, :), MidPntsCrdnt(3, :), u );
     TriArea(8) = calTriArea( MidPntsCrdnt(5, :), MidPntsCrdnt(3, :), MidPntsCrdnt(6, :), u );
 
-weight = calWeight( tmpMed2Layers, epsilon_r );
-effArea = sum( weight .* TriArea );
+[ weight, SegMed ] = calWeight( tmpMed2Layers, epsilon_r );
+% effValue = effArea / distance;
+effValue = sum( weight .* TriArea ) ./ norm( pxCrdt - p0Crdt );
 
 end

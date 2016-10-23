@@ -76,6 +76,7 @@ shiftedCoordinateXYZ = constructCoordinateXYZ( GridShiftTable, paras, dx, dy, dz
 
 sparseA = cell( x_idx_max * y_idx_max * z_idx_max, 1 );
 B = zeros( x_idx_max * y_idx_max * z_idx_max, 1 );
+SegMed = ones( x_idx_max, y_idx_max, z_idx_max, 6, 8, 'uint8');
 
 disp('The fill up time of A: ');
 tic;
@@ -101,11 +102,11 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
 
     if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
         if mediumTable(p0) ~= 0
-            sparseA{ p0 } = fillNrmlPt_A( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max );
-        end
-        if mediumTable(p0) == 0
-            sparseA{ p0 } = fillBndrPt_A( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
-                                        mediumTable, epsilon_r );
+            [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillNrmlPt_A( m, n, ell, ...
+                            shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, mediumTable );
+        else
+            [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
+                shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, mediumTable, epsilon_r );
         end
     elseif ell == z_idx_max
         sparseA{ p0 } = fillTop_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
@@ -179,7 +180,7 @@ disp('The gmres solutin of Ax = B: ');
 bar_x_my_gmres = my_gmres( sparseA, B, int_itr_num, tol, ext_itr_num );
 toc;
 
-% save('preFirstTest.mat');
+save('preFirstTest.mat');
 
 % disp('The calculation time for inverse matrix: ');
 % tic;
@@ -188,7 +189,7 @@ toc;
 
 % save('FirstTest.mat');
 % save('preFirstTest_gmres.mat');
-PhiDstrbtn;
+% PhiDstrbtn;
 
 % paras2dXZ = genParas2d( 0, paras, dx, dy, dz );
 % figure(1);
