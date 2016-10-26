@@ -63,16 +63,22 @@
 % colorbar
 
 loadParas;
-m = 129;
-n = 33;
-ell = 23;
-x = ( m - 1 ) * dx - air_x / 2;
-y = ( n - 1 ) * dy - h_torso / 2;
-z = ( ell - 1 ) * dz - air_z / 2;
-paras2dXZ = genParas2d( y, paras, dx, dy, dz );
-plotMap( paras2dXZ, dx, dz );
-[x, z] * 100
+% m = 9;
+% n = 2;
+% ell = 2;
+% x = ( m - 1 ) * dx - air_x / 2;
+% y = ( n - 1 ) * dy - h_torso / 2;
+% z = ( ell - 1 ) * dz - air_z / 2;
+% paras2dXZ = genParas2d( y, paras, dx, dy, dz );
+% plotMap( paras2dXZ, dx, dz );
+% [x, z] * 100;
 
-x_idx_max = air_x / dx + 1;
-y_idx_max = h_torso / dy + 1;
-z_idx_max = air_z / dz + 1;
+% x_idx_max = air_x / dx + 1;
+% y_idx_max = h_torso / dy + 1;
+% z_idx_max = air_z / dz + 1;
+
+x = 9 / 100;
+m = ( x / dx ) + air_x / ( 2 * dx ) + 1;
+z = 7 / 100;
+ell = ( z / dz ) + air_z / ( 2 * dz ) + 1;
+[m, ell]

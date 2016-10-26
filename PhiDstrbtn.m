@@ -1,5 +1,5 @@
 % clc; clear;
-% load('preFirstTest.mat');
+% load('TestCase2.mat');
 % XZmidY      = zeros( z_idx_max, x_idx_max );
 PhiHlfY     = zeros( x_idx_max, 3, z_idx_max );
 ThrXYZCrndt = zeros( x_idx_max, 3, z_idx_max, 3);
@@ -26,7 +26,9 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
     
     ell = int64( ( idx - m - ( n - 1 ) * x_idx_max ) / ( x_idx_max * y_idx_max ) + 1 );
 
-    if n == int32( ( 1 + y_idx_max ) / 2 )
+    CrossN = int32( tumor_y / dy + h_torso / ( 2 * dy ) + 1 );
+
+    if n == CrossN
         % XZmidY( ell, m ) = bar_x_my_gmres(idx);
         PhiHlfY( m, 2, ell ) = bar_x_my_gmres(idx);
         ThrXYZCrndt( :, 2, :, :) = shiftedCoordinateXYZ( :, n, :, :);
@@ -34,17 +36,17 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
         SegValueXZ( m, ell, :, : ) = squeeze( SegMed( m, n, ell, :, : ) );
         x_mesh = squeeze(shiftedCoordinateXYZ( :, n, :, 1))';
         z_mesh = squeeze(shiftedCoordinateXYZ( :, n, :, 3))';
-        y = 0;
+        y = tumor_y;
         paras2dXZ = genParas2d( y, paras, dx, dy, dz );
     end
 
-    if n == int32( ( 1 + y_idx_max ) / 2 ) + 1
+    if n == CrossN + 1
         PhiHlfY( m, 3, ell ) = bar_x_my_gmres(idx);
         ThrXYZCrndt( :, 3, :, :) = shiftedCoordinateXYZ( :, n, :, :);
         ThrMedValue( :, 3, : ) = mediumTable( :, n, : );
     end
 
-    if n == int32( ( 1 + y_idx_max ) / 2 ) - 1
+    if n == CrossN - 1
         PhiHlfY( m, 1, ell ) = bar_x_my_gmres(idx);
         ThrXYZCrndt( :, 1, :, :) = shiftedCoordinateXYZ( :, n, :, :);
         ThrMedValue( :, 1, : ) = mediumTable( :, n, : );
@@ -120,9 +122,7 @@ for idx = 1: 1: x_idx_max * z_idx_max
         plotSAR_XZ( squeeze( SARseg( m, ell, :, :) ), squeeze( TtrVol( m, ell, :, : ) ), PntMidPnts9Crdnt );
         hold on;
     end
-    % else
-        % ;% plotBndrSAR( SARseg,  )
-    % end
+
 end
 toc;
 axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);
@@ -133,6 +133,42 @@ set(gca,'fontsize',14);
 view(2);
 axis equal;
 plotMap( paras2dXZ, dx, dz );
+
+figure(3);
+disp('Time to plot SAR in ROI');
+tic;
+for idx = 1: 1: x_idx_max * z_idx_max
+    % idx = ( ell - 1 ) * x_idx_max + m;
+    tmp_m = mod( idx, x_idx_max );
+    if tmp_m == 0
+        m = x_idx_max;
+    else
+        m = tmp_m;
+    end
+
+    ell = int64( ( idx - m ) / x_idx_max + 1 );
+
+% Start from here: delete the y information from PntMidPnts9Crdnt
+    PntMidPnts9Crdnt = squeeze( MidPnts9Crdnt(m, ell, :, :) );
+    PntMidPnts9Crdnt(:, 2) = [];
+
+    if m >= 10 && m <= 14 && ell >= 7 && ell <= 15 
+        plotSAR_XZ( squeeze( SARseg( m, ell, :, :) ), squeeze( TtrVol( m, ell, :, : ) ), PntMidPnts9Crdnt );
+        hold on;
+    end
+
+end
+toc;
+axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);
+xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 18);
+ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 18);
+% zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 18);
+set(gca,'fontsize',14);
+view(2);
+axis equal;
+plotMap( paras2dXZ, dx, dz );
+
+% Start from here: plot the ROI. 
 
 % az = 0;
 % el = 0;
