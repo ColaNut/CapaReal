@@ -23,6 +23,7 @@ function [ A_row, SegMed ] = fillBndrPt_A( m, n, ell, shiftedCoordinateXYZ, x_id
     A_row(6)  = PntsIdx(2, 2);
     A_row(7)  = PntsIdx(2, 5);
 
+    try
     % p1
     if PntsMed(3, 5) ~= 0
         A_row(8) = nrmlEffValue( squeeze( MidPntsCrdnt(3, :, :) ), ...
@@ -93,7 +94,11 @@ function [ A_row, SegMed ] = fillBndrPt_A( m, n, ell, shiftedCoordinateXYZ, x_id
         [ A_row(13), SegMed(6, :) ] = bndrEffValue( squeeze( tmpMidCrdnt ), ...
                 squeeze( PntsCrdnt(2, 5, :) ), squeeze( PntsCrdnt(2, 2, :) ), tmpMed2Layers, epsilon_r );
     end
-
+    catch
+        [ m, n, ell ]
+        PntsMed
+        squeeze( tmpMidCrdnt )
+    end
     % p0
     A_row(14) = - ( A_row(8) + A_row(9) + A_row(10) + A_row(11) + A_row(12) + A_row(13) );
     % A_row( PntsIdx(2, 5) ) = - ( A_row( PntsIdx(3, 5) ) + A_row( PntsIdx(2, 4) ) + A_row( PntsIdx(1, 5) ) + ...

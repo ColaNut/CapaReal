@@ -55,9 +55,24 @@
 %       4 5 6 NaN];
 % c  = [0; 1];
 % patch('Faces', f2,'Vertices', v2, 'FaceColor', c)
-v = [2 4 1; 2 8 1; 8 4 1; 5 0 1; 5 2 1; 8 0 1];
-f = [1 2 3; 4 5 6];
-col = [0; 1];
-figure
-patch('Faces',f,'Vertices',v,'FaceVertexCData',col,'FaceColor','flat');
-colorbar
+% v = [2 4 1; 2 8 1; 8 4 1; 5 0 1; 5 2 1; 8 0 1];
+% f = [1 2 3; 4 5 6];
+% col = [0; 1];
+% figure
+% patch('Faces',f,'Vertices',v,'FaceVertexCData',col,'FaceColor','flat');
+% colorbar
+
+loadParas;
+m = 129;
+n = 33;
+ell = 23;
+x = ( m - 1 ) * dx - air_x / 2;
+y = ( n - 1 ) * dy - h_torso / 2;
+z = ( ell - 1 ) * dz - air_z / 2;
+paras2dXZ = genParas2d( y, paras, dx, dy, dz );
+plotMap( paras2dXZ, dx, dz );
+[x, z] * 100
+
+x_idx_max = air_x / dx + 1;
+y_idx_max = h_torso / dy + 1;
+z_idx_max = air_z / dz + 1;

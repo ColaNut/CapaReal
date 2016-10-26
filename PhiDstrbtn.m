@@ -1,5 +1,5 @@
-clc; clear;
-load('preFirstTest.mat');
+% clc; clear;
+% load('preFirstTest.mat');
 % XZmidY      = zeros( z_idx_max, x_idx_max );
 PhiHlfY     = zeros( x_idx_max, 3, z_idx_max );
 ThrXYZCrndt = zeros( x_idx_max, 3, z_idx_max, 3);
@@ -93,9 +93,9 @@ for idx = 1: 1: x_idx_max * z_idx_max
 end
 
 MidMedValue = squeeze( ThrMedValue(:, 2, :) );
-T1 = squeeze(ThrMedValue(:, 1, :));
-T2 = squeeze(ThrMedValue(:, 2, :));
-T3 = squeeze(ThrMedValue(:, 3, :));
+% T1 = squeeze(ThrMedValue(:, 1, :));
+% T2 = squeeze(ThrMedValue(:, 2, :));
+% T3 = squeeze(ThrMedValue(:, 3, :));
 
 % plot SAR
 figure(2);

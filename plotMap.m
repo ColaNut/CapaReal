@@ -39,11 +39,11 @@ end
 x_grid = - myCeil(air_x / 2, dx): dx: myCeil(air_x / 2, dx);
 z_grid = - myCeil(air_z / 2, dz): dz: myCeil(air_z / 2, dz);
 
-[ X_grid, Z_grid ] = meshgrid(x_grid, z_grid);
-for idx = 1: 1: size(Z_grid, 1)
-    scatter( x_grid, Z_grid(idx, :), 10 );
-    hold on;
-end
+% [ X_grid, Z_grid ] = meshgrid(x_grid, z_grid);
+% for idx = 1: 1: size(Z_grid, 1)
+%     scatter( x_grid, Z_grid(idx, :), 10 );
+%     hold on;
+% end
 axis( [ min(x_grid), max(x_grid), min(z_grid), max(z_grid) ] );
 
 end

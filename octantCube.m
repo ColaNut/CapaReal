@@ -28,18 +28,22 @@ SegMed = ones(1, 2, 'uint8');
             tmpArr = [ Med2Layers(1, 2), Med2Layers(1, 3), Med2Layers(1, 4), Med2Layers(2, 4) ];
             nonZeroIdx = find(tmpArr);
             if isempty(nonZeroIdx)
-                error('check the input parameters');
-            end
-            for idx = 1: 1: length(nonZeroIdx)
-                if tmpArr(nonZeroIdx(idx)) ~= tmpArr(nonZeroIdx(1))
-                    tmpArr
-                    error('check for the homogeneity');
+                w(1) = epsilon_r(3);
+                w(2) = epsilon_r(3);
+                SegMed(1) = 3;
+                SegMed(2) = 3;
+            else
+                for idx = 1: 1: length(nonZeroIdx)
+                    if tmpArr(nonZeroIdx(idx)) ~= tmpArr(nonZeroIdx(1))
+                        tmpArr
+                        error('check for the homogeneity');
+                    end
                 end
+                w(1) = epsilon_r( tmpArr( nonZeroIdx(1) ) );
+                w(2) = epsilon_r( tmpArr( nonZeroIdx(1) ) );
+                SegMed(1) = tmpArr( nonZeroIdx(1) );
+                SegMed(2) = tmpArr( nonZeroIdx(1) );
             end
-            w(1) = epsilon_r( tmpArr( nonZeroIdx(1) ) );
-            w(2) = epsilon_r( tmpArr( nonZeroIdx(1) ) );
-            SegMed(1) = tmpArr( nonZeroIdx(1) );
-            SegMed(2) = tmpArr( nonZeroIdx(1) );
         end
     else
         error('check other case');
