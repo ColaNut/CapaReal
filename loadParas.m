@@ -1,7 +1,7 @@
 % Testing case:
 h_torso = 12 / 100;
 air_x = 30 / 100; % width: 30 cm
-air_z = 20 / 100; % height: 30 cm
+air_z = 24 / 100; % height: 30 cm
 bolus_a = 22 / 200;
 bolus_b = 18 / 200;
 skin_a = 0 / 100;

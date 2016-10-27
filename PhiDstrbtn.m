@@ -1,5 +1,5 @@
-% clc; clear;
-% load('TestCase2.mat');
+clc; clear;
+load('TestCase2.mat');
 % XZmidY      = zeros( z_idx_max, x_idx_max );
 PhiHlfY     = zeros( x_idx_max, 3, z_idx_max );
 ThrXYZCrndt = zeros( x_idx_max, 3, z_idx_max, 3);
@@ -26,7 +26,7 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
     
     ell = int64( ( idx - m - ( n - 1 ) * x_idx_max ) / ( x_idx_max * y_idx_max ) + 1 );
 
-    CrossN = int32( tumor_y / dy + h_torso / ( 2 * dy ) + 1 );
+    CrossN = int32( 0 / dy + h_torso / ( 2 * dy ) + 1 );
 
     if n == CrossN
         % XZmidY( ell, m ) = bar_x_my_gmres(idx);
@@ -36,7 +36,7 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
         SegValueXZ( m, ell, :, : ) = squeeze( SegMed( m, n, ell, :, : ) );
         x_mesh = squeeze(shiftedCoordinateXYZ( :, n, :, 1))';
         z_mesh = squeeze(shiftedCoordinateXYZ( :, n, :, 3))';
-        y = tumor_y;
+        y = 0;
         paras2dXZ = genParas2d( y, paras, dx, dy, dz );
     end
 
@@ -59,9 +59,12 @@ PhiHlfY2 = squeeze(PhiHlfY(:, 2, :));
 pcolor(x_mesh * 100, z_mesh * 100, abs( PhiHlfY2' )); 
 colorbar;
 set(gca,'fontsize',14);
-axis( [ min(min(x_mesh)) * 100, max(max(x_mesh)) * 100, ...
-        min(min(z_mesh)) * 100, max(max(z_mesh)) * 100, ...
-        min(min(abs( PhiHlfY2' ))), max(max(abs( PhiHlfY2' ))) ] );
+% axis( [ min(min(x_mesh)) * 100, max(max(x_mesh)) * 100, ...
+%         min(min(z_mesh)) * 100, max(max(z_mesh)) * 100, ...
+%         min(min(abs( PhiHlfY2' ))), max(max(abs( PhiHlfY2' ))) ] );
+% axis( [ min(min(x_mesh)) * 100, max(max(x_mesh)) * 100, ...
+%         min(min(z_mesh)) * 100, max(max(z_mesh)) * 100, ...
+%         min(min(abs( PhiHlfY2' ))), max(max(abs( PhiHlfY2' ))) ] );
 xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 18);
 ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 18);
 zlabel('$\Phi (x, z)$ ($V$)','Interpreter','LaTex', 'FontSize', 18);
@@ -114,7 +117,6 @@ for idx = 1: 1: x_idx_max * z_idx_max
 
     ell = int64( ( idx - m ) / x_idx_max + 1 );
 
-% Start from here: delete the y information from PntMidPnts9Crdnt
     PntMidPnts9Crdnt = squeeze( MidPnts9Crdnt(m, ell, :, :) );
     PntMidPnts9Crdnt(:, 2) = [];
 
@@ -134,39 +136,39 @@ view(2);
 axis equal;
 plotMap( paras2dXZ, dx, dz );
 
-figure(3);
-disp('Time to plot SAR in ROI');
-tic;
-for idx = 1: 1: x_idx_max * z_idx_max
-    % idx = ( ell - 1 ) * x_idx_max + m;
-    tmp_m = mod( idx, x_idx_max );
-    if tmp_m == 0
-        m = x_idx_max;
-    else
-        m = tmp_m;
-    end
+% figure(3);
+% disp('Time to plot SAR in ROI');
+% tic;
+% for idx = 1: 1: x_idx_max * z_idx_max
+%     % idx = ( ell - 1 ) * x_idx_max + m;
+%     tmp_m = mod( idx, x_idx_max );
+%     if tmp_m == 0
+%         m = x_idx_max;
+%     else
+%         m = tmp_m;
+%     end
 
-    ell = int64( ( idx - m ) / x_idx_max + 1 );
+%     ell = int64( ( idx - m ) / x_idx_max + 1 );
 
-% Start from here: delete the y information from PntMidPnts9Crdnt
-    PntMidPnts9Crdnt = squeeze( MidPnts9Crdnt(m, ell, :, :) );
-    PntMidPnts9Crdnt(:, 2) = [];
+% % Start from here: delete the y information from PntMidPnts9Crdnt
+%     PntMidPnts9Crdnt = squeeze( MidPnts9Crdnt(m, ell, :, :) );
+%     PntMidPnts9Crdnt(:, 2) = [];
 
-    if m >= 10 && m <= 14 && ell >= 7 && ell <= 15 
-        plotSAR_XZ( squeeze( SARseg( m, ell, :, :) ), squeeze( TtrVol( m, ell, :, : ) ), PntMidPnts9Crdnt );
-        hold on;
-    end
+%     if m >= 64 && m <= 97 && ell >= 25 && ell <= 56 
+%         plotSAR_XZ( squeeze( SARseg( m, ell, :, :) ), squeeze( TtrVol( m, ell, :, : ) ), PntMidPnts9Crdnt );
+%         hold on;
+%     end
 
-end
-toc;
-axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);
-xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 18);
-ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 18);
-% zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 18);
-set(gca,'fontsize',14);
-view(2);
-axis equal;
-plotMap( paras2dXZ, dx, dz );
+% end
+% toc;
+% axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);
+% xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 18);
+% ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 18);
+% % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 18);
+% set(gca,'fontsize',14);
+% view(2);
+% axis equal;
+% plotMap( paras2dXZ, dx, dz );
 
 % Start from here: plot the ROI. 
 

@@ -62,6 +62,7 @@
 % patch('Faces',f,'Vertices',v,'FaceVertexCData',col,'FaceColor','flat');
 % colorbar
 
+figure(4);
 loadParas;
 % m = 9;
 % n = 2;
@@ -69,16 +70,20 @@ loadParas;
 % x = ( m - 1 ) * dx - air_x / 2;
 % y = ( n - 1 ) * dy - h_torso / 2;
 % z = ( ell - 1 ) * dz - air_z / 2;
-% paras2dXZ = genParas2d( y, paras, dx, dy, dz );
-% plotMap( paras2dXZ, dx, dz );
+paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
+plotMap( paras2dXZ, dx, dz );
+% paras2d = [ air_x, air_z, bolus_a, bolus_b, skin_a, skin_b, muscle_a, muscle_b, ...
+%         l_lung_x, l_lung_z, l_lung_a_prime, l_lung_c_prime, ...
+%         r_lung_x, r_lung_z, r_lung_a_prime, r_lung_c_prime, ...
+%         tumor_x, tumor_z, tumor_r_prime ];
 % [x, z] * 100;
 
 % x_idx_max = air_x / dx + 1;
 % y_idx_max = h_torso / dy + 1;
 % z_idx_max = air_z / dz + 1;
 
-x = 9 / 100;
+x = ( paras2dXZ(13) + paras2dXZ(15) );
+z = ( paras2dXZ(14) + paras2dXZ(16) );
 m = ( x / dx ) + air_x / ( 2 * dx ) + 1;
-z = 7 / 100;
 ell = ( z / dz ) + air_z / ( 2 * dz ) + 1;
 [m, ell]
