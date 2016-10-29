@@ -1,5 +1,5 @@
 function [ PntSARseg, TtrVol, MidPnts9Crdnt ] = calSARseg( m, n, ell, PhiHlfY, ThrXYZCrndt, SegValueXZ, ...
-                                        dx, dy, dz, x_idx_max, z_idx_max, sigma )
+                                                        x_idx_max, z_idx_max, sigma )
 
     % notes actually: SARseg = zeros( 1, 1, 6, 8 );
     PntSARseg = zeros( 6, 8 );
