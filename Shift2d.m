@@ -21,14 +21,6 @@ x_idx_max = air_x / dx + 1;
 y_idx_max = h_torso / dy + 1;
 z_idx_max = air_z / dz + 1;
 
-% figure(1);
-% paras2dXZ = genParas2d( 0, paras, dx, dy, dz );
-% plotMap( paras2dXZ, dx, dz );
-
-% figure(2);
-% paras2dYZ = genParas2dYZ( r_lung_x, paras, dy, dz );
-% plotYZ( shiftedCoordinateXYZ, air_x, h_torso, air_z, r_lung_x, paras2dYZ, dx, dy, dz );
-
 GridShiftTableXZ = cell( h_torso / dy + 1, 1);
 mediumTable = ones( x_idx_max, y_idx_max, z_idx_max, 'uint8');
 
@@ -45,15 +37,16 @@ end
 
 for x = - air_x / 2: dx: air_x / 2
     paras2dYZ = genParas2dYZ( x, paras, dy, dz );
-    % paras2dYZ = [ l_lung_z, l_lung_b_prime, l_lung_c_prime, ...
-    %                 r_lung_z, r_lung_b_prime, r_lung_c_prime, ...
-    %                 tumor_y, tumor_z, tumor_r_prime ];
+    % paras2d = [ h_torso, air_x, air_z, bolus_a, bolusHghtZ, skin_a, skin_b, muscle_a, muscleHghtZ, ...
+    %     l_lung_y, l_lung_z, l_lung_b_prime, l_lung_c_prime, ...
+    %     r_lung_y, r_lung_z, r_lung_b_prime, r_lung_c_prime, ...
+    %     tumor_y, tumor_z, tumor_r_prime ];
     y_grid_table = fillGridTableY_all( paras2dYZ, dy, dz );
     x_idx = x / dx + air_x / (2 * dx) + 1;
     [ GridShiftTableXZ, mediumTable ] = constructGridShiftTableXYZ( GridShiftTableXZ, int64(x_idx), y_grid_table, h_torso, air_z, dy, dz, mediumTable );
 end
 
-% reorganize the GridShiftTable
+% re-organize the GridShiftTable
 GridShiftTable = cell( air_x / dx + 1, h_torso / dy + 1, air_z / dz + 1 );
 for y_idx = 1: 1: h_torso / dy + 1
     tmp_table = GridShiftTableXZ{ y_idx };
@@ -68,6 +61,7 @@ shiftedCoordinateXYZ = constructCoordinateXYZ( GridShiftTable, paras, dx, dy, dz
 
 % for x = tumor_x: dx: r_lung_x + r_lung_a
 %     x_idx = x / dx + air_x / (2 * dx) + 1;
+%     The following function: plotYZ has been changed.
 %     paras2dYZ = genParas2dYZ( x, paras, dy, dz );
 %     figure(int64(x_idx));
 %     plotYZ_Grid( h_torso, air_z, dy, dz );
@@ -123,145 +117,144 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
 end
 toc;
 
-% put on electrode
-for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
-    % idx = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
-    tmp_m = mod( idx, x_idx_max );
-    if tmp_m == 0
-        m = x_idx_max;
-    else
-        m = tmp_m;
-    end
+% % put on electrode
+% for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+%     % idx = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
+%     tmp_m = mod( idx, x_idx_max );
+%     if tmp_m == 0
+%         m = x_idx_max;
+%     else
+%         m = tmp_m;
+%     end
 
-    if mod( idx, x_idx_max * y_idx_max ) == 0
-        n = y_idx_max;
-    else
-        n = ( mod( idx, x_idx_max * y_idx_max ) - m ) / x_idx_max + 1;
-    end
+%     if mod( idx, x_idx_max * y_idx_max ) == 0
+%         n = y_idx_max;
+%     else
+%         n = ( mod( idx, x_idx_max * y_idx_max ) - m ) / x_idx_max + 1;
+%     end
     
-    ell = int64( ( idx - m - ( n - 1 ) * x_idx_max ) / ( x_idx_max * y_idx_max ) + 1 );
+%     ell = int64( ( idx - m - ( n - 1 ) * x_idx_max ) / ( x_idx_max * y_idx_max ) + 1 );
 
-    p0 = idx;
-    mid_x_idx = ( x_idx_max + 1 ) / 2;
-    mid_y_idx = ( y_idx_max + 1 ) / 2;
-    if m >= mid_x_idx - 3 && m <= mid_x_idx + 3 && n >= mid_y_idx - 1 && n <= mid_y_idx + 1 ...
-        && ell >= z_idx_max - 3 && ell <= z_idx_max - 2 
-        A_row = zeros(1, 2);
-        A_row(1) = p0;
-        A_row(2) = 1;
-        sparseA{ p0 } = A_row;
-        B( p0 ) = V_0;
-    elseif m >= mid_x_idx - 3 && m <= mid_x_idx + 3 && n >= mid_y_idx - 1 && n <= mid_y_idx + 1 ...
-        && ell <= 4 && ell >= 3 
-        A_row = zeros(1, 2);
-        A_row(1) = p0;
-        A_row(2) = 1;
-        sparseA{ p0 } = A_row;
+%     p0 = idx;
+%     mid_x_idx = ( x_idx_max + 1 ) / 2;
+%     mid_y_idx = ( y_idx_max + 1 ) / 2;
+%     if m >= mid_x_idx - 3 && m <= mid_x_idx + 3 && n >= mid_y_idx - 1 && n <= mid_y_idx + 1 ...
+%         && ell >= z_idx_max - 3 && ell <= z_idx_max - 2 
+%         A_row = zeros(1, 2);
+%         A_row(1) = p0;
+%         A_row(2) = 1;
+%         sparseA{ p0 } = A_row;
+%         B( p0 ) = V_0;
+%     elseif m >= mid_x_idx - 3 && m <= mid_x_idx + 3 && n >= mid_y_idx - 1 && n <= mid_y_idx + 1 ...
+%         && ell <= 4 && ell >= 3 
+%         A_row = zeros(1, 2);
+%         A_row(1) = p0;
+%         A_row(2) = 1;
+%         sparseA{ p0 } = A_row;  
+%     end
+% end
+
+% put on electrode
+[ Xtable, Ztable ] = fillTradlElctrd( bolus_a, bolus_b, dx, dz );
+lenX = size(Xtable, 1);
+lenZ = size(Ztable, 1);
+
+for idx = 1: 1: lenX
+    x  = Xtable(idx, 1); 
+    z1 = Xtable(idx, 2); 
+    z2 = Xtable(idx, 4);
+    if Xtable(idx, 1) ~= Xtable(idx, 3)
+        error('check Xtable');
+    end 
+    m = int64( x / dx + air_x / (2 * dx) + 1 );
+    ell_1 = int64( z1 / dz + air_z / (2 * dz) + 1 );
+    ell_2 = int64( z2 / dz + air_z / (2 * dz) + 1 );
+
+    if x >= - 13 / 100 && x <= 13 / 100
+        for n = 4 / ( 100 * dy ): 1: 33 / ( 100 * dy )
+            p0_1   = ( ell_1 - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
+            % p0_1up = ( ell_1     ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
+            A_row_1 = zeros(1, 2);
+            A_row_1(1) = p0_1;
+            A_row_1(2) = 1;
+            sparseA{ p0_1 } = A_row_1;
+            B( p0_1 ) = V_0;
+            % A_row_1up = zeros(1, 2);
+            % A_row_1up(1) = p0_1up;
+            % A_row_1up(2) = 1;
+            % sparseA{ p0_1up } = A_row_1up;
+            % B( p0_1up ) = V_0;
+
+            p0_2   = ( ell_2 - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
+            % p0_2dn = ( ell_2 - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
+            A_row_2 = zeros(1, 2);
+            A_row_2(1) = p0_2;
+            A_row_2(2) = 1;
+            sparseA{ p0_2 } = A_row_2;
+            % A_row_2dn = zeros(1, 2);
+            % A_row_2dn(1) = p0_2dn;
+            % A_row_2dn(2) = 1;
+            % sparseA{ p0_2dn } = A_row_2dn;
+        end
     end
 end
 
-% % put on electrode
-% % load('prepreRealCase.mat');
-% [ Xtable, Ztable ] = fillTradlElctrd( bolus_a, bolus_b, dx, dz );
-% lenX = size(Xtable, 1);
-% lenZ = size(Ztable, 1);
+for idx = 1: 1: lenZ
+    x1 = Ztable(idx, 1); 
+    z  = Ztable(idx, 2); 
+    x2 = Ztable(idx, 3); 
+    if Ztable(idx, 2) ~= Ztable(idx, 4)
+        error('check Z table');
+    end 
+    m_1 = int64( x1 / dx + air_x / (2 * dx) + 1 );
+    m_2 = int64( x2 / dx + air_x / (2 * dx) + 1 );
+    ell = int64( z / dz + air_z / (2 * dz) + 1 );
 
-% for idx = 1: 1: lenX
-%     x  = Xtable(idx, 1); 
-%     z1 = Xtable(idx, 2); 
-%     z2 = Xtable(idx, 4);
-%     if Xtable(idx, 1) ~= Xtable(idx, 3)
-%         error('check Xtable');
-%     end 
-%     m = int64( x / dx + air_x / (2 * dx) + 1 );
-%     ell_1 = int64( z1 / dz + air_z / (2 * dz) + 1 );
-%     ell_2 = int64( z2 / dz + air_z / (2 * dz) + 1 );
+    if x2 >= - 13 / 100 && x1 <= 13 / 100
+        for n = 4 / ( 100 * dy ): 1: 33 / ( 100 * dy )
+            p0_1   = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m_1;
+            A_row_1 = zeros(1, 2);
+            A_row_1(1) = p0_1;
+            A_row_1(2) = 1;
+            sparseA{ p0_1 } = A_row_1;
 
-%     if x >= - 13 / 100 && x <= 13 / 100
-%         for n = 4: 1: 33
-%             p0_1   = ( ell_1 - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
-%             p0_1up = ( ell_1     ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
-%             A_row_1 = zeros(1, 2);
-%             A_row_1(1) = p0_1;
-%             A_row_1(2) = 1;
-%             sparseA{ p0_1 } = A_row_1;
-%             B( p0_1 ) = V_0;
-%             A_row_1up = zeros(1, 2);
-%             A_row_1up(1) = p0_1up;
-%             A_row_1up(2) = 1;
-%             sparseA{ p0_1up } = A_row_1up;
-%             B( p0_1up ) = V_0;
+            p0_2   = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m_2;
+            A_row_2 = zeros(1, 2);
+            A_row_2(1) = p0_2;
+            A_row_2(2) = 1;
+            sparseA{ p0_2 } = A_row_2;
 
-%             p0_2   = ( ell_2 - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
-%             p0_2dn = ( ell_2 - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
-%             A_row_2 = zeros(1, 2);
-%             A_row_2(1) = p0_2;
-%             A_row_2(2) = 1;
-%             sparseA{ p0_2 } = A_row_2;
-%             A_row_2dn = zeros(1, 2);
-%             A_row_2dn(1) = p0_2dn;
-%             A_row_2dn(2) = 1;
-%             sparseA{ p0_2dn } = A_row_2dn;
-%         end
-%     end
-% end
+            if z > 0
+                % p0_1up = ( ell     ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m_1;
+                % A_row_1up = zeros(1, 2);
+                % A_row_1up(1) = p0_1up;
+                % A_row_1up(2) = 1;
+                % sparseA{ p0_1up } = A_row_1up;
 
-% for idx = 1: 1: lenZ
-%     x1 = Ztable(idx, 1); 
-%     z  = Ztable(idx, 2); 
-%     x2 = Ztable(idx, 3); 
-%     if Ztable(idx, 2) ~= Ztable(idx, 4)
-%         error('check Z table');
-%     end 
-%     m_1 = int64( x1 / dx + air_x / (2 * dx) + 1 );
-%     m_2 = int64( x2 / dx + air_x / (2 * dx) + 1 );
-%     ell = int64( z / dz + air_z / (2 * dz) + 1 );
+                % p0_2up = ( ell     ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m_2;
+                % A_row_2up = zeros(1, 2);
+                % A_row_2up(1) = p0_2up;
+                % A_row_2up(2) = 1;
+                % sparseA{ p0_2up } = A_row_2up;
 
-%     if x1 >= - 13 / 100 && x1 <= 13 / 100
-%         for n = 4: 1: 33
-%             p0_1   = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m_1;
-%             A_row_1 = zeros(1, 2);
-%             A_row_1(1) = p0_1;
-%             A_row_1(2) = 1;
-%             sparseA{ p0_1 } = A_row_1;
+                B( p0_1 ) = V_0;
+                B( p0_2 ) = V_0;
+            % else
+            %     p0_1dn = ( ell - 2 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m_1;
+            %     A_row_1dn = zeros(1, 2);
+            %     A_row_1dn(1) = p0_1dn;
+            %     A_row_1dn(2) = 1;
+            %     sparseA{ p0_1dn } = A_row_1dn;
 
-%             p0_2   = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m_2;
-%             A_row_2 = zeros(1, 2);
-%             A_row_2(1) = p0_2;
-%             A_row_2(2) = 1;
-%             sparseA{ p0_2 } = A_row_2;
-
-%             if z > 0
-%                 p0_1up = ( ell     ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m_1;
-%                 A_row_1up = zeros(1, 2);
-%                 A_row_1up(1) = p0_1up;
-%                 A_row_1up(2) = 1;
-%                 sparseA{ p0_1up } = A_row_1up;
-
-%                 p0_2up = ( ell     ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m_2;
-%                 A_row_2up = zeros(1, 2);
-%                 A_row_2up(1) = p0_2up;
-%                 A_row_2up(2) = 1;
-%                 sparseA{ p0_2up } = A_row_2up;
-
-%                 B( p0_1 ) = V_0;
-%                 B( p0_2 ) = V_0;
-%             else
-%                 p0_1dn = ( ell - 2 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m_1;
-%                 A_row_1dn = zeros(1, 2);
-%                 A_row_1dn(1) = p0_1dn;
-%                 A_row_1dn(2) = 1;
-%                 sparseA{ p0_1dn } = A_row_1dn;
-
-%                 p0_2dn = ( ell - 2 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m_2;
-%                 A_row_2dn = zeros(1, 2);
-%                 A_row_2dn(1) = p0_2dn;
-%                 A_row_2dn(2) = 1;
-%                 sparseA{ p0_2dn } = A_row_2dn;
-%             end
-%         end
-%     end
-% end
+            %     p0_2dn = ( ell - 2 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m_2;
+            %     A_row_2dn = zeros(1, 2);
+            %     A_row_2dn(1) = p0_2dn;
+            %     A_row_2dn(2) = 1;
+            %     sparseA{ p0_2dn } = A_row_2dn;
+            end
+        end
+    end
+end
 
 % Normalize each rows
 for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
@@ -273,18 +266,16 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
     B( idx ) = B( idx ) ./ MAX_row_value;
 end
 
-% % save('preFirstTest.mat');
-
 tol = 1e-6;
 ext_itr_num = 10;
-int_itr_num = 30;
+int_itr_num = 40;
 
 tic;
 disp('The gmres solutin of Ax = B: ');
 bar_x_my_gmres = my_gmres( sparseA, B, int_itr_num, tol, ext_itr_num );
 toc;
 
-% save('TestCase2.mat');
+save('RealCase4.mat');
 
 % disp('The calculation time for inverse matrix: ');
 % tic;
@@ -292,16 +283,7 @@ toc;
 % toc;
 
 % save('FirstTest.mat');
-% save('preFirstTest_gmres.mat');
 % PhiDstrbtn;
-
-% paras2dXZ = genParas2d( 0, paras, dx, dy, dz );
-% figure(1);
-% plotMap( paras2dXZ, dx, dz );
-% tmpCrdt = zeros( x_idx_max, z_idx_max, 2);
-% tmpCrdt(:, :, 1) = shiftedCoordinateXYZ(:, 6, :, 1);
-% tmpCrdt(:, :, 2) = shiftedCoordinateXYZ(:, 6, :, 3);
-% plotShiftedCordinateXZ_all( tmpCrdt );
 
 % count = 0;
 % for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max

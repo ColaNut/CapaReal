@@ -1,5 +1,5 @@
-function [ PntSARseg, TtrVol, MidPnts9Crdnt ] = calSARseg( m, n, ell, PhiHlfY, ThrXYZCrndt, SegValueXZ, ...
-                                                        x_idx_max, z_idx_max, sigma )
+function [ PntSARseg, TtrVol, MidPnts9Crdnt ] = calSARsegXY( m, n, ell, PhiTpElctrd, ThrXYZCrndt, SegValueXY, ...
+                                                        x_idx_max, y_idx_max, sigma );
 
     % notes actually: SARseg = zeros( 1, 1, 6, 8 );
     PntSARseg = zeros( 6, 8 );
@@ -13,13 +13,14 @@ function [ PntSARseg, TtrVol, MidPnts9Crdnt ] = calSARseg( m, n, ell, PhiHlfY, T
     tmpMidCrdnt  = zeros( 1, 9, 3 );
     MidPhi       = zeros( 3, 9 );
     tmpMidPhi    = zeros( 9 );
-    PntSegValue  = squeeze( SegValueXZ( m, ell, :, : ) );
-    
-    [ PntsIdx, PntsCrdnt ] = get27Pnts( m, n, ell, x_idx_max, 3, ThrXYZCrndt );
+    PntSegValue  = squeeze( SegValueXY( m, ell, :, : ) );
+
+    [ PntsIdx, PntsCrdnt ] = get27Pnts( m, n, ell, x_idx_max, y_idx_max, ThrXYZCrndt );
     MidPntsCrdnt = calMid27Pnts( PntsCrdnt );
-    MidPnts9Crdnt = getMidPnts9Crdnt( MidPntsCrdnt );
+    MidPnts9Crdnt = getMidPnts9CrdntXY( MidPntsCrdnt );
+    
     % MedValue     = get27MedValue( m, n, ell, ThrMedValue );
-    MidPhi       = cal27MidPhi( m, n, ell, PhiHlfY );
+    MidPhi       = cal27MidPhi( m, n, ell, PhiTpElctrd );
 
 % Start from here: cal the volume, the E_x, the E_y and the E_z, and get the corresponding PntSegValue value.
     % p1
