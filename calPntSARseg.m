@@ -1,10 +1,11 @@
-function [ PntSARseg, TtrVol ] = calPntSARseg( MidPntsCrdnt, p0Crdnt, PntSegValue, MidPntsPhi, p0Phi, sigma )
+function [ PntSARseg, TtrVol ] = calPntSARseg( MidPntsCrdnt, p0Crdnt, PntSegValue, MidPntsPhi, p0Phi, sigma, rho )
 
 PntSARseg = zeros(1, 8);
 % The tetrahedron volume
 TtrVol    = zeros(1, 8);
 Esqr      = zeros(8, 1);
 SegSgm    = zeros(8, 1);
+SegRho    = zeros(8, 1);
 
     TtrVol(1) = calTtrVol( MidPntsCrdnt(5, :), MidPntsCrdnt(6, :), MidPntsCrdnt(9, :), p0Crdnt' );
     TtrVol(2) = calTtrVol( MidPntsCrdnt(5, :), MidPntsCrdnt(9, :), MidPntsCrdnt(8, :), p0Crdnt' );
@@ -33,7 +34,8 @@ SegSgm    = zeros(8, 1);
                     MidPntsPhi(5), MidPntsPhi(3), MidPntsPhi(6), p0Phi );
 
 SegSgm = sigma(PntSegValue);
+SegRho = rho(PntSegValue);
 
-PntSARseg = (SegSgm .* Esqr);
+PntSARseg = (SegSgm .* Esqr) ./ (2 * SegRho);
 
 end

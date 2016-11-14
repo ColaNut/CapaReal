@@ -1,11 +1,12 @@
 clc; clear;
 load('TestCase2.mat');
-% load('RealCase2.mat');
 % XZmidY      = zeros( z_idx_max, x_idx_max );
 
 flag_XZ = 1;
 flag_YZ = 1;
 flag_XY = 1;
+
+fname = 'e:\Kevin\CapaReal\Case4\SAR';
 
 if flag_XZ == 1
 
@@ -75,12 +76,14 @@ if flag_XZ == 1
     % axis( [ min(min(x_mesh)) * 100, max(max(x_mesh)) * 100, ...
     %         min(min(z_mesh)) * 100, max(max(z_mesh)) * 100, ...
     %         min(min(abs( PhiHlfY2' ))), max(max(abs( PhiHlfY2' ))) ] );
-    xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 30);
-    ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 30);
-    % zlabel('$\Phi (x, z)$ ($V$)','Interpreter','LaTex', 'FontSize', 30);
+    xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
+    ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
+    % zlabel('$\Phi (x, z)$ ($V$)','Interpreter','LaTex', 'FontSize', 20);
     view(2);
     hold on;
     plotMap( paras2dXZ, dx, dz );
+    % saveas(figure(1), fullfile(fname, 'Case4PhiXZ'), 'fig');
+    % saveas(figure(1), fullfile(fname, 'Case4PhiXZ'), 'jpg');
 
     % calculate the E field
     SARseg = zeros( x_idx_max, z_idx_max, 6, 8 );
@@ -102,7 +105,7 @@ if flag_XZ == 1
 
         if m >= 2 && m <= x_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
             [ SARseg( m, ell, :, : ), TtrVol( m, ell, :, : ), MidPnts9Crdnt( m, ell, :, : ) ] ...
-                        = calSARsegXZ( m, n, ell, PhiHlfY, ThrXYZCrndt, SegValueXZ, x_idx_max, sigma );
+                        = calSARsegXZ( m, n, ell, PhiHlfY, ThrXYZCrndt, SegValueXZ, x_idx_max, sigma, rho );
         end
     end
 
@@ -133,13 +136,15 @@ if flag_XZ == 1
     toc;
     colormap jet;
     axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);
-    xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 30);
-    ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 30);
-    % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 30);
+    xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
+    ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
+    % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
     set(gca,'fontsize',20);
     view(2);
     axis equal;
     plotMap( paras2dXZ, dx, dz );
+    % saveas(figure(2), fullfile(fname, 'Case4SARXZ'), 'fig');
+    % saveas(figure(2), fullfile(fname, 'Case4SARXZ'), 'jpg');
 end
 
 if flag_YZ == 1
@@ -209,14 +214,16 @@ if flag_YZ == 1
     % axis( [ min(min(x_mesh)) * 100, max(max(x_mesh)) * 100, ...
     %         min(min(z_mesh)) * 100, max(max(z_mesh)) * 100, ...
     %         min(min(abs( PhiHlfY2' ))), max(max(abs( PhiHlfY2' ))) ] );
-    xlabel('$y$ (cm)', 'Interpreter','LaTex', 'FontSize', 30);
-    ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 30);
-    % zlabel('$\Phi (x, z)$ ($V$)','Interpreter','LaTex', 'FontSize', 30);
+    xlabel('$y$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
+    ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
+    % zlabel('$\Phi (x, z)$ ($V$)','Interpreter','LaTex', 'FontSize', 20);
     hold on;
     % plotYZ( shiftedCoordinateXYZ, air_x, h_torso, air_z, x, paras2dYZ, dx, dy, dz, bolus_b, muscle_b );
     plotYZ( paras2dYZ, dy, dz );
     set(gca,'fontsize',20);
     view(2);
+    % saveas(figure(6), fullfile(fname, 'Case4PhiYZ'), 'fig');
+    % saveas(figure(6), fullfile(fname, 'Case4PhiYZ'), 'jpg');
 
     % calculate the E field
     SARseg = zeros( y_idx_max, z_idx_max, 6, 8 );
@@ -239,7 +246,7 @@ if flag_YZ == 1
 
         if n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
             [ SARseg( n, ell, :, : ), TtrVol( n, ell, :, : ), MidPnts9Crdnt( n, ell, :, : ) ] ...
-                    = calSARsegYZ( m, n, ell, PhiYZ, ThrXYZCrndt, SegValueYZ, y_idx_max, sigma );
+                    = calSARsegYZ( m, n, ell, PhiYZ, ThrXYZCrndt, SegValueYZ, y_idx_max, sigma, rho );
         end
     end
 
@@ -273,13 +280,15 @@ if flag_YZ == 1
     toc;
     colormap jet;
     set(gca,'fontsize',20);
-    xlabel('$y$ (cm)', 'Interpreter','LaTex', 'FontSize', 30);
-    ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 30);
-    % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 30);
+    xlabel('$y$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
+    ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
+    % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
     plotYZ( paras2dYZ, dy, dz );
     axis equal;
     axis( [ - 100 * h_torso / 2, 100 * h_torso / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);
     view(2);
+    % saveas(figure(7), fullfile(fname, 'Case4SARYZ'), 'fig');
+    % saveas(figure(7), fullfile(fname, 'Case4SARYZ'), 'jpg');
 end
 
 if flag_XY == 1
@@ -352,13 +361,15 @@ if flag_XY == 1
     % axis( [ min(min(x_mesh)) * 100, max(max(x_mesh)) * 100, ...
     %         min(min(z_mesh)) * 100, max(max(z_mesh)) * 100, ...
     %         min(min(abs( PhiHlfY2' ))), max(max(abs( PhiHlfY2' ))) ] );
-    xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 30);
-    ylabel('$y$ (cm)','Interpreter','LaTex', 'FontSize', 30);
+    xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
+    ylabel('$y$ (cm)','Interpreter','LaTex', 'FontSize', 20);
     axis equal;
     axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * h_torso / 2, 100 * h_torso / 2 ]);
     view(2);
     hold on;
     plotXY( paras2dXY, dx, dy );
+    % saveas(figure(11), fullfile(fname, 'Case4PhiXY'), 'fig');
+    % saveas(figure(11), fullfile(fname, 'Case4PhiXY'), 'jpg');
 
     % calculate the E field
     SARseg = zeros( x_idx_max, y_idx_max, 6, 8 );
@@ -380,7 +391,7 @@ if flag_XY == 1
 
         if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1 
             [ SARseg( m, n, :, : ), TtrVol( m, n, :, : ), MidPnts9Crdnt( m, n, :, : ) ] ...
-                = calSARsegXY( m, n, ell, PhiTpElctrd, ThrXYZCrndt, SegValueXY, x_idx_max, y_idx_max, sigma );
+                = calSARsegXY( m, n, ell, PhiTpElctrd, ThrXYZCrndt, SegValueXY, x_idx_max, y_idx_max, sigma, rho );
         end
     end
 
@@ -411,12 +422,14 @@ if flag_XY == 1
     end
     toc;
     colormap jet;
-    xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 30);
-    ylabel('$y$ (cm)','Interpreter','LaTex', 'FontSize', 30);
+    xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
+    ylabel('$y$ (cm)','Interpreter','LaTex', 'FontSize', 20);
     % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 18);
     set(gca,'fontsize',20);
     view(2);
     axis equal;
     axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * h_torso / 2, 100 * h_torso / 2 ]);
     plotXY( paras2dXY, dx, dy );
+    % saveas(figure(12), fullfile(fname, 'Case4SARXY'), 'fig');
+    % saveas(figure(12), fullfile(fname, 'Case4SARXY'), 'jpg');
 end
