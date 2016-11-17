@@ -1,10 +1,13 @@
 clc; clear;
 load('TestCase2.mat');
+rho           = [ 1,  1020,  1020,  1050, 1040 ]';
+save('TestCase2.mat');
+
 % XZmidY      = zeros( z_idx_max, x_idx_max );
 
 flag_XZ = 1;
-flag_YZ = 1;
-flag_XY = 1;
+flag_YZ = 0;
+flag_XY = 0;
 
 fname = 'e:\Kevin\CapaReal\Case4\SAR';
 

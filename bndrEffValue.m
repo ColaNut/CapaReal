@@ -27,6 +27,7 @@ weight      = zeros(8, 1);
 [ weight, SegMed ] = calWeight( tmpMed2Layers, epsilon_r );
 wghtTri = repmat(weight, 1, 3) .* TriVec;
 
+% [ 1, 2, 3, 4 ] = [ right, up, left, down ];
 sideEffect(1) = ( wghtTri(1, :) + wghtTri(2, :) + wghtTri(7, :) + wghtTri(8, :) ) * u(1, :)';
 sideEffect(2) = ( wghtTri(1, :) + wghtTri(2, :) + wghtTri(3, :) + wghtTri(4, :) ) * u(2, :)';
 sideEffect(3) = ( wghtTri(3, :) + wghtTri(4, :) + wghtTri(5, :) + wghtTri(6, :) ) * u(3, :)';

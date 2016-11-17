@@ -6,7 +6,7 @@ Epsilon_0     = 10^(-9) / (36 * pi);
 Omega_0       = 2 * pi * 10 * 10^6; % 2 * pi * 10 MHz
 V_0           = 126; 
               % air, bolus, muscle, lung, tumor
-rho           = [ 1,  1020,  1020, 1,050, 1040 ]';
+rho           = [ 1,  1020,  1020,  1050, 1040 ]';
 epsilon_r_pre = [ 1, 113.0,   184, 264.9,  402 ]';
 sigma         = [ 0,  0.61, 0.685,  0.42, 0.68 ]';
 epsilon_r     = epsilon_r_pre - i * sigma ./ ( Omega_0 * Epsilon_0 );
@@ -25,6 +25,7 @@ z_idx_max = air_z / dz + 1;
 
 GridShiftTableXZ = cell( h_torso / dy + 1, 1);
 mediumTable = ones( x_idx_max, y_idx_max, z_idx_max, 'uint8');
+% [ boundary, air, bolus, muscle, lung, tumor ] -> [ 0, 1, 2, 3, 4, 5 ]
 
 for y = - h_torso / 2: dy: h_torso / 2
     paras2dXZ = genParas2d( y, paras, dx, dy, dz );

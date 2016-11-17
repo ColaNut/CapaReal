@@ -22,7 +22,7 @@ u           = zeros(5, 3);
     u(5, :) = ( pxCrdt' - tmpMidLyr(5, :) ) ./ ( norm( pxCrdt' - tmpMidLyr(5, :) ) )^2;
 
 % effValue = effArea / distance;
-
+% [ 1, 2, 3, 4 ] = [ right, up, left, down ];
 sideEffect(1) = medValue * ( TriVec(1, :) + TriVec(2, :) + TriVec(7, :) + TriVec(8, :) ) * u(1, :)';
 sideEffect(2) = medValue * ( TriVec(1, :) + TriVec(2, :) + TriVec(3, :) + TriVec(4, :) ) * u(2, :)';
 sideEffect(3) = medValue * ( TriVec(3, :) + TriVec(4, :) + TriVec(5, :) + TriVec(6, :) ) * u(3, :)';

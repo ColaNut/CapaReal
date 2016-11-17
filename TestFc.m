@@ -55,18 +55,22 @@
 %       4 5 6 NaN];
 % c  = [0; 1];
 % patch('Faces', f2,'Vertices', v2, 'FaceColor', c)
-figure(8);
-v = [2 4 1; 2 8 1; 8 4 1; 5 0 1; 5 2 1; 8 0 1];
-f = [1 2 3; 4 5 6];
-col = [0; - Inf];
-patch('Faces',f,'Vertices',v,'FaceVertexCData',col,'FaceColor','flat');
-colorbar
+% figure(8);
+% v = [2 4 1; 2 8 1; 8 4 1; 5 0 1; 5 2 1; 8 0 1];
+% f = [1 2 3; 4 5 6];
+% col = [0; - Inf];
+% patch('Faces',f,'Vertices',v,'FaceVertexCData',col,'FaceColor','flat');
+% colorbar
 
 % figure(4);
 % loadParas;
-% % m = 9;
-% % n = 2;
-% % ell = 2;
+
+m = tumor_x / dx + air_x / (2 * dx) + 1;
+n = tumor_y / dy + h_torso / (2 * dy) + 1;
+ell = tumor_z / dz + air_z / (2 * dz) + 1;
+
+[m, n, ell]
+
 % % x = ( m - 1 ) * dx - air_x / 2;
 % % y = ( n - 1 ) * dy - h_torso / 2;
 % % z = ( ell - 1 ) * dz - air_z / 2;
@@ -87,3 +91,11 @@ colorbar
 % m = ( x / dx ) + air_x / ( 2 * dx ) + 1;
 % ell = ( z / dz ) + air_z / ( 2 * dz ) + 1;
 % [m, ell]
+
+
+
+figure(1); 
+plot(0: dt: T, squeeze(TmprtrTau(12, 9, 11, :)), 'Color', [0, 0, 0], 'LineWidth', 2.5);
+set(gca,'fontsize',20);
+xlabel('$t$ (s)', 'Interpreter','LaTex', 'FontSize', 20);
+ylabel('$T$ ($^\circ$C)','Interpreter','LaTex', 'FontSize', 20);
