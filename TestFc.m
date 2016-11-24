@@ -65,11 +65,15 @@
 % figure(4);
 % loadParas;
 
-m = tumor_x / dx + air_x / (2 * dx) + 1;
-n = tumor_y / dy + h_torso / (2 * dy) + 1;
-ell = tumor_z / dz + air_z / (2 * dz) + 1;
+% tumor_m = tumor_x / dx + air_x / (2 * dx) + 1;
+% tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1;
+% tumor_ell = tumor_z / dz + air_z / (2 * dz) + 1;
 
-[m, n, ell]
+% figure(1); 
+% plot(0: dt / 60: T_end / 60, squeeze(TmprtrTau(tumor_m, tumor_n, tumor_ell, :)), 'Color', [0, 0, 0], 'LineWidth', 2.5);
+% set(gca,'fontsize',20);
+% xlabel('$t$ (min)', 'Interpreter','LaTex', 'FontSize', 20);
+% ylabel('$T$ ($^\circ$C)','Interpreter','LaTex', 'FontSize', 20);
 
 % % x = ( m - 1 ) * dx - air_x / 2;
 % % y = ( n - 1 ) * dy - h_torso / 2;
@@ -91,11 +95,20 @@ ell = tumor_z / dz + air_z / (2 * dz) + 1;
 % m = ( x / dx ) + air_x / ( 2 * dx ) + 1;
 % ell = ( z / dz ) + air_z / ( 2 * dz ) + 1;
 % [m, ell]
+% fname = 'e:\Kevin\CapaReal';
+% % saveas(figure(1), fullfile(fname, 'TestTumorTmprtrCase1'), 'fig');
+% saveas(figure(1), fullfile(fname, 'TestTumorTmprtrCase1'), 'jpg');
 
-
-
-figure(1); 
-plot(0: dt: T, squeeze(TmprtrTau(12, 9, 11, :)), 'Color', [0, 0, 0], 'LineWidth', 2.5);
-set(gca,'fontsize',20);
-xlabel('$t$ (s)', 'Interpreter','LaTex', 'FontSize', 20);
-ylabel('$T$ ($^\circ$C)','Interpreter','LaTex', 'FontSize', 20);
+a=rand(100, 10000);
+b=rand(100, 10000)';
+tic
+c=a*b;
+fprintf('CPU time = %g sec\n', toc);
+A=gpuArray(a);      % Put a to GPU's memory
+B=gpuArray(b);      % Put b to GPU's memory
+tic
+C=A*B;              % Multiplication via GPU
+fprintf('GPU time = %g sec\n', toc);
+c2=gather(C);       % Put C to MATLAB's workspace
+fprintf('isequal(c, c2) = %g\n', isequal(c, c2));
+fprintf('Mean deviation = %g\n', mean(mean(abs(c-c2))));

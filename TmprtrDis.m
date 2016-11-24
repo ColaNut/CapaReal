@@ -1,18 +1,19 @@
-clc; clear;
-load('TestCase2.mat');
+% clc; clear;
+% load('TestCase2.mat');
 Phi = zeros( x_idx_max, y_idx_max, z_idx_max );
 Phi = getPhi( bar_x_my_gmres, x_idx_max, y_idx_max, z_idx_max );
 
-% timer: [ 0, dt, ... T ];
-timeSegNum = 30;
-dt = 10; % 10s
-T  = timeSegNum * dt; % 300s
+% timer: [ 0, dt, ... T_end ];
+% timeNum = 6;
+% dt = 10; % 10s
+T_end  = timeNum * dt; % 300s
 T_0 = 37; 
-T_b = T_0;
+T_blood = T_0;
 T_bolus = 5;
 T_air = 25;
 alpha = 111;
-TmprtrTau = T_0 * ones( x_idx_max, y_idx_max, z_idx_max, T / dt + 1 );
+LungRatio = 242.6 / rho(4);
+TmprtrTau = T_0 * ones( x_idx_max, y_idx_max, z_idx_max, T_end / dt + 1 );
 
 rho_b          = 1060;
 cap_b          = 3960;
@@ -42,8 +43,11 @@ end
 
 disp('time to cal TmprtrTau')
 tic;
-for t = dt: dt: T
+for t = dt: dt: T_end
     t_idx = t / dt + 1;
+    if mod(t_idx, 40) == 0
+        t_idx * dt / 60
+    end
     for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
         
         % idx = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
@@ -75,11 +79,11 @@ for t = dt: dt: T
                 if mediumTable( m, n, ell ) ~= 0
                     TmprtrTau( m, n, ell, t_idx ) = calTmprtrNrmlPnt( m, n, ell, shiftedCoordinateXYZ, ...
                                             x_idx_max, y_idx_max, z_idx_max, PntSegMed, mediumTable, ...
-                                            T_b, zeta, sigma, rho, cap, rho_b, cap_b, xi, dt, TmprtrTauMinus, Phi );
+                                            T_blood, zeta, sigma, rho, cap, rho_b, cap_b, xi, dt, TmprtrTauMinus, Phi, LungRatio );
                 else
                     TmprtrTau( m, n, ell, t_idx ) = calTmprtrBndrPnt( m, n, ell, shiftedCoordinateXYZ, ...
                                             x_idx_max, y_idx_max, z_idx_max, PntSegMed, mediumTable, ...
-                                            T_b, zeta, sigma, rho, cap, rho_b, cap_b, xi, dt, TmprtrTauMinus, Phi );
+                                            T_blood, zeta, sigma, rho, cap, rho_b, cap_b, xi, dt, TmprtrTauMinus, Phi, LungRatio );
                 end
             end
             if CnvctnFlag
@@ -87,7 +91,7 @@ for t = dt: dt: T
                 sigmaMask(2) = 0;
                 TmprtrTau( m, n, ell, t_idx ) = calTmprtrCnvcPnt( m, n, ell, shiftedCoordinateXYZ, ...
                                             x_idx_max, y_idx_max, z_idx_max, PntSegMed, mediumTable, ...
-                                            T_b, T_bolus, zeta, sigmaMask, rho, cap, rho_b, cap_b, xi, dt, ...
+                                            T_blood, T_bolus, zeta, sigmaMask, rho, cap, rho_b, cap_b, xi, dt, ...
                                             TmprtrTauMinus, Phi, alpha );
             end
         end
@@ -103,14 +107,16 @@ T_XZ = zeros( x_idx_max, z_idx_max );
 x_mesh = squeeze(shiftedCoordinateXYZ( :, y_idx, :, 1))';
 z_mesh = squeeze(shiftedCoordinateXYZ( :, y_idx, :, 3))';
 paras2dXZ = genParas2d( y, paras, dx, dy, dz );
-for t = 0: dt: T
+t = T_end;
+% for t = 0: dt: T_end
     t_idx = t / dt + 1;
     y = tumor_y;
     y_idx = y / dy + h_torso / ( 2 * dy ) + 1;
     
     T_XZ = squeeze( TmprtrTau( :, y_idx, :, uint8(t_idx) ) );
     
-    figure(uint8(t_idx + 2));
+    % figure(uint8(t_idx + 2));
+    figure(1);
     clf;
     pcolor(x_mesh * 100, z_mesh * 100, T_XZ');
     shading flat
@@ -123,4 +129,4 @@ for t = 0: dt: T
     view(2);
     hold on;
     plotMap( paras2dXZ, dx, dz );
-end
+% end
