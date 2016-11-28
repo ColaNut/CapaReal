@@ -13,6 +13,8 @@ epsilon_r     = epsilon_r_pre - i * sigma ./ ( Omega_0 * Epsilon_0 );
 
 % There 'must' be a grid point at the origin.
 loadParas;
+paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
+plotMap( paras2dXZ, dx, dz );
 % paras = [ h_torso, air_x, air_z, ...
 %         bolus_a, bolus_b, skin_a, skin_b, muscle_a, muscle_b, ...
 %         l_lung_x, l_lung_z, l_lung_a, l_lung_b, l_lung_c, ...
@@ -29,10 +31,10 @@ mediumTable = ones( x_idx_max, y_idx_max, z_idx_max, 'uint8');
 
 for y = - h_torso / 2: dy: h_torso / 2
     paras2dXZ = genParas2d( y, paras, dx, dy, dz );
-    % paras2d = [ air_x, air_z, bolus_a, bolus_b, skin_a, skin_b, muscle_a, muscle_b, ...
-    %         l_lung_x, l_lung_z, l_lung_a_prime, l_lung_c_prime, ...
-    %         r_lung_x, r_lung_z, r_lung_a_prime, r_lung_c_prime, ...
-    %         tumor_x, tumor_z, tumor_r_prime ];
+    % paras2dXZ = [ air_x, air_z, bolus_a, bolus_b, skin_a, skin_b, muscle_a, muscle_b, ...
+    %     l_lung_x, l_lung_z, l_lung_a_prime, l_lung_c_prime, ...
+    %     r_lung_x, r_lung_z, r_lung_a_prime, r_lung_c_prime, ...
+    %     tumor_x, tumor_z, tumor_r_prime ];
     y_idx = y / dy + h_torso / (2 * dy) + 1;
     mediumTable(:, int64(y_idx), :) = getRoughMed( mediumTable(:, int64(y_idx), :), paras2dXZ, dx, dz );
     [ GridShiftTableXZ{ int64(y_idx) }, mediumTable(:, int64(y_idx), :) ] = constructCoordinateXZ_all( paras2dXZ, dx, dz, mediumTable(:, int64(y_idx), :) );
@@ -40,7 +42,7 @@ end
 
 for x = - air_x / 2: dx: air_x / 2
     paras2dYZ = genParas2dYZ( x, paras, dy, dz );
-    % paras2d = [ h_torso, air_x, air_z, bolus_a, bolusHghtZ, skin_a, skin_b, muscle_a, muscleHghtZ, ...
+    % paras2dYZ = [ h_torso, air_x, air_z, bolus_a, bolusHghtZ, skin_a, skin_b, muscle_a, muscleHghtZ, ...
     %     l_lung_y, l_lung_z, l_lung_b_prime, l_lung_c_prime, ...
     %     r_lung_y, r_lung_z, r_lung_b_prime, r_lung_c_prime, ...
     %     tumor_y, tumor_z, tumor_r_prime ];
@@ -158,6 +160,9 @@ toc;
 % end
 
 % put on electrode
+
+X_width = 13 / 100;
+Y_width = 11 / 100;
 [ Xtable, Ztable ] = fillTradlElctrd( bolus_a, bolus_b, dx, dz );
 lenX = size(Xtable, 1);
 lenZ = size(Ztable, 1);
@@ -173,8 +178,10 @@ for idx = 1: 1: lenX
     ell_1 = int64( z1 / dz + air_z / (2 * dz) + 1 );
     ell_2 = int64( z2 / dz + air_z / (2 * dz) + 1 );
 
-    if x >= - 13 / 100 && x <= 13 / 100
-        for n = 4 / ( 100 * dy ): 1: 33 / ( 100 * dy )
+    tmp_y_shift = h_torso / (2 * dy) + 1;
+
+    if x >= - X_width && x <= X_width
+        for n = - Y_width / dy + tmp_y_shift: 1: Y_width / dy + tmp_y_shift
             p0_1   = ( ell_1 - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
             % p0_1up = ( ell_1     ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
             A_row_1 = zeros(1, 2);
@@ -213,8 +220,8 @@ for idx = 1: 1: lenZ
     m_2 = int64( x2 / dx + air_x / (2 * dx) + 1 );
     ell = int64( z / dz + air_z / (2 * dz) + 1 );
 
-    if x2 >= - 13 / 100 && x1 <= 13 / 100
-        for n = 4 / ( 100 * dy ): 1: 33 / ( 100 * dy )
+    if x2 >= - X_width && x1 <= X_width
+        for n = - Y_width / dy + tmp_y_shift: 1: Y_width / dy + tmp_y_shift
             p0_1   = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m_1;
             A_row_1 = zeros(1, 2);
             A_row_1(1) = p0_1;
@@ -278,7 +285,9 @@ disp('The gmres solutin of Ax = B: ');
 bar_x_my_gmres = my_gmres( sparseA, B, int_itr_num, tol, ext_itr_num );
 toc;
 
-save('RealCase4.mat');
+save('Case1124.mat');
+
+% PhiDstrbtn
 
 % disp('The calculation time for inverse matrix: ');
 % tic;

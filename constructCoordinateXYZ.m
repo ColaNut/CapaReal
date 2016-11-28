@@ -23,6 +23,7 @@ lz = length(z_grid);
 for x_idx = 1: 1: lx
     for y_idx = 1: 1: ly
         for z_idx = 1: 1: lz
+            try
             if ~isempty(GridShiftTable{ x_idx, y_idx, z_idx })
                 table_value = GridShiftTable{ x_idx, y_idx, z_idx };
                 if table_value(1) == 1
@@ -34,6 +35,10 @@ for x_idx = 1: 1: lx
                 else
                     error('invalid direction');
                 end
+            end
+            catch
+                IDX = [ x_idx, y_idx, z_idx ]
+                sizeofGrid = size(GridShiftTable)
             end
         end
     end

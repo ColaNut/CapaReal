@@ -75,6 +75,15 @@
 % xlabel('$t$ (min)', 'Interpreter','LaTex', 'FontSize', 20);
 % ylabel('$T$ ($^\circ$C)','Interpreter','LaTex', 'FontSize', 20);
 
+tmpm = 49;
+tmpn = 15; 
+tmpell = 58;
+
+tmpx = ( tmpm - 1 ) * dx - air_x / 2;
+tmpy = ( tmpn - 1 ) * dy - h_torso / 2;
+tmpz = ( tmpell - 1 ) * dz - air_z / 2;
+[tmpx, tmpy, tmpz]* 100
+
 % % x = ( m - 1 ) * dx - air_x / 2;
 % % y = ( n - 1 ) * dy - h_torso / 2;
 % % z = ( ell - 1 ) * dz - air_z / 2;
