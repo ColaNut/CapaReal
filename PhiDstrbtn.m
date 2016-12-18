@@ -10,7 +10,9 @@ flag_XZ = 1;
 flag_YZ = 1;
 flag_XY = 1;
 
-fname = 'e:\Kevin\CapaReal\Real1124';
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal';
+fname = 'e:\Kevin\CapaReal\Case1128';
+% CaseName = 'Sigma';
 
 if flag_XZ == 1
 
@@ -70,6 +72,7 @@ if flag_XZ == 1
     end
 
     figure(1);
+    clf;
     PhiHlfY2 = squeeze(PhiHlfY(:, 2, :));
     pcolor(x_mesh * 100, z_mesh * 100, abs( PhiHlfY2' ));
     shading flat
@@ -77,6 +80,8 @@ if flag_XZ == 1
     colorbar;
     colormap jet;
     set(gca,'fontsize',20);
+    set(gca,'LineWidth',2.0);
+    box on;
     % axis( [ min(min(x_mesh)) * 100, max(max(x_mesh)) * 100, ...
     %         min(min(z_mesh)) * 100, max(max(z_mesh)) * 100, ...
     %         min(min(abs( PhiHlfY2' ))), max(max(abs( PhiHlfY2' ))) ] );
@@ -86,8 +91,8 @@ if flag_XZ == 1
     view(2);
     hold on;
     plotMap( paras2dXZ, dx, dz );
-    saveas(figure(1), fullfile(fname, 'Case1124PhiXZ'), 'fig');
-    saveas(figure(1), fullfile(fname, 'Case1124PhiXZ'), 'jpg');
+    saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'fig');
+    saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
 
     % calculate the E field
     SARseg = zeros( x_idx_max, z_idx_max, 6, 8 );
@@ -115,6 +120,7 @@ if flag_XZ == 1
 
     % plot SAR XZ
     figure(2);
+    clf;
     disp('Time to plot SAR');
     tic;
     for idx = 1: 1: x_idx_max * z_idx_max
@@ -144,11 +150,13 @@ if flag_XZ == 1
     ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
     % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
     set(gca,'fontsize',20);
+    set(gca,'LineWidth',2.0);
+    box on;
     view(2);
     axis equal;
     plotMap( paras2dXZ, dx, dz );
-    saveas(figure(2), fullfile(fname, 'Case1124SARXZ'), 'fig');
-    saveas(figure(2), fullfile(fname, 'Case1124SARXZ'), 'jpg');
+    saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'fig');
+    saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
 end
 
 if flag_YZ == 1
@@ -209,6 +217,7 @@ if flag_YZ == 1
     end
 
     figure(6);
+    clf;
     PhiYZ2 = squeeze(PhiYZ(2, :, :));
     pcolor(y_mesh * 100, z_mesh * 100, abs( PhiYZ2' ));
     shading flat
@@ -225,9 +234,11 @@ if flag_YZ == 1
     % plotYZ( shiftedCoordinateXYZ, air_x, h_torso, air_z, x, paras2dYZ, dx, dy, dz, bolus_b, muscle_b );
     plotYZ( paras2dYZ, dy, dz );
     set(gca,'fontsize',20);
+    set(gca,'LineWidth',2.0);
+    box on;
     view(2);
-    saveas(figure(6), fullfile(fname, 'Case1124PhiYZ'), 'fig');
-    saveas(figure(6), fullfile(fname, 'Case1124PhiYZ'), 'jpg');
+    saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'fig');
+    saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'jpg');
 
     % calculate the E field
     SARseg = zeros( y_idx_max, z_idx_max, 6, 8 );
@@ -256,6 +267,7 @@ if flag_YZ == 1
 
     % plot SAR
     figure(7);
+    clf;
     disp('Time to plot SAR');
     tic;
     for idx = 1: 1: y_idx_max * z_idx_max
@@ -284,6 +296,8 @@ if flag_YZ == 1
     toc;
     colormap jet;
     set(gca,'fontsize',20);
+    set(gca,'LineWidth',2.0);
+    box on;
     xlabel('$y$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
     % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
@@ -291,8 +305,8 @@ if flag_YZ == 1
     axis equal;
     axis( [ - 100 * h_torso / 2, 100 * h_torso / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);
     view(2);
-    saveas(figure(7), fullfile(fname, 'Case1124SARYZ'), 'fig');
-    saveas(figure(7), fullfile(fname, 'Case1124SARYZ'), 'jpg');
+    saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARYZ')), 'fig');
+    saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARYZ')), 'jpg');
 end
 
 if flag_XY == 1
@@ -356,12 +370,15 @@ if flag_XY == 1
     end
 
     figure(11);
+    clf;
     PhiTpElctrd2 = squeeze(PhiTpElctrd(:, :, 2));
     pcolor(x_mesh * 100, y_mesh * 100, abs( PhiTpElctrd2' ));
     shading flat
     colorbar;
     colormap jet;
     set(gca,'fontsize',20);
+    set(gca,'LineWidth',2.0);
+    box on;
     % axis( [ min(min(x_mesh)) * 100, max(max(x_mesh)) * 100, ...
     %         min(min(z_mesh)) * 100, max(max(z_mesh)) * 100, ...
     %         min(min(abs( PhiHlfY2' ))), max(max(abs( PhiHlfY2' ))) ] );
@@ -372,8 +389,8 @@ if flag_XY == 1
     view(2);
     hold on;
     plotXY( paras2dXY, dx, dy );
-    saveas(figure(11), fullfile(fname, 'Case1124PhiXY'), 'fig');
-    saveas(figure(11), fullfile(fname, 'Case1124PhiXY'), 'jpg');
+    saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiXY')), 'fig');
+    saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiXY')), 'jpg');
 
     % calculate the E field
     SARseg = zeros( x_idx_max, y_idx_max, 6, 8 );
@@ -401,6 +418,7 @@ if flag_XY == 1
 
     % plot electrode SAR
     figure(12);
+    clf;
     disp('Time to plot SAR');
     tic;
     for idx = 1: 1: x_idx_max * y_idx_max
@@ -430,10 +448,12 @@ if flag_XY == 1
     ylabel('$y$ (cm)','Interpreter','LaTex', 'FontSize', 20);
     % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 18);
     set(gca,'fontsize',20);
+    set(gca,'LineWidth',2.0);
+    box on;
     view(2);
     axis equal;
     axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * h_torso / 2, 100 * h_torso / 2 ]);
     plotXY( paras2dXY, dx, dy );
-    saveas(figure(12), fullfile(fname, 'Case1124SARXY'), 'fig');
-    saveas(figure(12), fullfile(fname, 'Case1124SARXY'), 'jpg');
+    saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARXY')), 'fig');
+    saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARXY')), 'jpg');
 end

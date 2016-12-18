@@ -75,14 +75,14 @@
 % xlabel('$t$ (min)', 'Interpreter','LaTex', 'FontSize', 20);
 % ylabel('$T$ ($^\circ$C)','Interpreter','LaTex', 'FontSize', 20);
 
-tmpm = 49;
-tmpn = 15; 
-tmpell = 58;
+% tmpm = 49;
+% tmpn = 15; 
+% tmpell = 58;
 
-tmpx = ( tmpm - 1 ) * dx - air_x / 2;
-tmpy = ( tmpn - 1 ) * dy - h_torso / 2;
-tmpz = ( tmpell - 1 ) * dz - air_z / 2;
-[tmpx, tmpy, tmpz]* 100
+% tmpx = ( tmpm - 1 ) * dx - air_x / 2;
+% tmpy = ( tmpn - 1 ) * dy - h_torso / 2;
+% tmpz = ( tmpell - 1 ) * dz - air_z / 2;
+% [tmpx, tmpy, tmpz]* 100
 
 % % x = ( m - 1 ) * dx - air_x / 2;
 % % y = ( n - 1 ) * dy - h_torso / 2;
@@ -108,16 +108,68 @@ tmpz = ( tmpell - 1 ) * dz - air_z / 2;
 % % saveas(figure(1), fullfile(fname, 'TestTumorTmprtrCase1'), 'fig');
 % saveas(figure(1), fullfile(fname, 'TestTumorTmprtrCase1'), 'jpg');
 
-a=rand(100, 10000);
-b=rand(100, 10000)';
-tic
-c=a*b;
-fprintf('CPU time = %g sec\n', toc);
-A=gpuArray(a);      % Put a to GPU's memory
-B=gpuArray(b);      % Put b to GPU's memory
-tic
-C=A*B;              % Multiplication via GPU
-fprintf('GPU time = %g sec\n', toc);
-c2=gather(C);       % Put C to MATLAB's workspace
-fprintf('isequal(c, c2) = %g\n', isequal(c, c2));
-fprintf('Mean deviation = %g\n', mean(mean(abs(c-c2))));
+% a=rand(100, 10000);
+% b=rand(100, 10000)';
+% tic
+% c=a*b;
+% fprintf('CPU time = %g sec\n', toc);
+% A=gpuArray(a);      % Put a to GPU's memory
+% B=gpuArray(b);      % Put b to GPU's memory
+% tic
+% C=A*B;              % Multiplication via GPU
+% fprintf('GPU time = %g sec\n', toc);
+% c2=gather(C);       % Put C to MATLAB's workspace
+% fprintf('isequal(c, c2) = %g\n', isequal(c, c2));
+% fprintf('Mean deviation = %g\n', mean(mean(abs(c-c2))));
+
+% fname = 'e:\Kevin\CapaReal\Case1128';
+% % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal';
+CaseName = 'Sigma61';
+
+% % extract temperature in the XZ plane
+% T_XZ = zeros( x_idx_max, z_idx_max );
+% x_mesh = squeeze(shiftedCoordinateXYZ( :, y_idx, :, 1))';
+% z_mesh = squeeze(shiftedCoordinateXYZ( :, y_idx, :, 3))';
+% paras2dXZ = genParas2d( y, paras, dx, dy, dz );
+% t = T_end;
+% % for t = 0: dt: T_end
+%     t_idx = t / dt + 1;
+%     y = tumor_y;
+%     y_idx = y / dy + h_torso / ( 2 * dy ) + 1;
+    
+%     T_XZ = squeeze( TmprtrTau( :, y_idx, :, uint8(t_idx) ) );
+    
+%     % figure(uint8(t_idx + 2));
+%     figure(21);
+%     clf;
+%     pcolor(x_mesh * 100, z_mesh * 100, T_XZ');
+%     shading flat
+%     % shading interp
+%     colorbar;
+%     colormap jet;
+%     set(gca,'fontsize',20);
+%     set(gca,'LineWidth',2.0);
+%     box on;
+%     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
+%     ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
+%     view(2);
+%     hold on;
+%     plotMap( paras2dXZ, dx, dz );
+% % end
+% saveas(figure(21), fullfile(fname, strcat(CaseName, 'TemperatureXZ')), 'fig');
+% saveas(figure(21), fullfile(fname, strcat(CaseName, 'TemperatureXZ')), 'jpg');
+
+% save(strcat(CaseName, 'Temperature.mat'));
+
+% CaseName = 'Tmp1';
+% tmppx = 0:pi/100:2*pi;
+% tmppy = sin(tmppx);
+% figure(1);
+% plot(tmppx, tmppy);
+
+% saveas(figure(1), fullfile(fname, strcat(CaseName, 'OaO')), 'fig');
+
+load(strcat(CaseName, 'Temperature.mat'));
+figure(1);
+paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
+plotMap( paras2dXZ, dx, dz );

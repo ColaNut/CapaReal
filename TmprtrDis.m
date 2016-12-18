@@ -4,8 +4,8 @@ Phi = zeros( x_idx_max, y_idx_max, z_idx_max );
 Phi = getPhi( bar_x_my_gmres, x_idx_max, y_idx_max, z_idx_max );
 
 % timer: [ 0, dt, ... T_end ];
-% timeNum = 6;
-% dt = 10; % 10s
+% dt = 15; % 10s
+% timeNum = 1;
 T_end  = timeNum * dt; % 300s
 T_0 = 37; 
 T_blood = T_0;
@@ -39,7 +39,6 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
         end
     end
 end
-
 
 disp('time to cal TmprtrTau')
 tic;

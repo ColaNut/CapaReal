@@ -1,12 +1,12 @@
-% clc; clear;
+clc; clear;
 % % load('TestCase2.mat');
-load('Case1124.mat');
-% load('RealCase3.mat');
+% load('Case1124.mat');
+load('Sigma61.mat');
 
-y = tumor_y;
-paras2dXZ = genParas2d( y, paras, dx, dy, dz );
-figure(2);
-plotMap( paras2dXZ, dx, dz );
+% y = tumor_y;
+% paras2dXZ = genParas2d( y, paras, dx, dy, dz );
+% figure(2);
+% plotMap( paras2dXZ, dx, dz );
 
 % reorganize the Phi distribution
 Phi = zeros( x_idx_max, y_idx_max, z_idx_max );
@@ -28,7 +28,22 @@ for idx = x_idx_max * y_idx_max * z_idx_max / 2: 1: x_idx_max * y_idx_max * z_id
 
     if UpElecTb( m, n, ell ) == true;
         XZ9Med = getXZ9Med(m, n, ell, mediumTable);
-        if checkBndrNum( XZ9Med )
+        if checkBndrNum( XZ9Med, 3 ) || checkBndrNum( XZ9Med, 4 )
+            if checkBndrNum( XZ9Med, 4 )
+                if length( find(XZ9Med(1: 3) == 0) ) == 1
+                    XZ9Med(1: 3) = [2; 2; 2];
+                elseif length( find(XZ9Med(1: 3) == 0) ) == 2
+                    if XZ9Med(7) ~= 0
+                        XZ9Med(3) = 2;
+                    elseif XZ9Med(9) ~= 0
+                        XZ9Med(1) = 2;
+                    else
+                        error('check');
+                    end
+                else
+                    error('check');
+                end
+            end
 
             PntsIdx       = zeros( 3, 9 );
             PntsCrdnt     = zeros( 3, 9, 3 );
@@ -76,8 +91,11 @@ for idx = x_idx_max * y_idx_max * z_idx_max / 2: 1: x_idx_max * y_idx_max * z_id
                 Current = Current + cal_I_oblique_up( p4_18MidCrdnt, p4_18Phi );
             end
         else
-            [ m, n, ell ]
-            error('check Bndry Point around');
+            % if length( find(XZ9Med(1: 3) == 0) ) ~= 1
+                [ m, n, ell ]
+                [ XZ9Med(7: 9)'; XZ9Med(4: 6)'; XZ9Med(1: 3)' ]
+                warning('check Bndry Point around');
+            % end
         end
     end
 
@@ -87,3 +105,5 @@ toc;
 Current = sigma(2) * Current
 
 W = V_0 * conj(Current) / 2
+
+% save( strcat(CaseName, 'currentEst.mat'), 'Current', 'W' );

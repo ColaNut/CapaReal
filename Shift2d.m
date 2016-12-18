@@ -1,20 +1,21 @@
-clc; clear;
+% clc; clear;
+% CaseName = 'Sigma61';
 digits;
 
 Mu_0          = 4 * pi * 10^(-7);
 Epsilon_0     = 10^(-9) / (36 * pi);
 Omega_0       = 2 * pi * 10 * 10^6; % 2 * pi * 10 MHz
-V_0           = 126; 
+% V_0           = 126; 
               % air, bolus, muscle, lung, tumor
 rho           = [ 1,  1020,  1020,  1050, 1040 ]';
-epsilon_r_pre = [ 1, 113.0,   184, 264.9,  402 ]';
-sigma         = [ 0,  0.61, 0.685,  0.42, 0.68 ]';
+% epsilon_r_pre = [ 1, 113.0,   184, 264.9,  402 ]';
+% sigma         = [ 0,  0.61, 0.685,  0.42, 0.68 ]';
 epsilon_r     = epsilon_r_pre - i * sigma ./ ( Omega_0 * Epsilon_0 );
 
 % There 'must' be a grid point at the origin.
 loadParas;
-paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
-plotMap( paras2dXZ, dx, dz );
+% paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
+% plotMap( paras2dXZ, dx, dz );
 % paras = [ h_torso, air_x, air_z, ...
 %         bolus_a, bolus_b, skin_a, skin_b, muscle_a, muscle_b, ...
 %         l_lung_x, l_lung_z, l_lung_a, l_lung_b, l_lung_c, ...
@@ -285,7 +286,9 @@ disp('The gmres solutin of Ax = B: ');
 bar_x_my_gmres = my_gmres( sparseA, B, int_itr_num, tol, ext_itr_num );
 toc;
 
-save('Case1124.mat');
+save( strcat(CaseName, '.mat') );
+
+% save('Case1124.mat');
 
 % PhiDstrbtn
 

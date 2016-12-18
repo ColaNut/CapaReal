@@ -1,8 +1,8 @@
-function valid = checkBndrNum( XZ9Med )
+function valid = checkBndrNum( XZ9Med, BndrNum )
 
 valid = false;
 
-if length( find(XZ9Med == 0) ) == 3
+if length( find(XZ9Med == 0) ) == BndrNum
     valid = true;
 end
 
