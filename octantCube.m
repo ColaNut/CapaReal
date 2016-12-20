@@ -27,8 +27,8 @@ SegMed = ones(1, 2, 'uint8');
         else
             tmpArr = [ Med2Layers(1, 2), Med2Layers(1, 3), Med2Layers(1, 4), Med2Layers(2, 4) ];
             nonZeroIdx = find(tmpArr);
-            if isempty(nonZeroIdx)
-                w(1) = epsilon_r(3);
+            if isempty(nonZeroIdx) % all the eight points are boundary points 
+                w(1) = epsilon_r(3); % this region belongs to muscle [ valid only in test case ]
                 w(2) = epsilon_r(3);
                 SegMed(1) = 3;
                 SegMed(2) = 3;

@@ -1,3 +1,30 @@
+clc; clear;
+CaseName = 'Power250';
+V_0 = 81.43;
+Shift2d;
+save( strcat(CaseName, '.mat') );
+CurrentEst;
+
+clc; clear;
+CaseName = 'Power280';
+V_0 = 86.18;
+Shift2d;
+save( strcat(CaseName, '.mat') );
+CurrentEst;
+
+clc; clear;
+CaseName = 'Power300';
+V_0 = 89.2;
+Shift2d;
+save( strcat(CaseName, '.mat') );
+CurrentEst;
+
+% figure(3);
+% paras2dYZ = genParas2dYZ( tumor_x, paras, dy, dz );
+% plotYZ( paras2dYZ, dy, dz );
+    % plotYZ( shiftedCoordinateXYZ, air_x, h_torso, air_z, x, paras2dYZ, dx, dy, dz );
+
+
 % function [ AxA ] = TestFc( a, b, c )
 
 % AxA = ones(9, 1);
@@ -68,6 +95,30 @@
 % tumor_m = tumor_x / dx + air_x / (2 * dx) + 1;
 % tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1;
 % tumor_ell = tumor_z / dz + air_z / (2 * dz) + 1;
+% [tumor_m, tumor_n, tumor_ell]
+
+% figure(1);
+% loadParas;
+% paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
+% plotMap( paras2dXZ, dx, dz );
+
+% load('Power250currentEst.mat');
+% W
+% Current
+% % abs(W)
+
+% load('Power280currentEst.mat');
+% W
+% Current
+% % abs(W)
+
+% load('Power300currentEst.mat');
+% W
+% Current
+% % abs(W)
+
+% [ PntsIdx, PntsCrdnt ]  = get27Pnts( 17, 9, 25, x_idx_max, y_idx_max, shiftedCoordinateXYZ );
+% PntsMed                 = get27PntsMed( PntsIdx, mediumTable )
 
 % figure(1); 
 % plot(0: dt / 60: T_end / 60, squeeze(TmprtrTau(tumor_m, tumor_n, tumor_ell, :)), 'Color', [0, 0, 0], 'LineWidth', 2.5);
@@ -124,7 +175,7 @@
 
 % fname = 'e:\Kevin\CapaReal\Case1128';
 % % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal';
-CaseName = 'Sigma61';
+% CaseName = 'Sigma61';
 
 % % extract temperature in the XZ plane
 % T_XZ = zeros( x_idx_max, z_idx_max );
@@ -169,7 +220,7 @@ CaseName = 'Sigma61';
 
 % saveas(figure(1), fullfile(fname, strcat(CaseName, 'OaO')), 'fig');
 
-load(strcat(CaseName, 'Temperature.mat'));
-figure(1);
-paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
-plotMap( paras2dXZ, dx, dz );
+% load(strcat(CaseName, 'Temperature.mat'));
+% figure(1);
+% paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
+% plotMap( paras2dXZ, dx, dz );

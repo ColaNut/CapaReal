@@ -79,6 +79,15 @@ hold on;
 % end
 
 % set(gca,'fontsize',18);
+y_grid = - myCeil(h_torso / 2, dy): dy: myCeil(h_torso / 2, dy);
+z_grid = - myCeil(air_z / 2, dz): dz: myCeil(air_z / 2, dz);
+
+% [ X_grid, Z_grid ] = meshgrid(y_grid, z_grid);
+% for idx = 1: 1: size(Z_grid, 1)
+%     scatter( y_grid, Z_grid(idx, :), 10 );
+%     hold on;
+% end
+
 axis( [ - h_torso / 2, h_torso / 2, - air_z / 2, air_z / 2 ] );
 % xlabel('$y$ (cm)', 'Interpreter','LaTex', 'FontSize', 18);
 % ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 18); 

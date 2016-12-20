@@ -5,45 +5,33 @@ Phi = getPhi( bar_x_my_gmres, x_idx_max, y_idx_max, z_idx_max );
 
 % timer: [ 0, dt, ... T_end ];
 % dt = 15; % 10s
-% timeNum = 1;
-T_end  = timeNum * dt; % 300s
-T_0 = 37; 
-T_blood = T_0;
-T_bolus = 5;
-T_air = 25;
-alpha = 111;
-LungRatio = 242.6 / rho(4);
-TmprtrTau = T_0 * ones( x_idx_max, y_idx_max, z_idx_max, T_end / dt + 1 );
-
-rho_b          = 1060;
-cap_b          = 3960;
-               % air, bolus,  muscle,     lung,    tumor
-cap            = [ 0,  4200,    3500,     3886,     3795 ]';
-xi             = [ 0,     0, 8.3/1e6, 23.8/1e6, 1.92/1e6 ]';
-zeta           = [ 0,     0,     0.5,     0.45,     0.14 ]';
+% timeNum = 4 * 20;
+% T_bgn = 0;
+T_end = T_bgn + timeNum * dt;
+% TmprtrTau = T_0 * ones( x_idx_max, y_idx_max, z_idx_max, timeNum );
 TmprtrTauMinus = zeros(7, 1); 
 
-% temperature initialization
-for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
-    [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
-    if mediumTable( m, n, ell ) == 2
-        TmprtrTau( m, n, ell, :) = T_bolus;
-    end
-    if mediumTable( m, n, ell ) == 1
-        TmprtrTau( m, n, ell, :) = T_air;
-    end
-    if mediumTable( m, n, ell ) == 0
-        XZ9Med = getXZ9Med(m, n, ell, mediumTable);
-        if checkAirAround( XZ9Med )
-            TmprtrTau( m, n, ell, :) = ( T_bolus + T_air ) / 2;
-        end
-    end
-end
+% % temperature initialization
+% for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+%     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
+%     if mediumTable( m, n, ell ) == 2
+%         TmprtrTau( m, n, ell, :) = T_bolus;
+%     end
+%     if mediumTable( m, n, ell ) == 1
+%         TmprtrTau( m, n, ell, :) = T_air;
+%     end
+%     if mediumTable( m, n, ell ) == 0
+%         XZ9Med = getXZ9Med(m, n, ell, mediumTable);
+%         if checkAirAround( XZ9Med )
+%             TmprtrTau( m, n, ell, :) = ( T_bolus + T_air ) / 2;
+%         end
+%     end
+% end
 
 disp('time to cal TmprtrTau')
 tic;
-for t = dt: dt: T_end
-    t_idx = t / dt + 1;
+for t = T_bgn + dt: dt: T_end
+    t_idx = int64(t / dt + 1);
     if mod(t_idx, 40) == 0
         t_idx * dt / 60
     end
@@ -95,9 +83,9 @@ for t = dt: dt: T_end
             end
         end
     end
+    % deal with ``torso front'' and ``torso end''.
     TmprtrTau( :, 1, :, uint8(t_idx) ) = TmprtrTau( :, 2, :, uint8(t_idx) );
     TmprtrTau( :, y_idx_max, :, uint8(t_idx) ) = TmprtrTau( :, y_idx_max - 1, :, uint8(t_idx) );
-    Ans = squeeze( TmprtrTau( :, 9, :, uint8(t_idx) ) );
 end
 toc;
 
@@ -115,7 +103,7 @@ t = T_end;
     T_XZ = squeeze( TmprtrTau( :, y_idx, :, uint8(t_idx) ) );
     
     % figure(uint8(t_idx + 2));
-    figure(1);
+    figure(3);
     clf;
     pcolor(x_mesh * 100, z_mesh * 100, T_XZ');
     shading flat
@@ -128,4 +116,6 @@ t = T_end;
     view(2);
     hold on;
     plotMap( paras2dXZ, dx, dz );
+    saveas(figure(3), fullfile(fname, strcat(CaseName, 'TumorTmprtr')), 'fig');
+    saveas(figure(3), fullfile(fname, strcat(CaseName, 'TumorTmprtr')), 'jpg');
 % end

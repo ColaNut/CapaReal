@@ -1,20 +1,24 @@
 % clc; clear;
-% CaseName = 'Sigma61';
 digits;
 
 Mu_0          = 4 * pi * 10^(-7);
 Epsilon_0     = 10^(-9) / (36 * pi);
 Omega_0       = 2 * pi * 10 * 10^6; % 2 * pi * 10 MHz
-% V_0           = 126; 
+% V_0           = 100; 
               % air, bolus, muscle, lung, tumor
 rho           = [ 1,  1020,  1020,  1050, 1040 ]';
-% epsilon_r_pre = [ 1, 113.0,   184, 264.9,  402 ]';
-% sigma         = [ 0,  0.61, 0.685,  0.42, 0.68 ]';
+epsilon_r_pre = [ 1, 113.0,   184, 264.9,  402 ]';
+sigma         = [ 0,  0.61, 0.685,  0.42, 0.68 ]';
 epsilon_r     = epsilon_r_pre - i * sigma ./ ( Omega_0 * Epsilon_0 );
 
 % There 'must' be a grid point at the origin.
 loadParas;
+% figure(1);
 % paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
+% plotMap( paras2dXZ, dx, dz );
+
+% figure(2);
+% paras2dXZ = genParas2d( 0, paras, dx, dy, dz );
 % plotMap( paras2dXZ, dx, dz );
 % paras = [ h_torso, air_x, air_z, ...
 %         bolus_a, bolus_b, skin_a, skin_b, muscle_a, muscle_b, ...
@@ -123,149 +127,14 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
 end
 toc;
 
-% % put on electrode
-% for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
-%     % idx = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
-%     tmp_m = mod( idx, x_idx_max );
-%     if tmp_m == 0
-%         m = x_idx_max;
-%     else
-%         m = tmp_m;
-%     end
-
-%     if mod( idx, x_idx_max * y_idx_max ) == 0
-%         n = y_idx_max;
-%     else
-%         n = ( mod( idx, x_idx_max * y_idx_max ) - m ) / x_idx_max + 1;
-%     end
-    
-%     ell = int64( ( idx - m - ( n - 1 ) * x_idx_max ) / ( x_idx_max * y_idx_max ) + 1 );
-
-%     p0 = idx;
-%     mid_x_idx = ( x_idx_max + 1 ) / 2;
-%     mid_y_idx = ( y_idx_max + 1 ) / 2;
-%     if m >= mid_x_idx - 3 && m <= mid_x_idx + 3 && n >= mid_y_idx - 1 && n <= mid_y_idx + 1 ...
-%         && ell >= z_idx_max - 3 && ell <= z_idx_max - 2 
-%         A_row = zeros(1, 2);
-%         A_row(1) = p0;
-%         A_row(2) = 1;
-%         sparseA{ p0 } = A_row;
-%         B( p0 ) = V_0;
-%     elseif m >= mid_x_idx - 3 && m <= mid_x_idx + 3 && n >= mid_y_idx - 1 && n <= mid_y_idx + 1 ...
-%         && ell <= 4 && ell >= 3 
-%         A_row = zeros(1, 2);
-%         A_row(1) = p0;
-%         A_row(2) = 1;
-%         sparseA{ p0 } = A_row;  
-%     end
-% end
-
-% put on electrode
-
-X_width = 13 / 100;
-Y_width = 11 / 100;
+% put on electrodes
 [ Xtable, Ztable ] = fillTradlElctrd( bolus_a, bolus_b, dx, dz );
-lenX = size(Xtable, 1);
-lenZ = size(Ztable, 1);
+% Xtable = [ int_grid_x, z1, int_grid_x, z2 ];
+% Ztable = [ x1, int_grid_z, x2, int_grid_z ];
+UpElecTb = false( x_idx_max, y_idx_max, z_idx_max );
 
-for idx = 1: 1: lenX
-    x  = Xtable(idx, 1); 
-    z1 = Xtable(idx, 2); 
-    z2 = Xtable(idx, 4);
-    if Xtable(idx, 1) ~= Xtable(idx, 3)
-        error('check Xtable');
-    end 
-    m = int64( x / dx + air_x / (2 * dx) + 1 );
-    ell_1 = int64( z1 / dz + air_z / (2 * dz) + 1 );
-    ell_2 = int64( z2 / dz + air_z / (2 * dz) + 1 );
-
-    tmp_y_shift = h_torso / (2 * dy) + 1;
-
-    if x >= - X_width && x <= X_width
-        for n = - Y_width / dy + tmp_y_shift: 1: Y_width / dy + tmp_y_shift
-            p0_1   = ( ell_1 - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
-            % p0_1up = ( ell_1     ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
-            A_row_1 = zeros(1, 2);
-            A_row_1(1) = p0_1;
-            A_row_1(2) = 1;
-            sparseA{ p0_1 } = A_row_1;
-            B( p0_1 ) = V_0;
-            % A_row_1up = zeros(1, 2);
-            % A_row_1up(1) = p0_1up;
-            % A_row_1up(2) = 1;
-            % sparseA{ p0_1up } = A_row_1up;
-            % B( p0_1up ) = V_0;
-
-            p0_2   = ( ell_2 - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
-            % p0_2dn = ( ell_2 - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
-            A_row_2 = zeros(1, 2);
-            A_row_2(1) = p0_2;
-            A_row_2(2) = 1;
-            sparseA{ p0_2 } = A_row_2;
-            % A_row_2dn = zeros(1, 2);
-            % A_row_2dn(1) = p0_2dn;
-            % A_row_2dn(2) = 1;
-            % sparseA{ p0_2dn } = A_row_2dn;
-        end
-    end
-end
-
-for idx = 1: 1: lenZ
-    x1 = Ztable(idx, 1); 
-    z  = Ztable(idx, 2); 
-    x2 = Ztable(idx, 3); 
-    if Ztable(idx, 2) ~= Ztable(idx, 4)
-        error('check Z table');
-    end 
-    m_1 = int64( x1 / dx + air_x / (2 * dx) + 1 );
-    m_2 = int64( x2 / dx + air_x / (2 * dx) + 1 );
-    ell = int64( z / dz + air_z / (2 * dz) + 1 );
-
-    if x2 >= - X_width && x1 <= X_width
-        for n = - Y_width / dy + tmp_y_shift: 1: Y_width / dy + tmp_y_shift
-            p0_1   = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m_1;
-            A_row_1 = zeros(1, 2);
-            A_row_1(1) = p0_1;
-            A_row_1(2) = 1;
-            sparseA{ p0_1 } = A_row_1;
-
-            p0_2   = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m_2;
-            A_row_2 = zeros(1, 2);
-            A_row_2(1) = p0_2;
-            A_row_2(2) = 1;
-            sparseA{ p0_2 } = A_row_2;
-
-            if z > 0
-                % p0_1up = ( ell     ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m_1;
-                % A_row_1up = zeros(1, 2);
-                % A_row_1up(1) = p0_1up;
-                % A_row_1up(2) = 1;
-                % sparseA{ p0_1up } = A_row_1up;
-
-                % p0_2up = ( ell     ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m_2;
-                % A_row_2up = zeros(1, 2);
-                % A_row_2up(1) = p0_2up;
-                % A_row_2up(2) = 1;
-                % sparseA{ p0_2up } = A_row_2up;
-
-                B( p0_1 ) = V_0;
-                B( p0_2 ) = V_0;
-            % else
-            %     p0_1dn = ( ell - 2 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m_1;
-            %     A_row_1dn = zeros(1, 2);
-            %     A_row_1dn(1) = p0_1dn;
-            %     A_row_1dn(2) = 1;
-            %     sparseA{ p0_1dn } = A_row_1dn;
-
-            %     p0_2dn = ( ell - 2 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m_2;
-            %     A_row_2dn = zeros(1, 2);
-            %     A_row_2dn(1) = p0_2dn;
-            %     A_row_2dn(2) = 1;
-            %     sparseA{ p0_2dn } = A_row_2dn;
-            end
-        end
-    end
-end
+[ sparseA, B, UpElecTb ] = UpElectrode( sparseA, B, Xtable, Ztable, paras, V_0, x_idx_max, y_idx_max, dx, dy, dz, z_idx_max );
+[ sparseA, B ] = DwnElectrode( sparseA, B, Xtable, Ztable, paras, V_0, x_idx_max, y_idx_max, dx, dy, dz );
 
 % Normalize each rows
 for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
@@ -288,9 +157,9 @@ toc;
 
 save( strcat(CaseName, '.mat') );
 
-% save('Case1124.mat');
+% PhiDstrbtn;
 
-% PhiDstrbtn
+% CurrentEst;
 
 % disp('The calculation time for inverse matrix: ');
 % tic;

@@ -1,7 +1,7 @@
-clc; clear;
+% clc; clear;
 % % load('TestCase2.mat');
 % load('Case1124.mat');
-load('Sigma61.mat');
+% load('First.mat');
 
 % y = tumor_y;
 % paras2dXZ = genParas2d( y, paras, dx, dy, dz );
@@ -14,8 +14,7 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
     Phi(idx) = bar_x_my_gmres(idx);
 end
 
-getUpElecTb;
-% UpElecTb = boolean( x_idx_max, y_idx_max, z_idx_max );
+% UpElecTb = false( x_idx_max, y_idx_max, z_idx_max );
 Current = 0;
 
 disp('Estimate the current out of the plate')
@@ -106,4 +105,4 @@ Current = sigma(2) * Current
 
 W = V_0 * conj(Current) / 2
 
-% save( strcat(CaseName, 'currentEst.mat'), 'Current', 'W' );
+save( strcat(CaseName, 'currentEst.mat'), 'Current', 'W' );

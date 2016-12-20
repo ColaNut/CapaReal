@@ -11,7 +11,7 @@ flag_YZ = 1;
 flag_XY = 1;
 
 % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal';
-fname = 'e:\Kevin\CapaReal\Case1128';
+fname = 'e:\Kevin\CapaReal\Case1218';
 % CaseName = 'Sigma';
 
 if flag_XZ == 1

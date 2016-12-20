@@ -25,7 +25,7 @@ function [ A_row, SegMed ] = fillBndrPt_A( m, n, ell, shiftedCoordinateXYZ, x_id
     A_row(6)  = PntsIdx(2, 2);
     A_row(7)  = PntsIdx(2, 5);
 
-    % try
+    try
     % p1
     tmpMidLyr = p1FaceMidLyr( PntsCrdnt );
     if PntsMed(3, 5) ~= 0
@@ -102,11 +102,11 @@ function [ A_row, SegMed ] = fillBndrPt_A( m, n, ell, shiftedCoordinateXYZ, x_id
         [ A_row(13), SegMed(6, :), sideEffect(6, :) ] = bndrEffValue( squeeze( tmpMidCrdnt ), ...
                                         tmpMidLyr, squeeze( PntsCrdnt(2, 2, :) ), tmpMed2Layers, epsilon_r );
     end
-    % catch
-    %     [ m, n, ell ]
-    %     PntsMed
-    %     squeeze( tmpMidCrdnt )
-    % end
+    catch
+        [ m, n, ell ]
+        PntsMed
+        squeeze( tmpMidCrdnt )
+    end
     
     % p0
     A_row(8) = A_row(8) + sideEffect(2, 2) + sideEffect(4, 2) + sideEffect(5, 2) + sideEffect(6, 2);
