@@ -1,6 +1,6 @@
 % clc; clear;
 % load('TestCase2.mat');
-fname = 'e:\Kevin\CapaReal\Case1218';
+% fname = 'e:\Kevin\CapaReal\Case1221';
 % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal';
 tumor_m = tumor_x / dx + air_x / (2 * dx) + 1;
 tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1;

@@ -50,7 +50,7 @@ y_grid = - myCeil(h_torso / 2, dy): dy: myCeil(h_torso / 2, dy);
 %     scatter( x_grid, y_grid(idx, :), 10 );
 %     hold on;
 % end
-axis( [ min(x_grid), max(x_grid), min(y_grid), max(y_grid) ] );
+% axis( [ min(x_grid), max(x_grid), min(y_grid), max(y_grid) ] );
 
 y_idx = - h_torso / 2: dy: h_torso / 2;
 bolusRght  = bolus_a * ones(size(y_idx));

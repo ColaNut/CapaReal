@@ -55,7 +55,7 @@
 % dz = 1 / 100;
 
 % Testing case: version 3
-h_torso = 26 / 100;
+h_torso = 30 / 100;
 air_x = 50 / 100; % width: 30 cm
 air_z = 40 / 100; % height: 30 cm
 bolus_a = 34 / 200;

@@ -41,7 +41,7 @@ if ~isempty(find(EightRegion))
           5 3 6 ];
     patch( 'Faces', f, 'Vertices', 100 * PntMidPnts9Crdnt, ...
       'FaceVertexCData', log10(EightRegion),'FaceColor','flat', 'EdgeColor','none');
-    colorbar
+    % colorbar
 end
 
 end

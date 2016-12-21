@@ -45,6 +45,6 @@ z_grid = - myCeil(air_z / 2, dz): dz: myCeil(air_z / 2, dz);
 %     scatter( x_grid, Z_grid(idx, :), 10 );
 %     hold on;
 % end
-axis( [ min(x_grid), max(x_grid), min(z_grid), max(z_grid) ] );
+% axis( [ min(x_grid), max(x_grid), min(z_grid), max(z_grid) ] );
 
 end

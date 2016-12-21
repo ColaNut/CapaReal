@@ -88,7 +88,7 @@ z_grid = - myCeil(air_z / 2, dz): dz: myCeil(air_z / 2, dz);
 %     hold on;
 % end
 
-axis( [ - h_torso / 2, h_torso / 2, - air_z / 2, air_z / 2 ] );
+% axis( [ - h_torso / 2, h_torso / 2, - air_z / 2, air_z / 2 ] );
 % xlabel('$y$ (cm)', 'Interpreter','LaTex', 'FontSize', 18);
 % ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 18); 
 

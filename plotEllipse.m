@@ -10,7 +10,7 @@ w = atan2( z2 - z1, x2 - x1 );
 x = ( x1 + x2 ) / 2 + X * cos(w) - Z * sin(w);
 z = ( z1 + z2 ) / 2 + X * sin(w) + Z * cos(w);
 plot(x, z, 'Color', [0.5, 0.5, 0.5], 'LineWidth', 2.5);
-axis equal;
+% axis equal;
 hold on;
 
 % x_grid = - myCeil(a, dx): dx: myCeil(a, dx);

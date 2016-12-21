@@ -1,29 +1,89 @@
-clc; clear;
-CaseName = 'Power250';
-V_0 = 81.43;
-Shift2d;
-save( strcat(CaseName, '.mat') );
-CurrentEst;
+% Data=magic(100);
+% c=[1 10/3 10 100/3 100 1000/3 1000 10000/3 10^4];
+% contourf(log(Data(:,:)),log(c));
+% colormap(bone);  %Color palate named "bone"
+% caxis(log([c(1) c(length(c))]));
+% colorbar('FontSize',11,'YTick',log(c),'YTickLabel',c);
 
-clc; clear;
-CaseName = 'Power280';
-V_0 = 86.18;
-Shift2d;
-save( strcat(CaseName, '.mat') );
-CurrentEst;
+% openfig('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case1221\Power250TumorTmprtr.fig', 'reuse');
 
-clc; clear;
-CaseName = 'Power300';
-V_0 = 89.2;
-Shift2d;
-save( strcat(CaseName, '.mat') );
-CurrentEst;
+% %Say I have some data:
+% x=linspace(-.005, .005, 100);
+% [X,Y] = meshgrid(x,x);
+% data = 1./sqrt(X.^2 + Y.^2);
+
+% myRange = [ 1e2 1e4 ];
+% caxis(myRange);
+% cbar = colorbar('peer', gca, 'Yscale', 'log');
+% log_axes = axes('Position', get(gca, 'Position'));
+% pcolor(log_axes, X, Y, log10(data));
+% % caxis(log10(myRange));
+
+% x = 10.^(1:10);
+% plot(x,x)
+% g = gca;
+% tick2text(g,'axis','x')
+% h = getappdata(g,'XTickText')
+% for i=1:numel(h), set(h(i),'String',num2str(i,'10^%d')); 
+% end
+ % %Say I have some data:
+% x=linspace(-.005, .005, 100);
+% [X,Y] = meshgrid(x,x);
+% data = 1./sqrt(X.^2 + Y.^2);
+
+% figure('units', 'normalized', 'outerposition', [0.1 0.1 0.8 0.8]);
+% % Plot the data on a log scale
+% log_axes = subplot(2,1,1);
+% log_plot = pcolor(log_axes, X, Y, log10(data));
+% set(gca, 'Xtick', linspace(-.005, .005, 17)), grid on
+
+% % Apply a logarithmic colorbar
+% colormap(jet(1024))
+% colorbar_log([1e2 1e4])
+
+% %For example, say I have some data:
+% x = linspace(-.005, .005, 100);
+% [X,Y] = meshgrid(x,x);
+% data = 1./sqrt(X.^2 + Y.^2);
+
+% % Define the range of the data that we wish to plot
+% my_clim = [1e2 1e4];
+
+% figure('units', 'normalized', 'outerposition', [0.1 0.1 0.8 0.8]);
+% % Create a "junk" axes to get the appropriate colorbar
+% linear_axes = subplot(1,1,1);
+% linear_plot = pcolor(linear_axes, X ,Y, data);
+% colormap(jet(1024)), caxis(my_clim)
+% cbar = colorbar('peer', linear_axes, 'Yscale', 'log');
+
+% clc; clear;
+% CaseName = 'Power250';
+% V_0 = 81.43;
+% Shift2d;
+% save( strcat(CaseName, '.mat') );
+% CurrentEst;
+
+% clc; clear;
+% CaseName = 'Power280';
+% V_0 = 86.18;
+% Shift2d;
+% save( strcat(CaseName, '.mat') );
+% CurrentEst;
+
+% clc; clear;
+% CaseName = 'Power300';
+% V_0 = 89.2;
+% Shift2d;
+% save( strcat(CaseName, '.mat') );
+% CurrentEst;
 
 % figure(3);
 % paras2dYZ = genParas2dYZ( tumor_x, paras, dy, dz );
 % plotYZ( paras2dYZ, dy, dz );
     % plotYZ( shiftedCoordinateXYZ, air_x, h_torso, air_z, x, paras2dYZ, dx, dy, dz );
 
+openfig('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case1221\Power250TumorTmprtr.fig', 'reuse');
+% shading interp
 
 % function [ AxA ] = TestFc( a, b, c )
 

@@ -8,15 +8,15 @@ function [ PntQseg, TtrVol ] = calQsegXZ( m, n, ell, PhiHlfY, ThrXYZCrndt, SegVa
     rho       = ones( size(rho) );
     PntSegValue  = squeeze( SegValueXZ( m, ell, :, : ) );
                   % air, bolus, muscle, lung, tumor
-    % Q_met        = [ 0,      0,   4200, 4200, 42000 ]';
+    Q_met        = [ 0,      0,   4200, 4200, 42000 ]';
 
     [ PntSARseg, TtrVol ] = calSARsegXZ( m, n, ell, PhiHlfY, ThrXYZCrndt, SegValueXZ, ...
                                                         x_idx_max, sigma, rho );
 
     PntSegRho = rho(PntSegValue);
-    % PntSegQmet = Q_met(PntSegValue);
+    PntSegQmet = Q_met(PntSegValue);
 
-    % PntQseg   = PntSARseg .* PntSegRho + PntSegQmet;
-    PntQseg   = PntSARseg .* PntSegRho;
+    PntQseg   = PntSARseg .* PntSegRho + PntSegQmet;
+    % PntQseg   = PntSARseg .* PntSegRho;
 
 end

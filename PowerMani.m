@@ -4,6 +4,8 @@ timeNum_2   = 4 * 30;
 timeNum_3   = 4 * 15;
 timeNum_all = timeNum_1 + timeNum_2 + timeNum_3;
 
+fname = 'e:\Kevin\CapaReal\Case1221';
+
 CaseName = 'Power250';
 % V_0 = 81.43;
 % Shift2d;
@@ -67,3 +69,5 @@ ylabel('$T$ ($^\circ$C)','Interpreter','LaTex', 'FontSize', 20);
 hold on;
 saveas(figure(4), fullfile(fname, strcat('TotalQmet', 'TumorTmprtr')), 'fig');
 saveas(figure(4), fullfile(fname, strcat('TotalQmet', 'TumorTmprtr')), 'jpg');
+
+% save('Case1221.mat');
