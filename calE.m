@@ -11,6 +11,6 @@ B = [ Phi1, Phi2, Phi3, Phi4 ]';
 
 coeffVec = A \ B;
 
-E_field = [ coeffVec(2), coeffVec(3), coeffVec(4) ];
+E_field = [ - coeffVec(2), - coeffVec(3), - coeffVec(4) ];
 
 end

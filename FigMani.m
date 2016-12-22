@@ -10,32 +10,32 @@
 
 
 fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\TexFile2';
-% openfig('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case1221\TotalQmetTumorTmprtr.fig', 'reuse');
-openfig('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case1221\Power250TumorTmprtr.fig', 'reuse');
+openfig('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case1221\TotalQmetTumorTmprtr.fig', 'reuse');
+% openfig('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case1221\Power250TumorTmprtr.fig', 'reuse');
 
-% axis( [ 0, 50, 36, 47 ] );
-% box off;
-% ax1 = gca;
-% hold on;
-% time_clnl = 0: 5: 50;
-% T_clnl    = [ 36.01, 39.37, 42.15, 43.98, 44.24, 44.36, 44.13, 44.43, 44.93, 44.94, 45.08 ];
-% plot(time_clnl, T_clnl, 'k--', 'LineWidth', 2.5);
+axis( [ 0, 50, 35, 50 ] );
+box off;
+ax1 = gca;
+hold on;
+time_clnl = 0: 5: 50;
+T_clnl    = [ 36.01, 39.37, 42.15, 43.98, 44.24, 44.36, 44.13, 44.43, 44.93, 44.94, 45.08 ];
+plot(time_clnl, T_clnl, 'k--', 'LineWidth', 2.5);
 
-% time_clnl2 = [  0,   5,   5,  10,  15,  20,  25,  30,  35,  40,  40,  45,  50 ];
-% power      = [250, 250, 280, 280, 280, 280, 280, 280, 280, 280, 300, 300, 300 ];
-% % plot(time_clnl, power, 'LineWidth', 2.5);
-% ax2 = axes('Position',get(ax1,'Position'),...
-%        'XAxisLocation','top',...
-%        'YAxisLocation','right',...
-%        'Color','none',...
-%        'XColor','k','YColor','k', 'XTickLabel',[] );
-% line(time_clnl2, power, 'Parent', ax2, 'Color', 'k', 'LineWidth', 2.5, 'LineStyle', '-.');
-% set(gca,'fontsize',18);
-% set(gca,'LineWidth',2.0);
-% axis( [ 0, 50, 240, 310 ]);
-% ylabel('$W$ (watt)','Interpreter','LaTex', 'FontSize', 20);
-% % linkaxes([ax1 ax2],'x');
-% saveas(figure(1), fullfile(fname, 'TotalQmetTumorTmprtr'), 'jpg');
+time_clnl2 = [      0,      5,      5,     10,     15,     20,     25,     30,     35,     40,     40,     45,     50 ];
+power      = [ 249.85, 249.85, 279.84, 279.84, 279.84, 279.84, 279.84, 279.84, 279.84, 279.84, 299.83, 299.83, 299.83 ];
+% plot(time_clnl, power, 'LineWidth', 2.5);
+ax2 = axes('Position',get(ax1,'Position'),...
+       'XAxisLocation','top',...
+       'YAxisLocation','right',...
+       'Color','none',...
+       'XColor','k','YColor','k', 'XTickLabel',[] );
+line(time_clnl2, power, 'Parent', ax2, 'Color', 'k', 'LineWidth', 2.5, 'LineStyle', '-.');
+set(gca,'fontsize',18);
+set(gca,'LineWidth',2.0);
+axis( [ 0, 50, 200, 500 ]);
+ylabel('$W$ (watt)','Interpreter','LaTex', 'FontSize', 20);
+% linkaxes([ax1 ax2],'x');
+saveas(figure(1), fullfile(fname, 'TotalQmetTumorTmprtr'), 'jpg');
 
 % saveas(figure(2), fullfile(fname, 'Case4QemXZ'), 'fig');
 % saveas(figure(2), fullfile(fname, 'Case4QemXZ'), 'jpg');

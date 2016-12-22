@@ -1,5 +1,5 @@
 % clc; clear;
-% load('TestCase2.mat');
+load('Power300.mat');
 % rho           = [ 1,  1020,  1020,  1050, 1040 ]';
 % save('TestCase2.mat');
 % load('RealCase3.mat');
@@ -11,7 +11,7 @@ flag_YZ = 1;
 flag_XY = 1;
 
 % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal';
-fname = 'e:\Kevin\CapaReal\Case1218';
+fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case1221';
 % CaseName = 'Sigma';
 
 if flag_XZ == 1
@@ -75,16 +75,18 @@ if flag_XZ == 1
     clf;
     PhiHlfY2 = squeeze(PhiHlfY(:, 2, :));
     pcolor(x_mesh * 100, z_mesh * 100, abs( PhiHlfY2' ));
-    shading flat
-    % shading interp
-    colorbar;
+    axis equal;
+    axis( [ - 20, 20, - 20, 20 ] );
+    % shading flat
+    shading interp
     colormap jet;
     set(gca,'fontsize',20);
     set(gca,'LineWidth',2.0);
+    cb = colorbar;
+    caxis([0, 100]);
+    ylabel(cb, '$\Phi$ ($V$)', 'Interpreter','LaTex', 'FontSize', 20);
+    set(cb, 'FontSize', 18);
     box on;
-    % axis( [ min(min(x_mesh)) * 100, max(max(x_mesh)) * 100, ...
-    %         min(min(z_mesh)) * 100, max(max(z_mesh)) * 100, ...
-    %         min(min(abs( PhiHlfY2' ))), max(max(abs( PhiHlfY2' ))) ] );
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
     % zlabel('$\Phi (x, z)$ ($V$)','Interpreter','LaTex', 'FontSize', 20);
@@ -121,6 +123,15 @@ if flag_XZ == 1
     % plot SAR XZ
     figure(2);
     clf;
+    myRange = [ 1e-1, 1e4 ];
+    caxis(myRange);
+    cbar = colorbar('peer', gca, 'Yscale', 'log');
+    set(gca, 'Visible', 'off')
+    log_axes = axes('Position', get(gca, 'Position'));
+    ylabel(cbar, 'SAR (watt/kg)', 'Interpreter','LaTex', 'FontSize', 20);
+    set(cbar, 'FontSize', 18 );
+    hold on;
+
     disp('Time to plot SAR');
     tic;
     for idx = 1: 1: x_idx_max * z_idx_max
@@ -139,174 +150,26 @@ if flag_XZ == 1
 
         if m >= 2 && m <= x_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
             plotSAR_XZ( squeeze( SARseg( m, ell, :, :) ), squeeze( TtrVol( m, ell, :, : ) ), PntMidPnts9Crdnt );
-            hold on;
         end
 
     end
     toc;
+
+    % caxis(log10(myRange));
     colormap jet;
-    axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);
+    % axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
+    axis equal;
+    axis( [ - 20, 20, - 20, 20 ] );
+    set(log_axes,'fontsize',20);
+    set(log_axes,'LineWidth',2.0);
     % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
-    set(gca,'fontsize',20);
-    set(gca,'LineWidth',2.0);
     box on;
     view(2);
-    axis equal;
     plotMap( paras2dXZ, dx, dz );
     saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'fig');
     saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
-end
-
-if flag_YZ == 1
-
-    PhiYZ       = zeros( 3, y_idx_max, z_idx_max );
-    ThrXYZCrndt = zeros( 3, y_idx_max, z_idx_max, 3);
-    ThrMedValue = zeros( 3, y_idx_max, z_idx_max );
-    SegValueYZ  = zeros( y_idx_max, z_idx_max, 6, 8, 'uint8' );
-    x_mesh      = zeros( z_idx_max, y_idx_max );
-    z_mesh      = zeros( z_idx_max, y_idx_max );
-
-    for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
-        
-        % idx = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
-        tmp_m = mod( idx, x_idx_max );
-        if tmp_m == 0
-            m = x_idx_max;
-        else
-            m = tmp_m;
-        end
-
-        if mod( idx, x_idx_max * y_idx_max ) == 0
-            n = y_idx_max;
-        else
-            n = ( mod( idx, x_idx_max * y_idx_max ) - m ) / x_idx_max + 1;
-        end
-        
-        ell = int64( ( idx - m - ( n - 1 ) * x_idx_max ) / ( x_idx_max * y_idx_max ) + 1 );
-
-        x = tumor_x;
-        % x = - 10 / 100;
-        CrossM = int32( x / dx + air_x / ( 2 * dx ) + 1 );
-        % CrossN = - 10 / ( 100 * dy )
-
-        if m == CrossM
-            % XZmidY( ell, m ) = bar_x_my_gmres(idx);
-            PhiYZ( 2, n, ell ) = bar_x_my_gmres(idx);
-            ThrXYZCrndt( 2, :, :, :) = shiftedCoordinateXYZ( m, :, :, :);
-            ThrMedValue( 2, :, : ) = mediumTable( m, :, : );
-            SegValueYZ( n, ell, :, : ) = squeeze( SegMed( m, n, ell, :, : ) );
-            y_mesh = squeeze(shiftedCoordinateXYZ( m, :, :, 2))';
-            z_mesh = squeeze(shiftedCoordinateXYZ( m, :, :, 3))';
-            paras2dYZ = genParas2dYZ( x, paras, dy, dz );
-        end
-
-        if m == CrossM + 1
-            PhiYZ( 3, n, ell ) = bar_x_my_gmres(idx);
-            ThrXYZCrndt( 3, :, :, :) = shiftedCoordinateXYZ( m, :, :, :);
-            ThrMedValue( 3, :, : ) = mediumTable( m, :, : );
-        end
-
-        if m == CrossM - 1
-            PhiYZ( 1, n, ell ) = bar_x_my_gmres(idx);
-            ThrXYZCrndt( 1, :, :, :) = shiftedCoordinateXYZ( m, :, :, :);
-            ThrMedValue( 1, :, : ) = mediumTable( m, :, : );
-        end
-
-    end
-
-    figure(6);
-    clf;
-    PhiYZ2 = squeeze(PhiYZ(2, :, :));
-    pcolor(y_mesh * 100, z_mesh * 100, abs( PhiYZ2' ));
-    shading flat
-    % shading interp
-    colorbar;
-    colormap jet;
-    % axis( [ min(min(x_mesh)) * 100, max(max(x_mesh)) * 100, ...
-    %         min(min(z_mesh)) * 100, max(max(z_mesh)) * 100, ...
-    %         min(min(abs( PhiHlfY2' ))), max(max(abs( PhiHlfY2' ))) ] );
-    xlabel('$y$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
-    ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
-    % zlabel('$\Phi (x, z)$ ($V$)','Interpreter','LaTex', 'FontSize', 20);
-    hold on;
-    % plotYZ( shiftedCoordinateXYZ, air_x, h_torso, air_z, x, paras2dYZ, dx, dy, dz, bolus_b, muscle_b );
-    plotYZ( paras2dYZ, dy, dz );
-    set(gca,'fontsize',20);
-    set(gca,'LineWidth',2.0);
-    box on;
-    view(2);
-    saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'fig');
-    saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'jpg');
-
-    % calculate the E field
-    SARseg = zeros( y_idx_max, z_idx_max, 6, 8 );
-    TtrVol = zeros( y_idx_max, z_idx_max, 6, 8 );
-    MidPnts9Crdnt = zeros( y_idx_max, z_idx_max, 9, 3 );
-
-    for idx = 1: 1: y_idx_max * z_idx_max
-        % idx = ( ell - 1 ) * y_idx_max + n;
-
-        m = 2;
-
-        tmp_n = mod( idx, y_idx_max );
-        if tmp_n == 0
-            n = y_idx_max;
-        else
-            n = tmp_n;
-        end
-
-        ell = int64( ( idx - n ) / y_idx_max + 1 );
-
-        if n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
-            [ SARseg( n, ell, :, : ), TtrVol( n, ell, :, : ), MidPnts9Crdnt( n, ell, :, : ) ] ...
-                    = calSARsegYZ( m, n, ell, PhiYZ, ThrXYZCrndt, SegValueYZ, y_idx_max, sigma, rho );
-        end
-    end
-
-    % plot SAR
-    figure(7);
-    clf;
-    disp('Time to plot SAR');
-    tic;
-    for idx = 1: 1: y_idx_max * z_idx_max
-        % idx = ( ell - 1 ) * y_idx_max + n;
-
-        tmp_n = mod( idx, y_idx_max );
-        if tmp_n == 0
-            n = y_idx_max;
-        else
-            n = tmp_n;
-        end
-
-        ell = int64( ( idx - n ) / y_idx_max + 1 );
-
-        if n == 9 && ell == 11
-            ;
-        end
-        if n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
-            PntMidPnts9Crdnt = squeeze( MidPnts9Crdnt(n, ell, :, :) );
-            PntMidPnts9Crdnt(:, 1) = [];
-            plotSAR_YZ( squeeze( SARseg( n, ell, :, :) ), squeeze( TtrVol( n, ell, :, : ) ), PntMidPnts9Crdnt );
-            hold on;
-        end
-
-    end
-    toc;
-    colormap jet;
-    set(gca,'fontsize',20);
-    set(gca,'LineWidth',2.0);
-    box on;
-    xlabel('$y$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
-    ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
-    % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
-    plotYZ( paras2dYZ, dy, dz );
-    axis equal;
-    axis( [ - 100 * h_torso / 2, 100 * h_torso / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);
-    view(2);
-    saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARYZ')), 'fig');
-    saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARYZ')), 'jpg');
 end
 
 if flag_XY == 1
@@ -369,28 +232,33 @@ if flag_XY == 1
 
     end
 
-    figure(11);
+    figure(6);
     clf;
     PhiTpElctrd2 = squeeze(PhiTpElctrd(:, :, 2));
     pcolor(x_mesh * 100, y_mesh * 100, abs( PhiTpElctrd2' ));
-    shading flat
-    colorbar;
+    axis equal;
+    axis( [ - 20, 20, - 15, 15 ] );
+    % shading flat
+    shading interp
     colormap jet;
     set(gca,'fontsize',20);
     set(gca,'LineWidth',2.0);
+    cb = colorbar;
+    caxis([0, 100]);
+    ylabel(cb, '$\Phi$ ($V$)', 'Interpreter','LaTex', 'FontSize', 20);
+    set(cb, 'FontSize', 18);
     box on;
     % axis( [ min(min(x_mesh)) * 100, max(max(x_mesh)) * 100, ...
     %         min(min(z_mesh)) * 100, max(max(z_mesh)) * 100, ...
     %         min(min(abs( PhiHlfY2' ))), max(max(abs( PhiHlfY2' ))) ] );
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$y$ (cm)','Interpreter','LaTex', 'FontSize', 20);
-    axis equal;
-    axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * h_torso / 2, 100 * h_torso / 2 ]);
+    % axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * h_torso / 2, 100 * h_torso / 2 ]);
     view(2);
     hold on;
     plotXY( paras2dXY, dx, dy );
-    saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiXY')), 'fig');
-    saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiXY')), 'jpg');
+    saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'fig');
+    saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'jpg');
 
     % calculate the E field
     SARseg = zeros( x_idx_max, y_idx_max, 6, 8 );
@@ -417,8 +285,16 @@ if flag_XY == 1
     end
 
     % plot electrode SAR
-    figure(12);
+    figure(7);
     clf;
+    myRange = [ 9.99e-2, 1e4 ];
+    caxis(myRange);
+    cbar = colorbar('peer', gca, 'Yscale', 'log');
+    set(gca, 'Visible', 'off')
+    log_axes = axes('Position', get(gca, 'Position'));
+    ylabel(cbar, 'SAR (watt/kg)', 'Interpreter','LaTex', 'FontSize', 20);
+    set(cbar, 'FontSize', 18 );
+    hold on;
     disp('Time to plot SAR');
     tic;
     for idx = 1: 1: x_idx_max * y_idx_max
@@ -447,13 +323,181 @@ if flag_XY == 1
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$y$ (cm)','Interpreter','LaTex', 'FontSize', 20);
     % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 18);
+    set(log_axes,'fontsize',20);
+    set(log_axes,'LineWidth',2.0);
+    box on;
+    view(2);
+    axis equal;
+    axis( [ - 20, 20, - 15, 15 ]);
+    % axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * h_torso / 2, 100 * h_torso / 2 ]);
+    plotXY( paras2dXY, dx, dy );
+    saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'fig');
+    saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'jpg');
+end
+
+if flag_YZ == 1
+
+    PhiYZ       = zeros( 3, y_idx_max, z_idx_max );
+    ThrXYZCrndt = zeros( 3, y_idx_max, z_idx_max, 3);
+    ThrMedValue = zeros( 3, y_idx_max, z_idx_max );
+    SegValueYZ  = zeros( y_idx_max, z_idx_max, 6, 8, 'uint8' );
+    x_mesh      = zeros( z_idx_max, y_idx_max );
+    z_mesh      = zeros( z_idx_max, y_idx_max );
+
+    for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+        
+        % idx = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
+        tmp_m = mod( idx, x_idx_max );
+        if tmp_m == 0
+            m = x_idx_max;
+        else
+            m = tmp_m;
+        end
+
+        if mod( idx, x_idx_max * y_idx_max ) == 0
+            n = y_idx_max;
+        else
+            n = ( mod( idx, x_idx_max * y_idx_max ) - m ) / x_idx_max + 1;
+        end
+        
+        ell = int64( ( idx - m - ( n - 1 ) * x_idx_max ) / ( x_idx_max * y_idx_max ) + 1 );
+
+        x = tumor_x;
+        % x = - 10 / 100;
+        CrossM = int32( x / dx + air_x / ( 2 * dx ) + 1 );
+        % CrossN = - 10 / ( 100 * dy )
+
+        if m == CrossM
+            % XZmidY( ell, m ) = bar_x_my_gmres(idx);
+            PhiYZ( 2, n, ell ) = bar_x_my_gmres(idx);
+            ThrXYZCrndt( 2, :, :, :) = shiftedCoordinateXYZ( m, :, :, :);
+            ThrMedValue( 2, :, : ) = mediumTable( m, :, : );
+            SegValueYZ( n, ell, :, : ) = squeeze( SegMed( m, n, ell, :, : ) );
+            y_mesh = squeeze(shiftedCoordinateXYZ( m, :, :, 2))';
+            z_mesh = squeeze(shiftedCoordinateXYZ( m, :, :, 3))';
+            paras2dYZ = genParas2dYZ( x, paras, dy, dz );
+        end
+
+        if m == CrossM + 1
+            PhiYZ( 3, n, ell ) = bar_x_my_gmres(idx);
+            ThrXYZCrndt( 3, :, :, :) = shiftedCoordinateXYZ( m, :, :, :);
+            ThrMedValue( 3, :, : ) = mediumTable( m, :, : );
+        end
+
+        if m == CrossM - 1
+            PhiYZ( 1, n, ell ) = bar_x_my_gmres(idx);
+            ThrXYZCrndt( 1, :, :, :) = shiftedCoordinateXYZ( m, :, :, :);
+            ThrMedValue( 1, :, : ) = mediumTable( m, :, : );
+        end
+
+    end
+
+    figure(11);
+    clf;
+    PhiYZ2 = squeeze(PhiYZ(2, :, :));
+    pcolor(y_mesh * 100, z_mesh * 100, abs( PhiYZ2' ));
+    axis equal;
+    axis( [ - 15, 15, - 20, 20 ] );
+    % shading flat
+    shading interp
+    colormap jet;
+    set(gca,'fontsize',20);
+    set(gca,'LineWidth',2.0);
+    cb = colorbar;
+    caxis([0, 100]);
+    ylabel(cb, '$\Phi$ ($V$)', 'Interpreter','LaTex', 'FontSize', 20);
+    set(cb, 'FontSize', 18);
+    box on;
+    % axis( [ min(min(x_mesh)) * 100, max(max(x_mesh)) * 100, ...
+    %         min(min(z_mesh)) * 100, max(max(z_mesh)) * 100, ...
+    %         min(min(abs( PhiHlfY2' ))), max(max(abs( PhiHlfY2' ))) ] );
+    xlabel('$y$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
+    ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
+    % zlabel('$\Phi (x, z)$ ($V$)','Interpreter','LaTex', 'FontSize', 20);
+    hold on;
+    % plotYZ( shiftedCoordinateXYZ, air_x, h_torso, air_z, x, paras2dYZ, dx, dy, dz, bolus_b, muscle_b );
+    plotYZ( paras2dYZ, dy, dz );
     set(gca,'fontsize',20);
     set(gca,'LineWidth',2.0);
     box on;
     view(2);
+    saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'fig');
+    saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'jpg');
+
+    % calculate the E field
+    SARseg = zeros( y_idx_max, z_idx_max, 6, 8 );
+    TtrVol = zeros( y_idx_max, z_idx_max, 6, 8 );
+    MidPnts9Crdnt = zeros( y_idx_max, z_idx_max, 9, 3 );
+
+    for idx = 1: 1: y_idx_max * z_idx_max
+        % idx = ( ell - 1 ) * y_idx_max + n;
+
+        m = 2;
+
+        tmp_n = mod( idx, y_idx_max );
+        if tmp_n == 0
+            n = y_idx_max;
+        else
+            n = tmp_n;
+        end
+
+        ell = int64( ( idx - n ) / y_idx_max + 1 );
+
+        if n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
+            [ SARseg( n, ell, :, : ), TtrVol( n, ell, :, : ), MidPnts9Crdnt( n, ell, :, : ) ] ...
+                    = calSARsegYZ( m, n, ell, PhiYZ, ThrXYZCrndt, SegValueYZ, y_idx_max, sigma, rho );
+        end
+    end
+
+    % plot SAR
+    figure(12);
+    clf;
+    myRange = [ 9.99e-2, 1e4 ];
+    caxis(myRange);
+    cbar = colorbar('peer', gca, 'Yscale', 'log');
+    set(gca, 'Visible', 'off')
+    log_axes = axes('Position', get(gca, 'Position'));
+    ylabel(cbar, 'SAR (watt/kg)', 'Interpreter','LaTex', 'FontSize', 20);
+    set(cbar, 'FontSize', 18 );
+    hold on;
+    disp('Time to plot SAR');
+    tic;
+    for idx = 1: 1: y_idx_max * z_idx_max
+        % idx = ( ell - 1 ) * y_idx_max + n;
+
+        tmp_n = mod( idx, y_idx_max );
+        if tmp_n == 0
+            n = y_idx_max;
+        else
+            n = tmp_n;
+        end
+
+        ell = int64( ( idx - n ) / y_idx_max + 1 );
+
+        if n == 9 && ell == 11
+            ;
+        end
+        if n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
+            PntMidPnts9Crdnt = squeeze( MidPnts9Crdnt(n, ell, :, :) );
+            PntMidPnts9Crdnt(:, 1) = [];
+            plotSAR_YZ( squeeze( SARseg( n, ell, :, :) ), squeeze( TtrVol( n, ell, :, : ) ), PntMidPnts9Crdnt );
+            hold on;
+        end
+
+    end
+    toc;
+    colormap jet;
+    set(log_axes,'fontsize',20);
+    set(log_axes,'LineWidth',2.0);
+    box on;
+    xlabel('$y$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
+    ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
+    % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
+    plotYZ( paras2dYZ, dy, dz );
     axis equal;
-    axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * h_torso / 2, 100 * h_torso / 2 ]);
-    plotXY( paras2dXY, dx, dy );
-    saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARXY')), 'fig');
-    saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARXY')), 'jpg');
+    axis( [ - 15, 15, - 20, 20 ]);
+    % axis( [ - 100 * h_torso / 2, 100 * h_torso / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);
+    view(2);
+    saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'fig');
+    saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'jpg');
 end

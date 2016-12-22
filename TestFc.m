@@ -82,7 +82,7 @@
 % plotYZ( paras2dYZ, dy, dz );
     % plotYZ( shiftedCoordinateXYZ, air_x, h_torso, air_z, x, paras2dYZ, dx, dy, dz );
 
-openfig('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case1221\Power250TumorTmprtr.fig', 'reuse');
+% openfig('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case1221\Power250TumorTmprtr.fig', 'reuse');
 % shading interp
 
 % function [ AxA ] = TestFc( a, b, c )
@@ -162,20 +162,20 @@ openfig('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case1221
 % paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
 % plotMap( paras2dXZ, dx, dz );
 
-% load('Power250currentEst.mat');
-% W
-% Current
-% % abs(W)
+load('Power250currentEst.mat');
+W
+Current
+% abs(W)
 
-% load('Power280currentEst.mat');
-% W
-% Current
-% % abs(W)
+load('Power280currentEst.mat');
+W
+Current
+% abs(W)
 
-% load('Power300currentEst.mat');
-% W
-% Current
-% % abs(W)
+load('Power300currentEst.mat');
+W
+Current
+% abs(W)
 
 % [ PntsIdx, PntsCrdnt ]  = get27Pnts( 17, 9, 25, x_idx_max, y_idx_max, shiftedCoordinateXYZ );
 % PntsMed                 = get27PntsMed( PntsIdx, mediumTable )
