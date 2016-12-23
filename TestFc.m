@@ -162,20 +162,26 @@
 % paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
 % plotMap( paras2dXZ, dx, dz );
 
-load('Power250currentEst.mat');
-W
-Current
-% abs(W)
+v = [2 4; 2 8; 8 4; 5 0; 5 2; 8 0; 5 5; 5 6; 8 2];
+f = [4 5 6; 1 2 3];
+col = [0; 6; 4; 3; 4; 6; 1; 1; 1];
+figure
+patch('Faces',f,'Vertices',v,'FaceVertexCData',col,'FaceColor','interp');
+colorbar
+% load('Power250currentEst.mat');
+% W
+% Current
+% % abs(W)
 
-load('Power280currentEst.mat');
-W
-Current
-% abs(W)
+% load('Power280currentEst.mat');
+% W
+% Current
+% % abs(W)
 
-load('Power300currentEst.mat');
-W
-Current
-% abs(W)
+% load('Power300currentEst.mat');
+% W
+% Current
+% % abs(W)
 
 % [ PntsIdx, PntsCrdnt ]  = get27Pnts( 17, 9, 25, x_idx_max, y_idx_max, shiftedCoordinateXYZ );
 % PntsMed                 = get27PntsMed( PntsIdx, mediumTable )

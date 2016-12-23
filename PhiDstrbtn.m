@@ -7,11 +7,11 @@ load('Power300.mat');
 % XZmidY      = zeros( z_idx_max, x_idx_max );
 
 flag_XZ = 1;
-flag_YZ = 1;
 flag_XY = 1;
+flag_YZ = 1;
 
 % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal';
-fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case1221';
+fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\TexFile2';
 % CaseName = 'Sigma';
 
 if flag_XZ == 1
@@ -120,6 +120,29 @@ if flag_XZ == 1
         end
     end
 
+    % interpolation
+    tic;
+    disp('time for interpolation: ')
+    x_idx_maxI = 2 * x_idx_max - 1;
+    z_idx_maxI = 2 * z_idx_max - 1;
+    IntrpltPnts = zeros( x_idx_maxI, z_idx_maxI );
+    for idxI = 1: 1: x_idx_maxI * z_idx_maxI
+        % idxI = ( ellI - 1 ) * x_idx_maxI + mI;
+        tmp_mI = mod( idxI, x_idx_maxI );
+        if tmp_mI == 0
+            mI = x_idx_maxI;
+        else
+            mI = tmp_mI;
+        end
+
+        ellI = int64( ( idxI - mI ) / x_idx_maxI + 1 );
+
+        if mI >= 2 && mI <= x_idx_maxI - 1 && ellI >= 2 && ellI <= z_idx_maxI - 1 
+            IntrpltPnts(mI, ellI) = ExecIntrplt( mI, ellI, SARseg, TtrVol, 'XZ' );
+        end
+    end
+    toc;
+
     % plot SAR XZ
     figure(2);
     clf;
@@ -132,24 +155,36 @@ if flag_XZ == 1
     set(cbar, 'FontSize', 18 );
     hold on;
 
+    % disp('Time to plot SAR');
+    % tic;
+    % % x_mesh      = zeros( z_idx_max, x_idx_max );
+    % % z_mesh      = zeros( z_idx_max, x_idx_max );
+    % x_meshI = zeros( z_idx_maxI, x_idx_maxI );
+    % z_meshI = zeros( z_idx_maxI, x_idx_maxI );
+    % x_meshI = getMesh(x_mesh);
+    % z_meshI = getMesh(z_mesh);
+    % pcolor(x_meshI * 100, z_meshI * 100, log10( IntrpltPnts' ));
+    % shading interp;
+    % toc;
     disp('Time to plot SAR');
     tic;
     for idx = 1: 1: x_idx_max * z_idx_max
         % idx = ( ell - 1 ) * x_idx_max + m;
         tmp_m = mod( idx, x_idx_max );
         if tmp_m == 0
-            m = x_idx_max;
+            m = int64(x_idx_max);
         else
-            m = tmp_m;
+            m = int64(tmp_m);
         end
 
         ell = int64( ( idx - m ) / x_idx_max + 1 );
 
-        PntMidPnts9Crdnt = squeeze( MidPnts9Crdnt(m, ell, :, :) );
-        PntMidPnts9Crdnt(:, 2) = [];
-
-        if m >= 2 && m <= x_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
-            plotSAR_XZ( squeeze( SARseg( m, ell, :, :) ), squeeze( TtrVol( m, ell, :, : ) ), PntMidPnts9Crdnt );
+        if m >= 2 && m <= x_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1
+            Intrplt9Pnts     = getIntrplt9Pnts(m, ell, IntrpltPnts);
+            PntMidPnts9Crdnt = squeeze( MidPnts9Crdnt(m, ell, :, :) );
+            PntMidPnts9Crdnt(:, 2) = [];
+            plotSAR_Intrplt( squeeze( SARseg( m, ell, :, :) ), squeeze( TtrVol( m, ell, :, : ) ), ...
+                                    PntMidPnts9Crdnt, Intrplt9Pnts, 'XZ' );
         end
 
     end
@@ -284,6 +319,28 @@ if flag_XY == 1
         end
     end
 
+    % interpolation
+    tic;
+    disp('time for interpolation: ')
+    x_idx_maxI = 2 * x_idx_max - 1;
+    y_idx_maxI = 2 * y_idx_max - 1;
+    IntrpltPnts = zeros( x_idx_maxI, y_idx_maxI );
+    for idxI = 1: 1: x_idx_maxI * y_idx_maxI
+        % idxI = ( nI - 1 ) * x_idx_maxI + mI;
+        tmp_mI = mod( idxI, x_idx_maxI );
+        if tmp_mI == 0
+            mI = x_idx_maxI;
+        else
+            mI = tmp_mI;
+        end
+        nI = int64( ( idxI - mI ) / x_idx_maxI + 1 );
+
+        if mI >= 2 && mI <= x_idx_maxI - 1 && nI >= 2 && nI <= y_idx_maxI - 1 
+            IntrpltPnts(mI, nI) = ExecIntrplt( mI, nI, SARseg, TtrVol, 'XY' );
+        end
+    end
+    toc;
+
     % plot electrode SAR
     figure(7);
     clf;
@@ -295,30 +352,54 @@ if flag_XY == 1
     ylabel(cbar, 'SAR (watt/kg)', 'Interpreter','LaTex', 'FontSize', 20);
     set(cbar, 'FontSize', 18 );
     hold on;
+    % disp('Time to plot SAR');
+    % tic;
+    % for idx = 1: 1: x_idx_max * y_idx_max
+    %     % idx = ( ell - 1 ) * x_idx_max + m;
+    %     tmp_m = mod( idx, x_idx_max );
+    %     if tmp_m == 0
+    %         m = x_idx_max;
+    %     else
+    %         m = tmp_m;
+    %     end
+
+    %     n = int64( ( idx - m ) / x_idx_max + 1 );
+
+    %     ell = 2;
+
+    %     if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1 
+    %         PntMidPnts9Crdnt = squeeze( MidPnts9Crdnt(m, n, :, :) );
+    %         PntMidPnts9Crdnt(:, 3) = [];
+    %         plotSAR_XY( squeeze( SARseg( m, n, :, :) ), squeeze( TtrVol( m, n, :, : ) ), PntMidPnts9Crdnt );
+    %         hold on;
+    %     end
+
+    % end
+    % toc;
     disp('Time to plot SAR');
     tic;
     for idx = 1: 1: x_idx_max * y_idx_max
-        % idx = ( ell - 1 ) * x_idx_max + m;
+        % idx = ( n - 1 ) * x_idx_max + m;
         tmp_m = mod( idx, x_idx_max );
         if tmp_m == 0
-            m = x_idx_max;
+            m = int64(x_idx_max);
         else
-            m = tmp_m;
+            m = int64(tmp_m);
         end
 
         n = int64( ( idx - m ) / x_idx_max + 1 );
 
-        ell = 2;
-
-        if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1 
+        if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1
+            Intrplt9Pnts     = getIntrplt9Pnts(m, n, IntrpltPnts);
             PntMidPnts9Crdnt = squeeze( MidPnts9Crdnt(m, n, :, :) );
             PntMidPnts9Crdnt(:, 3) = [];
-            plotSAR_XY( squeeze( SARseg( m, n, :, :) ), squeeze( TtrVol( m, n, :, : ) ), PntMidPnts9Crdnt );
-            hold on;
+            plotSAR_Intrplt( squeeze( SARseg( m, n, :, :) ), squeeze( TtrVol( m, n, :, : ) ), ...
+                                    PntMidPnts9Crdnt, Intrplt9Pnts, 'XY' );
         end
 
     end
     toc;
+
     colormap jet;
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$y$ (cm)','Interpreter','LaTex', 'FontSize', 20);
@@ -449,6 +530,29 @@ if flag_YZ == 1
         end
     end
 
+    % interpolation
+    tic;
+    disp('time for interpolation: ')
+    y_idx_maxI = 2 * y_idx_max - 1;
+    z_idx_maxI = 2 * z_idx_max - 1;
+    IntrpltPnts = zeros( y_idx_maxI, z_idx_maxI );
+    for idxI = 1: 1: y_idx_maxI * z_idx_maxI
+        % idxI = ( ellI - 1 ) * y_idx_maxI + nI;
+        tmp_nI = mod( idxI, y_idx_maxI );
+        if tmp_nI == 0
+            nI = y_idx_maxI;
+        else
+            nI = tmp_nI;
+        end
+
+        ellI = int64( ( idxI - nI ) / y_idx_maxI + 1 );
+
+        if nI >= 2 && nI <= y_idx_maxI - 1 && ellI >= 2 && ellI <= z_idx_maxI - 1 
+            IntrpltPnts(nI, ellI) = ExecIntrplt( nI, ellI, SARseg, TtrVol, 'YZ' );
+        end
+    end
+    toc;
+
     % plot SAR
     figure(12);
     clf;
@@ -460,32 +564,53 @@ if flag_YZ == 1
     ylabel(cbar, 'SAR (watt/kg)', 'Interpreter','LaTex', 'FontSize', 20);
     set(cbar, 'FontSize', 18 );
     hold on;
+    % disp('Time to plot SAR');
+    % tic;
+    % for idx = 1: 1: y_idx_max * z_idx_max
+    %     % idx = ( ell - 1 ) * y_idx_max + n;
+
+    %     tmp_n = mod( idx, y_idx_max );
+    %     if tmp_n == 0
+    %         n = y_idx_max;
+    %     else
+    %         n = tmp_n;
+    %     end
+
+    %     ell = int64( ( idx - n ) / y_idx_max + 1 );
+
+    %     if n == 9 && ell == 11
+    %         ;
+    %     end
+    %     if n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
+    %         PntMidPnts9Crdnt = squeeze( MidPnts9Crdnt(n, ell, :, :) );
+    %         PntMidPnts9Crdnt(:, 1) = [];
+    %         plotSAR_YZ( squeeze( SARseg( n, ell, :, :) ), squeeze( TtrVol( n, ell, :, : ) ), PntMidPnts9Crdnt );
+    %         hold on;
+    %     end
+
+    % end
+    % toc;
     disp('Time to plot SAR');
     tic;
     for idx = 1: 1: y_idx_max * z_idx_max
         % idx = ( ell - 1 ) * y_idx_max + n;
-
         tmp_n = mod( idx, y_idx_max );
         if tmp_n == 0
-            n = y_idx_max;
+            n = int64(y_idx_max);
         else
-            n = tmp_n;
+            n = int64(tmp_n);
         end
-
         ell = int64( ( idx - n ) / y_idx_max + 1 );
-
-        if n == 9 && ell == 11
-            ;
-        end
-        if n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
+        if n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1
+            Intrplt9Pnts     = getIntrplt9Pnts(n, ell, IntrpltPnts);
             PntMidPnts9Crdnt = squeeze( MidPnts9Crdnt(n, ell, :, :) );
             PntMidPnts9Crdnt(:, 1) = [];
-            plotSAR_YZ( squeeze( SARseg( n, ell, :, :) ), squeeze( TtrVol( n, ell, :, : ) ), PntMidPnts9Crdnt );
-            hold on;
+            plotSAR_XZ_Intrplt( squeeze( SARseg( n, ell, :, :) ), squeeze( TtrVol( n, ell, :, : ) ), ...
+                                    PntMidPnts9Crdnt, Intrplt9Pnts, 'YZ' );
         end
-
     end
     toc;
+
     colormap jet;
     set(log_axes,'fontsize',20);
     set(log_axes,'LineWidth',2.0);
