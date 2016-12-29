@@ -1,4 +1,4 @@
-function [ paras2d ] = genParas2d( y, paras, dx, dy, dz )
+function [ paras2dXZ ] = genParas2d( y, paras, dx, dy, dz )
 
 h_torso     = paras(1);
 if y < - h_torso / 2 || y > h_torso / 2
@@ -35,7 +35,7 @@ r_lung_c_prime = r_lung_c * sqrt( 1 - ( y / r_lung_b )^2 );
 
 tumor_r_prime = sqrt( tumor_r^2 - ( y - tumor_y )^2 );
 
-paras2d = [ air_x, air_z, bolus_a, bolus_b, skin_a, skin_b, muscle_a, muscle_b, ...
+paras2dXZ = [ air_x, air_z, bolus_a, bolus_b, skin_a, skin_b, muscle_a, muscle_b, ...
         l_lung_x, l_lung_z, l_lung_a_prime, l_lung_c_prime, ...
         r_lung_x, r_lung_z, r_lung_a_prime, r_lung_c_prime, ...
         tumor_x, tumor_z, tumor_r_prime ];

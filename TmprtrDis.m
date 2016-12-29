@@ -23,7 +23,7 @@ TmprtrTauMinus = zeros(7, 1);
 %     if mediumTable( m, n, ell ) == 0
 %         XZ9Med = getXZ9Med(m, n, ell, mediumTable);
 %         if checkAirAround( XZ9Med )
-%             TmprtrTau( m, n, ell, :) = ( T_bolus + T_air ) / 2;
+%             TmprtrTau( m, n, ell, :) = T_bolus;
 %         end
 %     end
 % end
@@ -88,6 +88,9 @@ for t = T_bgn + dt: dt: T_end
     TmprtrTau( :, y_idx_max, :, uint8(t_idx) ) = TmprtrTau( :, y_idx_max - 1, :, uint8(t_idx) );
 end
 toc;
+
+fullfileName = strcat(fname, '\', CaseName, '.mat');
+save( fullfileName );
 
 % extract temperature in the XZ plane
 T_XZ = zeros( x_idx_max, z_idx_max );

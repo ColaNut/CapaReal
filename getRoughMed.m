@@ -1,5 +1,9 @@
 function [ mediumTableXZ ] = getRoughMed( mediumTableXZ, paras2dXZ, dx, dz )
 
+% paras2dXZ = [ air_x, air_z, bolus_a, bolus_c, skin_a, skin_c, muscle_a, muscle_c, ...
+%     l_lung_x, l_lung_z, l_lung_a_prime, l_lung_c_prime, ...
+%     r_lung_x, r_lung_z, r_lung_a_prime, r_lung_c_prime, ...
+%     tumor_x, tumor_z, tumor_r_prime ];
 % 0
 air_x = paras2dXZ(1);
 air_z = paras2dXZ(2);

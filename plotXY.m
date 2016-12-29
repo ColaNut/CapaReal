@@ -1,30 +1,30 @@
-function plotXY( paras, dx, dy )
+function plotXY( paras2dXY, dx, dy )
 
 % paras2dXY = [ h_torso, air_x, air_z, bolus_a, bolus_b, skin_a, skin_b, muscle_a, muscle_b, ...
 %             l_lung_x, l_lung_y, l_lung_a_prime, l_lung_b_prime, ...
 %             r_lung_x, r_lung_y, r_lung_a_prime, r_lung_b_prime, ...
 %             tumor_x, tumor_y, tumor_r_prime ];
 
-h_torso = paras(1) * 100;
-air_x = paras(2) * 100;
-air_z = paras(3) * 100;
-bolus_a = paras(4) * 100;
-bolus_b = paras(5) * 100;
-skin_a = paras(6) * 100;
-skin_b = paras(7) * 100;
-muscle_a = paras(8) * 100;
-muscle_b = paras(9) * 100;
-l_lung_x = paras(10) * 100;
-l_lung_y = paras(11) * 100;
-l_lung_a = paras(12) * 100;
-l_lung_b = paras(13) * 100;
-r_lung_x = paras(14) * 100;
-r_lung_y = paras(15) * 100;
-r_lung_a = paras(16) * 100;
-r_lung_b = paras(17) * 100;
-tumor_x = paras(18) * 100;
-tumor_y = paras(19) * 100;
-tumor_r = paras(20) * 100;
+h_torso = paras2dXY(1) * 100;
+air_x = paras2dXY(2) * 100;
+air_z = paras2dXY(3) * 100;
+bolus_a = paras2dXY(4) * 100;
+bolus_b = paras2dXY(5) * 100;
+skin_a = paras2dXY(6) * 100;
+skin_b = paras2dXY(7) * 100;
+muscle_a = paras2dXY(8) * 100;
+muscle_b = paras2dXY(9) * 100;
+l_lung_x = paras2dXY(10) * 100;
+l_lung_y = paras2dXY(11) * 100;
+l_lung_a = paras2dXY(12) * 100;
+l_lung_b = paras2dXY(13) * 100;
+r_lung_x = paras2dXY(14) * 100;
+r_lung_y = paras2dXY(15) * 100;
+r_lung_a = paras2dXY(16) * 100;
+r_lung_b = paras2dXY(17) * 100;
+tumor_x = paras2dXY(18) * 100;
+tumor_y = paras2dXY(19) * 100;
+tumor_r = paras2dXY(20) * 100;
 
 dx = 100 * dx;
 dy = 100 * dy;

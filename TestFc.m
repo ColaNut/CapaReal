@@ -161,13 +161,16 @@
 % loadParas;
 % paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
 % plotMap( paras2dXZ, dx, dz );
-
-v = [2 4; 2 8; 8 4; 5 0; 5 2; 8 0; 5 5; 5 6; 8 2];
-f = [4 5 6; 1 2 3];
-col = [0; 6; 4; 3; 4; 6; 1; 1; 1];
-figure
-patch('Faces',f,'Vertices',v,'FaceVertexCData',col,'FaceColor','interp');
-colorbar
+AxA = 1;
+if AxA;
+    BxB = 2;
+end
+% v = [2 4; 2 8; 8 4; 5 0; 5 2; 8 0; 5 5; 5 6; 8 2];
+% f = [4 5 6; 1 2 3];
+% col = [0; 6; 4; 3; 4; 6; 1; 1; 1];
+% figure
+% patch('Faces',f,'Vertices',v,'FaceVertexCData',col,'FaceColor','interp');
+% colorbar
 % load('Power250currentEst.mat');
 % W
 % Current

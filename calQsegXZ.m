@@ -9,6 +9,7 @@ function [ PntQseg, TtrVol ] = calQsegXZ( m, n, ell, PhiHlfY, ThrXYZCrndt, SegVa
     PntSegValue  = squeeze( SegValueXZ( m, ell, :, : ) );
                   % air, bolus, muscle, lung, tumor
     Q_met        = [ 0,      0,   4200, 4200, 42000 ]';
+    % Q_met        = [ 0,      0,   1700, 1700, 8000 ]';
 
     [ PntSARseg, TtrVol ] = calSARsegXZ( m, n, ell, PhiHlfY, ThrXYZCrndt, SegValueXZ, ...
                                                         x_idx_max, sigma, rho );

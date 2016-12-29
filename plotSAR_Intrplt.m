@@ -81,8 +81,10 @@ if ~isempty(find(EightRegion))
           5 2 3;
           5 3 6 ];
 
+    % patch( 'Faces', f(find(EightRegion), :), 'Vertices', 100 * PntMidPnts9Crdnt, ...
+    %   'FaceVertexCData', log10( IntrpltPnts ),'FaceColor','interp', 'EdgeColor','none');
     patch( 'Faces', f(find(EightRegion), :), 'Vertices', 100 * PntMidPnts9Crdnt, ...
-      'FaceVertexCData', log10( IntrpltPnts ),'FaceColor','interp', 'EdgeColor','none');
+      'FaceVertexCData', IntrpltPnts,'FaceColor','interp', 'EdgeColor','none');
 end
 
 end

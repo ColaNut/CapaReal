@@ -1,5 +1,5 @@
-% clc; clear;
-load('Power300.mat');
+clc; clear;
+load( 'Power300.mat' );
 % rho           = [ 1,  1020,  1020,  1050, 1040 ]';
 % save('TestCase2.mat');
 % load('RealCase3.mat');
@@ -10,8 +10,7 @@ flag_XZ = 1;
 flag_XY = 1;
 flag_YZ = 1;
 
-% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal';
-fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\TexFile2';
+fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case1226';
 % CaseName = 'Sigma';
 
 if flag_XZ == 1
@@ -190,13 +189,13 @@ if flag_XZ == 1
     end
     toc;
 
-    % caxis(log10(myRange));
+    caxis(log10(myRange));
     colormap jet;
     % axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
     axis equal;
-    axis( [ - 20, 20, - 20, 20 ] );
+    axis( [ - 20, 20, - 15, 15 ] );
     set(log_axes,'fontsize',20);
     set(log_axes,'LineWidth',2.0);
     % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
@@ -205,6 +204,7 @@ if flag_XZ == 1
     plotMap( paras2dXZ, dx, dz );
     saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'fig');
     saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
+    % save('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case1226\Case1226TmprtrFigXZ.mat');
 end
 
 if flag_XY == 1
@@ -316,6 +316,10 @@ if flag_XY == 1
         if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1 
             [ SARseg( m, n, :, : ), TtrVol( m, n, :, : ), MidPnts9Crdnt( m, n, :, : ) ] ...
                 = calSARsegXY( m, n, ell, PhiTpElctrd, ThrXYZCrndt, SegValueXY, x_idx_max, y_idx_max, sigma, rho );
+        elseif n == 1;
+
+        elseif n == y_idx_max
+
         end
     end
 
@@ -400,20 +404,23 @@ if flag_XY == 1
     end
     toc;
 
+    caxis(log10(myRange));
     colormap jet;
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$y$ (cm)','Interpreter','LaTex', 'FontSize', 20);
+    axis equal;
+    axis( [ - 20, 20, - 15, 15 ]);
     % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 18);
     set(log_axes,'fontsize',20);
     set(log_axes,'LineWidth',2.0);
     box on;
     view(2);
-    axis equal;
-    axis( [ - 20, 20, - 15, 15 ]);
     % axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * h_torso / 2, 100 * h_torso / 2 ]);
+    maskXY(paras2dXY(4), air_z, dx);
     plotXY( paras2dXY, dx, dy );
     saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'fig');
     saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'jpg');
+    % save('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case1226\Case1226TmprtrFigXY.mat');
 end
 
 if flag_YZ == 1
@@ -494,6 +501,7 @@ if flag_YZ == 1
     %         min(min(abs( PhiHlfY2' ))), max(max(abs( PhiHlfY2' ))) ] );
     xlabel('$y$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
+    set(gca, 'Xtick', [-15, -10, -5, 0, 5, 10, 15]); 
     % zlabel('$\Phi (x, z)$ ($V$)','Interpreter','LaTex', 'FontSize', 20);
     hold on;
     % plotYZ( shiftedCoordinateXYZ, air_x, h_torso, air_z, x, paras2dYZ, dx, dy, dz, bolus_b, muscle_b );
@@ -562,7 +570,7 @@ if flag_YZ == 1
     set(gca, 'Visible', 'off')
     log_axes = axes('Position', get(gca, 'Position'));
     ylabel(cbar, 'SAR (watt/kg)', 'Interpreter','LaTex', 'FontSize', 20);
-    set(cbar, 'FontSize', 18 );
+    set(cbar, 'FontSize', 25);
     hold on;
     % disp('Time to plot SAR');
     % tic;
@@ -605,24 +613,27 @@ if flag_YZ == 1
             Intrplt9Pnts     = getIntrplt9Pnts(n, ell, IntrpltPnts);
             PntMidPnts9Crdnt = squeeze( MidPnts9Crdnt(n, ell, :, :) );
             PntMidPnts9Crdnt(:, 1) = [];
-            plotSAR_XZ_Intrplt( squeeze( SARseg( n, ell, :, :) ), squeeze( TtrVol( n, ell, :, : ) ), ...
+            plotSAR_Intrplt( squeeze( SARseg( n, ell, :, :) ), squeeze( TtrVol( n, ell, :, : ) ), ...
                                     PntMidPnts9Crdnt, Intrplt9Pnts, 'YZ' );
         end
     end
     toc;
 
+    caxis(log10(myRange));
     colormap jet;
-    set(log_axes,'fontsize',20);
+    set(log_axes,'fontsize',25);
     set(log_axes,'LineWidth',2.0);
     box on;
-    xlabel('$y$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
-    ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
+    xlabel('$y$ (cm)', 'Interpreter','LaTex', 'FontSize', 25);
+    ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 25);
+    set(log_axes, 'Xtick', [-15, -10, -5, 0, 5, 10, 15]); 
     % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
     plotYZ( paras2dYZ, dy, dz );
     axis equal;
-    axis( [ - 15, 15, - 20, 20 ]);
+    axis( [ - 15, 15, - 15, 15 ]);
     % axis( [ - 100 * h_torso / 2, 100 * h_torso / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);
     view(2);
     saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'fig');
     saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'jpg');
+    % save('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case1226\Case1226TmprtrFigYZ.mat');
 end

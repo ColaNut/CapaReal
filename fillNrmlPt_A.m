@@ -23,18 +23,18 @@ function [ A_row, SegMed ] = fillNrmlPt_A( m, n, ell, shiftedCoordinateXYZ, x_id
     A_row(6)  = PntsIdx(2, 2);
     A_row(7)  = PntsIdx(2, 5);
 
-    if length(find(MedValue)) == 27
-        dx = PntsCrdnt(2, 6, 1) - PntsCrdnt(2, 5, 1);
-        dy = PntsCrdnt(2, 8, 2) - PntsCrdnt(2, 5, 2);
-        dz = PntsCrdnt(3, 5, 3) - PntsCrdnt(2, 5, 3);
+    % if length(find(MedValue)) == 27
+    %     dx = PntsCrdnt(2, 6, 1) - PntsCrdnt(2, 5, 1);
+    %     dy = PntsCrdnt(2, 8, 2) - PntsCrdnt(2, 5, 2);
+    %     dz = PntsCrdnt(3, 5, 3) - PntsCrdnt(2, 5, 3);
 
-        A_row(8)  = dx * dy / dz;
-        A_row(9)  = dy * dz / dx;
-        A_row(10) = dx * dy / dz;
-        A_row(11) = dy * dz / dx;
-        A_row(12) = dx * dz / dy;
-        A_row(13) = dx * dz / dy;
-    else
+    %     A_row(8)  = dx * dy / dz;
+    %     A_row(9)  = dy * dz / dx;
+    %     A_row(10) = dx * dy / dz;
+    %     A_row(11) = dy * dz / dx;
+    %     A_row(12) = dx * dz / dy;
+    %     A_row(13) = dx * dz / dy;
+    % else
         % p1
         tmpMidLyr = p1FaceMidLyr( PntsCrdnt );
         [ A_row(8), sideEffect(1, :) ] = nrmlEffValue( squeeze( MidPntsCrdnt(3, :, :) ), ...
@@ -64,7 +64,7 @@ function [ A_row, SegMed ] = fillNrmlPt_A( m, n, ell, shiftedCoordinateXYZ, x_id
         tmpMidCrdnt = p6Face( MidPntsCrdnt );
         [ A_row(13), sideEffect(6, :) ] = nrmlEffValue( squeeze( tmpMidCrdnt ), ...
                                             tmpMidLyr, squeeze( PntsCrdnt(2, 2, :) ), 1 );
-    end
+    % end
     % p0
     SegMed    = SegMed .* mediumTable(m, n, ell);
     A_row(8) = A_row(8) + sideEffect(2, 2) + sideEffect(4, 2) + sideEffect(5, 2) + sideEffect(6, 2);
