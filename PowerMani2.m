@@ -1,20 +1,32 @@
 clc; clear; 
+% fname = 'E:\Kevin\CapaReal\Case0103';
+fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0103';
 CaseName = 'Power250';
-% V_0 = 78.35;
+% V_0 = 78.75;
 % Shift2d;
-load( strcat(CaseName, '.mat') );
+% save( strcat(fname, '\', CaseName, '.mat') );
+load( strcat(fname, '\', CaseName, '.mat') );
+fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0103';
 CurrentEst;
 
 clc; clear;
+% fname = 'E:\Kevin\CapaReal\Case0103';
+fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0103';
 CaseName = 'Power280';
-% V_0 = 82.92;
+% V_0 = 83.34;
 % Shift2d;
-load( strcat(CaseName, '.mat') );
+% save( strcat(fname, '\', CaseName, '.mat') );
+load( strcat(fname, '\', CaseName, '.mat') );
+fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0103';
 CurrentEst;
 
 clc; clear;
+% fname = 'E:\Kevin\CapaReal\Case0103';
+fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0103';
 CaseName = 'Power300';
-% V_0 = 85.83;
+% V_0 = 86.26;
 % Shift2d;
-load( strcat(CaseName, '.mat') );
+% save( strcat(fname, '\', CaseName, '.mat') );
+load( strcat(fname, '\', CaseName, '.mat') );
+fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0103';
 CurrentEst;

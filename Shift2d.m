@@ -155,7 +155,8 @@ disp('The gmres solutin of Ax = B: ');
 bar_x_my_gmres = my_gmres( sparseA, B, int_itr_num, tol, ext_itr_num );
 toc;
 
-save( strcat(CaseName, '.mat') );
+% save( strcat(fname, CaseName, '.mat') );
+% save('Case0103.mat');z
 
 % PhiDstrbtn;
 

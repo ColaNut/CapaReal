@@ -1,5 +1,7 @@
 clc; clear;
-load( 'Power300.mat' );
+% load('E:\Kevin\CapaReal\Case0103\Power250.mat');
+load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0103\Power300.mat');
+% load( 'Power300.mat' );
 % rho           = [ 1,  1020,  1020,  1050, 1040 ]';
 % save('TestCase2.mat');
 % load('RealCase3.mat');
@@ -7,10 +9,11 @@ load( 'Power300.mat' );
 % XZmidY      = zeros( z_idx_max, x_idx_max );
 
 flag_XZ = 1;
-flag_XY = 1;
-flag_YZ = 1;
+flag_XY = 0;
+flag_YZ = 0;
 
-fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case1226';
+fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\TexFile2';
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0103';
 % CaseName = 'Sigma';
 
 if flag_XZ == 1
@@ -82,13 +85,14 @@ if flag_XZ == 1
     set(gca,'fontsize',20);
     set(gca,'LineWidth',2.0);
     cb = colorbar;
+    % caxis([-50, 50]);
     caxis([0, 100]);
-    ylabel(cb, '$\Phi$ ($V$)', 'Interpreter','LaTex', 'FontSize', 20);
+    ylabel(cb, '$\left| \Phi \right|$ ($V$)', 'Interpreter','LaTex', 'FontSize', 20);
     set(cb, 'FontSize', 18);
     box on;
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
-    % zlabel('$\Phi (x, z)$ ($V$)','Interpreter','LaTex', 'FontSize', 20);
+    % zlabel('$\left| \Phi \right| (x, z)$ ($V$)','Interpreter','LaTex', 'FontSize', 20);
     view(2);
     hold on;
     plotMap( paras2dXZ, dx, dz );
@@ -202,9 +206,9 @@ if flag_XZ == 1
     box on;
     view(2);
     plotMap( paras2dXZ, dx, dz );
-    saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'fig');
-    saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
-    % save('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case1226\Case1226TmprtrFigXZ.mat');
+    % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'fig');
+    % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
+    % save('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0103\Case0103TmprtrFigXZ.mat');
 end
 
 if flag_XY == 1
@@ -280,7 +284,7 @@ if flag_XY == 1
     set(gca,'LineWidth',2.0);
     cb = colorbar;
     caxis([0, 100]);
-    ylabel(cb, '$\Phi$ ($V$)', 'Interpreter','LaTex', 'FontSize', 20);
+    ylabel(cb, '$\left| \Phi \right|$ ($V$)', 'Interpreter','LaTex', 'FontSize', 20);
     set(cb, 'FontSize', 18);
     box on;
     % axis( [ min(min(x_mesh)) * 100, max(max(x_mesh)) * 100, ...
@@ -418,9 +422,9 @@ if flag_XY == 1
     % axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * h_torso / 2, 100 * h_torso / 2 ]);
     maskXY(paras2dXY(4), air_z, dx);
     plotXY( paras2dXY, dx, dy );
-    saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'fig');
-    saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'jpg');
-    % save('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case1226\Case1226TmprtrFigXY.mat');
+    % saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'fig');
+    % saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'jpg');
+    % save('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0103\Case0103TmprtrFigXY.mat');
 end
 
 if flag_YZ == 1
@@ -429,7 +433,7 @@ if flag_YZ == 1
     ThrXYZCrndt = zeros( 3, y_idx_max, z_idx_max, 3);
     ThrMedValue = zeros( 3, y_idx_max, z_idx_max );
     SegValueYZ  = zeros( y_idx_max, z_idx_max, 6, 8, 'uint8' );
-    x_mesh      = zeros( z_idx_max, y_idx_max );
+    y_mesh      = zeros( z_idx_max, y_idx_max );
     z_mesh      = zeros( z_idx_max, y_idx_max );
 
     for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
@@ -492,8 +496,10 @@ if flag_YZ == 1
     set(gca,'fontsize',20);
     set(gca,'LineWidth',2.0);
     cb = colorbar;
-    caxis([0, 100]);
-    ylabel(cb, '$\Phi$ ($V$)', 'Interpreter','LaTex', 'FontSize', 20);
+    % caxis([-50, 50])
+    caxis([0, 100]);;
+    % caxis([0, 100]);
+    ylabel(cb, '$\left| \Phi \right|$ ($V$)', 'Interpreter','LaTex', 'FontSize', 20);
     set(cb, 'FontSize', 18);
     box on;
     % axis( [ min(min(x_mesh)) * 100, max(max(x_mesh)) * 100, ...
@@ -502,7 +508,7 @@ if flag_YZ == 1
     xlabel('$y$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
     set(gca, 'Xtick', [-15, -10, -5, 0, 5, 10, 15]); 
-    % zlabel('$\Phi (x, z)$ ($V$)','Interpreter','LaTex', 'FontSize', 20);
+    % zlabel('$\left| \Phi \right| (x, z)$ ($V$)','Interpreter','LaTex', 'FontSize', 20);
     hold on;
     % plotYZ( shiftedCoordinateXYZ, air_x, h_torso, air_z, x, paras2dYZ, dx, dy, dz, bolus_b, muscle_b );
     plotYZ( paras2dYZ, dy, dz );
@@ -633,7 +639,7 @@ if flag_YZ == 1
     axis( [ - 15, 15, - 15, 15 ]);
     % axis( [ - 100 * h_torso / 2, 100 * h_torso / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);
     view(2);
-    saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'fig');
-    saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'jpg');
-    % save('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case1226\Case1226TmprtrFigYZ.mat');
+    % saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'fig');
+    % saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'jpg');
+    % save('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0103\Case0103TmprtrFigYZ.mat');
 end

@@ -1,10 +1,10 @@
 clc; clear;
 % load the mat from the end of all simulations
 fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal';
-CaseName = 'Case1226';
-load( strcat(fname, '\', CaseName, '\', 'Power300Tmprtr.mat') );
+CaseName = 'Case0103';
+load( strcat(fname, '\', CaseName, '\', 'Case0103.mat') );
 
-fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\TexFile2';
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\TexFile2';
 
 tumor_m = tumor_x / dx + air_x / (2 * dx) + 1;
 tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1;
@@ -16,7 +16,7 @@ flag_YZ_T = 1;
 
 if flag_XZ_T == 1
     % load the SAR segments in the XZ cross section in PhiDstrbtn
-    load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case1226\Case1226TmprtrFigXZ.mat');
+    load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0103\Case0103TmprtrFigXZ.mat');
 
     t = T_end;
     t_idx = t / dt + 1;
@@ -145,7 +145,7 @@ end
 % Add the temperature and the SAR value to the torso end.
 if flag_XY_T == 1
     % load the SAR segments in the XY cross section in PhiDstrbtn
-    load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case1226\Case1226TmprtrFigXY.mat');
+    load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0103\Case0103TmprtrFigXY.mat');
 
     T_XY = zeros( x_idx_max, y_idx_max );
     
@@ -282,7 +282,7 @@ end
 
 if flag_YZ_T == 1
     % load the SAR segments in the XZ cross section in PhiDstrbtn
-    load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case1226\Case1226TmprtrFigYZ.mat');
+    load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0103\Case0103TmprtrFigYZ.mat');
 
     t = T_end;
     t_idx = t / dt + 1;

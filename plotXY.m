@@ -70,4 +70,32 @@ hold on;
 plot( muscleLft, y_idx, 'Color', [0.5, 0.5, 0.5], 'LineWidth', 2.5);
 hold on;
 
+UpElectrodeSize = 12;
+DwnElectrodeSize = 20;
+
+x_axUp = tumor_x - UpElectrodeSize / 2: dx: tumor_x + UpElectrodeSize / 2;
+plot( x_axUp, ( tumor_y - UpElectrodeSize / 2 ) * ones( size(x_axUp) ), 'k--', 'LineWidth', 3.0);
+plot( x_axUp, ( tumor_y + UpElectrodeSize / 2 ) * ones( size(x_axUp) ), 'k--', 'LineWidth', 3.0);
+
+y_axUp = tumor_y - UpElectrodeSize / 2: dy: tumor_y + UpElectrodeSize / 2;
+plot( ( tumor_x + UpElectrodeSize / 2 ) * ones( size(y_axUp) ), y_axUp, 'k--', 'LineWidth', 3.0);
+plot( ( tumor_x - UpElectrodeSize / 2 ) * ones( size(y_axUp) ), y_axUp, 'k--', 'LineWidth', 3.0);
+
+x_axDwn = tumor_x - DwnElectrodeSize / 2: dx: tumor_x + DwnElectrodeSize / 2;
+plot( x_axDwn, ( tumor_y - DwnElectrodeSize / 2 ) * ones( size(x_axDwn) ), 'k--', 'LineWidth', 3.0);
+plot( x_axDwn, ( tumor_y + DwnElectrodeSize / 2 ) * ones( size(x_axDwn) ), 'k--', 'LineWidth', 3.0);
+
+y_axDwn = tumor_y - DwnElectrodeSize / 2: dy: tumor_y + DwnElectrodeSize / 2;
+plot( ( tumor_x + DwnElectrodeSize / 2 ) * ones( size(y_axDwn) ), y_axDwn, 'k--', 'LineWidth', 3.0);
+plot( ( tumor_x - DwnElectrodeSize / 2 ) * ones( size(y_axDwn) ), y_axDwn, 'k--', 'LineWidth', 3.0);
+
+% Phi: 2.5 for all.
+% SAR: 3.0 for all.
+
+% y_idx = - h_torso / 2: dy: h_torso / 2;
+% bolusUpL = bolusHghtZ * ones(size(y_idx));
+% bolusDnL = - bolusHghtZ * ones(size(y_idx));
+% muscleUpL = muscleHghtZ * ones(size(y_idx));
+% muscleDnL = - muscleHghtZ * ones(size(y_idx));
+
 end

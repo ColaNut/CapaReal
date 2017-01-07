@@ -12,3 +12,5 @@ are 161 (s), 64 (s) and 91 (s), respectively.
 are 346 (s), 184 (s) and 807 (s), respectively.
 
 The cal48TtrVol.m was cal8TtrVol.m not used. 
+
+01/03: The electrode parameters are stored in UpElectrode.m, DwnElectrode.m, plotMap.m and plotYZ.m.

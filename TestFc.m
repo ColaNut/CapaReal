@@ -157,14 +157,65 @@
 % tumor_ell = tumor_z / dz + air_z / (2 * dz) + 1;
 % [tumor_m, tumor_n, tumor_ell]
 
-% figure(1);
+% clc; clear; 
+% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case1226\Case1226TmprtrFigYZ.mat');
+% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case1226\Case1226TmprtrFigXZ.mat');
+% % pcolor(y_mesh * 100, z_mesh * 100, abs( PhiYZ2' ));
+% pcolor(x_mesh * 100, z_mesh * 100, abs( PhiHlfY2' ));
+% hold on;
+% paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
+% plotMap( paras2dXZ, dx, dz );
+
+% ElectrodeX = tumor_x;
+% ElectrodeY = tumor_y;
+% ElectrodeZ = 12 / 100;
+% h_x_half = 6 / 100;
+% h_y_half = 6 / 100;
+
+% figure(31);
+% [XXX,ZZZ] = meshgrid(0: 2);
+% value = [1, 2, 3; 4, 5, 6; 7, 8, 9];
+% pcolor(XXX, ZZZ, value);
+% shading interp;
+% colorbar;
+
+% clc; clear;
+
+load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0103\Power250currentEst.mat');
+W
+Current
+
+load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0103\Power280currentEst.mat');
+W
+Current
+
+load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0103\Power300currentEst.mat');
+W
+Current
+
+% openfig('Power300PhiXY.fig', 'reuse');
+% tumor_m = tumor_x / dx + air_x / (2 * dx) + 1;
+% tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1;
+% tumor_ell = tumor_z / dz + air_z / (2 * dz) + 1;
+% shading flat;
+% % plotGridLineXZ( shiftedCoordinateXYZ, tumor_n );
+% paras2dXY = genParas2dXY( tumor_z, paras, dx, dy, dz );
+% plotXY( paras2dXY, dx, dy );
+
+
+
+% paras2dYZ = genParas2dYZ( tumor_x, paras, dy, dz );
+% plotYZ( paras2dYZ, dy, dz );
+
 % loadParas;
 % paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
 % plotMap( paras2dXZ, dx, dz );
-AxA = 1;
-if AxA;
-    BxB = 2;
-end
+% shading flat;
+
+% AxA = [1, 2, 3, 4, 5];
+% BxB = [0, 1, 1, 0, 1];
+% find(AxA>2 & BxB == 1)
+
 % v = [2 4; 2 8; 8 4; 5 0; 5 2; 8 0; 5 5; 5 6; 8 2];
 % f = [4 5 6; 1 2 3];
 % col = [0; 6; 4; 3; 4; 6; 1; 1; 1];
@@ -293,3 +344,4 @@ end
 % figure(1);
 % paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
 % plotMap( paras2dXZ, dx, dz );
+

@@ -1,4 +1,4 @@
-function [ sparseA, B ] = DwnElectrode( sparseA, B, Xtable, Ztable, paras, V_0, x_idx_max, y_idx_max, dx, dy, dz )
+function [ sparseA, B ] = DwnElectrode( sparseA, B, Xtable, Ztable, paras, V_0_Dn, x_idx_max, y_idx_max, dx, dy, dz )
 
 % Xtable(1, :) = [ int_grid_x, z1, int_grid_x, z2 ];
 % Ztable(1, :) = [ x1, int_grid_z, x2, int_grid_z ];
@@ -42,7 +42,7 @@ for idx = 1: 1: lenX
             A_row_2(1) = p0_2;
             A_row_2(2) = 1;
             sparseA{ p0_2 } = A_row_2;
-            % B( p0_2 ) = V_0;
+            % B( p0_2 ) = V_0_Dn;
         end
     end
 end
@@ -59,23 +59,27 @@ for idx = 1: 1: lenZ
     ell = int64( z / dz + air_z / (2 * dz) + 1 );
 
     if z < 0
-        if x2 >= ElectrodeX - h_x_half && x1 <= ElectrodeX + h_x_half
+        if x2 >= ElectrodeX - h_x_half - dx / 2
             for y = ElectrodeY - h_y_half: dy: ElectrodeY + h_y_half
                 n = y / dy + tmp_y_shift;
-
-                p0_1   = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m_1;
-                A_row_1 = zeros(1, 2);
-                A_row_1(1) = p0_1;
-                A_row_1(2) = 1;
-                sparseA{ p0_1 } = A_row_1;
-                % B( p0_1 ) = V_0;
 
                 p0_2   = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m_2;
                 A_row_2 = zeros(1, 2);
                 A_row_2(1) = p0_2;
                 A_row_2(2) = 1;
                 sparseA{ p0_2 } = A_row_2;
-                % B( p0_2 ) = V_0;
+                % B( p0_2 ) = V_0_Dn;
+            end
+        end
+        if x1 <= ElectrodeX + h_x_half + dx / 2
+            for y = ElectrodeY - h_y_half: dy: ElectrodeY + h_y_half
+                n = y / dy + tmp_y_shift;
+                p0_1   = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m_1;
+                A_row_1 = zeros(1, 2);
+                A_row_1(1) = p0_1;
+                A_row_1(2) = 1;
+                sparseA{ p0_1 } = A_row_1;
+                % B( p0_1 ) = V_0_Dn;
             end
         end
     end

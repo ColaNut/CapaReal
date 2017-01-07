@@ -105,4 +105,4 @@ Current = sigma(2) * Current
 
 W = V_0 * conj(Current) / 2
 
-save( strcat(CaseName, 'currentEst.mat'), 'Current', 'W' );
+save( strcat(fname, '\', CaseName, 'currentEst.mat'), 'Current', 'W' );

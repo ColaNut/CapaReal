@@ -89,8 +89,8 @@ for t = T_bgn + dt: dt: T_end
 end
 toc;
 
-fullfileName = strcat(fname, '\', CaseName, '.mat');
-save( fullfileName );
+% fullfileName = strcat(fname, '\', CaseName, 'Tmprtr', '.mat');
+% save( fullfileName );
 
 % extract temperature in the XZ plane
 T_XZ = zeros( x_idx_max, z_idx_max );
