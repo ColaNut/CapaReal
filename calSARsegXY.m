@@ -13,7 +13,7 @@ function [ PntSARseg, TtrVol, MidPnts9Crdnt ] = calSARsegXY( m, n, ell, PhiTpElc
     tmpMidCrdnt  = zeros( 1, 9, 3 );
     MidPhi       = zeros( 3, 9 );
     tmpMidPhi    = zeros( 9 );
-    PntSegValue  = squeeze( SegValueXY( m, ell, :, : ) );
+    PntSegValue  = squeeze( SegValueXY( m, n, :, : ) );
 
     [ PntsIdx, PntsCrdnt ] = get27Pnts( m, n, ell, x_idx_max, y_idx_max, ThrXYZCrndt );
     MidPntsCrdnt = calMid27Pnts( PntsCrdnt );

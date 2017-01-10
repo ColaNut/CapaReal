@@ -1,0 +1,32 @@
+time to cal TmprtrTau
+[m, n, ell] 
+ans =                   19                   16                   11
+ans =                   20                   16                   11
+ans =                   19                   17                   11
+ans =                   20                   17                   11
+ans =                   19                   18                   11
+ans =                   20                   18                   11
+ans =                   19                   19                   11
+ans =                   20                   19                   11
+ans =                   19                   20                   11
+ans =                   20                   20                   11
+ans =                   19                   16                   12
+ans =                   19                   17                   12
+ans =                   19                   18                   12
+ans =                   19                   19                   12
+ans =                   19                   20                   12
+ans =                   19                   16                   30
+ans =                   19                   17                   30
+ans =                   19                   18                   30
+ans =                   19                   19                   30
+ans =                   19                   20                   30
+ans =                   19                   16                   31
+ans =                   20                   16                   31
+ans =                   19                   17                   31
+ans =                   20                   17                   31
+ans =                   19                   18                   31
+ans =                   20                   18                   31
+ans =                   19                   19                   31
+ans =                   20                   19                   31
+ans =                   19                   20                   31
+ans =                   20                   20                   31

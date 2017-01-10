@@ -1,20 +1,24 @@
-clc; clear;
-% load('E:\Kevin\CapaReal\Case0103\Power250.mat');
-load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0103\Power300.mat');
-% load( 'Power300.mat' );
-% rho           = [ 1,  1020,  1020,  1050, 1040 ]';
-% save('TestCase2.mat');
-% load('RealCase3.mat');
+% clc; clear;
+% % load('E:\Kevin\CapaReal\Case0107\Power250.mat');
+% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0107\Power300.mat');
+% % load( 'Power300.mat' );
+%               % air, bolus, muscle, lung, tumor
+% % rho           = [ 1,  1020,  1020,  242.6, 1040 ]';
+% % save('TestCase2.mat');
+% % load('RealCase3.mat');
 
-% XZmidY      = zeros( z_idx_max, x_idx_max );
+% % XZmidY      = zeros( z_idx_max, x_idx_max );
+tumor_m = tumor_x / dx + air_x / (2 * dx) + 1;
+tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1;
+tumor_ell = tumor_z / dz + air_z / (2 * dz) + 1;
 
-flag_XZ = 1;
-flag_XY = 0;
-flag_YZ = 0;
+% flag_XZ = 1;
+% flag_XY = 0;
+% flag_YZ = 0;
 
-fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\TexFile2';
-% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0103';
-% CaseName = 'Sigma';
+% % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\TexFile2';
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0108';
+% % CaseName = 'Sigma';
 
 if flag_XZ == 1
 
@@ -96,8 +100,9 @@ if flag_XZ == 1
     view(2);
     hold on;
     plotMap( paras2dXZ, dx, dz );
-    saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'fig');
-    saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
+    plotGridLineXZ( shiftedCoordinateXYZ, tumor_n );
+    % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'fig');
+    % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
 
     % calculate the E field
     SARseg = zeros( x_idx_max, z_idx_max, 6, 8 );
@@ -206,9 +211,11 @@ if flag_XZ == 1
     box on;
     view(2);
     plotMap( paras2dXZ, dx, dz );
+    plotGridLineXZ( shiftedCoordinateXYZ, tumor_n );
     % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'fig');
     % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
-    % save('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0103\Case0103TmprtrFigXZ.mat');
+    save( strcat( fname, '\', CaseDate, 'TmprtrFigXZ.mat') );
+    % save('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0108\Case0108TmprtrFigXZ.mat');
 end
 
 if flag_XY == 1
@@ -296,8 +303,9 @@ if flag_XY == 1
     view(2);
     hold on;
     plotXY( paras2dXY, dx, dy );
-    saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'fig');
-    saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'jpg');
+    plotGridLineXY( shiftedCoordinateXYZ, tumor_ell );
+    % saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'fig');
+    % saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'jpg');
 
     % calculate the E field
     SARseg = zeros( x_idx_max, y_idx_max, 6, 8 );
@@ -320,10 +328,6 @@ if flag_XY == 1
         if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1 
             [ SARseg( m, n, :, : ), TtrVol( m, n, :, : ), MidPnts9Crdnt( m, n, :, : ) ] ...
                 = calSARsegXY( m, n, ell, PhiTpElctrd, ThrXYZCrndt, SegValueXY, x_idx_max, y_idx_max, sigma, rho );
-        elseif n == 1;
-
-        elseif n == y_idx_max
-
         end
     end
 
@@ -422,9 +426,10 @@ if flag_XY == 1
     % axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * h_torso / 2, 100 * h_torso / 2 ]);
     maskXY(paras2dXY(4), air_z, dx);
     plotXY( paras2dXY, dx, dy );
+    plotGridLineXY( shiftedCoordinateXYZ, tumor_ell );
     % saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'fig');
     % saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'jpg');
-    % save('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0103\Case0103TmprtrFigXY.mat');
+    save( strcat( fname, '\', CaseDate, 'TmprtrFigXY.mat') );
 end
 
 if flag_YZ == 1
@@ -512,12 +517,13 @@ if flag_YZ == 1
     hold on;
     % plotYZ( shiftedCoordinateXYZ, air_x, h_torso, air_z, x, paras2dYZ, dx, dy, dz, bolus_b, muscle_b );
     plotYZ( paras2dYZ, dy, dz );
+    plotGridLineYZ( shiftedCoordinateXYZ, tumor_m );
     set(gca,'fontsize',20);
     set(gca,'LineWidth',2.0);
     box on;
     view(2);
-    saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'fig');
-    saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'jpg');
+    % saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'fig');
+    % saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'jpg');
 
     % calculate the E field
     SARseg = zeros( y_idx_max, z_idx_max, 6, 8 );
@@ -635,11 +641,12 @@ if flag_YZ == 1
     set(log_axes, 'Xtick', [-15, -10, -5, 0, 5, 10, 15]); 
     % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
     plotYZ( paras2dYZ, dy, dz );
+    plotGridLineYZ( shiftedCoordinateXYZ, tumor_m );
     axis equal;
     axis( [ - 15, 15, - 15, 15 ]);
     % axis( [ - 100 * h_torso / 2, 100 * h_torso / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);
     view(2);
     % saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'fig');
     % saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'jpg');
-    % save('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0103\Case0103TmprtrFigYZ.mat');
+    save( strcat( fname, '\', CaseDate, 'TmprtrFigYZ.mat') ); 
 end

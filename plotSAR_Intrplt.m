@@ -1,4 +1,4 @@
-function plotSAR_Intrplt( SARseg, TtrVol, PntMidPnts9Crdnt, IntrpltPnts, CrossSecText )
+function plotSAR_Intrplt( SARseg, TtrVol, PntMidPnts9Crdnt, IntrpltPnts, CrossSecText, Tmprtr_flag, PntSegValue )
     
     EightRegion = zeros(8, 1);
 
@@ -81,10 +81,29 @@ if ~isempty(find(EightRegion))
           5 2 3;
           5 3 6 ];
 
-    % patch( 'Faces', f(find(EightRegion), :), 'Vertices', 100 * PntMidPnts9Crdnt, ...
-    %   'FaceVertexCData', log10( IntrpltPnts ),'FaceColor','interp', 'EdgeColor','none');
-    patch( 'Faces', f(find(EightRegion), :), 'Vertices', 100 * PntMidPnts9Crdnt, ...
+    if Tmprtr_flag
+        % PntSegUni = [ PntSegValue(4, 1), PntSegValue(4, 2), PntSegValue(4, 3), PntSegValue(4, 4), PntSegValue(5, 4), PntSegValue(6, 1);
+        %               PntSegValue(1, 1), PntSegValue(1, 2), PntSegValue(1, 7), PntSegValue(1, 8), PntSegValue(5, 3), PntSegValue(6, 2); 
+        %               PntSegValue(1, 3), PntSegValue(1, 4), PntSegValue(1, 5), PntSegValue(1, 6), PntSegValue(5, 2), PntSegValue(6, 3); 
+        %               PntSegValue(2, 1), PntSegValue(2, 2), PntSegValue(2, 3), PntSegValue(2, 4), PntSegValue(5, 1), PntSegValue(6, 4); 
+        %               PntSegValue(2, 5), PntSegValue(2, 6), PntSegValue(2, 7), PntSegValue(2, 8), PntSegValue(5, 8), PntSegValue(6, 5); 
+        %               PntSegValue(3, 1), PntSegValue(3, 2), PntSegValue(3, 7), PntSegValue(3, 8), PntSegValue(5, 7), PntSegValue(6, 6); 
+        %               PntSegValue(3, 3), PntSegValue(3, 4), PntSegValue(3, 5), PntSegValue(3, 6), PntSegValue(5, 6), PntSegValue(6, 7); 
+        %               PntSegValue(4, 5), PntSegValue(4, 6), PntSegValue(4, 7), PntSegValue(4, 8), PntSegValue(5, 5), PntSegValue(6, 8) ];
+
+        % Pnt9SegValue = get9Seg(PntSegUni);
+      patch( 'Faces', f(find(EightRegion), :), 'Vertices', 100 * PntMidPnts9Crdnt, ...
       'FaceVertexCData', IntrpltPnts,'FaceColor','interp', 'EdgeColor','none');
+
+      % IntrpltPnts()
+      % patch( 'Faces', f(find(Pnt9SegValue == 2), :), 'Vertices', 100 * PntMidPnts9Crdnt, ...
+      % 'FaceVertexCData', IntrpltPnts,'FaceColor','interp', 'EdgeColor','none');
+      
+    else
+      patch( 'Faces', f(find(EightRegion), :), 'Vertices', 100 * PntMidPnts9Crdnt, ...
+        'FaceVertexCData', log10( IntrpltPnts ),'FaceColor','interp', 'EdgeColor','none');
+    end
+    
 end
 
 end

@@ -1,3 +1,180 @@
+AxA = 0;
+for idx = 1: 1: 9
+    AxA = AxA + idx;
+end
+
+% clc; clear;
+% dt = 15;
+% timeNum_1   = 4 * 5;
+% timeNum_2   = 4 * 30;
+% timeNum_3   = 4 * 15;
+% timeNum_all = timeNum_1 + timeNum_2 + timeNum_3;
+
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0108';
+% % fname = 'e:\Kevin\CapaReal\Case0108';
+% CaseDate = 'Case0108';
+
+% CaseName = 'Power250';
+% % V_0 = 81.43;
+% % Shift2d;
+% load( strcat(fname, '\', CaseName, '.mat') );
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0108';
+
+% % temperature initialization
+% loadThermalParas;
+% LungRatio = 1;
+% TmprtrTau = T_0 * ones( x_idx_max, y_idx_max, z_idx_max, timeNum_all + 1 );
+% for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+%     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
+%     if mediumTable( m, n, ell ) == 2
+%         TmprtrTau( m, n, ell, :) = T_bolus;
+%     end
+%     if mediumTable( m, n, ell ) == 1
+%         TmprtrTau( m, n, ell, :) = T_air;
+%     end
+%     if mediumTable( m, n, ell ) == 0
+%         XZ9Med = getXZ9Med(m, n, ell, mediumTable);
+%         if checkAirAround( XZ9Med )
+%             % TmprtrTau( m, n, ell, :) = ( T_bolus + T_air ) / 2;
+%             TmprtrTau( m, n, ell, :) = T_bolus;
+%         end
+%     end
+% end
+
+% T_bgn = 0;
+% T_end = 0;
+
+% load( strcat( fname, '\', CaseDate, 'TmprtrFigXZ.mat' ) );
+
+% t = T_end;
+%     t_idx = t / dt + 1;
+%     T_XZ = zeros( x_idx_max, z_idx_max );
+%     T_XZ = squeeze( TmprtrTau( :, tumor_n, :, uint8(t_idx) ) );
+
+%     figure(51);
+%     clf;
+
+%     TmprSARseg = zeros( x_idx_max, z_idx_max, 6, 8 );
+
+%     for idx = 1: 1: x_idx_max * z_idx_max
+%         % idx = ( ell - 1 ) * x_idx_max + m;
+%         tmp_m = mod( idx, x_idx_max );
+%         if tmp_m == 0
+%             m = x_idx_max;
+%         else
+%             m = tmp_m;
+%         end
+%         n = tumor_n;
+%         ell = int64( ( idx - m ) / x_idx_max + 1 );
+
+%         BioValid = false;
+%         CnvctnFlag = false;
+%         if mediumTable( m, n, ell ) ~= 1 && mediumTable( m, n, ell ) ~= 2
+%             if mediumTable( m, n, ell ) == 0
+%                 XZ9Med = getXYZ9Med(m, n, ell, mediumTable, 'XZ');
+%                 if ~checkBolusAround( XZ9Med )
+%                     BioValid = true;
+%                 else
+%                     if checkMuscleAround( XZ9Med )
+%                         CnvctnFlag = true;
+%                     end
+%                 end
+%             else
+%                 BioValid = true;
+%             end
+%         end
+
+%         if m == 16 && ell == 13
+%             ;
+%         end
+
+%         if BioValid == true || mediumTable( m, n, ell ) == 2 % In bio or bolus
+%             TmprSARseg(m, ell, :, :) = T_XZ(m, ell);
+%         elseif CnvctnFlag == true
+%             PntSegValueXZ = squeeze( SegValueXZ(m, ell, :, :) );
+%             TmpTmprtr = T_bolus * ones(6, 8);
+%             TmpTmprtr( find(PntSegValueXZ ~= 2) ) = T_XZ(m, ell);
+%             TmprSARseg(m, ell, :, :) = TmpTmprtr;
+%         elseif mediumTable( m, n, ell ) == 0 
+%             XZ9Med = getXYZ9Med(m, n, ell, mediumTable, 'XZ');
+%             if checkAirAround( XZ9Med )
+%                 % PntSegValueXZ = squeeze( SegValueXZ(m, ell, :, :) );
+%                 TmpTmprtr = T_bolus * ones(6, 8);
+%                 TmprSARseg(m, ell, :, :) = TmpTmprtr;
+%             end
+%         end
+%     end
+
+%     tic;
+%     disp('time for interpolation: ')
+%     x_idx_maxI = 2 * x_idx_max - 1;
+%     z_idx_maxI = 2 * z_idx_max - 1;
+%     TmprIntrpltPnts = zeros( x_idx_maxI, z_idx_maxI );
+
+%     for idxI = 1: 1: x_idx_maxI * z_idx_maxI
+%         % idxI = ( ellI - 1 ) * x_idx_maxI + mI;
+%         tmp_mI = mod( idxI, x_idx_maxI );
+%         if tmp_mI == 0
+%             mI = x_idx_maxI;
+%         else
+%             mI = tmp_mI;
+%         end
+
+%         ellI = int64( ( idxI - mI ) / x_idx_maxI + 1 );
+
+%         if mI >= 2 && mI <= x_idx_maxI - 1 && ellI >= 2 && ellI <= z_idx_maxI - 1 
+%             TmprIntrpltPnts(mI, ellI) = ExecIntrplt( mI, ellI, TmprSARseg, TtrVol, 'XZ' );
+%         end
+%     end
+%     toc;
+
+%     disp('Time to plot SAR');
+%         tic;
+%         for idx = 1: 1: x_idx_max * z_idx_max
+%             % idx = ( ell - 1 ) * x_idx_max + m;
+%             tmp_m = mod( idx, x_idx_max );
+%             if tmp_m == 0
+%                 m = int64(x_idx_max);
+%             else
+%                 m = int64(tmp_m);
+%             end
+%             ell = int64( ( idx - m ) / x_idx_max + 1 );
+
+%             if m == 16 && ell == 10
+%                 ;
+%             end
+
+%             if m >= 2 && m <= x_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1
+%                 TmprIntrplt9Pnts     = getIntrplt9Pnts(m, ell, TmprIntrpltPnts);
+%                 PntMidPnts9Crdnt = squeeze( MidPnts9Crdnt(m, ell, :, :) );
+%                 PntMidPnts9Crdnt(:, 2) = [];
+%                 plotSAR_Intrplt( squeeze( SARseg( m, ell, :, :) ), squeeze( TtrVol( m, ell, :, : ) ), ...
+%                                         PntMidPnts9Crdnt, TmprIntrplt9Pnts, 'XZ', 1 );
+%             end
+%         end
+%     toc;
+
+%     colorbar;
+%     colormap jet;
+%     set(gca,'fontsize',20);
+%     set(gca,'LineWidth',2.0);
+%     cbar = colorbar;
+%     caxis([5, 50]);
+%     set(cbar, 'Ytick', [5, 10, 15, 20, 25, 30, 35, 40, 45, 50], 'FontSize', 20); 
+%     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
+%     ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
+%     axis equal;
+%     axis( [ - 20, 20, - 15, 15 ] );
+%     box on;
+%     view(2);
+%     hold on;
+%     paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
+%     plotMap( paras2dXZ, dx, dz );
+%     plotGridLineXZ( shiftedCoordinateXYZ, tumor_n );
+
+% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0108\Case0108.mat');
+% TmprtrTau
+
 % Data=magic(100);
 % c=[1 10/3 10 100/3 100 1000/3 1000 10000/3 10^4];
 % contourf(log(Data(:,:)),log(c));
@@ -180,18 +357,18 @@
 % colorbar;
 
 % clc; clear;
+% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0108\Case0108.mat');
+% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0103\Power250currentEst.mat');
+% W
+% Current
 
-load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0103\Power250currentEst.mat');
-W
-Current
+% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0103\Power280currentEst.mat');
+% W
+% Current
 
-load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0103\Power280currentEst.mat');
-W
-Current
-
-load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0103\Power300currentEst.mat');
-W
-Current
+% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0103\Power300currentEst.mat');
+% W
+% Current
 
 % openfig('Power300PhiXY.fig', 'reuse');
 % tumor_m = tumor_x / dx + air_x / (2 * dx) + 1;
@@ -216,10 +393,12 @@ Current
 % BxB = [0, 1, 1, 0, 1];
 % find(AxA>2 & BxB == 1)
 
-% v = [2 4; 2 8; 8 4; 5 0; 5 2; 8 0; 5 5; 5 6; 8 2];
-% f = [4 5 6; 1 2 3];
-% col = [0; 6; 4; 3; 4; 6; 1; 1; 1];
-% figure
+% v = [2 4; 2 8; 8 4; 5 0; 5 2; 8 0; 5 5; 5 6];
+% f = [4 5 6; 
+%     1 2 3];
+% col = [0; 6; 4; 3; 4; 6; 1; 1];
+% figure(31);
+% clf;
 % patch('Faces',f,'Vertices',v,'FaceVertexCData',col,'FaceColor','interp');
 % colorbar
 % load('Power250currentEst.mat');

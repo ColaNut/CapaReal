@@ -57,6 +57,16 @@ for t = T_bgn + dt: dt: T_end
             end
         end
 
+        if ( m >= 19 && m <= 20 ) && ( ell == 11 || ell == 31 )
+            CnvctnFlag = true;
+        end
+        if m == 19 && n >= 16 && n <= 20 && ( ell == 12 || ell == 30 )
+            BioValid = true;
+        end
+        % namely, [m, n, ell] = [19, 16, 12], [19, 17, 12], [19, 18, 12], [19, 19, 12], [19, 20, 12], 
+        %      or [m, n, ell] = [19, 16, 30], [19, 17, 30], [19, 18, 30], [19, 19, 30], [19, 20, 30].
+ 
+
         if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1  && ell >= 2 && ell <= z_idx_max - 1 
             PntSegMed = squeeze( SegMed(m, n, ell, :, :) );
             TmprtrTauMinus = get7Tmprtr(m, n, ell, t_idx - 1, TmprtrTau);
@@ -72,18 +82,26 @@ for t = T_bgn + dt: dt: T_end
                                             x_idx_max, y_idx_max, z_idx_max, PntSegMed, mediumTable, ...
                                             T_blood, zeta, sigma, rho, cap, rho_b, cap_b, xi, dt, TmprtrTauMinus, Phi, LungRatio );
                 end
-            end
-            if CnvctnFlag
+            elseif CnvctnFlag
                 sigmaMask = sigma;
                 sigmaMask(2) = 0;
                 TmprtrTau( m, n, ell, t_idx ) = calTmprtrCnvcPnt( m, n, ell, shiftedCoordinateXYZ, ...
                                             x_idx_max, y_idx_max, z_idx_max, PntSegMed, mediumTable, ...
                                             T_blood, T_bolus, zeta, sigmaMask, rho, cap, rho_b, cap_b, xi, dt, ...
                                             TmprtrTauMinus, Phi, alpha );
+            else
+                if mediumTable( m, n, ell ) ~= 1 && mediumTable( m, n, ell ) ~= 2
+                    if mediumTable( m, n, ell ) == 0
+                        XZ9Med = getXZ9Med(m, n, ell, mediumTable);
+                        if ~checkAirAround( XZ9Med )
+                            [m, n, ell]
+                            % error('Check Here');
+                        end
+                    end
+                end
             end
         end
     end
-    % deal with ``torso front'' and ``torso end''.
     TmprtrTau( :, 1, :, uint8(t_idx) ) = TmprtrTau( :, 2, :, uint8(t_idx) );
     TmprtrTau( :, y_idx_max, :, uint8(t_idx) ) = TmprtrTau( :, y_idx_max - 1, :, uint8(t_idx) );
 end

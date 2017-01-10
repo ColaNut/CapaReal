@@ -6,7 +6,8 @@ Epsilon_0     = 10^(-9) / (36 * pi);
 Omega_0       = 2 * pi * 10 * 10^6; % 2 * pi * 10 MHz
 % V_0           = 100; 
               % air, bolus, muscle, lung, tumor
-rho           = [ 1,  1020,  1020,  1050, 1040 ]';
+% rho           = [ 1,  1020,  1020,  1050, 1040 ]';
+rho           = [ 1,  1020,  1020,  242.6, 1040 ]';
 epsilon_r_pre = [ 1, 113.0,   184, 264.9,  402 ]';
 sigma         = [ 0,  0.61, 0.685,  0.42, 0.68 ]';
 epsilon_r     = epsilon_r_pre - i * sigma ./ ( Omega_0 * Epsilon_0 );

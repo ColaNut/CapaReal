@@ -1,22 +1,24 @@
-clc; clear;
-% load the mat from the end of all simulations
-fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal';
-CaseName = 'Case0103';
-load( strcat(fname, '\', CaseName, '\', 'Case0103.mat') );
+% clc; clear;
+% % load the mat from the end of all simulations
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal';
+% CaseName = 'Case0107';
+% load( strcat(fname, '\', CaseName, '\', 'Case0107.mat') );
 
-% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\TexFile2';
+% % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\TexFile2';
 
 tumor_m = tumor_x / dx + air_x / (2 * dx) + 1;
 tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1;
 tumor_ell = tumor_z / dz + air_z / (2 * dz) + 1;
 
-flag_XZ_T = 1;
-flag_XY_T = 1;
-flag_YZ_T = 1;
+% flag_XZ_T = 0;
+% flag_XY_T = 0;
+% flag_YZ_T = 1;
 
 if flag_XZ_T == 1
     % load the SAR segments in the XZ cross section in PhiDstrbtn
-    load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0103\Case0103TmprtrFigXZ.mat');
+    load( strcat( fname, '\', CaseDate, 'TmprtrFigXZ.mat' ) );
+    % load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0107\Case0107TmprtrFigXZ.mat');
+    % to retrieve: SegValueXZ and TtrVol
 
     t = T_end;
     t_idx = t / dt + 1;
@@ -108,12 +110,17 @@ if flag_XZ_T == 1
             end
             ell = int64( ( idx - m ) / x_idx_max + 1 );
 
+            if m == 16 && ell == 10
+                ;
+            end
+
             if m >= 2 && m <= x_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1
+                PntSegValueXZ = squeeze( SegValueXZ(m, ell, :, :) );
                 TmprIntrplt9Pnts     = getIntrplt9Pnts(m, ell, TmprIntrpltPnts);
                 PntMidPnts9Crdnt = squeeze( MidPnts9Crdnt(m, ell, :, :) );
                 PntMidPnts9Crdnt(:, 2) = [];
                 plotSAR_Intrplt( squeeze( SARseg( m, ell, :, :) ), squeeze( TtrVol( m, ell, :, : ) ), ...
-                                        PntMidPnts9Crdnt, TmprIntrplt9Pnts, 'XZ' );
+                                        PntMidPnts9Crdnt, TmprIntrplt9Pnts, 'XZ', 1, PntSegValueXZ );
             end
         end
     toc;
@@ -134,18 +141,19 @@ if flag_XZ_T == 1
     hold on;
     paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
     plotMap( paras2dXZ, dx, dz );
-    % plotGridLineXZ( shiftedCoordinateXYZ, tumor_n );
+    plotGridLineXZ( shiftedCoordinateXYZ, tumor_n );
     
     % ylabel(cbar, '$T$ ($^\circ$C)', 'Interpreter','LaTex', 'FontSize', 20);
-    saveas(figure(21), fullfile(fname, strcat(CaseName, 'TmprtrXZ')), 'fig');
-    saveas(figure(21), fullfile(fname, strcat(CaseName, 'TmprtrXZ')), 'jpg');
+    % saveas(figure(21), fullfile(fname, strcat(CaseName, 'TmprtrXZ')), 'fig');
+    % saveas(figure(21), fullfile(fname, strcat(CaseName, 'TmprtrXZ')), 'jpg');
 end
 
 % Shrink the edge on the border line
 % Add the temperature and the SAR value to the torso end.
 if flag_XY_T == 1
     % load the SAR segments in the XY cross section in PhiDstrbtn
-    load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0103\Case0103TmprtrFigXY.mat');
+    load( strcat( fname, '\', CaseDate, 'TmprtrFigXY.mat' ) );
+    % load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0107\Case0107TmprtrFigXY.mat');
 
     T_XY = zeros( x_idx_max, y_idx_max );
     
@@ -246,7 +254,7 @@ if flag_XY_T == 1
                 PntMidPnts9Crdnt = squeeze( MidPnts9Crdnt(m, n, :, :) );
                 PntMidPnts9Crdnt(:, 3) = [];
                 plotSAR_Intrplt( squeeze( SARseg( m, n, :, :) ), squeeze( TtrVol( m, n, :, : ) ), ...
-                                        PntMidPnts9Crdnt, TmprIntrplt9Pnts, 'XY' );
+                                        PntMidPnts9Crdnt, TmprIntrplt9Pnts, 'XY', 1 );
             end
         end
     toc;
@@ -273,16 +281,17 @@ if flag_XY_T == 1
     %             tumor_x, tumor_y, tumor_r_prime ];
     maskXY(paras2dXY(4), air_z, dx);
     plotXY( paras2dXY, dx, dy );
-    % plotGridLineXY( shiftedCoordinateXYZ, tumor_ell );
+    plotGridLineXY( shiftedCoordinateXYZ, tumor_ell );
     
     % ylabel(cbar, '$T$ ($^\circ$C)', 'Interpreter','LaTex', 'FontSize', 20);
-    saveas(figure(22), fullfile(fname, strcat(CaseName, 'TmprtrXY')), 'fig');
-    saveas(figure(22), fullfile(fname, strcat(CaseName, 'TmprtrXY')), 'jpg');
+    % saveas(figure(22), fullfile(fname, strcat(CaseName, 'TmprtrXY')), 'fig');
+    % saveas(figure(22), fullfile(fname, strcat(CaseName, 'TmprtrXY')), 'jpg');
 end
 
 if flag_YZ_T == 1
     % load the SAR segments in the XZ cross section in PhiDstrbtn
-    load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0103\Case0103TmprtrFigYZ.mat');
+    load( strcat( fname, '\', CaseDate, 'TmprtrFigYZ.mat' ) );
+    % load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0107\Case0107TmprtrFigYZ.mat');
 
     t = T_end;
     t_idx = t / dt + 1;
@@ -322,6 +331,10 @@ if flag_YZ_T == 1
                 else
                     BioValid = true;
                 end
+            end
+
+            if n >= 16 && n <= 20 && ( ell == 11 || ell == 31 )
+                CnvctnFlag = true;
             end
 
             if BioValid == true || mediumTable( m, n, ell ) == 2 % In bio or bolus
@@ -366,25 +379,26 @@ if flag_YZ_T == 1
     toc;
 
     disp('Time to plot SAR');
-        tic;
-        for idx = 1: 1: y_idx_max * z_idx_max
-            % idx = ( ell - 1 ) * y_idx_max + n;
-            tmp_n = mod( idx, y_idx_max );
-            if tmp_n == 0
-                n = int64(y_idx_max);
-            else
-                n = int64(tmp_n);
-            end
-            ell = int64( ( idx - m ) / y_idx_max + 1 );
-
-            if n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1
-                TmprIntrplt9Pnts     = getIntrplt9Pnts(n, ell, TmprIntrpltPnts);
-                PntMidPnts9Crdnt = squeeze( MidPnts9Crdnt(n, ell, :, :) );
-                PntMidPnts9Crdnt(:, 1) = [];
-                plotSAR_Intrplt( squeeze( SARseg( n, ell, :, :) ), squeeze( TtrVol( n, ell, :, : ) ), ...
-                                        PntMidPnts9Crdnt, TmprIntrplt9Pnts, 'YZ' );
-            end
+    tic;
+    for idx = 1: 1: y_idx_max * z_idx_max
+        % idx = ( ell - 1 ) * y_idx_max + n;
+        tmp_n = mod( idx, y_idx_max );
+        if tmp_n == 0
+            n = int64(y_idx_max);
+        else
+            n = int64(tmp_n);
         end
+        ell = int64( ( idx - m ) / y_idx_max + 1 );
+
+        if n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1
+            TmprIntrplt9Pnts     = getIntrplt9Pnts(n, ell, TmprIntrpltPnts);
+            PntMidPnts9Crdnt = squeeze( MidPnts9Crdnt(n, ell, :, :) );
+            PntMidPnts9Crdnt(:, 1) = [];
+            % the SARseg was used as MASK.
+            plotSAR_Intrplt( squeeze( SARseg( n, ell, :, :) ), squeeze( TtrVol( n, ell, :, : ) ), ...
+                                    PntMidPnts9Crdnt, TmprIntrplt9Pnts, 'YZ', 1 );
+        end
+    end
     toc;
 
     colorbar;
@@ -403,9 +417,9 @@ if flag_YZ_T == 1
     hold on;
     paras2dYZ = genParas2dYZ( tumor_x, paras, dy, dz );
     plotYZ( paras2dYZ, dy, dz );
-    % plotGridLineYZ( shiftedCoordinateXYZ, tumor_m );
+    plotGridLineYZ( shiftedCoordinateXYZ, tumor_m );
     
     % ylabel(cbar, '$T$ ($^\circ$C)', 'Interpreter','LaTex', 'FontSize', 20);
-    saveas(figure(23), fullfile(fname, strcat(CaseName, 'TmprtrYZ')), 'fig');
-    saveas(figure(23), fullfile(fname, strcat(CaseName, 'TmprtrYZ')), 'jpg');
+    % saveas(figure(23), fullfile(fname, strcat(CaseName, 'TmprtrYZ')), 'fig');
+    % saveas(figure(23), fullfile(fname, strcat(CaseName, 'TmprtrYZ')), 'jpg');
 end

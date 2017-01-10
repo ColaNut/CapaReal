@@ -1,8 +1,8 @@
-clc; clear;
-fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal';
-CaseName = 'Case0103';
-load( strcat(fname, '\', CaseName, '\', 'Case0103.mat') );
-% load( strcat(fname, '\', CaseName, '\', 'Case0103.mat'), 'TmprtrTau' );
+% clc; clear;
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal';
+% CaseDate = 'Case0107';
+% load( strcat(fname, '\', CaseDate, '\', 'Case0107.mat') );
+% % load( strcat(fname, '\', CaseDate, '\', 'Case0107.mat'), 'TmprtrTau' );
 
 tumor_m = tumor_x / dx + air_x / (2 * dx) + 1;
 tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1;
@@ -46,8 +46,8 @@ set(gca,'LineWidth',2.0);
 axis( [ 0, 50, 200, 500 ]);
 ylabel('$W$ (watt)','Interpreter','LaTex', 'FontSize', 18);
 linkaxes([ax1 ax2],'x');
-saveas(figure(4), fullfile(fname, 'TotalQmet42000TumorTmprtr'), 'fig');
-saveas(figure(4), fullfile(fname, 'TotalQmet42000TumorTmprtr'), 'jpg');
+% saveas(figure(4), fullfile(fname, 'TotalQmet42000TumorTmprtr'), 'fig');
+% saveas(figure(4), fullfile(fname, 'TotalQmet42000TumorTmprtr'), 'jpg');
 
 % [ M, I ] = max( squeeze( TmprtrTau(tumor_m, tumor_n, tumor_ell, :) ) )
 
