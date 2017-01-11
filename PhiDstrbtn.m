@@ -192,7 +192,7 @@ if flag_XZ == 1
             PntMidPnts9Crdnt = squeeze( MidPnts9Crdnt(m, ell, :, :) );
             PntMidPnts9Crdnt(:, 2) = [];
             plotSAR_Intrplt( squeeze( SARseg( m, ell, :, :) ), squeeze( TtrVol( m, ell, :, : ) ), ...
-                                    PntMidPnts9Crdnt, Intrplt9Pnts, 'XZ' );
+                                    PntMidPnts9Crdnt, Intrplt9Pnts, 'XZ', 0 );
         end
 
     end
@@ -406,7 +406,7 @@ if flag_XY == 1
             PntMidPnts9Crdnt = squeeze( MidPnts9Crdnt(m, n, :, :) );
             PntMidPnts9Crdnt(:, 3) = [];
             plotSAR_Intrplt( squeeze( SARseg( m, n, :, :) ), squeeze( TtrVol( m, n, :, : ) ), ...
-                                    PntMidPnts9Crdnt, Intrplt9Pnts, 'XY' );
+                                    PntMidPnts9Crdnt, Intrplt9Pnts, 'XY', 0 );
         end
 
     end
@@ -626,7 +626,7 @@ if flag_YZ == 1
             PntMidPnts9Crdnt = squeeze( MidPnts9Crdnt(n, ell, :, :) );
             PntMidPnts9Crdnt(:, 1) = [];
             plotSAR_Intrplt( squeeze( SARseg( n, ell, :, :) ), squeeze( TtrVol( n, ell, :, : ) ), ...
-                                    PntMidPnts9Crdnt, Intrplt9Pnts, 'YZ' );
+                                    PntMidPnts9Crdnt, Intrplt9Pnts, 'YZ', 0 );
         end
     end
     toc;

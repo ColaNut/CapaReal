@@ -1,7 +1,33 @@
-AxA = 0;
-for idx = 1: 1: 9
-    AxA = AxA + idx;
-end
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0109';
+% saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'fig');
+% saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
+% saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'fig');
+% saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
+% saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'fig');
+% saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'jpg');
+% saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'fig');
+% saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'jpg');
+% saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'fig');
+% saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'jpg');
+% saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'fig');
+% saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'jpg');
+% saveas(figure(4), fullfile(fname, 'TotalQmet42000TumorTmprtr'), 'fig');
+% saveas(figure(4), fullfile(fname, 'TotalQmet42000TumorTmprtr'), 'jpg');
+% saveas(figure(21), fullfile(fname, strcat(CaseName, 'TmprtrXZ')), 'fig');
+% saveas(figure(21), fullfile(fname, strcat(CaseName, 'TmprtrXZ')), 'jpg');
+% saveas(figure(22), fullfile(fname, strcat(CaseName, 'TmprtrXY')), 'fig');
+% saveas(figure(22), fullfile(fname, strcat(CaseName, 'TmprtrXY')), 'jpg');
+% saveas(figure(23), fullfile(fname, strcat(CaseName, 'TmprtrYZ')), 'fig');
+% saveas(figure(23), fullfile(fname, strcat(CaseName, 'TmprtrYZ')), 'jpg');
+
+clc; clear;
+load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0109\Power250currentEst.mat');
+W
+load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0109\Power280currentEst.mat');
+W
+load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0109\Power300currentEst.mat');
+W
+
 
 % clc; clear;
 % dt = 15;
