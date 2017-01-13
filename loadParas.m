@@ -54,33 +54,33 @@
 % dy = 1 / 100;
 % dz = 1 / 100;
 
-% Testing case: version 3
-h_torso = 34 / 100;
-air_x = 50 / 100; % width: 30 cm
-air_z = 40 / 100; % height: 30 cm
-bolus_a = 34 / 200;
-bolus_b = 26 / 200;
-skin_a = 0 / 100;
-skin_b = 0 / 100;
-muscle_a = 30 / 200;
-muscle_b = 22 / 200;
-l_lung_x = - 6 / 100;
-l_lung_z = 0 / 100; 
-l_lung_a = 8 / 200;
-l_lung_b = 22 / 200;
-l_lung_c = 18 / 200;
-r_lung_x = 5 / 100;
-r_lung_z = 0 / 100;
-r_lung_a = 10 / 200;
-r_lung_b = 22 / 200;
-r_lung_c = 20 / 200;
-tumor_x = l_lung_x;
-tumor_y = - 4 / 100;
-tumor_z = 4 / 100;
-tumor_r = 4 / 200;
-dx = 1 / 100;
-dy = 1 / 100;
-dz = 1 / 100;
+% % Testing case: 2 cm bolus
+% h_torso = 34 / 100;
+% air_x = 50 / 100; % width: 30 cm
+% air_z = 40 / 100; % height: 30 cm
+% bolus_a = 34 / 200;
+% bolus_b = 26 / 200;
+% skin_a = 0 / 100;
+% skin_b = 0 / 100;
+% muscle_a = 30 / 200;
+% muscle_b = 22 / 200;
+% l_lung_x = - 6 / 100;
+% l_lung_z = 0 / 100; 
+% l_lung_a = 8 / 200;
+% l_lung_b = 22 / 200;
+% l_lung_c = 18 / 200;
+% r_lung_x = 5 / 100;
+% r_lung_z = 0 / 100;
+% r_lung_a = 10 / 200;
+% r_lung_b = 22 / 200;
+% r_lung_c = 20 / 200;
+% tumor_x = l_lung_x;
+% tumor_y = - 4 / 100;
+% tumor_z = 4 / 100;
+% tumor_r = 4 / 200;
+% dx = 1 / 100;
+% dy = 1 / 100;
+% dz = 1 / 100;
 
 % % Testing case: version 4: thicker bolus
 % h_torso = 34 / 100;
@@ -109,6 +109,34 @@ dz = 1 / 100;
 % dx = 1 / 100;
 % dy = 1 / 100;
 % dz = 1 / 100;
+
+% Testing case: 1 cm bolus
+h_torso = 34 / 100;
+air_x = 50 / 100; % width: 30 cm
+air_z = 40 / 100; % height: 30 cm
+bolus_a = 32 / 200;
+bolus_b = 24 / 200;
+skin_a = 0 / 100;
+skin_b = 0 / 100;
+muscle_a = 30 / 200;
+muscle_b = 22 / 200;
+l_lung_x = - 6 / 100;
+l_lung_z = 0 / 100; 
+l_lung_a = 8 / 200;
+l_lung_b = 22 / 200;
+l_lung_c = 18 / 200;
+r_lung_x = 5 / 100;
+r_lung_z = 0 / 100;
+r_lung_a = 10 / 200;
+r_lung_b = 22 / 200;
+r_lung_c = 20 / 200;
+tumor_x = l_lung_x;
+tumor_y = - 4 / 100;
+tumor_z = 4 / 100;
+tumor_r = 4 / 200;
+dx = 1 / 100;
+dy = 1 / 100;
+dz = 1 / 100;
 
 % % Real Case: 
 % h_torso = 26 / 100;

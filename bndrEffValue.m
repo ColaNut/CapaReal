@@ -1,4 +1,4 @@
-function [ effValue, SegMed, sideEffect ] = bndrEffValue( MidPntsCrdnt, tmpMidLyr, pxCrdt, tmpMed2Layers, epsilon_r )
+function [ effValue, SegMed, sideEffect ] = bndrEffValue( MidPntsCrdnt, tmpMidLyr, pxCrdt, tmpMed2Layers, epsilon_r, SegMedIn )
 
 effValue    = 0;
 sideEffect  = zeros(1, 4);
@@ -24,7 +24,12 @@ weight      = zeros(8, 1);
     u(4, :) = ( tmpMidLyr(2, :) - tmpMidLyr(5, :) ) ./ ( norm( tmpMidLyr(2, :) - tmpMidLyr(5, :) ) )^2;
     u(5, :) = ( pxCrdt' - tmpMidLyr(5, :) ) ./ ( norm( pxCrdt' - tmpMidLyr(5, :) ) )^2;
 
-[ weight, SegMed ] = calWeight( tmpMed2Layers, epsilon_r );
+if ~isequal(SegMedIn, ones(1, 8, 'uint8'))
+    SegMed = SegMedIn;
+    weight = epsilon_r(SegMedIn);
+else
+    [ weight, SegMed ] = calWeight( tmpMed2Layers, epsilon_r );
+end
 wghtTri = repmat(weight, 1, 3) .* TriVec;
 
 % [ 1, 2, 3, 4 ] = [ right, up, left, down ];

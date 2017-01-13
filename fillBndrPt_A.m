@@ -1,5 +1,5 @@
 function [ A_row, SegMed ] = fillBndrPt_A( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
-                                    mediumTable, epsilon_r )
+                                    mediumTable, epsilon_r, BlsBndryMsk )
 
     % A_row         = zeros( 1, x_idx_max * y_idx_max * z_idx_max );
     A_row         = zeros( 1, 14 );
@@ -9,6 +9,7 @@ function [ A_row, SegMed ] = fillBndrPt_A( m, n, ell, shiftedCoordinateXYZ, x_id
     MidPntsCrdnt  = zeros( 3, 9, 3 );
     tmpMidCrdnt   = zeros( 1, 9, 3 );
     tmpMed2Layers = zeros( 2, 9 );
+    BlsMed2Layers = zeros( 1, 9 );
     tmpMidLyr     = zeros( 9, 3 );
     sideEffect    = zeros( 6, 4 );
     SegMed        = ones( 6, 8, 'uint8' );
@@ -25,7 +26,13 @@ function [ A_row, SegMed ] = fillBndrPt_A( m, n, ell, shiftedCoordinateXYZ, x_id
     A_row(6)  = PntsIdx(2, 2);
     A_row(7)  = PntsIdx(2, 5);
 
-    try
+    % try
+    XZBls9Med = zeros(9, 1);
+    if BlsBndryMsk(m, ell) == 11
+        SegMed = PreCalSegMed( m, ell, PntsCrdnt, BlsBndryMsk );
+    elseif BlsBndryMsk(m, ell) == 12
+    end
+
     % p1
     tmpMidLyr = p1FaceMidLyr( PntsCrdnt );
     if PntsMed(3, 5) ~= 0
@@ -35,7 +42,7 @@ function [ A_row, SegMed ] = fillBndrPt_A( m, n, ell, shiftedCoordinateXYZ, x_id
     else
     tmpMed2Layers = p1FaceMed( PntsMed );
         [ A_row(8), SegMed(1, :), sideEffect(1, :) ] = bndrEffValue( squeeze( MidPntsCrdnt(3, :, :) ), ...
-                                        tmpMidLyr, squeeze( PntsCrdnt(3, 5, :) ), tmpMed2Layers, epsilon_r );
+                                        tmpMidLyr, squeeze( PntsCrdnt(3, 5, :) ), tmpMed2Layers, epsilon_r, SegMed(1, :) );
     end
 
     % p2
@@ -48,7 +55,7 @@ function [ A_row, SegMed ] = fillBndrPt_A( m, n, ell, shiftedCoordinateXYZ, x_id
     else
     tmpMed2Layers = p2FaceMed( PntsMed );
         [ A_row(9), SegMed(2, :), sideEffect(2, :) ] = bndrEffValue( squeeze( tmpMidCrdnt ), ...
-                                        tmpMidLyr, squeeze( PntsCrdnt(2, 4, :) ), tmpMed2Layers, epsilon_r );
+                                        tmpMidLyr, squeeze( PntsCrdnt(2, 4, :) ), tmpMed2Layers, epsilon_r, SegMed(2, :) );
     end
 
     % p3
@@ -61,7 +68,7 @@ function [ A_row, SegMed ] = fillBndrPt_A( m, n, ell, shiftedCoordinateXYZ, x_id
     else
     tmpMed2Layers = p3FaceMed( PntsMed );
         [ A_row(10), SegMed(3, :), sideEffect(3, :) ] = bndrEffValue( squeeze( tmpMidCrdnt ), ...
-                                        tmpMidLyr, squeeze( PntsCrdnt(1, 5, :) ), tmpMed2Layers, epsilon_r );
+                                        tmpMidLyr, squeeze( PntsCrdnt(1, 5, :) ), tmpMed2Layers, epsilon_r, SegMed(3, :) );
     end
 
     % p4
@@ -74,7 +81,7 @@ function [ A_row, SegMed ] = fillBndrPt_A( m, n, ell, shiftedCoordinateXYZ, x_id
     else
     tmpMed2Layers = p4FaceMed( PntsMed );
         [ A_row(11), SegMed(4, :), sideEffect(4, :) ] = bndrEffValue( squeeze( tmpMidCrdnt ), ...
-                                        tmpMidLyr, squeeze( PntsCrdnt(2, 6, :) ), tmpMed2Layers, epsilon_r );
+                                        tmpMidLyr, squeeze( PntsCrdnt(2, 6, :) ), tmpMed2Layers, epsilon_r, SegMed(4, :) );
     end
 
     % p5
@@ -87,7 +94,7 @@ function [ A_row, SegMed ] = fillBndrPt_A( m, n, ell, shiftedCoordinateXYZ, x_id
     else
     tmpMed2Layers = p5FaceMed( PntsMed );
         [ A_row(12), SegMed(5, :), sideEffect(5, :) ] = bndrEffValue( squeeze( tmpMidCrdnt ), ...
-                                        tmpMidLyr, squeeze( PntsCrdnt(2, 8, :) ), tmpMed2Layers, epsilon_r );
+                                        tmpMidLyr, squeeze( PntsCrdnt(2, 8, :) ), tmpMed2Layers, epsilon_r, SegMed(5, :) );
     end
 
     % p6
@@ -100,13 +107,13 @@ function [ A_row, SegMed ] = fillBndrPt_A( m, n, ell, shiftedCoordinateXYZ, x_id
     else
     tmpMed2Layers = p6FaceMed( PntsMed );
         [ A_row(13), SegMed(6, :), sideEffect(6, :) ] = bndrEffValue( squeeze( tmpMidCrdnt ), ...
-                                        tmpMidLyr, squeeze( PntsCrdnt(2, 2, :) ), tmpMed2Layers, epsilon_r );
+                                        tmpMidLyr, squeeze( PntsCrdnt(2, 2, :) ), tmpMed2Layers, epsilon_r, SegMed(6, :) );
     end
-    catch
-        [ m, n, ell ]
-        PntsMed
-        squeeze( tmpMidCrdnt )
-    end
+    % catch
+    %     [ m, n, ell ]
+    %     PntsMed
+    %     squeeze( tmpMidCrdnt )
+    % end
     
     % p0
     A_row(8) = A_row(8) + sideEffect(2, 2) + sideEffect(4, 2) + sideEffect(5, 2) + sideEffect(6, 2);

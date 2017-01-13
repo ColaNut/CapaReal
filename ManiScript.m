@@ -3,14 +3,14 @@ PhiSAR_flag = 1;
 if PhiSAR_flag == 1
     clc; clear;
     CaseName = 'Power300';
-    load( strcat('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0109\', CaseName, '.mat') );
+    load( strcat('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0111Bolus25Degree\', CaseName, '.mat') );
 
     flag_XZ = 1;
     flag_XY = 1;
     flag_YZ = 1;
 
-    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0109';
-    CaseDate = 'Case0109';
+    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0111Bolus25Degree';
+    CaseDate = 'Case0111Bolus25Degree';
     PhiDstrbtn;
     saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'fig');
     saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
@@ -31,7 +31,7 @@ TumorTmptr_flag = 1;
 if TumorTmptr_flag == 1
     clc; clear;
     fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal';
-    CaseDate = 'Case0109';
+    CaseDate = 'Case0111Bolus25Degree';
     load( strcat(fname, '\', CaseDate, '\', CaseDate, '.mat') );
 
     TumorTmptrMani;
@@ -47,7 +47,7 @@ if Tmprtr_flag == 1
     clc; clear;
     % load the mat from the end of all simulations
     fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal';
-    CaseDate = 'Case0109';
+    CaseDate = 'Case0111Bolus25Degree';
     load( strcat(fname, '\', CaseDate, '\', CaseDate, '.mat') );
     fname = strcat( 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal', '\', CaseDate );
 
