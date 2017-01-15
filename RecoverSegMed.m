@@ -1,7 +1,7 @@
 function SegMed = RecoverSegMed( SegMedOri, QuadrantNum )
 
     SegMed = ones( 6, 8, 'uint8' );
-
+    % transform from second quadrant to other quadrant
     if QuadrantNum == 2
         SegMed = SegMedOri;
     elseif QuadrantNum == 1

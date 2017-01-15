@@ -19,6 +19,9 @@ tumor_ell = tumor_z / dz + air_z / (2 * dz) + 1;
 % % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\TexFile2';
 % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0108';
 % % CaseName = 'Sigma';
+% counter = 0;
+% for y = tumor_y + dy: dy: tumor_y + dy
+% counter = counter + 1;
 
 if flag_XZ == 1
 
@@ -100,7 +103,7 @@ if flag_XZ == 1
     view(2);
     hold on;
     plotMap( paras2dXZ, dx, dz );
-    plotGridLineXZ( shiftedCoordinateXYZ, tumor_n );
+    plotGridLineXZ( shiftedCoordinateXYZ, y / dy + h_torso / (2 * dy) + 1 );
     % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'fig');
     % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
 
@@ -211,12 +214,14 @@ if flag_XZ == 1
     box on;
     view(2);
     plotMap( paras2dXZ, dx, dz );
-    plotGridLineXZ( shiftedCoordinateXYZ, tumor_n );
+    plotGridLineXZ( shiftedCoordinateXYZ, y / dy + h_torso / (2 * dy) + 1 );
     % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'fig');
     % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
     save( strcat( fname, '\', CaseDate, 'TmprtrFigXZ.mat') );
     % save('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0108\Case0108TmprtrFigXZ.mat');
 end
+
+% end
 
 if flag_XY == 1
 

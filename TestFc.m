@@ -20,28 +20,41 @@
 % saveas(figure(23), fullfile(fname, strcat(CaseName, 'TmprtrYZ')), 'fig');
 % saveas(figure(23), fullfile(fname, strcat(CaseName, 'TmprtrYZ')), 'jpg');
 
-% clc; clear;
-% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0109\Power250currentEst.mat');
-% W
+clc; clear;
+load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0109\Power250currentEst.mat');
+W
 % load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0109\Power280currentEst.mat');
 % W
 % load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0109\Power300currentEst.mat');
 % W
 
-% clc; clear; 
-V_0 = 76.78;
-Shift2d
-y = tumor_y + 2 * dy;
-tumor_m = tumor_x / dx + air_x / (2 * dx) + 1;
-tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1;
-tumor_ell = tumor_z / dz + air_z / (2 * dz) + 1;
 
-paras2dXZ = genParas2d( y, paras, dx, dy, dz );
-figure(1);
-plotMap( paras2dXZ, dx, dz );
-plotGridLineXZ( shiftedCoordinateXYZ, tumor_n + 2 );
+% % clc; clear; 
+% % V_0 = 76.78;
+% % Shift2d
+% tumor_m = tumor_x / dx + air_x / (2 * dx) + 1;
+% tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1;
+% tumor_ell = tumor_z / dz + air_z / (2 * dz) + 1;
 
+% tumor_y + 2 * dy
+% counter = 0;
+% for y = tumor_y: dy: tumor_y + 6 * dy
+%     counter = counter + 1;
+%     paras2dXZ = genParas2d( y, paras, dx, dy, dz );
+%     figure(counter);
+%     clf;
+%     plotMap( paras2dXZ, dx, dz );
+%     plotGridLineXZ( shiftedCoordinateXYZ, tumor_n + counter - 1 );
+% end
 
+% clc; clear;
+% CaseName = 'Power300';
+% load( strcat('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0109\', CaseName, '.mat') );
+
+% flag_XZ = 1;
+% flag_XY = 0;
+% flag_YZ = 0;
+% PhiDstrbtn;
 
 % lala = squeeze(SegMed(16, tumor_n + 2, 29, :, :));
 % Need to Rederive the octantCube.m

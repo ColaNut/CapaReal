@@ -88,7 +88,8 @@ SegMed = ones( x_idx_max, y_idx_max, z_idx_max, 6, 8, 'uint8');
 
 disp('The fill up time of A: ');
 tic;
-for idx = x_idx_max * y_idx_max * 28: 1: x_idx_max * y_idx_max * 32
+% for idx = x_idx_max * y_idx_max * 28: 1: x_idx_max * y_idx_max * 32
+for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
     % idx = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
     tmp_m = mod( idx, x_idx_max );
     if tmp_m == 0
@@ -107,6 +108,12 @@ for idx = x_idx_max * y_idx_max * 28: 1: x_idx_max * y_idx_max * 32
 
     p0 = idx;
 
+    if m == 16 && n == 2 && ell == 29
+        ;
+    end
+
+    % go through the XZ plane to check the special case point.
+    
     if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
         if mediumTable(p0) ~= 0
             [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillNrmlPt_A( m, n, ell, ...
@@ -129,46 +136,36 @@ for idx = x_idx_max * y_idx_max * 28: 1: x_idx_max * y_idx_max * 32
         sparseA{ p0 } = fillBack_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
     end
 
-    % if BlsBndryMsk(m, ell) == 1
-    %     [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillExtBlsPt_A( m, n, ell, ...
-    %                     shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, mediumTable, epsilon_r );
-    % elseif BlsBndryMsk(m, ell) == 2
-    %     fillIntBlsPt_A()
-    % end
-
-    % if spcialCsMsk(m, n, ell) == 1
-    %     ...
-    % end
 end
 toc;
 
-% % put on electrodes
-% [ Xtable, Ztable ] = fillTradlElctrd( bolus_a, bolus_b, dx, dz );
-% % Xtable = [ int_grid_x, z1, int_grid_x, z2 ];
-% % Ztable = [ x1, int_grid_z, x2, int_grid_z ];
-% UpElecTb = false( x_idx_max, y_idx_max, z_idx_max );
+% put on electrodes
+[ Xtable, Ztable ] = fillTradlElctrd( bolus_a, bolus_b, dx, dz );
+% Xtable = [ int_grid_x, z1, int_grid_x, z2 ];
+% Ztable = [ x1, int_grid_z, x2, int_grid_z ];
+UpElecTb = false( x_idx_max, y_idx_max, z_idx_max );
 
-% [ sparseA, B, UpElecTb ] = UpElectrode( sparseA, B, Xtable, Ztable, paras, V_0, x_idx_max, y_idx_max, dx, dy, dz, z_idx_max );
-% [ sparseA, B ] = DwnElectrode( sparseA, B, Xtable, Ztable, paras, V_0, x_idx_max, y_idx_max, dx, dy, dz );
+[ sparseA, B, UpElecTb ] = UpElectrode( sparseA, B, Xtable, Ztable, paras, V_0, x_idx_max, y_idx_max, dx, dy, dz, z_idx_max );
+[ sparseA, B ] = DwnElectrode( sparseA, B, Xtable, Ztable, paras, V_0, x_idx_max, y_idx_max, dx, dy, dz );
 
-% % Normalize each rows
-% for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
-%     tmp_vector = sparseA{ idx };
-%     num = uint8(size(tmp_vector, 2)) / 2;
-%     MAX_row_value = max( abs( tmp_vector( num + 1: 2 * num ) ) );
-%     tmp_vector( num + 1: 2 * num ) = tmp_vector( num + 1: 2 * num ) ./ MAX_row_value;
-%     sparseA{ idx } = tmp_vector;
-%     B( idx ) = B( idx ) ./ MAX_row_value;
-% end
+% Normalize each rows
+for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+    tmp_vector = sparseA{ idx };
+    num = uint8(size(tmp_vector, 2)) / 2;
+    MAX_row_value = max( abs( tmp_vector( num + 1: 2 * num ) ) );
+    tmp_vector( num + 1: 2 * num ) = tmp_vector( num + 1: 2 * num ) ./ MAX_row_value;
+    sparseA{ idx } = tmp_vector;
+    B( idx ) = B( idx ) ./ MAX_row_value;
+end
 
-% tol = 1e-6;
-% ext_itr_num = 10;
-% int_itr_num = 40;
+tol = 1e-6;
+ext_itr_num = 10;
+int_itr_num = 40;
 
-% tic;
-% disp('The gmres solutin of Ax = B: ');
-% bar_x_my_gmres = my_gmres( sparseA, B, int_itr_num, tol, ext_itr_num );
-% toc;
+tic;
+disp('The gmres solutin of Ax = B: ');
+bar_x_my_gmres = my_gmres( sparseA, B, int_itr_num, tol, ext_itr_num );
+toc;
 
 % save( strcat(fname, CaseName, '.mat') );
 % save('Case0103.mat');z

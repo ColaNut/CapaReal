@@ -3,13 +3,32 @@ function SegMed = ScndQdrt( XZBls9Med )
     % 14 cases
     SegMed = zeros(6, 8, 'uint8');
     ReOrder = zeros(3, 3);
-    CntrClckOrdr = zeros(8, 1);
+    CntrClckOrdr11 = zeros(8, 1);
+    CntrClckOrdr12 = zeros(8, 1);
     SegReordrXZ = 2 * ones(8, 6, 'uint8');
     ReOrder = Trnsfrm(XZBls9Med);
 
-    CntrClckOrdr = [ ReOrder(2, 3); ReOrder(1, 3); ReOrder(1, 2); ReOrder(1, 1); 
-                     ReOrder(2, 1); ReOrder(3, 1); ReOrder(3, 2); ReOrder(3, 3) ];
-    AirIdx = find(CntrClckOrdr == 1);
+    if XZBls9Med(5) == 11
+        CntrClckOrdr11 = [ ReOrder(2, 3); ReOrder(1, 3); ReOrder(1, 2); ReOrder(1, 1); 
+                         ReOrder(2, 1); ReOrder(3, 1); ReOrder(3, 2); ReOrder(3, 3) ];
+        AirIdx = find(CntrClckOrdr11 == 1);
+        for idx = AirIdx(1) - 1: 1: AirIdx(end)
+            SegReordrXZ(idx, :) = 1;
+        end
+    elseif XZBls9Med(5) == 12
+        CntrClckOrdr12 = [ ReOrder(2, 1); ReOrder(3, 1); ReOrder(3, 2); ReOrder(3, 3); 
+                         ReOrder(2, 3); ReOrder(1, 3); ReOrder(1, 2); ReOrder(1, 1) ];
+        TorsoIdx = find(CntrClckOrdr12 == 3);
+        for idx = TorsoIdx(1) + 3: 1: TorsoIdx(end) + 4
+            if mod(idx, 8) == 0
+                SegReordrXZ(8, :) = 3;
+            else
+                SegReordrXZ(mod(idx, 8), :) = 3;
+            end
+        end
+    else
+        error('Check');
+    end
 
     % SegReordrXZ = [   SegMed(4, 1), SegMed(4, 2), SegMed(4, 3), SegMed(4, 4), SegMed(5, 4), SegMed(6, 1);
     %                   SegMed(1, 1), SegMed(1, 2), SegMed(1, 7), SegMed(1, 8), SegMed(5, 3), SegMed(6, 2); 
@@ -19,10 +38,6 @@ function SegMed = ScndQdrt( XZBls9Med )
     %                   SegMed(3, 1), SegMed(3, 2), SegMed(3, 7), SegMed(3, 8), SegMed(5, 7), SegMed(6, 6); 
     %                   SegMed(3, 3), SegMed(3, 4), SegMed(3, 5), SegMed(3, 6), SegMed(5, 6), SegMed(6, 7); 
     %                   SegMed(4, 5), SegMed(4, 6), SegMed(4, 7), SegMed(4, 8), SegMed(5, 5), SegMed(6, 8) ];
-
-    for idx = AirIdx(1) - 1: 1: AirIdx(end)
-        SegReordrXZ(idx, :) = 1;
-    end
 
     SegMed(4, 1) = SegReordrXZ(1, 1);   SegMed(1, 1) = SegReordrXZ(2, 1);   SegMed(1, 3) = SegReordrXZ(3, 1);
     SegMed(4, 2) = SegReordrXZ(1, 2);   SegMed(1, 2) = SegReordrXZ(2, 2);   SegMed(1, 4) = SegReordrXZ(3, 2);

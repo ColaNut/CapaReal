@@ -1,6 +1,6 @@
 function Tmprtr = calTmprtrCnvcPnt( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
                                         PntSegMed, mediumTable, T_b, T_bolus, zeta, sigmaMask, ...
-                                        rho, cap, rho_b, cap_b, xi, dt, TmprtrTauMinus, Phi, alpha )
+                                        rho, cap, rho_b, cap_b, xi, dt, TmprtrTauMinus, Phi, alpha, BlsBndryMsk )
 
     PntsIdx       = zeros( 3, 9 );
     MedValue      = zeros( 3, 9 );
@@ -31,7 +31,7 @@ function Tmprtr = calTmprtrCnvcPnt( m, n, ell, shiftedCoordinateXYZ, x_idx_max, 
     % XiRhoTerm  = sum( sum( xi(PntSegMed) .* rho(PntSegMed) .* TtrVol ) ) * rho_b * cap_b;
     QsTerm     = sum( sum( PntQseg .* TtrVol ) );
 
-    A_row = fillBndrPt_A( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, mediumTable, zeta );
+    A_row = fillBndrPt_A( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, mediumTable, zeta, BlsBndryMsk );
     coeff = A_row(8: 14);
 
     % CurrZeta = zeta( mediumTable(m, n, ell) );

@@ -80,7 +80,7 @@ for t = T_bgn + dt: dt: T_end
                 else
                     TmprtrTau( m, n, ell, t_idx ) = calTmprtrBndrPnt( m, n, ell, shiftedCoordinateXYZ, ...
                                             x_idx_max, y_idx_max, z_idx_max, PntSegMed, mediumTable, ...
-                                            T_blood, zeta, sigma, rho, cap, rho_b, cap_b, xi, dt, TmprtrTauMinus, Phi, LungRatio );
+                                            T_blood, zeta, sigma, rho, cap, rho_b, cap_b, xi, dt, TmprtrTauMinus, Phi, LungRatio, BlsBndryMsk );
                 end
             elseif CnvctnFlag
                 sigmaMask = sigma;
@@ -88,7 +88,7 @@ for t = T_bgn + dt: dt: T_end
                 TmprtrTau( m, n, ell, t_idx ) = calTmprtrCnvcPnt( m, n, ell, shiftedCoordinateXYZ, ...
                                             x_idx_max, y_idx_max, z_idx_max, PntSegMed, mediumTable, ...
                                             T_blood, T_bolus, zeta, sigmaMask, rho, cap, rho_b, cap_b, xi, dt, ...
-                                            TmprtrTauMinus, Phi, alpha );
+                                            TmprtrTauMinus, Phi, alpha, BlsBndryMsk );
             else
                 if mediumTable( m, n, ell ) ~= 1 && mediumTable( m, n, ell ) ~= 2
                     if mediumTable( m, n, ell ) == 0

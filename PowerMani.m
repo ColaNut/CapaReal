@@ -1,29 +1,31 @@
-clc; clear; 
-fname = 'e:\Kevin\CapaReal\Case0109';
-% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0109';
-CaseName = 'Power250';
-V_0 = 76.78;
-Shift2d;
-save( strcat(fname, '\', CaseName, '.mat') );
-CurrentEst;
+% clc; clear; 
+% fname = 'e:\Kevin\CapaReal\Case0115Bolus1cm';
+% % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0115Bolus1cm';
+% CaseName = 'Power250';
+% V_0 = 76.78;
+% Shift2d;
+% save( strcat(fname, '\', CaseName, '.mat') );
+% CurrentEst;
 
-clc; clear;
-fname = 'e:\Kevin\CapaReal\Case0109';
-% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0109';
-CaseName = 'Power280';
-V_0 = 81.26;
-Shift2d;
-save( strcat(fname, '\', CaseName, '.mat') );
-CurrentEst;
+% % ManiScript;
 
-clc; clear;
-fname = 'e:\Kevin\CapaReal\Case0109';
-% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0109';
-CaseName = 'Power300';
-V_0 = 84.11;
-Shift2d;
-save( strcat(fname, '\', CaseName, '.mat') );
-CurrentEst;
+% clc; clear;
+% fname = 'e:\Kevin\CapaReal\Case0115Bolus1cm';
+% % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0115Bolus1cm';
+% CaseName = 'Power280';
+% V_0 = 81.26;
+% Shift2d;
+% save( strcat(fname, '\', CaseName, '.mat') );
+% CurrentEst;
+
+% clc; clear;
+% fname = 'e:\Kevin\CapaReal\Case0115Bolus1cm';
+% % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0115Bolus1cm';
+% CaseName = 'Power300';
+% V_0 = 84.11;
+% Shift2d;
+% save( strcat(fname, '\', CaseName, '.mat') );
+% CurrentEst;
 
 clc; clear;
 dt = 15;
@@ -32,8 +34,8 @@ timeNum_2   = 4 * 30;
 timeNum_3   = 4 * 15;
 timeNum_all = timeNum_1 + timeNum_2 + timeNum_3;
 
-% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0109';
-fname = 'e:\Kevin\CapaReal\Case0109';
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0115Bolus1cm';
+fname = 'e:\Kevin\CapaReal\Case0115Bolus1cm';
 
 % Period 1
 CaseName = 'Power250';
@@ -78,5 +80,7 @@ T_bgn = ( timeNum_1 + timeNum_2 ) * dt;
 timeNum = timeNum_3;
 TmprtrDis;
 
-fname = 'e:\Kevin\CapaReal\Case0109';
-save( strcat(fname, '\Case0109.mat') );
+fname = 'e:\Kevin\CapaReal\Case0115Bolus1cm';
+save( strcat(fname, '\Case0115Bolus1cm.mat') );
+
+ManiScript
