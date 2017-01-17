@@ -1,4 +1,4 @@
-% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0109';
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0115Bolus1cm';
 % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'fig');
 % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
 % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'fig');
@@ -20,32 +20,39 @@
 % saveas(figure(23), fullfile(fname, strcat(CaseName, 'TmprtrYZ')), 'fig');
 % saveas(figure(23), fullfile(fname, strcat(CaseName, 'TmprtrYZ')), 'jpg');
 
-clc; clear;
-load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0109\Power250currentEst.mat');
-W
+% clc; clear;
+% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0109\Power250currentEst.mat');
+% W
 % load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0109\Power280currentEst.mat');
 % W
 % load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0109\Power300currentEst.mat');
 % W
 
 
-% % clc; clear; 
-% % V_0 = 76.78;
-% % Shift2d
-% tumor_m = tumor_x / dx + air_x / (2 * dx) + 1;
-% tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1;
-% tumor_ell = tumor_z / dz + air_z / (2 * dz) + 1;
+% clc; clear; 
+% V_0 = 76.78;
+% Shift2d
+tumor_m = tumor_x / dx + air_x / (2 * dx) + 1;
+tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1;
+tumor_ell = tumor_z / dz + air_z / (2 * dz) + 1;
 
-% tumor_y + 2 * dy
-% counter = 0;
+y = tumor_y + dy;
+counter = 0;
 % for y = tumor_y: dy: tumor_y + 6 * dy
-%     counter = counter + 1;
-%     paras2dXZ = genParas2d( y, paras, dx, dy, dz );
-%     figure(counter);
-%     clf;
-%     plotMap( paras2dXZ, dx, dz );
-%     plotGridLineXZ( shiftedCoordinateXYZ, tumor_n + counter - 1 );
+    % counter = counter + 1;
+    paras2dXZ = genParas2d( y, paras, dx, dy, dz );
+    figure(30);
+    clf;
+    plotMap( paras2dXZ, dx, dz );
+    plotGridLineXZ( shiftedCoordinateXYZ, tumor_n + 1 );
 % end
+    x = tumor_x + dx;
+    paras2dYZ = genParas2dYZ( x, paras, dy, dz );
+    figure(31);
+    clf;
+    plotYZ( paras2dYZ, dy, dz );
+    plotGridLineYZ( shiftedCoordinateXYZ, tumor_m + 1);
+
 
 % clc; clear;
 % CaseName = 'Power300';

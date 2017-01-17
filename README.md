@@ -2,7 +2,9 @@
 3-d case with shifted grid
 
 10/05: Grid shift in 2d.
+
 10/06: Full 2d map.
+
 10/10: Grid shift in 3d.
 
 11/05: The runnint time to plot Phi and SAR for XZ, YZ and ZY 
@@ -16,3 +18,15 @@ The cal48TtrVol.m was cal8TtrVol.m not used.
 01/03: The electrode parameters are stored in UpElectrode.m, DwnElectrode.m, plotMap.m and plotYZ.m.
 
 01/15: Need to build up the table to check SegMed: the two adjacent face (tetrahedran) should has the same medium value. 
+
+01/17: 1. Need to reconsider the convection flags in bio-heat equation to make sense with the temperature distribution. 
+       
+       2. Since octantCube.m was cylinder-based model, it fails occasionally in the boundary of sphere or ellipsoid.
+       Hence, a more accurate segment detection algorithm is needed. 
+       
+       3. Since the original code was a fast developed version, it was un-extendable somewhat. 
+       And the medical important part: the ribs and bones were no incorporated in this model.
+       If these two items will to be considered, the corresponding narrow gap bwtween two boundary points will cause extra effort in detecting the segment value,
+
+       4. In conclusion, the development was suspended temporarily.
+
