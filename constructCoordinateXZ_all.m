@@ -9,7 +9,7 @@ air_z = paras2d(2);
 % medimTable = false( air_x / dx + 1, air_z / dz  + 1);
 % mediumTable = ones( air_x / dx + 1, air_z / dz  + 1, 'uint8' );
 
-[ GridShiftTableXZ, mediumTable ] = constructGridShiftTableXZ_all( x_grid_table, z_grid_table, air_x, air_z, dx, dz, mediumTable );
+[ GridShiftTableXZ, mediumTable ] = constructGridShiftTableXZ_all( x_grid_table, z_grid_table, air_x, air_z, dx, dz, mediumTable, paras2d );
 
 % % construct shifted coordinate
 % shiftedCoordinateXZ = zeros( size(GridShiftTableXZ, 1), size(GridShiftTableXZ, 2), 2 );

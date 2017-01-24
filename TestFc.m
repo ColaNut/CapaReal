@@ -29,29 +29,39 @@
 % W
 
 
-% clc; clear; 
-% V_0 = 76.78;
-% Shift2d
+% % clc; clear; 
+% % V_0 = 76.78;
+Shift2d
+loadParas;
 tumor_m = tumor_x / dx + air_x / (2 * dx) + 1;
 tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1;
 tumor_ell = tumor_z / dz + air_z / (2 * dz) + 1;
 
 y = tumor_y + dy;
 counter = 0;
-% for y = tumor_y: dy: tumor_y + 6 * dy
-    % counter = counter + 1;
+for y = tumor_y - 6 * dy: dy: tumor_y - 2 * dy
+    y_idx = y / dy + h_torso / (2 * dy) + 1;
+    counter = counter + 1;
     paras2dXZ = genParas2d( y, paras, dx, dy, dz );
-    figure(30);
+    figure(counter);
     clf;
     plotMap( paras2dXZ, dx, dz );
-    plotGridLineXZ( shiftedCoordinateXYZ, tumor_n + 1 );
+    axis equal;
+    plotGridLineXZ( shiftedCoordinateXYZ, y_idx );
+    set(gcf, 'Position', get(0,'Screensize'));
+end
+
+% counter = 10;
+% for x = tumor_x - 2 * dx: dx: tumor_x + 2 * dx
+%     counter = counter + 1;
+%     x_idx = x / dx + air_x / (2 * dx) + 1;
+%     paras2dYZ = genParas2dYZ( x, paras, dy, dz );
+%     figure(counter);
+%     clf;
+%     plotYZ( paras2dYZ, dy, dz );
+%     axis equal;
+%     plotGridLineYZ( shiftedCoordinateXYZ, x_idx);
 % end
-    x = tumor_x + dx;
-    paras2dYZ = genParas2dYZ( x, paras, dy, dz );
-    figure(31);
-    clf;
-    plotYZ( paras2dYZ, dy, dz );
-    plotGridLineYZ( shiftedCoordinateXYZ, tumor_m + 1);
 
 
 % clc; clear;
