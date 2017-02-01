@@ -1,9 +1,9 @@
-function lxFltr = getBndryNum(idx, lengthXArray)
+function lxFltr = getBndryNum(idx, lengthArray)
 
-    cumArray = cumsum(lengthXArray);
-    lxFltr = -1;
+    cumArray = cumsum(lengthArray);
+    lxFltr = - 1;
 
-    % lengthXArray = [ bolus, skin, muscle, left lung, right lung, tumor ]
+    % lengthArray = [ bolus, skin, muscle, left lung, right lung, tumor ]
     %             or [ left lung, right lung, tumor ]
     % bolus-air:   11
     % bolus-skin:  12
@@ -11,7 +11,7 @@ function lxFltr = getBndryNum(idx, lengthXArray)
     % muscle-lung: 14
     % lung-tumor:  15
 
-    if length(lengthXArray) == 6
+    if length(lengthArray) == 6
         if idx <= cumArray(1)
             lxFltr = 11;
         elseif idx <= cumArray(2)
@@ -27,7 +27,7 @@ function lxFltr = getBndryNum(idx, lengthXArray)
         else
             error('check');
         end
-    elseif length(lengthXArray) == 3
+    elseif length(lengthArray) == 3
         if idx <= cumArray(1)
             lxFltr = 14;
         elseif idx <= cumArray(2)

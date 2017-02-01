@@ -2,3 +2,5 @@
 *.mat
 *.jpg
 *.fig
+*.xlsx
+RibIdx.txt

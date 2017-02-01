@@ -14,26 +14,32 @@ epsilon_r     = epsilon_r_pre - i * sigma ./ ( Omega_0 * Epsilon_0 );
 
 % There 'must' be a grid point at the origin.
 loadParas;
-% figure(1);
-% paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
-% plotMap( paras2dXZ, dx, dz );
-
-% figure(2);
-% paras2dXZ = genParas2d( 0, paras, dx, dy, dz );
-% plotMap( paras2dXZ, dx, dz );
 % paras = [ h_torso, air_x, air_z, ...
 %         bolus_a, bolus_c, skin_a, skin_c, muscle_a, muscle_c, ...
 %         l_lung_x, l_lung_z, l_lung_a, l_lung_b, l_lung_c, ...
 %         r_lung_x, r_lung_z, r_lung_a, r_lung_b, l_lung_c, ...
 %         tumor_x, tumor_y, tumor_z, tumor_r ];
 
+Ribs = zeros(7, 9);
+SSBone = zeros(1, 8);
+[ Ribs, SSBone ] = BoneParas;
+% Ribs = [ rib_hr, rib_wy, rib_rad, 
+%           l_rib_x, l_rib_y, l_rib_z, 
+%           r_rib_x, r_rib_y, r_rib_z ];
+% SSBone = [ spine_hx, spine_hz, spine_wy, spine_x, spine_z, 
+%            sternum_hx, sternum_hz, sternum_wy, sternum_x, sternum_z ];
+
 x_idx_max = air_x / dx + 1;
 y_idx_max = h_torso / dy + 1;
 z_idx_max = air_z / dz + 1;
 
 GridShiftTableXZ = cell( h_torso / dy + 1, 1);
+% GridShiftTableXZ: store [ 1, distance ], [ 3, distance ] and [ 2, distance ] for $x$-, $y$- and $z$ shift.
+
 mediumTable = ones( x_idx_max, y_idx_max, z_idx_max, 'uint8');
-% [ boundary, air, bolus, muscle, lung, tumor ] -> [ 0, 1, 2, 3, 4, 5 ]
+% Normal Points: [ air, bolus, muscle, lung, tumor, ribs, spine, sternum ]       -> [  1,  2,  3,  4,  5,  6,  7,  8 ]
+% Interfaces:    [ air-bolus, bolus-skin, skin-muscle, muscle-lung, lung-tumor ] -> [ 11, 12, 13, 14, 15 ]
+% Bone Interfaces: [ Ribs-others, spine-others, sternum-others ]                 -> [ 16, 17, 18 ] 
 
 for y = - h_torso / 2: dy: h_torso / 2
     paras2dXZ = genParas2d( y, paras, dx, dy, dz );
@@ -42,11 +48,25 @@ for y = - h_torso / 2: dy: h_torso / 2
     %     r_lung_x, r_lung_z, r_lung_a_prime, r_lung_c_prime, ...
     %     tumor_x, tumor_z, tumor_r_prime ];
     y_idx = y / dy + h_torso / (2 * dy) + 1;
-    if y_idx == 14
-        ;
-    end
     mediumTable(:, int64(y_idx), :) = getRoughMed( mediumTable(:, int64(y_idx), :), paras2dXZ, dx, dz );
     [ GridShiftTableXZ{ int64(y_idx) }, mediumTable(:, int64(y_idx), :) ] = constructCoordinateXZ_all( paras2dXZ, dx, dz, mediumTable(:, int64(y_idx), :) );
+end
+
+% 1 to 7, corresponding to 1-st to 7-th rib.
+RibValid = 0; 
+SSBoneValid = false;
+BoneMediumTable = ones( x_idx_max, y_idx_max, z_idx_max, 'uint8');
+BoneGridShiftTableXZ = cell( h_torso / dy + 1, 1);
+
+for y = - h_torso / 2: dy: h_torso / 2
+    [ RibValid, SSBoneValid ] = Bone2d(y, Ribs, SSBone, dy, h_torso);
+    y_idx = y / dy + h_torso / (2 * dy) + 1;
+    if y_idx == 19
+        ;
+    end
+    [ GridShiftTableXZ{ int64(y_idx) }, BoneMediumTable(:, int64(y_idx), :) ] ...
+        = UpdateBoneMed( y, mediumTable(:, int64(y_idx), :), Ribs, SSBone, RibValid, SSBoneValid, ...
+                            dx, dz, air_x, air_z, x_idx_max, z_idx_max, GridShiftTableXZ{ int64(y_idx) } );
 end
 
 for x = - air_x / 2: dx: air_x / 2
@@ -56,9 +76,8 @@ for x = - air_x / 2: dx: air_x / 2
     %     r_lung_y, r_lung_z, r_lung_b_prime, r_lung_c_prime, ...
     %     tumor_y, tumor_z, tumor_r_prime ];
     y_grid_table = fillGridTableY_all( paras2dYZ, dy, dz );
-    
     x_idx = x / dx + air_x / (2 * dx) + 1;
-    if x_idx == 18
+    if x_idx == 25
         ;
     end
     [ GridShiftTableXZ, mediumTable ] = constructGridShiftTableXYZ( GridShiftTableXZ, int64(x_idx), y_grid_table, h_torso, air_z, dy, dz, mediumTable, paras2dYZ );
@@ -89,9 +108,9 @@ shiftedCoordinateXYZ = constructCoordinateXYZ( GridShiftTable, paras, dx, dy, dz
 % BlsBndryMsk = zeros(x_idx_max, z_idx_max);
 % BlsBndryMsk = get1cmBlsBndryMsk( bolus_a, bolus_c, muscle_a, muscle_c, dx, dz, x_idx_max, z_idx_max, air_x, air_z );
 
-% sparseA = cell( x_idx_max * y_idx_max * z_idx_max, 1 );
-% B = zeros( x_idx_max * y_idx_max * z_idx_max, 1 );
-% SegMed = ones( x_idx_max, y_idx_max, z_idx_max, 6, 8, 'uint8');
+sparseA = cell( x_idx_max * y_idx_max * z_idx_max, 1 );
+B = zeros( x_idx_max * y_idx_max * z_idx_max, 1 );
+SegMed = ones( x_idx_max, y_idx_max, z_idx_max, 6, 8, 'uint8');
 
 % disp('The fill up time of A: ');
 % tic;
@@ -123,7 +142,7 @@ shiftedCoordinateXYZ = constructCoordinateXYZ( GridShiftTable, paras, dx, dy, dz
 %                             shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, mediumTable );
 %         else
 %             [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
-%                 shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, mediumTable, epsilon_r, BlsBndryMsk );
+%                 shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, mediumTable, epsilon_r );
 %         end
 %     elseif ell == z_idx_max
 %         sparseA{ p0 } = fillTop_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
@@ -170,26 +189,26 @@ shiftedCoordinateXYZ = constructCoordinateXYZ( GridShiftTable, paras, dx, dy, dz
 % bar_x_my_gmres = my_gmres( sparseA, B, int_itr_num, tol, ext_itr_num );
 % toc;
 
-% % save( strcat(fname, CaseName, '.mat') );
-% % save('Case0103.mat');z
+% save( strcat(fname, CaseName, '.mat') );
+% save('Case0103.mat');z
 
-% % PhiDstrbtn;
+% PhiDstrbtn;
 
-% % CurrentEst;
+% CurrentEst;
 
-% % disp('The calculation time for inverse matrix: ');
-% % tic;
-% % bar_x = A \ B;
-% % toc;
+% disp('The calculation time for inverse matrix: ');
+% tic;
+% bar_x = A \ B;
+% toc;
 
-% % save('FirstTest.mat');
-% % PhiDstrbtn;
+% save('FirstTest.mat');
+% PhiDstrbtn;
 
-% % count = 0;
-% % for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
-% %     if A( idx, : ) == zeros( 1, x_idx_max * y_idx_max * z_idx_max );
-% %         count = count + 1;
-% %     end
-% % end
-% % % Need to check whether [ 3, 1, 0.3 ] & [ 3, 1, -0.3 ] are stored in the same cell(idx).
-% % xy_grid_table format: [ x_coordonate, y_coordonate, difference ]
+% count = 0;
+% for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+%     if A( idx, : ) == zeros( 1, x_idx_max * y_idx_max * z_idx_max );
+%         count = count + 1;
+%     end
+% end
+% % Need to check whether [ 3, 1, 0.3 ] & [ 3, 1, -0.3 ] are stored in the same cell(idx).
+% xy_grid_table format: [ x_coordonate, y_coordonate, difference ]

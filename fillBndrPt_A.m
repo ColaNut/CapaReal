@@ -1,5 +1,5 @@
 function [ A_row, SegMed ] = fillBndrPt_A( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
-                                    mediumTable, epsilon_r, BlsBndryMsk )
+                                    mediumTable, epsilon_r )
 
     % A_row         = zeros( 1, x_idx_max * y_idx_max * z_idx_max );
     A_row         = zeros( 1, 14 );
@@ -26,16 +26,16 @@ function [ A_row, SegMed ] = fillBndrPt_A( m, n, ell, shiftedCoordinateXYZ, x_id
     A_row(6)  = PntsIdx(2, 2);
     A_row(7)  = PntsIdx(2, 5);
 
-    % try
-    XZBls9Med = zeros(9, 1);
-    if BlsBndryMsk(m, ell) == 11 || BlsBndryMsk(m, ell) == 12
-        SegMed = PreCalSegMed( m, ell, PntsCrdnt, BlsBndryMsk );
-    end
+    % % try
+    % XZBls9Med = zeros(9, 1);
+    % if BlsBndryMsk(m, ell) == 11 || BlsBndryMsk(m, ell) == 12
+    %     SegMed = PreCalSegMed( m, ell, PntsCrdnt, BlsBndryMsk );
+    % end
 
-    % two special cases: 
-    if m == 19 && (n >= 16 && n <= 20) && (ell == 12 || ell == 30)
-        SegMed = specialSegMed(m, n, ell);
-    end
+    % % two special cases: 
+    % if m == 19 && (n >= 16 && n <= 20) && (ell == 12 || ell == 30)
+    %     SegMed = specialSegMed(m, n, ell);
+    % end
 
     % p1
     tmpMidLyr = p1FaceMidLyr( PntsCrdnt );

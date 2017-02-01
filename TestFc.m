@@ -28,18 +28,18 @@
 % load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0109\Power300currentEst.mat');
 % W
 
-
-% % clc; clear; 
-% % V_0 = 76.78;
+% % % clc; clear; 
+% % % V_0 = 76.78;
 Shift2d
-loadParas;
+% loadParas;
 tumor_m = tumor_x / dx + air_x / (2 * dx) + 1;
 tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1;
 tumor_ell = tumor_z / dz + air_z / (2 * dz) + 1;
 
-y = tumor_y + dy;
+% y = tumor_y + dy;
+y = 0;
 counter = 0;
-for y = tumor_y - 6 * dy: dy: tumor_y - 2 * dy
+% for y = tumor_y - 2 * dy: dy: tumor_y - 2 * dy
     y_idx = y / dy + h_torso / (2 * dy) + 1;
     counter = counter + 1;
     paras2dXZ = genParas2d( y, paras, dx, dy, dz );
@@ -49,7 +49,20 @@ for y = tumor_y - 6 * dy: dy: tumor_y - 2 * dy
     axis equal;
     plotGridLineXZ( shiftedCoordinateXYZ, y_idx );
     set(gcf, 'Position', get(0,'Screensize'));
-end
+% end
+
+% % figure(3);
+plotRibXZ(Ribs, SSBone, dx, dz);
+
+% RibValid = zeros(size(- h_torso / 2: dy: h_torso / 2));
+% SSBoneValid = zeros(size(- h_torso / 2: dy: h_torso / 2));
+% for y = - h_torso / 2: dy: h_torso / 2
+%     y_idx = int64(y / dy + h_torso / (2 * dy) + 1);
+%     if y_idx == 8
+%         ;
+%     end
+%     [ RibValid(y_idx), SSBoneValid(y_idx) ] = Bone2d(y, Ribs, SSBone, dy, h_torso);
+% end
 
 % counter = 10;
 % for x = tumor_x - 2 * dx: dx: tumor_x + 2 * dx
