@@ -41,9 +41,9 @@ function [ GridShiftTableXZ, BoneMediumTableXZ ] = UpdateBoneMed( y, mediumTable
         BoneMediumTableXZ(St_x_idx - sternum_hx / (2 * dx): St_x_idx + sternum_hx / (2 * dx), ...
                             St_z_idx - sternum_hz / (2 * dz): St_z_idx + sternum_hz / (2 * dz)) = uint8(18);
 
-        if y ~= - (spine_wy + 1 / 100) / 2 && y ~= (spine_wy - 1 / 100) / 2
-            BoneMediumTableXZ(Sp_x_idx, Sp_z_idx) = uint8(7);
-        end
+        % if y ~= - (spine_wy + 1 / 100) / 2 && y ~= (spine_wy - 1 / 100) / 2
+        %     BoneMediumTableXZ(Sp_x_idx, Sp_z_idx) = uint8(7);
+        % end
     end
 
     if RibValid 

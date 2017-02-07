@@ -1,6 +1,6 @@
 % clc; clear; 
-% fname = 'e:\Kevin\CapaReal\Case0115Bolus1cm';
-% % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0115Bolus1cm';
+% fname = 'e:\Kevin\CapaReal\Case0207Bone';
+% % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0207Bone';
 % CaseName = 'Power250';
 % V_0 = 76.78;
 % Shift2d;
@@ -10,8 +10,8 @@
 % % ManiScript;
 
 % clc; clear;
-% fname = 'e:\Kevin\CapaReal\Case0115Bolus1cm';
-% % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0115Bolus1cm';
+% fname = 'e:\Kevin\CapaReal\Case0207Bone';
+% % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0207Bone';
 % CaseName = 'Power280';
 % V_0 = 81.26;
 % Shift2d;
@@ -19,8 +19,8 @@
 % CurrentEst;
 
 % clc; clear;
-% fname = 'e:\Kevin\CapaReal\Case0115Bolus1cm';
-% % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0115Bolus1cm';
+% fname = 'e:\Kevin\CapaReal\Case0207Bone';
+% % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0207Bone';
 % CaseName = 'Power300';
 % V_0 = 84.11;
 % Shift2d;
@@ -34,8 +34,8 @@ timeNum_2   = 4 * 30;
 timeNum_3   = 4 * 15;
 timeNum_all = timeNum_1 + timeNum_2 + timeNum_3;
 
-% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0115Bolus1cm';
-fname = 'e:\Kevin\CapaReal\Case0115Bolus1cm';
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0207Bone';
+fname = 'e:\Kevin\CapaReal\Case0207Bone';
 
 % Period 1
 CaseName = 'Power250';
@@ -80,7 +80,7 @@ T_bgn = ( timeNum_1 + timeNum_2 ) * dt;
 timeNum = timeNum_3;
 TmprtrDis;
 
-fname = 'e:\Kevin\CapaReal\Case0115Bolus1cm';
-save( strcat(fname, '\Case0115Bolus1cm.mat') );
+fname = 'e:\Kevin\CapaReal\Case0207Bone';
+save( strcat(fname, '\Case0207Bone.mat') );
 
-ManiScript
+% ManiScript

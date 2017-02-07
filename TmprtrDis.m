@@ -28,6 +28,48 @@ TmprtrTauMinus = zeros(7, 1);
 %     end
 % end
 
+PennesCoeff = zeros(x_idx_max, y_idx_max, z_idx_max, 7);
+% calculation of PennesCoeff
+for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+    [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
+    
+    if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1  && ell >= 2 && ell <= z_idx_max - 1 
+        PntSegMed = squeeze( SegMed(m, n, ell, :, :) );
+        % % TmprtrTauMinus = get7Tmprtr(m, n, ell, t_idx - 1, TmprtrTau);
+        % TmprtrTauMinus = [ p1, p2, p3, p4, p5, p6, p0 ]';
+
+        if mediumTable(m, n, ell) == 3 || mediumTable(m, n, ell) == 4 || mediumTable(m, n, ell) == 5 ...
+                                    || mediumTable(m, n, ell) == 14 || mediumTable(m, n, ell) == 15 
+            if MskMedTab( m, n, ell ) ~= 0 % normal point
+                PennesCoeff( m, n, ell, : ) = calTmprtrNrmlPntCoeff( m, n, ell, shiftedCoordinateXYZ, ...
+                                        x_idx_max, y_idx_max, z_idx_max, PntSegMed, mediumTable, ...
+                                        T_blood, zeta, sigma, rho, cap, rho_b, cap_b, xi, dt, Phi, LungRatio, BoneMediumTable, MskMedTab );
+            elseif MskMedTab( m, n, ell ) == 0 % boundary point
+                PennesCoeff( m, n, ell, : ) = calTmprtrBndrPntCoeff( m, n, ell, shiftedCoordinateXYZ, ...
+                                        x_idx_max, y_idx_max, z_idx_max, PntSegMed, mediumTable, ...
+                                        T_blood, zeta, sigma, rho, cap, rho_b, cap_b, xi, dt, Phi, LungRatio, BoneMediumTable, MskMedTab );
+            end
+        elseif mediumTable(m, n, ell) == 13
+            sigmaMask = sigma;
+            sigmaMask(2) = 0;
+            PennesCoeff( m, n, ell, : ) = calTmprtrCnvcPntCoeff( m, n, ell, shiftedCoordinateXYZ, ...
+                                        x_idx_max, y_idx_max, z_idx_max, PntSegMed, mediumTable, ...
+                                        T_blood, T_bolus, zeta, sigmaMask, rho, cap, rho_b, cap_b, xi, dt, ...
+                                        Phi, alpha, BoneMediumTable, MskMedTab );
+        else
+            % the remaining are the air, the bolus and the air-bolus boundary
+            if mediumTable( m, n, ell ) ~= 1 && mediumTable( m, n, ell ) ~= 2
+                if mediumTable( m, n, ell ) == 0
+                    XZ9Med = getXZ9Med(m, n, ell, mediumTable);
+                    if ~checkAirAround( XZ9Med )
+                        [m, n, ell]
+                        % error('Check Here');
+                    end
+                end
+            end
+        end
+    end
+end
 disp('time to cal TmprtrTau')
 tic;
 for t = T_bgn + dt: dt: T_end
@@ -40,29 +82,38 @@ for t = T_bgn + dt: dt: T_end
         % idx = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
         [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
         
-        BioValid = false;
-        CnvctnFlag = false;
-        if mediumTable( m, n, ell ) ~= 1 && mediumTable( m, n, ell ) ~= 2
-            if mediumTable( m, n, ell ) == 0
-                XZ9Med = getXZ9Med(m, n, ell, mediumTable);
-                if ~checkBolusAround( XZ9Med )
-                    BioValid = true;
-                else
-                    if checkMuscleAround( XZ9Med )
-                        CnvctnFlag = true;
-                    end
-                end
-            else
-                BioValid = true;
-            end
-        end
+        % BioValid = false;
+        % CnvctnFlag = false;
+        % if mediumTable(m, n, ell) == 3 || mediumTable(m, n, ell) == 4 || mediumTable(m, n, ell) == 5 
+        %     BioValid = true;
+        % end
+        % if mediumTable(m, n, ell) == 14 || mediumTable(m, n, ell) == 15 
+        %     BioValid = true;
+        % end
+        % if mediumTable(m, n, ell) == 13
+        %     CnvctnFlag = true;
+        % end
+        % if mediumTable( m, n, ell ) ~= 1 && mediumTable( m, n, ell ) ~= 2
+        %     if mediumTable( m, n, ell ) == 0
+        %         XZ9Med = getXZ9Med(m, n, ell, mediumTable);
+        %         if ~checkBolusAround( XZ9Med )
+        %             BioValid = true;
+        %         else
+        %             if checkMuscleAround( XZ9Med )
+        %                 CnvctnFlag = true;
+        %             end
+        %         end
+        %     else
+        %         BioValid = true;
+        %     end
+        % end
 
-        if ( m >= 19 && m <= 20 ) && ( ell == 11 || ell == 31 )
-            CnvctnFlag = true;
-        end
-        if m == 19 && n >= 16 && n <= 20 && ( ell == 12 || ell == 30 )
-            BioValid = true;
-        end
+        % if ( m >= 19 && m <= 20 ) && ( ell == 11 || ell == 31 )
+        %     CnvctnFlag = true;
+        % end
+        % if m == 19 && n >= 16 && n <= 20 && ( ell == 12 || ell == 30 )
+        %     BioValid = true;
+        % end
         % namely, [m, n, ell] = [19, 16, 12], [19, 17, 12], [19, 18, 12], [19, 19, 12], [19, 20, 12], 
         %      or [m, n, ell] = [19, 16, 30], [19, 17, 30], [19, 18, 30], [19, 19, 30], [19, 20, 30].
  
@@ -72,24 +123,26 @@ for t = T_bgn + dt: dt: T_end
             TmprtrTauMinus = get7Tmprtr(m, n, ell, t_idx - 1, TmprtrTau);
             % TmprtrTauMinus = [ p1, p2, p3, p4, p5, p6, p0 ]';
 
-            if BioValid
-                if mediumTable( m, n, ell ) ~= 0
+            if mediumTable(m, n, ell) == 3 || mediumTable(m, n, ell) == 4 || mediumTable(m, n, ell) == 5 ...
+                                        || mediumTable(m, n, ell) == 14 || mediumTable(m, n, ell) == 15 
+                if MskMedTab( m, n, ell ) ~= 0 % normal point
                     TmprtrTau( m, n, ell, t_idx ) = calTmprtrNrmlPnt( m, n, ell, shiftedCoordinateXYZ, ...
                                             x_idx_max, y_idx_max, z_idx_max, PntSegMed, mediumTable, ...
-                                            T_blood, zeta, sigma, rho, cap, rho_b, cap_b, xi, dt, TmprtrTauMinus, Phi, LungRatio );
-                else
+                                            T_blood, zeta, sigma, rho, cap, rho_b, cap_b, xi, dt, TmprtrTauMinus, Phi, LungRatio, BoneMediumTable, MskMedTab, squeeze(PennesCoeff(m, n, ell, :)) );
+                elseif MskMedTab( m, n, ell ) == 0 % boundary point
                     TmprtrTau( m, n, ell, t_idx ) = calTmprtrBndrPnt( m, n, ell, shiftedCoordinateXYZ, ...
                                             x_idx_max, y_idx_max, z_idx_max, PntSegMed, mediumTable, ...
-                                            T_blood, zeta, sigma, rho, cap, rho_b, cap_b, xi, dt, TmprtrTauMinus, Phi, LungRatio, BlsBndryMsk );
+                                            T_blood, zeta, sigma, rho, cap, rho_b, cap_b, xi, dt, TmprtrTauMinus, Phi, LungRatio, BoneMediumTable, MskMedTab, squeeze(PennesCoeff(m, n, ell, :)) );
                 end
-            elseif CnvctnFlag
+            elseif mediumTable(m, n, ell) == 13
                 sigmaMask = sigma;
                 sigmaMask(2) = 0;
                 TmprtrTau( m, n, ell, t_idx ) = calTmprtrCnvcPnt( m, n, ell, shiftedCoordinateXYZ, ...
                                             x_idx_max, y_idx_max, z_idx_max, PntSegMed, mediumTable, ...
                                             T_blood, T_bolus, zeta, sigmaMask, rho, cap, rho_b, cap_b, xi, dt, ...
-                                            TmprtrTauMinus, Phi, alpha, BlsBndryMsk );
+                                            TmprtrTauMinus, Phi, alpha, BoneMediumTable, MskMedTab, squeeze(PennesCoeff(m, n, ell, :)) );
             else
+                % the remaining are the air, the bolus and the air-bolus boundary
                 if mediumTable( m, n, ell ) ~= 1 && mediumTable( m, n, ell ) ~= 2
                     if mediumTable( m, n, ell ) == 0
                         XZ9Med = getXZ9Med(m, n, ell, mediumTable);
@@ -137,6 +190,6 @@ t = T_end;
     view(2);
     hold on;
     plotMap( paras2dXZ, dx, dz );
-    saveas(figure(3), fullfile(fname, strcat(CaseName, 'TumorTmprtr')), 'fig');
-    saveas(figure(3), fullfile(fname, strcat(CaseName, 'TumorTmprtr')), 'jpg');
+    % saveas(figure(3), fullfile(fname, strcat(CaseName, 'TumorTmprtr')), 'fig');
+    % saveas(figure(3), fullfile(fname, strcat(CaseName, 'TumorTmprtr')), 'jpg');
 % end

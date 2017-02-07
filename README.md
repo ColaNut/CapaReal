@@ -30,3 +30,5 @@ The cal48TtrVol.m was cal8TtrVol.m not used.
 
        4. In conclusion, the development was suspended temporarily.
 
+02/06: PowerMani.m calculate the temperature up to 50 min.
+       ManiScript.m plot for \Phi, SAR, temperature-time and temperature distribution.

@@ -1,3 +1,5 @@
+% In equation \int \epsilon \nabla \Phi d \bar{r} 
+% fillNrmlPt_A donnot incorporate the \epsilon term
 function [ A_row, SegMed ] = fillNrmlPt_A( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, mediumTable )
 
     % A_row        = zeros(1, x_idx_max * y_idx_max * z_idx_max);

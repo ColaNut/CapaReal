@@ -20,7 +20,7 @@ if flag_XZ_T == 1
     % load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0107\Case0107TmprtrFigXZ.mat');
     % to retrieve: SegValueXZ and TtrVol
 
-    t = T_end;
+    t = 35 * 15;
     t_idx = t / dt + 1;
     T_XZ = zeros( x_idx_max, z_idx_max );
     T_XZ = squeeze( TmprtrTau( :, tumor_n, :, uint8(t_idx) ) );
@@ -157,7 +157,7 @@ if flag_XY_T == 1
 
     T_XY = zeros( x_idx_max, y_idx_max );
     
-    t = T_end;
+    t = 35 * 15;
     t_idx = t / dt + 1;
     T_XY = squeeze( TmprtrTau( :, :, tumor_ell, uint8(t_idx) ) );
 
@@ -293,7 +293,7 @@ if flag_YZ_T == 1
     load( strcat( fname, '\', CaseDate, 'TmprtrFigYZ.mat' ) );
     % load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0107\Case0107TmprtrFigYZ.mat');
 
-    t = T_end;
+    t = 35 * 15;
     t_idx = t / dt + 1;
     T_YZ = zeros( y_idx_max, z_idx_max );
     T_YZ = squeeze( TmprtrTau( tumor_m, :, :, uint8(t_idx) ) );

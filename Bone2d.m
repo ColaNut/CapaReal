@@ -20,7 +20,6 @@ function [ RibValid, SSBoneValid ] = Bone2d(y, Ribs, SSBone, dy, h_torso)
     spineLow  = int64( - (spine_wy + 1 / 100) / ( 2 * dy ) + h_torso / (2 * dy) + 1 );
     spineUp  = int64( (spine_wy - 1 / 100) / ( 2 * dy ) + h_torso / (2 * dy) + 1 );
 
-    
     if ( y_idx >= RibLow(1) && y_idx <= RibUp(1) )
         RibValid = 1;
     elseif ( y_idx >= RibLow(2) && y_idx <= RibUp(2) ) 

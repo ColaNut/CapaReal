@@ -28,10 +28,16 @@
 % load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0109\Power300currentEst.mat');
 % W
 
-% % % clc; clear; 
-% % % V_0 = 76.78;
-Shift2d
-% loadParas;
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0205Bone';
+
+% % Period 1
+% CaseName = 'Power300';
+% load( strcat(fname, '\', CaseName, '.mat') );
+
+% % % % clc; clear; 
+% % % % V_0 = 76.78;
+% Shift2d
+% % loadParas;
 tumor_m = tumor_x / dx + air_x / (2 * dx) + 1;
 tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1;
 tumor_ell = tumor_z / dz + air_z / (2 * dz) + 1;
@@ -53,6 +59,19 @@ counter = 0;
 
 % % figure(3);
 plotRibXZ(Ribs, SSBone, dx, dz);
+
+% y = tumor_y + dy;
+    y = tumor_y;
+    y_idx = y / dy + h_torso / (2 * dy) + 1;
+    paras2dXZ = genParas2d( y, paras, dx, dy, dz );
+    figure(2);
+    clf;
+    plotMap( paras2dXZ, dx, dz );
+    axis equal;
+    plotGridLineXZ( shiftedCoordinateXYZ, y_idx );
+    set(gcf, 'Position', get(0,'Screensize'));
+    plotRibXZ(Ribs, SSBone, dx, dz);
+% end
 
 % RibValid = zeros(size(- h_torso / 2: dy: h_torso / 2));
 % SSBoneValid = zeros(size(- h_torso / 2: dy: h_torso / 2));

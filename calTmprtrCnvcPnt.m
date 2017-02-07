@@ -1,6 +1,6 @@
 function Tmprtr = calTmprtrCnvcPnt( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
                                         PntSegMed, mediumTable, T_b, T_bolus, zeta, sigmaMask, ...
-                                        rho, cap, rho_b, cap_b, xi, dt, TmprtrTauMinus, Phi, alpha, BlsBndryMsk )
+                                        rho, cap, rho_b, cap_b, xi, dt, TmprtrTauMinus, Phi, alpha, BoneMediumTable, MskMedTab, PennesCoeff )
 
     PntsIdx       = zeros( 3, 9 );
     MedValue      = zeros( 3, 9 );
@@ -31,8 +31,17 @@ function Tmprtr = calTmprtrCnvcPnt( m, n, ell, shiftedCoordinateXYZ, x_idx_max, 
     % XiRhoTerm  = sum( sum( xi(PntSegMed) .* rho(PntSegMed) .* TtrVol ) ) * rho_b * cap_b;
     QsTerm     = sum( sum( PntQseg .* TtrVol ) );
 
-    A_row = fillBndrPt_A( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, mediumTable, zeta, BlsBndryMsk );
-    coeff = A_row(8: 14);
+    % % differentiate the boundary and the rib part.
+    % if MskMedTab(m, n, ell) == 0 && BoneMediumTable(m, n, ell) == 1 % normal bondary point
+    %     A_row = fillBndrPt_A( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, zeta );
+    % elseif MskMedTab(m, n, ell) == 0 && BoneMediumTable(m, n, ell) == 16  % rib boundary point
+    %     A_row = fillBndrRibPt_A( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
+    %             MskMedTab, BoneMediumTable, zeta );
+    % end
+
+    % A_row = fillBndrPt_A( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, mediumTable, zeta, BlsBndryMsk );
+    % coeff = A_row(8: 14);
+    coeff = PennesCoeff;
 
     % CurrZeta = zeta( mediumTable(m, n, ell) );
 
