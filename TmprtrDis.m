@@ -11,24 +11,11 @@ T_end = T_bgn + timeNum * dt;
 % TmprtrTau = T_0 * ones( x_idx_max, y_idx_max, z_idx_max, timeNum );
 TmprtrTauMinus = zeros(7, 1); 
 
-% % temperature initialization
-% for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
-%     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
-%     if mediumTable( m, n, ell ) == 2
-%         TmprtrTau( m, n, ell, :) = T_bolus;
-%     end
-%     if mediumTable( m, n, ell ) == 1
-%         TmprtrTau( m, n, ell, :) = T_air;
-%     end
-%     if mediumTable( m, n, ell ) == 0
-%         XZ9Med = getXZ9Med(m, n, ell, mediumTable);
-%         if checkAirAround( XZ9Med )
-%             TmprtrTau( m, n, ell, :) = T_bolus;
-%         end
-%     end
-% end
-
 PennesCoeff = zeros(x_idx_max, y_idx_max, z_idx_max, 7);
+RhoCapTerm  = zeros(x_idx_max, y_idx_max, z_idx_max);
+XiRhoTerm   = zeros(x_idx_max, y_idx_max, z_idx_max);
+QsTerm      = zeros(x_idx_max, y_idx_max, z_idx_max);
+
 % calculation of PennesCoeff
 for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
@@ -41,11 +28,13 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
         if mediumTable(m, n, ell) == 3 || mediumTable(m, n, ell) == 4 || mediumTable(m, n, ell) == 5 ...
                                     || mediumTable(m, n, ell) == 14 || mediumTable(m, n, ell) == 15 
             if MskMedTab( m, n, ell ) ~= 0 % normal point
-                PennesCoeff( m, n, ell, : ) = calTmprtrNrmlPntCoeff( m, n, ell, shiftedCoordinateXYZ, ...
+                [ PennesCoeff( m, n, ell, : ), RhoCapTerm(m, n, ell), XiRhoTerm(m, n, ell), QsTerm(m, n, ell) ] ...
+                                    = calTmprtrNrmlPntCoeff( m, n, ell, shiftedCoordinateXYZ, ...
                                         x_idx_max, y_idx_max, z_idx_max, PntSegMed, mediumTable, ...
                                         T_blood, zeta, sigma, rho, cap, rho_b, cap_b, xi, dt, Phi, LungRatio, BoneMediumTable, MskMedTab );
             elseif MskMedTab( m, n, ell ) == 0 % boundary point
-                PennesCoeff( m, n, ell, : ) = calTmprtrBndrPntCoeff( m, n, ell, shiftedCoordinateXYZ, ...
+                [ PennesCoeff( m, n, ell, : ), RhoCapTerm(m, n, ell), XiRhoTerm(m, n, ell), QsTerm(m, n, ell) ] ...
+                                    = calTmprtrBndrPntCoeff( m, n, ell, shiftedCoordinateXYZ, ...
                                         x_idx_max, y_idx_max, z_idx_max, PntSegMed, mediumTable, ...
                                         T_blood, zeta, sigma, rho, cap, rho_b, cap_b, xi, dt, Phi, LungRatio, BoneMediumTable, MskMedTab );
             end
@@ -70,15 +59,16 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
         end
     end
 end
-disp('time to cal TmprtrTau')
+
+disp('time to cal TmprtrTau');
 tic;
 for t = T_bgn + dt: dt: T_end
     t_idx = int64(t / dt + 1);
     if mod(t_idx, 40) == 0
         t_idx * dt / 60
     end
+
     for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
-        
         % idx = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
         [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
         
@@ -126,13 +116,13 @@ for t = T_bgn + dt: dt: T_end
             if mediumTable(m, n, ell) == 3 || mediumTable(m, n, ell) == 4 || mediumTable(m, n, ell) == 5 ...
                                         || mediumTable(m, n, ell) == 14 || mediumTable(m, n, ell) == 15 
                 if MskMedTab( m, n, ell ) ~= 0 % normal point
-                    TmprtrTau( m, n, ell, t_idx ) = calTmprtrNrmlPnt( m, n, ell, shiftedCoordinateXYZ, ...
-                                            x_idx_max, y_idx_max, z_idx_max, PntSegMed, mediumTable, ...
-                                            T_blood, zeta, sigma, rho, cap, rho_b, cap_b, xi, dt, TmprtrTauMinus, Phi, LungRatio, BoneMediumTable, MskMedTab, squeeze(PennesCoeff(m, n, ell, :)) );
+                    TmprtrTau( m, n, ell, t_idx ) = calTmprtrNrmlPnt( T_blood, TmprtrTauMinus, ...
+                                squeeze(PennesCoeff(m, n, ell, :)), squeeze(RhoCapTerm(m, n, ell)), ...
+                                squeeze(XiRhoTerm(m, n, ell)), squeeze(QsTerm(m, n, ell)) );
                 elseif MskMedTab( m, n, ell ) == 0 % boundary point
-                    TmprtrTau( m, n, ell, t_idx ) = calTmprtrBndrPnt( m, n, ell, shiftedCoordinateXYZ, ...
-                                            x_idx_max, y_idx_max, z_idx_max, PntSegMed, mediumTable, ...
-                                            T_blood, zeta, sigma, rho, cap, rho_b, cap_b, xi, dt, TmprtrTauMinus, Phi, LungRatio, BoneMediumTable, MskMedTab, squeeze(PennesCoeff(m, n, ell, :)) );
+                    TmprtrTau( m, n, ell, t_idx ) = calTmprtrBndrPnt( T_blood, TmprtrTauMinus, ...
+                                squeeze(PennesCoeff(m, n, ell, :)), squeeze(RhoCapTerm(m, n, ell)), ...
+                                squeeze(XiRhoTerm(m, n, ell)), squeeze(QsTerm(m, n, ell)) );
                 end
             elseif mediumTable(m, n, ell) == 13
                 sigmaMask = sigma;

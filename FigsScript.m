@@ -1,4 +1,4 @@
-PhiSAR_flag = 1;
+PhiSAR_flag = 0;
 
 if PhiSAR_flag == 1
     clc; clear;
@@ -45,7 +45,7 @@ if TumorTmptr_flag == 1
     saveas(figure(4), fullfile(fname, 'TotalQmet42000TumorTmprtr'), 'jpg');
 end
 
-Tmprtr_flag = 0;
+Tmprtr_flag = 1;
 
 if Tmprtr_flag == 1
     clc; clear;

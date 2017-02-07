@@ -1,4 +1,4 @@
-function coeff = calTmprtrNrmlPntCoeff( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, PntSegMed, mediumTable, ...
+function [ coeff, RhoCapTerm, XiRhoTerm, QsTerm ] = calTmprtrNrmlPntCoeff( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, PntSegMed, mediumTable, ...
                                         T_b, zeta, sigma, rho, cap, rho_b, cap_b, xi, dt, Phi, LungRatio, BoneMediumTable, MskMedTab )
 
     PntsIdx      = zeros( 3, 9 );
@@ -12,8 +12,8 @@ function coeff = calTmprtrNrmlPntCoeff( m, n, ell, shiftedCoordinateXYZ, x_idx_m
     SegValueXZ   = zeros( m, ell, 6, 8, 'uint8' );
     SegValueXZ( m, ell, :, : ) = PntSegMed;
 
-    % [ PntQseg, TtrVol ] = calQsegXZ( m, n, ell, Phi, shiftedCoordinateXYZ, SegValueXZ, ...
-    %                                                     x_idx_max, sigma, rho );
+    [ PntQseg, TtrVol ] = calQsegXZ( m, n, ell, Phi, shiftedCoordinateXYZ, SegValueXZ, ...
+                                                        x_idx_max, sigma, rho );
 
     % [ PntsIdx, PntsCrdnt ] = get27Pnts( m, n, ell, x_idx_max, y_idx_max, shiftedCoordinateXYZ );
     % MidPntsCrdnt = calMid27Pnts( PntsCrdnt );
@@ -24,9 +24,9 @@ function coeff = calTmprtrNrmlPntCoeff( m, n, ell, shiftedCoordinateXYZ, x_idx_m
     LungMask = ones(size(PntSegMed));
     LungMask(LungIdx) = LungRatio;
     
-    % RhoCapTerm = sum( sum( rho(PntSegMed) .* cap(PntSegMed) .* TtrVol .* LungMask ) ) / dt;
-    % XiRhoTerm  = sum( sum( xi(PntSegMed) .* rho(PntSegMed) .* TtrVol .* LungMask ) ) * rho_b * cap_b;
-    % QsTerm     = sum( sum( PntQseg .* TtrVol .* LungMask ) );
+    RhoCapTerm = sum( sum( rho(PntSegMed) .* cap(PntSegMed) .* TtrVol .* LungMask ) ) / dt;
+    XiRhoTerm  = sum( sum( xi(PntSegMed) .* rho(PntSegMed) .* TtrVol .* LungMask ) ) * rho_b * cap_b;
+    QsTerm     = sum( sum( PntQseg .* TtrVol .* LungMask ) );
 
     % feed in the MskMedTab
     % differentiate the normal and the rib part.

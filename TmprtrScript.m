@@ -1,31 +1,31 @@
-% clc; clear; 
-% fname = 'e:\Kevin\CapaReal\Case0207Bone';
-% % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0207Bone';
-% CaseName = 'Power250';
-% V_0 = 76.78;
-% Shift2d;
-% save( strcat(fname, '\', CaseName, '.mat') );
-% CurrentEst;
+clc; clear; 
+fname = 'e:\Kevin\CapaReal\Case0207Bone';
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0207Bone';
+CaseName = 'Power250';
+V_0 = 76.78;
+Shift2d;
+save( strcat(fname, '\', CaseName, '.mat') );
+CurrentEst;
 
-% % ManiScript;
+% ManiScript;
 
-% clc; clear;
-% fname = 'e:\Kevin\CapaReal\Case0207Bone';
-% % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0207Bone';
-% CaseName = 'Power280';
-% V_0 = 81.26;
-% Shift2d;
-% save( strcat(fname, '\', CaseName, '.mat') );
-% CurrentEst;
+clc; clear;
+fname = 'e:\Kevin\CapaReal\Case0207Bone';
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0207Bone';
+CaseName = 'Power280';
+V_0 = 81.26;
+Shift2d;
+save( strcat(fname, '\', CaseName, '.mat') );
+CurrentEst;
 
-% clc; clear;
-% fname = 'e:\Kevin\CapaReal\Case0207Bone';
-% % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0207Bone';
-% CaseName = 'Power300';
-% V_0 = 84.11;
-% Shift2d;
-% save( strcat(fname, '\', CaseName, '.mat') );
-% CurrentEst;
+clc; clear;
+fname = 'e:\Kevin\CapaReal\Case0207Bone';
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0207Bone';
+CaseName = 'Power300';
+V_0 = 84.11;
+Shift2d;
+save( strcat(fname, '\', CaseName, '.mat') );
+CurrentEst;
 
 clc; clear;
 dt = 15;
