@@ -7,20 +7,20 @@ Omega_0       = 2 * pi * 8 * 10^6; % 2 * pi * 8 MHz
 % V_0           = 100; 
               % air, bolus, muscle, lung, tumor
 
-% % paras1
-% % rho           = [ 1,  1020,  1020,  1050, 1040 ]';
-% rho           = [ 1,  1020,  1020, 242.6, 1040,  1790 ]';
-% % epsilon_r_pre = [ 1, 113.0,   184, 264.9,  402,    7.3]';
-% % sigma         = [ 0,  0.61, 0.685,  0.42, 0.68, 0.028 ]';
-% epsilon_r_pre = [ 1, 113.0,   113, 264.9,  402,   7.3 ]';
-% sigma         = [ 0,  0.61,  0.61,  0.42, 0.68, 0.028 ]';
-% epsilon_r     = epsilon_r_pre - i * sigma ./ ( Omega_0 * Epsilon_0 );
+% paras1
+% rho           = [ 1,  1020,  1020,  1050, 1040 ]';
+rho           = [ 1,  1020,  1020, 242.6, 1040,  1790 ]';
+% epsilon_r_pre = [ 1, 113.0,   184, 264.9,  402,    7.3]';
+% sigma         = [ 0,  0.61, 0.685,  0.42, 0.68, 0.028 ]';
+epsilon_r_pre = [ 1, 113.0,   113, 264.9,  402,   7.3 ]';
+sigma         = [ 0,  0.61,  0.61,  0.42, 0.68, 0.028 ]';
+epsilon_r     = epsilon_r_pre - i * sigma ./ ( Omega_0 * Epsilon_0 );
 
 % paras2
-rho           = [ 1,  1020,  1020, 242.6, 1040,  1020 ]';
-epsilon_r_pre = [ 1, 113.0,   113, 264.9,  402, 113.0 ]';
-sigma         = [ 0,  0.61,  0.61,  0.42, 0.68,  0.61 ]';
-epsilon_r     = epsilon_r_pre - i * sigma ./ ( Omega_0 * Epsilon_0 );
+% rho           = [ 1,  1020,  1020, 242.6, 1040,  1020 ]';
+% epsilon_r_pre = [ 1, 113.0,   113, 264.9,  402, 113.0 ]';
+% sigma         = [ 0,  0.61,  0.61,  0.42, 0.68,  0.61 ]';
+% epsilon_r     = epsilon_r_pre - i * sigma ./ ( Omega_0 * Epsilon_0 );
 
 % There 'must' be a grid point at the origin.
 loadParas;

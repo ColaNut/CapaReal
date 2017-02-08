@@ -1,8 +1,8 @@
 clc; clear; 
-fname = 'e:\Kevin\CapaReal\Case0208MuscleBone';
-% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0208MuscleBone';
+fname = 'e:\Kevin\CapaReal\Case0208BonePowerMod';
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0208BonePowerMod';
 CaseName = 'Power250';
-V_0 = 80.51;
+V_0 = 81.32;
 Shift2d;
 save( strcat(fname, '\', CaseName, '.mat') );
 CurrentEst;
@@ -10,20 +10,20 @@ CurrentEst;
 % ManiScript;
 
 clc; clear;
-fname = 'e:\Kevin\CapaReal\Case0208MuscleBone';
-% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0208MuscleBone';
+fname = 'e:\Kevin\CapaReal\Case0208BonePowerMod';
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0208BonePowerMod';
 CaseName = 'Power280';
-V_0 = 85.20;
+V_0 = 86.07;
 Shift2d;
 save( strcat(fname, '\', CaseName, '.mat') );
 CurrentEst;
 
 clc; clear;
-% fname = 'D:\Kevin\CapaReal\Case0208MuscleBone';
-fname = 'e:\Kevin\CapaReal\Case0208MuscleBone';
-% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0208MuscleBone';
+% fname = 'D:\Kevin\CapaReal\Case0208BonePowerMod';
+fname = 'e:\Kevin\CapaReal\Case0208BonePowerMod';
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0208BonePowerMod';
 CaseName = 'Power300';
-V_0 = 89.19;
+V_0 = 89.09;
 Shift2d;
 save( strcat(fname, '\', CaseName, '.mat') );
 CurrentEst;
@@ -35,8 +35,8 @@ timeNum_2   = 4 * 30;
 timeNum_3   = 4 * 15;
 timeNum_all = timeNum_1 + timeNum_2 + timeNum_3;
 
-% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0208MuscleBone';
-fname = 'e:\Kevin\CapaReal\Case0208MuscleBone';
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0208BonePowerMod';
+fname = 'e:\Kevin\CapaReal\Case0208BonePowerMod';
 
 % Period 1
 CaseName = 'Power250';
@@ -81,7 +81,7 @@ T_bgn = ( timeNum_1 + timeNum_2 ) * dt;
 timeNum = timeNum_3;
 TmprtrDis;
 
-fname = 'e:\Kevin\CapaReal\Case0208MuscleBone';
-save( strcat(fname, '\Case0208MuscleBone.mat') );
+fname = 'e:\Kevin\CapaReal\Case0208BonePowerMod';
+save( strcat(fname, '\Case0208BonePowerMod.mat') );
 
 % ManiScript
