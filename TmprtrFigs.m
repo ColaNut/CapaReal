@@ -18,9 +18,8 @@ if flag_XZ_T == 1
     % load the SAR segments in the XZ cross section in PhiDstrbtn
     load( strcat( fname, '\', CaseDate, 'TmprtrFigXZ.mat' ) );
     % load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0107\Case0107TmprtrFigXZ.mat');
-    % to retrieve: SegValueXZ and TtrVol
 
-    t = 35 * 15;
+    t = T_end;
     t_idx = t / dt + 1;
     T_XZ = zeros( x_idx_max, z_idx_max );
     T_XZ = squeeze( TmprtrTau( :, tumor_n, :, uint8(t_idx) ) );
@@ -38,40 +37,44 @@ if flag_XZ_T == 1
         else
             m = tmp_m;
         end
-        n = tumor_n;
+        n = tumor_n - 1;
         ell = int64( ( idx - m ) / x_idx_max + 1 );
 
-        BioValid = false;
-        CnvctnFlag = false;
-        if mediumTable( m, n, ell ) ~= 1 && mediumTable( m, n, ell ) ~= 2
-            if mediumTable( m, n, ell ) == 0
-                XZ9Med = getXYZ9Med(m, n, ell, mediumTable, 'XZ');
-                if ~checkBolusAround( XZ9Med )
-                    BioValid = true;
-                else
-                    if checkMuscleAround( XZ9Med )
-                        CnvctnFlag = true;
-                    end
-                end
-            else
-                BioValid = true;
-            end
-        end
+        % BioValid = false;
+        % CnvctnFlag = false;
+        % if mediumTable( m, n, ell ) ~= 1 && mediumTable( m, n, ell ) ~= 2
+        %     if mediumTable( m, n, ell ) == 0
+        %         XZ9Med = getXYZ9Med(m, n, ell, mediumTable, 'XZ');
+        %         if ~checkBolusAround( XZ9Med )
+        %             BioValid = true;
+        %         else
+        %             if checkMuscleAround( XZ9Med )
+        %                 CnvctnFlag = true;
+        %             end
+        %         end
+        %     else
+        %         BioValid = true;
+        %     end
+        % end
+        
 
-        if BioValid == true || mediumTable( m, n, ell ) == 2 % In bio or bolus
+
+        % if BioValid == true || mediumTable( m, n, ell ) == 2 % In bio or bolus
+        if mediumTable(m, n, ell) == 2 || mediumTable(m, n, ell) == 3 || mediumTable(m, n, ell) == 4 ...
+            || mediumTable(m, n, ell) == 5 || mediumTable(m, n, ell) == 14 || mediumTable(m, n, ell) == 15 
             TmprSARseg(m, ell, :, :) = T_XZ(m, ell);
-        elseif CnvctnFlag == true
+        elseif mediumTable(m, n, ell) == 13 
             PntSegValueXZ = squeeze( SegValueXZ(m, ell, :, :) );
             TmpTmprtr = T_bolus * ones(6, 8);
             TmpTmprtr( find(PntSegValueXZ ~= 2) ) = T_XZ(m, ell);
             TmprSARseg(m, ell, :, :) = TmpTmprtr;
-        elseif mediumTable( m, n, ell ) == 0 
-            XZ9Med = getXYZ9Med(m, n, ell, mediumTable, 'XZ');
-            if checkAirAround( XZ9Med )
+        elseif mediumTable(m, n, ell) == 11  
+            % XZ9Med = getXYZ9Med(m, n, ell, mediumTable, 'XZ');
+            % if checkAirAround( XZ9Med )
                 % PntSegValueXZ = squeeze( SegValueXZ(m, ell, :, :) );
                 TmpTmprtr = T_bolus * ones(6, 8);
                 TmprSARseg(m, ell, :, :) = TmpTmprtr;
-            end
+            % end
         end
     end
 
@@ -142,6 +145,7 @@ if flag_XZ_T == 1
     paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
     plotMap( paras2dXZ, dx, dz );
     plotGridLineXZ( shiftedCoordinateXYZ, tumor_n );
+    plotRibXZ(Ribs, SSBone, dx, dz);
     
     % ylabel(cbar, '$T$ ($^\circ$C)', 'Interpreter','LaTex', 'FontSize', 20);
     % saveas(figure(21), fullfile(fname, strcat(CaseName, 'TmprtrXZ')), 'fig');
@@ -157,7 +161,7 @@ if flag_XY_T == 1
 
     T_XY = zeros( x_idx_max, y_idx_max );
     
-    t = 35 * 15;
+    t = T_end;
     t_idx = t / dt + 1;
     T_XY = squeeze( TmprtrTau( :, :, tumor_ell, uint8(t_idx) ) );
 
@@ -177,39 +181,42 @@ if flag_XY_T == 1
         n = int64( ( idx - m ) / x_idx_max + 1 );
         ell = tumor_ell;
 
-        BioValid = false;
-        CnvctnFlag = false;
+        % BioValid = false;
+        % CnvctnFlag = false;
 
         if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1 
-            if mediumTable( m, n, ell ) ~= 1 && mediumTable( m, n, ell ) ~= 2
-                if mediumTable( m, n, ell ) == 0
-                    XY9Med = getXYZ9Med(m, n, ell, mediumTable, 'XY');
-                    if ~checkBolusAround( XY9Med )
-                        BioValid = true;
-                    else
-                        if checkMuscleAround( XY9Med )
-                            CnvctnFlag = true;
-                        end
-                    end
-                else
-                    BioValid = true;
-                end
-            end
+        %     if mediumTable( m, n, ell ) ~= 1 && mediumTable( m, n, ell ) ~= 2
+        %         if mediumTable( m, n, ell ) == 0
+        %             XY9Med = getXYZ9Med(m, n, ell, mediumTable, 'XY');
+        %             if ~checkBolusAround( XY9Med )
+        %                 BioValid = true;
+        %             else
+        %                 if checkMuscleAround( XY9Med )
+        %                     CnvctnFlag = true;
+        %                 end
+        %             end
+        %         else
+        %             BioValid = true;
+        %         end
+        %     end
 
-            if BioValid == true || mediumTable( m, n, ell ) == 2 % In bio or bolus
+            % if BioValid == true || mediumTable( m, n, ell ) == 2 % In bio or bolus
+            if mediumTable(m, n, ell) == 2 || mediumTable(m, n, ell) == 3 || mediumTable(m, n, ell) == 4 ...
+                || mediumTable(m, n, ell) == 5 || mediumTable(m, n, ell) == 14 || mediumTable(m, n, ell) == 15 
                 TmprSARseg(m, n, :, :) = T_XY(m, n);
-            elseif CnvctnFlag == true
+            % elseif CnvctnFlag == true
+            elseif mediumTable(m, n, ell) == 13 
                 PntSegValueXY = squeeze( SegValueXY(m, n, :, :) );
                 TmpTmprtr = T_bolus * ones(6, 8);
                 TmpTmprtr( find(PntSegValueXY ~= 2) ) = T_XY(m, n);
                 TmprSARseg(m, n, :, :) = TmpTmprtr;
-            elseif mediumTable( m, n, ell ) == 0 
-                XY9Med = getXYZ9Med(m, n, ell, mediumTable, 'XY');
-                if checkAirAround( XY9Med )
+            elseif mediumTable(m, n, ell) == 11 
+                % XY9Med = getXYZ9Med(m, n, ell, mediumTable, 'XY');
+                % if checkAirAround( XY9Med )
                     % PntSegValueXY = squeeze( SegValueXY(m, n, :, :) );
                     TmpTmprtr = T_bolus * ones(6, 8);
                     TmprSARseg(m, n, :, :) = TmpTmprtr;
-                end
+                % end
             end
         end
     end
@@ -293,7 +300,7 @@ if flag_YZ_T == 1
     load( strcat( fname, '\', CaseDate, 'TmprtrFigYZ.mat' ) );
     % load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0107\Case0107TmprtrFigYZ.mat');
 
-    t = 35 * 15;
+    t = T_end;
     t_idx = t / dt + 1;
     T_YZ = zeros( y_idx_max, z_idx_max );
     T_YZ = squeeze( TmprtrTau( tumor_m, :, :, uint8(t_idx) ) );
@@ -318,39 +325,45 @@ if flag_YZ_T == 1
         CnvctnFlag = false;
         
         if n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
-            if mediumTable( m, n, ell ) ~= 1 && mediumTable( m, n, ell ) ~= 2
-                if mediumTable( m, n, ell ) == 0
-                    YZ9Med = getXYZ9Med(m, n, ell, mediumTable, 'YZ');
-                    if ~checkBolusAround( YZ9Med )
-                        BioValid = true;
-                    else
-                        if checkMuscleAround( YZ9Med )
-                            CnvctnFlag = true;
-                        end
-                    end
-                else
-                    BioValid = true;
-                end
-            end
+            % if mediumTable( m, n, ell ) ~= 1 && mediumTable( m, n, ell ) ~= 2
+            %     if mediumTable( m, n, ell ) == 0
+            %         YZ9Med = getXYZ9Med(m, n, ell, mediumTable, 'YZ');
+            %         if ~checkBolusAround( YZ9Med )
+            %             BioValid = true;
+            %         else
+            %             if checkMuscleAround( YZ9Med )
+            %                 CnvctnFlag = true;
+            %             end
+            %         end
+            %     else
+            %         BioValid = true;
+            %     end
+            % end
 
-            if n >= 16 && n <= 20 && ( ell == 11 || ell == 31 )
-                CnvctnFlag = true;
-            end
+            % if n >= 16 && n <= 20 && ( ell == 11 || ell == 31 )
+            %     CnvctnFlag = true;
+            % end
 
-            if BioValid == true || mediumTable( m, n, ell ) == 2 % In bio or bolus
+ 
+
+            % if BioValid == true || mediumTable( m, n, ell ) == 2 % In bio or bolus
+            if mediumTable(m, n, ell) == 2 || mediumTable(m, n, ell) == 3 || mediumTable(m, n, ell) == 4 ...
+                || mediumTable(m, n, ell) == 5 || mediumTable(m, n, ell) == 14 || mediumTable(m, n, ell) == 15 
                 TmprSARseg(n, ell, :, :) = T_YZ(n, ell);
-            elseif CnvctnFlag == true
+            % elseif CnvctnFlag == true
+            elseif mediumTable(m, n, ell) == 13 
                 PntSegValueYZ = squeeze( SegValueYZ(n, ell, :, :) );
                 TmpTmprtr = T_bolus * ones(6, 8);
                 TmpTmprtr( find(PntSegValueYZ ~= 2) ) = T_YZ(n, ell);
                 TmprSARseg(n, ell, :, :) = TmpTmprtr;
-            elseif mediumTable( m, n, ell ) == 0 
-                YZ9Med = getXYZ9Med(m, n, ell, mediumTable, 'YZ');
-                if checkAirAround( YZ9Med )
+            % elseif mediumTable( m, n, ell ) == 0 
+            elseif mediumTable(m, n, ell) == 11
+                % YZ9Med = getXYZ9Med(m, n, ell, mediumTable, 'YZ');
+                % if checkAirAround( YZ9Med )
                     % PntSegValueYZ = squeeze( SegValueYZ(m, ell, :, :) );
                     TmpTmprtr = T_bolus * ones(6, 8);
                     TmprSARseg(n, ell, :, :) = TmpTmprtr;
-                end
+                % end
             end
         end
     end

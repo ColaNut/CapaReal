@@ -16,7 +16,8 @@ RhoCapTerm  = zeros(x_idx_max, y_idx_max, z_idx_max);
 XiRhoTerm   = zeros(x_idx_max, y_idx_max, z_idx_max);
 QsTerm      = zeros(x_idx_max, y_idx_max, z_idx_max);
 
-% calculation of PennesCoeff
+disp('pre-calculation of PennesCoeffm, RhoCapTerm, XiRhoTerm and QsTerm');
+tic;
 for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
     
@@ -59,7 +60,9 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
         end
     end
 end
+toc;
 
+% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0207BoneTest\Case0207BoneTest.mat');
 disp('time to cal TmprtrTau');
 tic;
 for t = T_bgn + dt: dt: T_end
@@ -107,6 +110,9 @@ for t = T_bgn + dt: dt: T_end
         % namely, [m, n, ell] = [19, 16, 12], [19, 17, 12], [19, 18, 12], [19, 19, 12], [19, 20, 12], 
         %      or [m, n, ell] = [19, 16, 30], [19, 17, 30], [19, 18, 30], [19, 19, 30], [19, 20, 30].
  
+        if m == 15 && n == 15 && ell == 14
+            ;
+        end
 
         if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1  && ell >= 2 && ell <= z_idx_max - 1 
             PntSegMed = squeeze( SegMed(m, n, ell, :, :) );

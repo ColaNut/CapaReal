@@ -1,8 +1,8 @@
 clc; clear; 
-fname = 'e:\Kevin\CapaReal\Case0207Bone';
-% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0207Bone';
+fname = 'e:\Kevin\CapaReal\Case0208MuscleBone';
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0208MuscleBone';
 CaseName = 'Power250';
-V_0 = 76.78;
+V_0 = 80.51;
 Shift2d;
 save( strcat(fname, '\', CaseName, '.mat') );
 CurrentEst;
@@ -10,19 +10,20 @@ CurrentEst;
 % ManiScript;
 
 clc; clear;
-fname = 'e:\Kevin\CapaReal\Case0207Bone';
-% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0207Bone';
+fname = 'e:\Kevin\CapaReal\Case0208MuscleBone';
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0208MuscleBone';
 CaseName = 'Power280';
-V_0 = 81.26;
+V_0 = 85.20;
 Shift2d;
 save( strcat(fname, '\', CaseName, '.mat') );
 CurrentEst;
 
 clc; clear;
-fname = 'e:\Kevin\CapaReal\Case0207Bone';
-% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0207Bone';
+% fname = 'D:\Kevin\CapaReal\Case0208MuscleBone';
+fname = 'e:\Kevin\CapaReal\Case0208MuscleBone';
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0208MuscleBone';
 CaseName = 'Power300';
-V_0 = 84.11;
+V_0 = 89.19;
 Shift2d;
 save( strcat(fname, '\', CaseName, '.mat') );
 CurrentEst;
@@ -34,8 +35,8 @@ timeNum_2   = 4 * 30;
 timeNum_3   = 4 * 15;
 timeNum_all = timeNum_1 + timeNum_2 + timeNum_3;
 
-% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0207Bone';
-fname = 'e:\Kevin\CapaReal\Case0207Bone';
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0208MuscleBone';
+fname = 'e:\Kevin\CapaReal\Case0208MuscleBone';
 
 % Period 1
 CaseName = 'Power250';
@@ -80,7 +81,7 @@ T_bgn = ( timeNum_1 + timeNum_2 ) * dt;
 timeNum = timeNum_3;
 TmprtrDis;
 
-fname = 'e:\Kevin\CapaReal\Case0207Bone';
-save( strcat(fname, '\Case0207Bone.mat') );
+fname = 'e:\Kevin\CapaReal\Case0208MuscleBone';
+save( strcat(fname, '\Case0208MuscleBone.mat') );
 
 % ManiScript

@@ -3,7 +3,7 @@ function [ weight, SegMed ] = calBndryRibWeight( BoneMed27Value, medValue, epsil
     med2Layers      = medValue;
     weight          = zeros(8, 1);
     SegMed          = ones( 1, 8, 'uint8' );
-    tmp_Med2Layers = zeros( 2, 4 );
+    tmp_Med2Layers  = zeros( 2, 4 );
     SubRibCases     = false(2, 1);
     BoneMed9Value   = get9Med( BoneMed27Value );
 

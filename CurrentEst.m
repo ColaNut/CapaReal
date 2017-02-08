@@ -26,7 +26,7 @@ for idx = x_idx_max * y_idx_max * z_idx_max / 2: 1: x_idx_max * y_idx_max * z_id
     ell = uint64(ell);
 
     if UpElecTb( m, n, ell ) == true;
-        XZ9Med = getXZ9Med(m, n, ell, mediumTable);
+        XZ9Med = getXZ9Med(m, n, ell, MskMedTab);
         if checkBndrNum( XZ9Med, 3 ) || checkBndrNum( XZ9Med, 4 )
             if checkBndrNum( XZ9Med, 4 )
                 if length( find(XZ9Med(1: 3) == 0) ) == 1

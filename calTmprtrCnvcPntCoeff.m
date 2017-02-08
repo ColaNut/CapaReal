@@ -37,6 +37,8 @@ function coeff = calTmprtrCnvcPntCoeff( m, n, ell, shiftedCoordinateXYZ, x_idx_m
     elseif MskMedTab(m, n, ell) == 0 && BoneMediumTable(m, n, ell) == 16  % rib boundary point
         A_row = fillBndrRibPt_A( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
                 MskMedTab, BoneMediumTable, zeta );
+    else
+        error('check');
     end
 
     % A_row = fillBndrPt_A( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, mediumTable, zeta, BlsBndryMsk );

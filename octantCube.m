@@ -3,22 +3,6 @@ function [ w, SegMed ] = octantCube( Med2Layers, epsilon_r )
 w = ones(2, 1);
 SegMed = ones(1, 2, 'uint8');
 
-% FltrMed2Layers = fltrMed(Med2Layers);
-
-% if length(find(FltrMed2Layers == FltrMed2Layers(2, 1))) <= 2
-%     error('check');
-% end
- 
-% if ( FltrMed2Layers(1, 1) ~= 0 && FltrMed2Layers(2, 4) ~= 0 ) ...
-%     || ( FltrMed2Layers(1, 1) ~= 0 && FltrMed2Layers(1, 4) ~= 0 ) 
-%     \seperate
-% elseif 
-%     ExtredMed = extractMed(Med2Layers);
-%     SegMed(:) = ExtredMed;
-%     w(:) = epsilon_r(ExtredMed);
-% end
-
-    
     if Med2Layers(2, 2) ~= 0 && Med2Layers(2, 3) ~= 0
         w(1) = epsilon_r( Med2Layers(2, 2) );
         w(2) = epsilon_r( Med2Layers(2, 3) );

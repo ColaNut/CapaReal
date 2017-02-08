@@ -50,7 +50,8 @@ if flag_XZ == 1
         
         ell = int64( ( idx - m - ( n - 1 ) * x_idx_max ) / ( x_idx_max * y_idx_max ) + 1 );
 
-        y = tumor_y - dy;
+        % y = tumor_y - dy;
+        y = tumor_y;
         % y = - 10 / 100;
         CrossN = int32( y / dy + h_torso / ( 2 * dy ) + 1 );
         % CrossN = - 10 / ( 100 * dy )
