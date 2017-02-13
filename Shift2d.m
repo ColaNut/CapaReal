@@ -71,9 +71,6 @@ BoneGridShiftTableXZ = cell( h_torso / dy + 1, 1);
 for y = - h_torso / 2: dy: h_torso / 2
     [ RibValid, SSBoneValid ] = Bone2d(y, Ribs, SSBone, dy, h_torso);
     y_idx = y / dy + h_torso / (2 * dy) + 1;
-    if y_idx == 19
-        ;
-    end
     [ GridShiftTableXZ{ int64(y_idx) }, BoneMediumTable(:, int64(y_idx), :) ] ...
         = UpdateBoneMed( y, mediumTable(:, int64(y_idx), :), Ribs, SSBone, RibValid, SSBoneValid, ...
                             dx, dz, air_x, air_z, x_idx_max, z_idx_max, GridShiftTableXZ{ int64(y_idx) } );
@@ -87,9 +84,6 @@ for x = - air_x / 2: dx: air_x / 2
     %     tumor_y, tumor_z, tumor_r_prime ];
     y_grid_table = fillGridTableY_all( paras2dYZ, dy, dz );
     x_idx = x / dx + air_x / (2 * dx) + 1;
-    if x_idx == 25
-        ;
-    end
     [ GridShiftTableXZ, mediumTable ] = constructGridShiftTableXYZ( GridShiftTableXZ, int64(x_idx), y_grid_table, h_torso, air_z, dy, dz, mediumTable, paras2dYZ );
 end
 
@@ -117,6 +111,7 @@ shiftedCoordinateXYZ = constructCoordinateXYZ( GridShiftTable, paras, dx, dy, dz
 
 % BlsBndryMsk = zeros(x_idx_max, z_idx_max);c  
 % BlsBndryMsk = get1cmBlsBndryMsk( bolus_a, bolus_c, muscle_a, muscle_c, dx, dz, x_idx_max, z_idx_max, air_x, air_z );
+
 
 sparseA = cell( x_idx_max * y_idx_max * z_idx_max, 1 );
 B = zeros( x_idx_max * y_idx_max * z_idx_max, 1 );
@@ -179,32 +174,6 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
     end
 end
 toc;
-
-% % % for idx = 26 * x_idx_max * y_idx_max: 1: 27 * x_idx_max * y_idx_max 
-% disp('The fill up time of rib A: ');
-% tic;
-% for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
-%     % idx = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
-%     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
-%     p0 = idx;
-
-%     if m == 16 && n == 19 && ell == 29
-%         ;
-%     end
-
-%     if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
-%         if BoneMediumTable(p0) >= 16 && BoneMediumTable(p0) <= 18 && MskMedTab(p0) ~= 0
-%             [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillNrmlRibPt_A( m, n, ell, ...
-%                 shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
-%                     MskMedTab, BoneMediumTable, epsilon_r );
-%         elseif BoneMediumTable(p0) == 16 && MskMedTab(p0) == 0
-%             [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrRibPt_A( m, n, ell, ...
-%                 shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
-%                     MskMedTab, BoneMediumTable, epsilon_r );
-%         end
-%     end
-% end
-% toc;
 
 % put on electrodes
 [ Xtable, Ztable ] = fillTradlElctrd( bolus_a, bolus_c, dx, dz );
