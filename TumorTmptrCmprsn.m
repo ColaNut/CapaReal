@@ -1,21 +1,27 @@
-% clc; clear;
-% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal';
-% CaseDate = 'Case0107';
-% load( strcat(fname, '\', CaseDate, '\', 'Case0107.mat') );
-% % load( strcat(fname, '\', CaseDate, '\', 'Case0107.mat'), 'TmprtrTau' );
+clc;
+clear; 
+fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0208BonePowerMod';
+% fname = 'e:\Kevin\CapaReal\Case0207BoneDebug';
+
+% % Period 1
+CaseName = 'Case0208BonePowerMod';
+load( strcat(fname, '\', CaseName, '.mat') );
 
 tumor_m = tumor_x / dx + air_x / (2 * dx) + 1;
 tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1;
 tumor_ell = tumor_z / dz + air_z / (2 * dz) + 1;
-
-% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\TexFile2';
-% openfig('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case1221\TotalQmetTumorTmprtr.fig', 'reuse');
-figure(4); 
+figure(8); 
 clf;
 set(gca,'fontsize',18);
 set(gca,'LineWidth',2.0);
 plot(0: dt / 60: T_end / 60, squeeze(TmprtrTau(tumor_m, tumor_n, tumor_ell, :)), 'k', 'LineWidth', 2.5);
-% axis( [ 0, T_end / 60, min(min(TmprtrTau(tumor_m, tumor_n, tumor_ell, :))), max(max(TmprtrTau(tumor_m, tumor_n, tumor_ell, :))) ] );
+hold on;
+
+fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0212Qmet8000';
+CaseName = 'Case0212Qmet8000';
+load( strcat(fname, '\', CaseName, '.mat') );
+figure(8); 
+plot(0: dt / 60: T_end / 60, squeeze(TmprtrTau(tumor_m, tumor_n, tumor_ell, :)), 'Color', [0.5, 0.5, 0.5], 'LineWidth', 2.5);
 
 set(gca,'fontsize',18);
 set(gca,'LineWidth',2.0);
@@ -46,9 +52,3 @@ set(gca,'LineWidth',2.0);
 axis( [ 0, 50, 200, 500 ]);
 ylabel('$W$ (watt)','Interpreter','LaTex', 'FontSize', 18);
 linkaxes([ax1 ax2],'x');
-% saveas(figure(4), fullfile(fname, 'TotalQmet42000TumorTmprtr'), 'fig');
-% saveas(figure(4), fullfile(fname, 'TotalQmet42000TumorTmprtr'), 'jpg');
-
-% [ M, I ] = max( squeeze( TmprtrTau(tumor_m, tumor_n, tumor_ell, :) ) )
-
-% openfig(strcat(fname, '\TotalQmetTumorTmprtr.fig'), 'reuse');

@@ -105,7 +105,7 @@ if flag_XZ == 1
     hold on;
     plotMap( paras2dXZ, dx, dz );
     plotRibXZ(Ribs, SSBone, dx, dz);
-    plotGridLineXZ( shiftedCoordinateXYZ, y / dy + h_torso / (2 * dy) + 1 );
+    % plotGridLineXZ( shiftedCoordinateXYZ, y / dy + h_torso / (2 * dy) + 1 );
     % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'fig');
     % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
 
@@ -220,7 +220,7 @@ if flag_XZ == 1
     view(2);
     plotMap( paras2dXZ, dx, dz );
     plotRibXZ(Ribs, SSBone, dx, dz);
-    plotGridLineXZ( shiftedCoordinateXYZ, y / dy + h_torso / (2 * dy) + 1 );
+    % plotGridLineXZ( shiftedCoordinateXYZ, y / dy + h_torso / (2 * dy) + 1 );
     % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'fig');
     % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
     save( strcat( fname, '\', CaseDate, 'TmprtrFigXZ.mat') );
