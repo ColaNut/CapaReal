@@ -53,17 +53,17 @@
 % ylabel('$W$ (watt)','Interpreter','LaTex', 'FontSize', 18);
 % linkaxes([ax1 ax2],'x');
 
-% % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0207Bone';
-% % openfig(strcat(fname, '\', CaseName, 'PhiXZ', '.fig'));
-% % openfig(strcat(fname, '\', CaseName, 'SARXZ', '.fig'));
-% % openfig(strcat(fname, '\', CaseName, 'PhiXY', '.fig'));
-% % openfig(strcat(fname, '\', CaseName, 'SARXY', '.fig'));
-% % openfig(strcat(fname, '\', CaseName, 'PhiYZ', '.fig'));
-% % openfig(strcat(fname, '\', CaseName, 'SARYZ', '.fig'));
-% % openfig(strcat(fname, '\', 'TotalQmet42000TumorTmprtr', '.fig'));
-% % openfig(strcat(fname, '\', CaseName, 'TmprtrXZ', '.fig'));
-% % openfig(strcat(fname, '\', CaseName, 'TmprtrXY', '.fig'));
-% % openfig(strcat(fname, '\', CaseName, 'TmprtrYZ', '.fig'));
+fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0212Qmet8000';
+% openfig(strcat(fname, '\', CaseName, 'PhiXZ', '.fig'));
+openfig(strcat(fname, '\', CaseName, 'SARXZ', '.fig'));
+% openfig(strcat(fname, '\', CaseName, 'PhiXY', '.fig'));
+% openfig(strcat(fname, '\', CaseName, 'SARXY', '.fig'));
+% openfig(strcat(fname, '\', CaseName, 'PhiYZ', '.fig'));
+% openfig(strcat(fname, '\', CaseName, 'SARYZ', '.fig'));
+% openfig(strcat(fname, '\', 'TotalQmet42000TumorTmprtr', '.fig'));
+% openfig(strcat(fname, '\', CaseName, 'TmprtrXZ', '.fig'));
+% openfig(strcat(fname, '\', CaseName, 'TmprtrXY', '.fig'));
+% openfig(strcat(fname, '\', CaseName, 'TmprtrYZ', '.fig'));
 
 % % m = 15;
 % % n = 14; 
@@ -71,14 +71,14 @@
 
 % % idxmnell = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m
 
-fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0212Qmet8000';
-CaseName = 'Power300';
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0212Qmet8000';
+% CaseName = 'Power300';
 % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'fig');
 % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
 % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'fig');
 % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
-saveas(figure(4), fullfile(fname, 'TotalQmet42000TumorTmprtr'), 'fig');
-saveas(figure(4), fullfile(fname, 'TotalQmet42000TumorTmprtr'), 'jpg');
+% saveas(figure(4), fullfile(fname, 'TotalQmet42000TumorTmprtr'), 'fig');
+% saveas(figure(4), fullfile(fname, 'TotalQmet42000TumorTmprtr'), 'jpg');
 % saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'fig');
 % saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'jpg');
 % saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'fig');

@@ -4,16 +4,16 @@ PhiSAR_flag = 1;
 if PhiSAR_flag == 1
     clc; clear;
     CaseName = 'Power300';
-    load( strcat('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0212Qmet8000\', CaseName, '.mat') );
-    % load( strcat('e:\Kevin\CapaReal\Case0212Qmet8000', '\', CaseName, '.mat') );
+    load( strcat('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0213_0cmBolus\', CaseName, '.mat') );
+    % load( strcat('e:\Kevin\CapaReal\Case0213_0cmBolus', '\', CaseName, '.mat') );
 
     flag_XZ = 1;
     flag_XY = 1;
     flag_YZ = 1;
 
-    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0212Qmet8000';
-    % fname = 'e:\Kevin\CapaReal\Case0212Qmet8000';
-    CaseDate = 'Case0212Qmet8000';
+    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0213_0cmBolus';
+    % fname = 'e:\Kevin\CapaReal\Case0213_0cmBolus';
+    CaseDate = 'Case0213_0cmBolus';
     PhiDstrbtn;
     saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'fig');
     saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
@@ -35,13 +35,13 @@ if TumorTmptr_flag == 1
     clc; clear;
     fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal';
     % fname = 'e:\Kevin\CapaReal';
-    CaseDate = 'Case0212Qmet8000';
+    CaseDate = 'Case0213_0cmBolus';
     load( strcat(fname, '\', CaseDate, '\', CaseDate, '.mat') );
 
     TumorTmptrMani;
 
     fname = strcat( 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal', '\', CaseDate );
-    % fname = strcat( 'e:\Kevin\CapaReal', '\', CaseDate );
+    % % fname = strcat( 'e:\Kevin\CapaReal', '\', CaseDate );
     saveas(figure(4), fullfile(fname, 'TotalQmet42000TumorTmprtr'), 'fig');
     saveas(figure(4), fullfile(fname, 'TotalQmet42000TumorTmprtr'), 'jpg');
 end
@@ -53,7 +53,7 @@ if Tmprtr_flag == 1
     % load the mat from the end of all simulations
     fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal';
     % fname = 'e:\Kevin\CapaReal';
-    CaseDate = 'Case0212Qmet8000';
+    CaseDate = 'Case0213_0cmBolus';
     load( strcat(fname, '\', CaseDate, '\', CaseDate, '.mat') );
     fname = strcat( 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal', '\', CaseDate );
     % fname = strcat( 'e:\Kevin\CapaReal', '\', CaseDate );
@@ -63,7 +63,7 @@ if Tmprtr_flag == 1
     flag_YZ_T = 1;
 
     TmprtrFigs;
-    % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\TexFile2';
+    % % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\TexFile2';
     saveas(figure(21), fullfile(fname, strcat(CaseName, 'TmprtrXZ')), 'fig');
     saveas(figure(21), fullfile(fname, strcat(CaseName, 'TmprtrXZ')), 'jpg');
     saveas(figure(22), fullfile(fname, strcat(CaseName, 'TmprtrXY')), 'fig');
