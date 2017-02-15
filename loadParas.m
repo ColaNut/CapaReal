@@ -142,8 +142,8 @@
 h_torso = 36 / 100;
 air_x = 50 / 100; % width: 30 cm
 air_z = 40 / 100; % height: 30 cm
-bolus_a = 30 / 200;
-bolus_c = 22 / 200;
+bolus_a = 32 / 200;
+bolus_c = 24 / 200;
 skin_a = 0 / 100;
 skin_c = 0 / 100;
 muscle_a = 30 / 200;

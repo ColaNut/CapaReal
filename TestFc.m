@@ -34,10 +34,10 @@
 % CaseName = 'Power300';
 % load( strcat(fname, '\', CaseName, '.mat') );
 
-% % % % clc; clear; 
+% % % clc; clear; 
 % % % % V_0 = 76.78;
 % Shift2d
-% % loadParas;
+% loadParas;
 tumor_m = tumor_x / dx + air_x / (2 * dx) + 1;
 tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1;
 tumor_ell = tumor_z / dz + air_z / (2 * dz) + 1;
@@ -47,7 +47,7 @@ y = 0;
 counter = 0;
 % for y = tumor_y - 2 * dy: dy: tumor_y - 2 * dy
     y_idx = y / dy + h_torso / (2 * dy) + 1;
-    counter = counter + 1;
+    counter = counter + 9;
     paras2dXZ = genParas2d( y, paras, dx, dy, dz );
     figure(counter);
     clf;
@@ -60,18 +60,18 @@ counter = 0;
 % % figure(3);
 plotRibXZ(Ribs, SSBone, dx, dz);
 
-% y = tumor_y + dy;
-    y = tumor_y;
-    y_idx = y / dy + h_torso / (2 * dy) + 1;
-    paras2dXZ = genParas2d( y, paras, dx, dy, dz );
-    figure(2);
-    clf;
-    plotMap( paras2dXZ, dx, dz );
-    axis equal;
-    plotGridLineXZ( shiftedCoordinateXYZ, y_idx );
-    set(gcf, 'Position', get(0,'Screensize'));
-    plotRibXZ(Ribs, SSBone, dx, dz);
-% end
+% % y = tumor_y + dy;
+%     y = tumor_y;
+%     y_idx = y / dy + h_torso / (2 * dy) + 1;
+%     paras2dXZ = genParas2d( y, paras, dx, dy, dz );
+%     figure(2);
+%     clf;
+%     plotMap( paras2dXZ, dx, dz );
+%     axis equal;
+%     plotGridLineXZ( shiftedCoordinateXYZ, y_idx );
+%     set(gcf, 'Position', get(0,'Screensize'));
+%     plotRibXZ(Ribs, SSBone, dx, dz);
+% % end
 
 % RibValid = zeros(size(- h_torso / 2: dy: h_torso / 2));
 % SSBoneValid = zeros(size(- h_torso / 2: dy: h_torso / 2));

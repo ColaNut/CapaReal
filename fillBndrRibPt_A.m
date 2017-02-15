@@ -1,5 +1,5 @@
 function [ A_row, SegMed ] = fillBndrRibPt_A( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
-                                                MskMedTab, BoneMediumTable, epsilon_r )
+                                                MskMedTab, BoneMediumTable, epsilon_r, SegMedIn )
 
     % A_row         = zeros( 1, x_idx_max * y_idx_max * z_idx_max );
     A_row         = zeros( 1, 14 );
@@ -18,6 +18,7 @@ function [ A_row, SegMed ] = fillBndrRibPt_A( m, n, ell, shiftedCoordinateXYZ, x
     PntsMed                 = get27PntsMed( PntsIdx, MskMedTab );
     PntsBoneMed             = get27PntsMed( PntsIdx, BoneMediumTable );
     MidPntsCrdnt            = calMid27Pnts( PntsCrdnt );
+    SegMed                  = SegMedIn;
 
     A_row(1)  = PntsIdx(3, 5);
     A_row(2)  = PntsIdx(2, 4);
@@ -54,12 +55,12 @@ function [ A_row, SegMed ] = fillBndrRibPt_A( m, n, ell, shiftedCoordinateXYZ, x
         % check the validity of the following
         [ A_row(8), SegMed(1, :), sideEffect(1, :) ] = RibEffValue( squeeze( MidPntsCrdnt(3, :, :) ), ...
                                         tmpMidLyr, squeeze( PntsCrdnt(3, 5, :) ), 'nrml', PntsBoneMed, ...
-                                            PntsMed(3, 5), epsilon_r, 'p1' );
+                                            PntsMed(3, 5), epsilon_r, 'p1', SegMed(1, :) );
     else  % PntsMed(3, 5) == 0 && PntsBoneMed(3, 5) ~= 1    % boundary rib point
         tmpMed2Layers = p1FaceMed( PntsMed );
         [ A_row(8), SegMed(1, :), sideEffect(1, :) ] = RibEffValue( squeeze( MidPntsCrdnt(3, :, :) ), ...
                                         tmpMidLyr, squeeze( PntsCrdnt(3, 5, :) ), 'bndry', PntsBoneMed, ...
-                                            tmpMed2Layers, epsilon_r, 'p1' );
+                                            tmpMed2Layers, epsilon_r, 'p1', SegMed(1, :) );
     end
 
     % p2
@@ -78,12 +79,12 @@ function [ A_row, SegMed ] = fillBndrRibPt_A( m, n, ell, shiftedCoordinateXYZ, x
         % check the validity of the following
         [ A_row(9), SegMed(2, :), sideEffect(2, :) ] = RibEffValue( squeeze( tmpMidCrdnt ), ...
                                         tmpMidLyr, squeeze( PntsCrdnt(2, 4, :) ), 'nrml', PntsBoneMed, ...
-                                            PntsMed(2, 4), epsilon_r, 'p2' );
+                                            PntsMed(2, 4), epsilon_r, 'p2', SegMed(2, :) );
     else  % PntsMed(2, 4) == 0 && PntsBoneMed(2, 4) ~= 1    % boundary rib point
         tmpMed2Layers = p2FaceMed( PntsMed );
         [ A_row(9), SegMed(2, :), sideEffect(2, :) ] = RibEffValue( squeeze( tmpMidCrdnt ), ...
                                         tmpMidLyr, squeeze( PntsCrdnt(2, 4, :) ), 'bndry', PntsBoneMed, ...
-                                            tmpMed2Layers, epsilon_r, 'p2' );
+                                            tmpMed2Layers, epsilon_r, 'p2', SegMed(2, :) );
     end
 
     % p3
@@ -102,12 +103,12 @@ function [ A_row, SegMed ] = fillBndrRibPt_A( m, n, ell, shiftedCoordinateXYZ, x
         % check the validity of the following
         [ A_row(10), SegMed(3, :), sideEffect(3, :) ] = RibEffValue( squeeze( tmpMidCrdnt ), ...
                                         tmpMidLyr, squeeze( PntsCrdnt(1, 5, :) ), 'nrml', PntsBoneMed, ...
-                                            PntsMed(1, 5), epsilon_r, 'p3' );
+                                            PntsMed(1, 5), epsilon_r, 'p3', SegMed(3, :) );
     else  % PntsMed(1, 5) == 0 && PntsBoneMed(1, 5) ~= 1    % boundary rib point
         tmpMed2Layers = p3FaceMed( PntsMed );
         [ A_row(10), SegMed(3, :), sideEffect(3, :) ] = RibEffValue( squeeze( tmpMidCrdnt ), ...
                                         tmpMidLyr, squeeze( PntsCrdnt(1, 5, :) ), 'bndry', PntsBoneMed, ...
-                                            tmpMed2Layers, epsilon_r, 'p3' );
+                                            tmpMed2Layers, epsilon_r, 'p3', SegMed(3, :) );
     end
 
     % p4
@@ -126,12 +127,12 @@ function [ A_row, SegMed ] = fillBndrRibPt_A( m, n, ell, shiftedCoordinateXYZ, x
         % check the validity of the following
         [ A_row(11), SegMed(4, :), sideEffect(4, :) ] = RibEffValue( squeeze( tmpMidCrdnt ), ...
                                         tmpMidLyr, squeeze( PntsCrdnt(2, 6, :) ), 'nrml', PntsBoneMed, ...
-                                            PntsMed(2, 6), epsilon_r, 'p4' );
+                                            PntsMed(2, 6), epsilon_r, 'p4', SegMed(4, :) );
     else  % PntsMed(2, 6) == 0 && PntsBoneMed(2, 6) ~= 1    % boundary rib point
         tmpMed2Layers = p4FaceMed( PntsMed );
         [ A_row(11), SegMed(4, :), sideEffect(4, :) ] = RibEffValue( squeeze( tmpMidCrdnt ), ...
                                         tmpMidLyr, squeeze( PntsCrdnt(2, 6, :) ), 'bndry', PntsBoneMed, ...
-                                            tmpMed2Layers, epsilon_r, 'p4' );
+                                            tmpMed2Layers, epsilon_r, 'p4', SegMed(4, :) );
     end
 
     % p5
@@ -150,12 +151,12 @@ function [ A_row, SegMed ] = fillBndrRibPt_A( m, n, ell, shiftedCoordinateXYZ, x
         % check the validity of the following
         [ A_row(12), SegMed(5, :), sideEffect(5, :) ] = RibEffValue( squeeze( tmpMidCrdnt ), ...
                                         tmpMidLyr, squeeze( PntsCrdnt(2, 8, :) ), 'nrml', PntsBoneMed, ...
-                                            PntsMed(2, 8), epsilon_r, 'p5' );
+                                            PntsMed(2, 8), epsilon_r, 'p5', SegMed(5, :) );
     else  % PntsMed(2, 8) == 0 && PntsBoneMed(2, 8) ~= 1    % boundary rib point
         tmpMed2Layers = p5FaceMed( PntsMed );
         [ A_row(12), SegMed(5, :), sideEffect(5, :) ] = RibEffValue( squeeze( tmpMidCrdnt ), ...
                                         tmpMidLyr, squeeze( PntsCrdnt(2, 8, :) ), 'bndry', PntsBoneMed, ...
-                                            tmpMed2Layers, epsilon_r, 'p5' );
+                                            tmpMed2Layers, epsilon_r, 'p5', SegMed(5, :) );
     end
 
     % p6
@@ -174,12 +175,12 @@ function [ A_row, SegMed ] = fillBndrRibPt_A( m, n, ell, shiftedCoordinateXYZ, x
         % check the validity of the following
         [ A_row(13), SegMed(6, :), sideEffect(6, :) ] = RibEffValue( squeeze( tmpMidCrdnt ), ...
                                         tmpMidLyr, squeeze( PntsCrdnt(2, 2, :) ), 'nrml', PntsBoneMed, ...
-                                            PntsMed(2, 2), epsilon_r, 'p6' );
+                                            PntsMed(2, 2), epsilon_r, 'p6', SegMed(6, :) );
     else  % PntsMed(2, 2) == 0 && PntsBoneMed(2, 2) ~= 1    % boundary rib point
         tmpMed2Layers = p6FaceMed( PntsMed );
         [ A_row(13), SegMed(6, :), sideEffect(6, :) ] = RibEffValue( squeeze( tmpMidCrdnt ), ...
                                         tmpMidLyr, squeeze( PntsCrdnt(2, 2, :) ), 'bndry', PntsBoneMed, ...
-                                            tmpMed2Layers, epsilon_r, 'p6' );
+                                            tmpMed2Layers, epsilon_r, 'p6', SegMed(6, :) );
     end
     % catch
     %     [ m, n, ell ]

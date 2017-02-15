@@ -53,9 +53,9 @@
 % ylabel('$W$ (watt)','Interpreter','LaTex', 'FontSize', 18);
 % linkaxes([ax1 ax2],'x');
 
-fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0212Qmet8000';
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0212Qmet8000';
 % openfig(strcat(fname, '\', CaseName, 'PhiXZ', '.fig'));
-openfig(strcat(fname, '\', CaseName, 'SARXZ', '.fig'));
+% openfig(strcat(fname, '\', CaseName, 'SARXZ', '.fig'));
 % openfig(strcat(fname, '\', CaseName, 'PhiXY', '.fig'));
 % openfig(strcat(fname, '\', CaseName, 'SARXY', '.fig'));
 % openfig(strcat(fname, '\', CaseName, 'PhiYZ', '.fig'));
@@ -87,3 +87,21 @@ openfig(strcat(fname, '\', CaseName, 'SARXZ', '.fig'));
 % saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'jpg');
 % saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'fig');
 % saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'jpg');
+
+    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0214_1cmBolus';
+    % fname = 'e:\Kevin\CapaReal\Case0214_1cmBolus';
+    % CaseDate = 'Case0214_1cmBolus';
+    % PhiDstrbtn;
+    CaseName = 'Power300';
+    saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'fig');
+    saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
+    saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'fig');
+    saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
+    saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'fig');
+    saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'jpg');
+    saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'fig');
+    saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'jpg');
+    saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'fig');
+    saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'jpg');
+    saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'fig');
+    saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'jpg');

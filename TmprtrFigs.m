@@ -134,7 +134,7 @@ if flag_XZ_T == 1
     set(gca,'fontsize',20);
     set(gca,'LineWidth',2.0);
     cbar = colorbar;
-    caxis([5, 50]);
+    % caxis([5, 50]);
     set(cbar, 'Ytick', [5, 10, 15, 20, 25, 30, 35, 40, 45, 50], 'FontSize', 20); 
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
@@ -272,7 +272,7 @@ if flag_XY_T == 1
     set(gca,'fontsize',20);
     set(gca,'LineWidth',2.0);
     cbar = colorbar;
-    caxis([5, 50]);
+    % caxis([5, 50]);
     set(cbar, 'Ytick', [5, 10, 15, 20, 25, 30, 35, 40, 45, 50], 'FontSize', 20); 
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$y$ (cm)','Interpreter','LaTex', 'FontSize', 20);
@@ -420,7 +420,7 @@ if flag_YZ_T == 1
     set(gca,'fontsize',20);
     set(gca,'LineWidth',2.0);
     cbar = colorbar;
-    caxis([5, 50]);
+    % caxis([5, 50]);
     set(cbar, 'Ytick', [5, 10, 15, 20, 25, 30, 35, 40, 45, 50], 'FontSize', 20); 
     xlabel('$y$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);

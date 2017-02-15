@@ -43,37 +43,37 @@ function [ A_row, SegMed ] = fillNrmlRibPt_A( m, n, ell, shiftedCoordinateXYZ, x
         tmpMidLyr = p1FaceMidLyr( PntsCrdnt );
         [ A_row(8), SegMed(1, :), sideEffect(1, :) ] = RibEffValue( squeeze( MidPntsCrdnt(3, :, :) ), ...
                                             tmpMidLyr, squeeze( PntsCrdnt(3, 5, :) ), 'nrml', PntsBoneMed, ...
-                                            MskmedTab(m, n, ell), epsilon_r, 'p1' );
+                                            MskmedTab(m, n, ell), epsilon_r, 'p1', SegMed(1, :) );
         % p2
         tmpMidLyr   = p2FaceMidLyr( PntsCrdnt );
         tmpMidCrdnt = p2Face( MidPntsCrdnt );
         [ A_row(9), SegMed(2, :), sideEffect(2, :) ] = RibEffValue( squeeze( tmpMidCrdnt ), ...
                                             tmpMidLyr, squeeze( PntsCrdnt(2, 4, :) ), 'nrml', PntsBoneMed, ...
-                                            MskmedTab(m, n, ell), epsilon_r, 'p2' );
+                                            MskmedTab(m, n, ell), epsilon_r, 'p2', SegMed(2, :) );
         % p3
         tmpMidLyr   = p3FaceMidLyr( PntsCrdnt );
         tmpMidCrdnt = p3Face( MidPntsCrdnt );
         [ A_row(10), SegMed(3, :), sideEffect(3, :) ] = RibEffValue( squeeze( tmpMidCrdnt ), ...
                                             tmpMidLyr, squeeze( PntsCrdnt(1, 5, :) ), 'nrml', PntsBoneMed, ...
-                                            MskmedTab(m, n, ell), epsilon_r, 'p3' );
+                                            MskmedTab(m, n, ell), epsilon_r, 'p3', SegMed(3, :) );
         % p4
         tmpMidLyr   = p4FaceMidLyr( PntsCrdnt );
         tmpMidCrdnt = p4Face( MidPntsCrdnt );
         [ A_row(11), SegMed(4, :), sideEffect(4, :) ] = RibEffValue( squeeze( tmpMidCrdnt ), ...
                                             tmpMidLyr, squeeze( PntsCrdnt(2, 6, :) ), 'nrml', PntsBoneMed, ...
-                                            MskmedTab(m, n, ell), epsilon_r, 'p4' );
+                                            MskmedTab(m, n, ell), epsilon_r, 'p4', SegMed(4, :) );
         % p5
         tmpMidLyr   = p5FaceMidLyr( PntsCrdnt );
         tmpMidCrdnt = p5Face( MidPntsCrdnt );
         [ A_row(12), SegMed(5, :), sideEffect(5, :) ] = RibEffValue( squeeze( tmpMidCrdnt ), ...
                                             tmpMidLyr, squeeze( PntsCrdnt(2, 8, :) ), 'nrml', PntsBoneMed, ...
-                                            MskmedTab(m, n, ell), epsilon_r, 'p5' );
+                                            MskmedTab(m, n, ell), epsilon_r, 'p5', SegMed(5, :) );
         % p6
         tmpMidLyr   = p6FaceMidLyr( PntsCrdnt );
         tmpMidCrdnt = p6Face( MidPntsCrdnt );
         [ A_row(13), SegMed(6, :), sideEffect(6, :) ] = RibEffValue( squeeze( tmpMidCrdnt ), ...
                                             tmpMidLyr, squeeze( PntsCrdnt(2, 2, :) ), 'nrml', PntsBoneMed, ...
-                                            MskmedTab(m, n, ell), epsilon_r, 'p6' );
+                                            MskmedTab(m, n, ell), epsilon_r, 'p6', SegMed(6, :) );
     % end
     % p0
     % SegMed    = SegMed .* MskmedTab(m, n, ell);

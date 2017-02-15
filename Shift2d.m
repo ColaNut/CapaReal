@@ -112,10 +112,10 @@ shiftedCoordinateXYZ = constructCoordinateXYZ( GridShiftTable, paras, dx, dy, dz
 % BlsBndryMsk = zeros(x_idx_max, z_idx_max);c  
 % BlsBndryMsk = get1cmBlsBndryMsk( bolus_a, bolus_c, muscle_a, muscle_c, dx, dz, x_idx_max, z_idx_max, air_x, air_z );
 
-
 sparseA = cell( x_idx_max * y_idx_max * z_idx_max, 1 );
 B = zeros( x_idx_max * y_idx_max * z_idx_max, 1 );
 SegMed = ones( x_idx_max, y_idx_max, z_idx_max, 6, 8, 'uint8');
+% ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 % Mask the medium table
 MskMedTab = mediumTable;
@@ -140,7 +140,8 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
                             shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab );
         elseif MskMedTab(p0) == 0 && BoneMediumTable(p0) == 1 % normal bondary point
             [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
-                shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, epsilon_r );
+                shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
+                epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
         elseif MskMedTab(p0) ~= 0 && BoneMediumTable(p0) >= 16 && BoneMediumTable(p0) <= 18 % rib normal point
             [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillNrmlRibPt_A( m, n, ell, ...
                 shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
@@ -148,7 +149,7 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
         elseif MskMedTab(p0) == 0 && BoneMediumTable(p0) == 16  % rib boundary point
             [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrRibPt_A( m, n, ell, ...
                 shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
-                    MskMedTab, BoneMediumTable, epsilon_r );
+                    MskMedTab, BoneMediumTable, epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
         else
             error('check');
         end
@@ -174,6 +175,40 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
     end
 end
 toc;
+% ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+    % idx = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
+    [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
+    p0 = idx;
+
+    if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
+        if mediumTable(p0) == 11 % air-bolus boundary
+            % check the validity of the LHS accepance.
+            SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
+                                            squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 2, 'inner' );
+
+            [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
+                shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
+                epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
+
+        elseif mediumTable(p0) == 13 % skin-muscle
+            SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
+                                            squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 2, 'outer' );
+
+            if BoneMediumTable(p0) == 1 % normal bondary point
+                [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
+                    shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
+                    epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
+            elseif BoneMediumTable(p0) == 16  % rib boundary point
+                [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrRibPt_A( m, n, ell, ...
+                    shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
+                        MskMedTab, BoneMediumTable, epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
+            end
+
+        end
+    end
+end
 
 % put on electrodes
 [ Xtable, Ztable ] = fillTradlElctrd( bolus_a, bolus_c, dx, dz );

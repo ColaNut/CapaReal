@@ -1,5 +1,5 @@
 function [ effValue, SegMed, sideEffect ] = RibEffValue( MidPntsCrdnt, tmpMidLyr, pxCrdt, ...
-                                                            NBType, BoneMed27Value, medValue, epsilon_r, faceName )
+                                            NBType, BoneMed27Value, medValue, epsilon_r, faceName, SegMedIn )
 
 effValue    = 0;
 sideEffect  = zeros(1, 4);
@@ -26,14 +26,19 @@ weight      = zeros(8, 1);
     u(5, :) = ( pxCrdt' - tmpMidLyr(5, :) ) ./ ( norm( pxCrdt' - tmpMidLyr(5, :) ) )^2;
 
 % add the 'nrml' flag in fillNrmlRibPt_A.m
-if strcmp(NBType, 'nrml')
-    % medValue = uint8(.)
-    [ weight, SegMed ] = calNrmlRibWeight( BoneMed27Value, medValue, epsilon_r, faceName );
-elseif strcmp(NBType, 'bndry')
-    % medValue = double( 2, 9 );
-    [ weight, SegMed ] = calBndryRibWeight( BoneMed27Value, medValue, epsilon_r, faceName );
+if ~isequal(SegMedIn, ones(1, 8, 'uint8'))
+    SegMed = SegMedIn;
+    weight = epsilon_r(SegMedIn);
 else
-    error('check');
+    if strcmp(NBType, 'nrml')
+        % medValue = uint8(.)
+        [ weight, SegMed ] = calNrmlRibWeight( BoneMed27Value, medValue, epsilon_r, faceName );
+    elseif strcmp(NBType, 'bndry')
+        % medValue = double( 2, 9 );
+        [ weight, SegMed ] = calBndryRibWeight( BoneMed27Value, medValue, epsilon_r, faceName );
+    else
+        error('check');
+    end
 end
 
 wghtTri = repmat(weight, 1, 3) .* TriVec;

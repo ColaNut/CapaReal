@@ -1,6 +1,6 @@
-function [ coeff, RhoCapTerm, XiRhoTerm, QsTerm ] = calTmprtrBndrPntCoeff( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, PntSegMed, mediumTable, ...
-                                        T_b, zeta, sigma, rho, cap, rho_b, cap_b, xi, dt, Phi, LungRatio, ...
-                                        BoneMediumTable, MskMedTab )
+function [ coeff, RhoCapTerm, XiRhoTerm, QsTerm ] = calTmprtrBndrPntCoeff( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
+                                        PntSegMed, mediumTable, T_b, zeta, sigma, rho, cap, ...
+                                        rho_b, cap_b, xi, dt, Phi, LungRatio, BoneMediumTable, MskMedTab )
 
     PntsIdx      = zeros( 3, 9 );
     % MedValue     = zeros( 3, 9 );
@@ -31,10 +31,10 @@ function [ coeff, RhoCapTerm, XiRhoTerm, QsTerm ] = calTmprtrBndrPntCoeff( m, n,
 
     % differentiate the boundary and the rib part.
     if MskMedTab(m, n, ell) == 0 && BoneMediumTable(m, n, ell) == 1 % normal bondary point
-        A_row = fillBndrPt_A( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, zeta );
+        A_row = fillBndrPt_A( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, zeta, PntSegMed );
     elseif MskMedTab(m, n, ell) == 0 && BoneMediumTable(m, n, ell) == 16  % rib boundary point
         A_row = fillBndrRibPt_A( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
-                MskMedTab, BoneMediumTable, zeta );
+                MskMedTab, BoneMediumTable, zeta, PntSegMed );
     end
     
     % A_row = fillBndrPt_A( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, mediumTable, zeta, BlsBndryMsk );

@@ -1,5 +1,5 @@
 function [ A_row, SegMed ] = fillBndrPt_A( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
-                                    mediumTable, epsilon_r )
+                                    mediumTable, epsilon_r, SegMedIn )
 
     % A_row         = zeros( 1, x_idx_max * y_idx_max * z_idx_max );
     A_row         = zeros( 1, 14 );
@@ -17,6 +17,7 @@ function [ A_row, SegMed ] = fillBndrPt_A( m, n, ell, shiftedCoordinateXYZ, x_id
     [ PntsIdx, PntsCrdnt ]  = get27Pnts( m, n, ell, x_idx_max, y_idx_max, shiftedCoordinateXYZ );
     PntsMed                 = get27PntsMed( PntsIdx, mediumTable );
     MidPntsCrdnt            = calMid27Pnts( PntsCrdnt );
+    SegMed                  = SegMedIn;
 
     A_row(1)  = PntsIdx(3, 5);
     A_row(2)  = PntsIdx(2, 4);

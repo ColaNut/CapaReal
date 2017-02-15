@@ -94,7 +94,7 @@ if flag_XZ == 1
     set(gca,'LineWidth',2.0);
     cb = colorbar;
     % caxis([-50, 50]);
-    caxis([0, 100]);
+    % caxis([0, 100]);
     ylabel(cb, '$\left| \Phi \right|$ ($V$)', 'Interpreter','LaTex', 'FontSize', 20);
     set(cb, 'FontSize', 18);
     box on;
@@ -162,14 +162,14 @@ if flag_XZ == 1
     % plot SAR XZ
     figure(2);
     clf;
-    myRange = [ 1e-1, 1e4 ];
-    caxis(myRange);
-    cbar = colorbar('peer', gca, 'Yscale', 'log');
-    set(gca, 'Visible', 'off')
-    log_axes = axes('Position', get(gca, 'Position'));
-    ylabel(cbar, 'SAR (watt/kg)', 'Interpreter','LaTex', 'FontSize', 20);
-    set(cbar, 'FontSize', 18 );
-    hold on;
+    % myRange = [ 1e-1, 1e4 ];
+    % % caxis(myRange);
+    % cbar = colorbar('peer', gca, 'Yscale', 'log');
+    % set(gca, 'Visible', 'off')
+    % log_axes = axes('Position', get(gca, 'Position'));
+    % ylabel(cbar, 'SAR (watt/kg)', 'Interpreter','LaTex', 'FontSize', 20);
+    % set(cbar, 'FontSize', 18 );
+    % hold on;
 
     % disp('Time to plot SAR');
     % tic;
@@ -206,25 +206,25 @@ if flag_XZ == 1
     end
     toc;
 
-    caxis(log10(myRange));
-    colormap jet;
-    % axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);
-    xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
-    ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
-    axis equal;
-    axis( [ - 20, 20, - 15, 15 ] );
-    set(log_axes,'fontsize',20);
-    set(log_axes,'LineWidth',2.0);
-    % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
-    box on;
-    view(2);
-    plotMap( paras2dXZ, dx, dz );
-    plotRibXZ(Ribs, SSBone, dx, dz);
-    % plotGridLineXZ( shiftedCoordinateXYZ, y / dy + h_torso / (2 * dy) + 1 );
-    % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'fig');
-    % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
-    save( strcat( fname, '\', CaseDate, 'TmprtrFigXZ.mat') );
-    % save('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0108\Case0108TmprtrFigXZ.mat');
+    % % caxis(log10(myRange));
+    % colormap jet;
+    % % axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);
+    % xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
+    % ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
+    % axis equal;
+    % axis( [ - 20, 20, - 15, 15 ] );
+    % set(log_axes,'fontsize',20);
+    % set(log_axes,'LineWidth',2.0);
+    % % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
+    % box on;
+    % view(2);
+    % plotMap( paras2dXZ, dx, dz );
+    % plotRibXZ(Ribs, SSBone, dx, dz);
+    % % plotGridLineXZ( shiftedCoordinateXYZ, y / dy + h_torso / (2 * dy) + 1 );
+    % % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'fig');
+    % % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
+    % save( strcat( fname, '\', CaseDate, 'TmprtrFigXZ.mat') );
+    % % save('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0108\Case0108TmprtrFigXZ.mat');
 end
 
 % end
