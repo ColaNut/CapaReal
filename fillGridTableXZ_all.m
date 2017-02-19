@@ -9,8 +9,8 @@ bolus_a = paras(3);
 bolus_c = paras(4);
 
 % 2
-skin_a = paras(5);
-skin_c = paras(6);
+fat_a = paras(5);
+fat_c = paras(6);
 
 % 3
 muscle_a = paras(7);
@@ -39,7 +39,7 @@ x_grid_table = [];
 z_grid_table = [];
 
 [ tmp_x_grid_table{1}, tmp_z_grid_table{1} ] = fillGridTable( 0, 0, bolus_a, bolus_c, dx, dz );
-[ tmp_x_grid_table{2}, tmp_z_grid_table{2} ] = fillGridTable( 0, 0, skin_a, skin_c, dx, dz );
+[ tmp_x_grid_table{2}, tmp_z_grid_table{2} ] = fillGridTable( 0, 0, fat_a, fat_c, dx, dz );
 [ tmp_x_grid_table{3}, tmp_z_grid_table{3} ] = fillGridTable( 0, 0, muscle_a, muscle_c, dx, dz );
 if isreal(l_lung_c)
     [ tmp_x_grid_table{4}, tmp_z_grid_table{4} ] = fillGridTable( l_lung_x, l_lung_z, l_lung_a, l_lung_c, dx, dz );

@@ -1,17 +1,17 @@
 clc; clear; 
-fname = 'd:\Kevin\CapaReal\Case0214_1cmBolus';
-% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0214_1cmBolus';
+fname = 'd:\Kevin\CapaReal\Case0220_1cmFat';
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0220_1cmFat';
 CaseName = 'Power250';
 V_0 = 81.32;
+diary('tmpfile.txt');
 Shift2d;
 save( strcat(fname, '\', CaseName, '.mat') );
 CurrentEst;
-
-% ManiScript;
+diary off
 
 clc; clear;
-fname = 'd:\Kevin\CapaReal\Case0214_1cmBolus';
-% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0214_1cmBolus';
+fname = 'd:\Kevin\CapaReal\Case0220_1cmFat';
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0220_1cmFat';
 CaseName = 'Power280';
 V_0 = 86.07;
 Shift2d;
@@ -19,9 +19,9 @@ save( strcat(fname, '\', CaseName, '.mat') );
 CurrentEst;
 
 clc; clear;
-% fname = 'D:\Kevin\CapaReal\Case0214_1cmBolus';
-fname = 'd:\Kevin\CapaReal\Case0214_1cmBolus';
-% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0214_1cmBolus';
+% fname = 'D:\Kevin\CapaReal\Case0220_1cmFat';
+fname = 'd:\Kevin\CapaReal\Case0220_1cmFat';
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0220_1cmFat';
 CaseName = 'Power300';
 V_0 = 89.09;
 Shift2d;
@@ -35,8 +35,8 @@ timeNum_2   = 4 * 30;
 timeNum_3   = 4 * 15;
 timeNum_all = timeNum_1 + timeNum_2 + timeNum_3;
 
-% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0214_1cmBolus';
-fname = 'd:\Kevin\CapaReal\Case0214_1cmBolus';
+fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0220_1cmFat';
+% fname = 'd:\Kevin\CapaReal\Case0220_1cmFat';
 
 % Period 1
 CaseName = 'Power250';
@@ -66,6 +66,8 @@ end
 T_bgn = 0;
 timeNum = timeNum_1;
 TmprtrDis;
+fname = 'd:\Kevin\CapaReal\Case0220_1cmFat';
+save( strcat(fname, '\Case0220_1cmFat.mat') );
 
 % Period 2
 CaseName = 'Power280';
@@ -73,6 +75,8 @@ load( strcat(fname, '\', CaseName, '.mat') );
 T_bgn = timeNum_1 * dt;
 timeNum = timeNum_2;
 TmprtrDis;
+fname = 'd:\Kevin\CapaReal\Case0220_1cmFat';
+save( strcat(fname, '\Case0220_1cmFat.mat') );
 
 % Period 3
 CaseName = 'Power300';
@@ -81,7 +85,7 @@ T_bgn = ( timeNum_1 + timeNum_2 ) * dt;
 timeNum = timeNum_3;
 TmprtrDis;
 
-fname = 'd:\Kevin\CapaReal\Case0214_1cmBolus';
-save( strcat(fname, '\Case0214_1cmBolus.mat') );
+fname = 'd:\Kevin\CapaReal\Case0220_1cmFat';
+save( strcat(fname, '\Case0220_1cmFat.mat') );
 
 % ManiScript

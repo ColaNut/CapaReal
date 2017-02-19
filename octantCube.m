@@ -36,7 +36,7 @@ SegMed = ones(1, 2, 'uint8');
                 for idx = 1: 1: length(nonZeroIdx)
                     if tmpArr(nonZeroIdx(idx)) ~= tmpArr(nonZeroIdx(1))
                         tmpArr
-                        % warning('check for the homogeneity');
+                        warning('check for the homogeneity');
                     end
                 end
                 w(1) = epsilon_r( tmpArr( nonZeroIdx(1) ) );

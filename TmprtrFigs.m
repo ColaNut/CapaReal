@@ -61,8 +61,8 @@ if flag_XZ_T == 1
 
 
         % if BioValid == true || mediumTable( m, n, ell ) == 2 % In bio or bolus
-        if mediumTable(m, n, ell) == 2 || mediumTable(m, n, ell) == 3 || mediumTable(m, n, ell) == 4 ...
-            || mediumTable(m, n, ell) == 5 || mediumTable(m, n, ell) == 14 || mediumTable(m, n, ell) == 15 
+        if mediumTable(m, n, ell) == 2 || mediumTable(m, n, ell) == 3 || mediumTable(m, n, ell) == 4 || mediumTable(m, n, ell) == 7 ...
+            || mediumTable(m, n, ell) == 5 || mediumTable(m, n, ell) == 12 || mediumTable(m, n, ell) == 14 || mediumTable(m, n, ell) == 15 
             TmprSARseg(m, ell, :, :) = T_XZ(m, ell);
         elseif mediumTable(m, n, ell) == 13 
             PntSegValueXZ = squeeze( SegValueXZ(m, ell, :, :) );
@@ -76,6 +76,10 @@ if flag_XZ_T == 1
                 TmpTmprtr = T_bolus * ones(6, 8);
                 TmprSARseg(m, ell, :, :) = TmpTmprtr;
             % end
+        else
+            if mediumTable(m, n, ell) ~= 1
+                [m, n, ell, mediumTable(m, n, ell)]
+            end
         end
     end
 
@@ -134,7 +138,7 @@ if flag_XZ_T == 1
     set(gca,'fontsize',20);
     set(gca,'LineWidth',2.0);
     cbar = colorbar;
-    % caxis([5, 50]);
+    caxis([5, 50]);
     set(cbar, 'Ytick', [5, 10, 15, 20, 25, 30, 35, 40, 45, 50], 'FontSize', 20); 
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
@@ -145,7 +149,7 @@ if flag_XZ_T == 1
     hold on;
     paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
     plotMap( paras2dXZ, dx, dz );
-    % plotGridLineXZ( shiftedCoordinateXYZ, tumor_n );
+    plotGridLineXZ( shiftedCoordinateXYZ, tumor_n );
     plotRibXZ(Ribs, SSBone, dx, dz);
     
     % ylabel(cbar, '$T$ ($^\circ$C)', 'Interpreter','LaTex', 'FontSize', 20);
@@ -202,8 +206,8 @@ if flag_XY_T == 1
         %     end
 
             % if BioValid == true || mediumTable( m, n, ell ) == 2 % In bio or bolus
-            if mediumTable(m, n, ell) == 2 || mediumTable(m, n, ell) == 3 || mediumTable(m, n, ell) == 4 ...
-                || mediumTable(m, n, ell) == 5 || mediumTable(m, n, ell) == 14 || mediumTable(m, n, ell) == 15 
+            if mediumTable(m, n, ell) == 2 || mediumTable(m, n, ell) == 3 || mediumTable(m, n, ell) == 4 || mediumTable(m, n, ell) == 7 ...
+                || mediumTable(m, n, ell) == 5 || mediumTable(m, n, ell) == 12 || mediumTable(m, n, ell) == 14 || mediumTable(m, n, ell) == 15 
                 TmprSARseg(m, n, :, :) = T_XY(m, n);
             % elseif CnvctnFlag == true
             elseif mediumTable(m, n, ell) == 13 
@@ -272,7 +276,7 @@ if flag_XY_T == 1
     set(gca,'fontsize',20);
     set(gca,'LineWidth',2.0);
     cbar = colorbar;
-    % caxis([5, 50]);
+    caxis([5, 50]);
     set(cbar, 'Ytick', [5, 10, 15, 20, 25, 30, 35, 40, 45, 50], 'FontSize', 20); 
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$y$ (cm)','Interpreter','LaTex', 'FontSize', 20);
@@ -289,7 +293,7 @@ if flag_XY_T == 1
     %             tumor_x, tumor_y, tumor_r_prime ];
     maskXY(paras2dXY(4), air_z, dx);
     plotXY( paras2dXY, dx, dy );
-    % plotGridLineXY( shiftedCoordinateXYZ, tumor_ell );
+    plotGridLineXY( shiftedCoordinateXYZ, tumor_ell );
     
     % ylabel(cbar, '$T$ ($^\circ$C)', 'Interpreter','LaTex', 'FontSize', 20);
     % saveas(figure(22), fullfile(fname, strcat(CaseName, 'TmprtrXY')), 'fig');
@@ -348,8 +352,8 @@ if flag_YZ_T == 1
  
 
             % if BioValid == true || mediumTable( m, n, ell ) == 2 % In bio or bolus
-            if mediumTable(m, n, ell) == 2 || mediumTable(m, n, ell) == 3 || mediumTable(m, n, ell) == 4 ...
-                || mediumTable(m, n, ell) == 5 || mediumTable(m, n, ell) == 14 || mediumTable(m, n, ell) == 15 
+            if mediumTable(m, n, ell) == 2 || mediumTable(m, n, ell) == 3 || mediumTable(m, n, ell) == 4 || mediumTable(m, n, ell) == 7 ...
+                || mediumTable(m, n, ell) == 5 || mediumTable(m, n, ell) == 12 || mediumTable(m, n, ell) == 14 || mediumTable(m, n, ell) == 15 
                 TmprSARseg(n, ell, :, :) = T_YZ(n, ell);
             % elseif CnvctnFlag == true
             elseif mediumTable(m, n, ell) == 13 
@@ -420,7 +424,7 @@ if flag_YZ_T == 1
     set(gca,'fontsize',20);
     set(gca,'LineWidth',2.0);
     cbar = colorbar;
-    % caxis([5, 50]);
+    caxis([5, 50]);
     set(cbar, 'Ytick', [5, 10, 15, 20, 25, 30, 35, 40, 45, 50], 'FontSize', 20); 
     xlabel('$y$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
@@ -431,7 +435,7 @@ if flag_YZ_T == 1
     hold on;
     paras2dYZ = genParas2dYZ( tumor_x, paras, dy, dz );
     plotYZ( paras2dYZ, dy, dz );
-    % plotGridLineYZ( shiftedCoordinateXYZ, tumor_m );
+    plotGridLineYZ( shiftedCoordinateXYZ, tumor_m );
     
     % ylabel(cbar, '$T$ ($^\circ$C)', 'Interpreter','LaTex', 'FontSize', 20);
     % saveas(figure(23), fullfile(fname, strcat(CaseName, 'TmprtrYZ')), 'fig');

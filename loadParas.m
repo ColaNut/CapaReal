@@ -140,12 +140,12 @@
 
 % Testing case: 2 cm bolus, re-estimate the parameters.
 h_torso = 36 / 100;
-air_x = 50 / 100; % width: 30 cm
-air_z = 40 / 100; % height: 30 cm
-bolus_a = 32 / 200;
-bolus_c = 24 / 200;
-skin_a = 0 / 100;
-skin_c = 0 / 100;
+air_x = 50 / 100; % width: 50 cm
+air_z = 40 / 100; % height: 40 cm
+bolus_a = 36 / 200;
+bolus_c = 28 / 200;
+skin_a = 28 / 200;
+skin_c = 20 / 200;
 muscle_a = 30 / 200;
 muscle_c = 22 / 200;
 l_lung_x = - 6 / 100;

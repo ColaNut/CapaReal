@@ -4,16 +4,16 @@ PhiSAR_flag = 0;
 if PhiSAR_flag == 1
     clc; clear;
     CaseName = 'Power300';
-    load( strcat('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0214_1cmBolus\', CaseName, '.mat') );
-    % load( strcat('e:\Kevin\CapaReal\Case0214_1cmBolus', '\', CaseName, '.mat') );
+    load( strcat('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0220_1cmFat\', CaseName, '.mat') );
+    % load( strcat('e:\Kevin\CapaReal\Case0220_1cmFat', '\', CaseName, '.mat') );
 
     flag_XZ = 1;
     flag_XY = 0;
     flag_YZ = 0;
 
-    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0214_1cmBolus';
-    % fname = 'e:\Kevin\CapaReal\Case0214_1cmBolus';
-    CaseDate = 'Case0214_1cmBolus';
+    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0220_1cmFat';
+    % fname = 'e:\Kevin\CapaReal\Case0220_1cmFat';
+    CaseDate = 'Case0220_1cmFat';
     PhiDstrbtn;
     % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'fig');
     % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
@@ -35,7 +35,7 @@ if TumorTmptr_flag == 1
     clc; clear;
     fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal';
     % fname = 'e:\Kevin\CapaReal';
-    CaseDate = 'Case0214_1cmBolus';
+    CaseDate = 'Case0220_1cmFat';
     load( strcat(fname, '\', CaseDate, '\', CaseDate, '.mat') );
 
     TumorTmptrMani;
@@ -53,14 +53,14 @@ if Tmprtr_flag == 1
     % load the mat from the end of all simulations
     fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal';
     % fname = 'e:\Kevin\CapaReal';
-    CaseDate = 'Case0214_1cmBolus';
+    CaseDate = 'Case0220_1cmFat';
     load( strcat(fname, '\', CaseDate, '\', CaseDate, '.mat') );
     fname = strcat( 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal', '\', CaseDate );
     % fname = strcat( 'e:\Kevin\CapaReal', '\', CaseDate );
 
     flag_XZ_T = 1;
-    flag_XY_T = 1;
-    flag_YZ_T = 1;
+    flag_XY_T = 0;
+    flag_YZ_T = 0;
 
     TmprtrFigs;
     % % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\TexFile2';

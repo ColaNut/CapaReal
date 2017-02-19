@@ -13,7 +13,7 @@ function [ coeff, RhoCapTerm, XiRhoTerm, QsTerm ] = calTmprtrNrmlPntCoeff( m, n,
     SegValueXZ( m, ell, :, : ) = PntSegMed;
 
     [ PntQseg, TtrVol ] = calQsegXZ( m, n, ell, Phi, shiftedCoordinateXYZ, SegValueXZ, ...
-                                                        x_idx_max, sigma, rho );
+                                                        x_idx_max, sigma, rho, mediumTable );
 
     % [ PntsIdx, PntsCrdnt ] = get27Pnts( m, n, ell, x_idx_max, y_idx_max, shiftedCoordinateXYZ );
     % MidPntsCrdnt = calMid27Pnts( PntsCrdnt );

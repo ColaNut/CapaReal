@@ -1,6 +1,6 @@
 function [ GridShiftTable, mediumTable ] = constructGridShiftTableXZ_all( x_grid_table, z_grid_table, air_x, air_z, dx, dz, mediumTable, paras2dXZ );
 
-% paras2dXZ = [ air_x, air_z, bolus_a, bolus_c, skin_a, skin_c, muscle_a, muscle_c, ...
+% paras2dXZ = [ air_x, air_z, bolus_a, bolus_c, fat_a, fat_c, muscle_a, muscle_c, ...
     %     l_lung_x, l_lung_z, l_lung_a_prime, l_lung_c_prime, ...
     %     r_lung_x, r_lung_z, r_lung_a_prime, r_lung_c_prime, ...
     %     tumor_x, tumor_z, tumor_r_prime ];
@@ -10,8 +10,8 @@ bolus_a = paras2dXZ(3);
 bolus_c = paras2dXZ(4);
 
 % 2
-skin_a = paras2dXZ(5);
-skin_c = paras2dXZ(6);
+fat_a = paras2dXZ(5);
+fat_c = paras2dXZ(6);
 
 % 3
 muscle_a = paras2dXZ(7);
@@ -45,7 +45,7 @@ lengthXArray = zeros(6, 1);
 lengthZArray = zeros(6, 1);
 
 lengthXArray(1) = length([ myCeil(0 - bolus_a, dx): dx: myFloor(0 + bolus_a, dx) ]);
-lengthXArray(2) = length([ myCeil(0 - skin_a, dx): dx: myFloor(0 + skin_a, dx) ]);
+lengthXArray(2) = length([ myCeil(0 - fat_a, dx): dx: myFloor(0 + fat_a, dx) ]);
 lengthXArray(3) = length([ myCeil(0 - muscle_a, dx): dx: myFloor(0 + muscle_a, dx) ]);
 if isreal(l_lung_a)
     lengthXArray(4) = length([ myCeil(l_lung_x - l_lung_a, dx): dx: myFloor(l_lung_x + l_lung_a, dx) ]);
@@ -58,7 +58,7 @@ if isreal(tumor_r)
 end
 
 lengthZArray(1) = length([ myCeil(0 - bolus_c, dz): dz: myFloor(0 + bolus_c, dz) ]);
-lengthZArray(2) = length([ myCeil(0 - skin_c, dz): dz: myFloor(0 + skin_c, dz) ]);
+lengthZArray(2) = length([ myCeil(0 - fat_c, dz): dz: myFloor(0 + fat_c, dz) ]);
 lengthZArray(3) = length([ myCeil(0 - muscle_c, dz): dz: myFloor(0 + muscle_c, dz) ]);
 if isreal(l_lung_c)
     lengthZArray(4) = length([ myCeil(l_lung_z - l_lung_c, dz): dz: myFloor(l_lung_z + l_lung_c, dz) ]);
@@ -79,7 +79,7 @@ for idx = 1: 1: lx
 
     BndryNum = getBndryNum(idx, lengthXArray);
 
-    if BndryNum ~= 12
+    % if BndryNum ~= 12
         x_grid_table_idx = x_grid_table{idx};
         x_idx1 = int64(x_grid_table_idx(1) / dx + myCeil(air_x / 2, dx) / dx + 1);
         z_idx2 = int64(x_grid_table_idx(2) / dz + myCeil(air_z / 2, dz) / dz + 1);
@@ -110,7 +110,7 @@ for idx = 1: 1: lx
                 GridShiftTable{ x_idx4, z_idx5 } = [ 2, x_grid_table_idx(6) ];
             end
         end
-    end
+    % end
 end
 
 lz = length(z_grid_table);
@@ -121,7 +121,7 @@ for idx = 1: 1: lz
 
     BndryNum = getBndryNum(idx, lengthZArray);
 
-    if BndryNum ~= 12
+    % if BndryNum ~= 12
         z_grid_table_idx = z_grid_table{idx};
         x_idx1 = int16(z_grid_table_idx(1) / dx + myCeil(air_x / 2, dx) / dx + 1);
         z_idx2 = int16(z_grid_table_idx(2) / dz + myCeil(air_z / 2, dz) / dz + 1);
@@ -148,7 +148,7 @@ for idx = 1: 1: lz
                 GridShiftTable{ x_idx4, z_idx5 } = [ 1, z_grid_table_idx(6) ];
             end
         end
-    end
+    % end
 end
 
 end

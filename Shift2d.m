@@ -5,18 +5,23 @@ Mu_0          = 4 * pi * 10^(-7);
 Epsilon_0     = 10^(-9) / (36 * pi);
 Omega_0       = 2 * pi * 8 * 10^6; % 2 * pi * 8 MHz
 % V_0           = 100; 
-              % air, bolus, muscle, lung, tumor
 
 % paras1
 % rho           = [ 1,  1020,  1020,  1050, 1040 ]';
-rho           = [ 1,  1020,  1020, 242.6, 1040,  1790 ]';
+              % air, bolus, muscle, lung  tumor , bone,   fat
+rho           = [ 1,  1020,  1020, 242.6,  1040,  1790,   900 ]';
 % epsilon_r_pre = [ 1, 113.0,   184, 264.9,  402,    7.3]';
 % sigma         = [ 0,  0.61, 0.685,  0.42, 0.68, 0.028 ]';
-epsilon_r_pre = [ 1, 113.0,   113, 264.9,  402,   7.3 ]';
-sigma         = [ 0,  0.61,  0.61,  0.42, 0.68, 0.028 ]';
+epsilon_r_pre = [ 1, 113.0,   113, 264.9,   402,   7.3,    20 ]';
+sigma         = [ 0,  0.61,  0.61,  0.42,  0.68, 0.028, 0.047 ]';
 epsilon_r     = epsilon_r_pre - i * sigma ./ ( Omega_0 * Epsilon_0 );
 
-% paras2
+% % paras2
+% rho           = [ 1,  1020,  1020, 242.6,  1040,  1790,  1020 ]';
+% epsilon_r_pre = [ 1, 113.0,   113, 264.9,   402,   7.3, 113.0 ]';
+% sigma         = [ 0,  0.61,  0.61,  0.42,  0.68, 0.028,  0.61 ]';
+% epsilon_r     = epsilon_r_pre - i * sigma ./ ( Omega_0 * Epsilon_0 );
+
 % rho           = [ 1,  1020,  1020, 242.6, 1040,  1020 ]';
 % epsilon_r_pre = [ 1, 113.0,   113, 264.9,  402, 113.0 ]';
 % sigma         = [ 0,  0.61,  0.61,  0.42, 0.68,  0.61 ]';
@@ -48,7 +53,7 @@ GridShiftTableXZ = cell( h_torso / dy + 1, 1);
 
 mediumTable = ones( x_idx_max, y_idx_max, z_idx_max, 'uint8');
 % Normal Points: [ air, bolus, muscle, lung, tumor, ribs, spine, sternum ]       -> [  1,  2,  3,  4,  5,  6,  7,  8 ]
-% Interfaces:    [ air-bolus, bolus-skin, skin-muscle, muscle-lung, lung-tumor ] -> [ 11, 12, 13, 14, 15 ]
+% Interfaces:    [ air-bolus, bolus-muscle, muscle-lung, lung-tumor ] -> [ 11, 13, 12*, 14, 15 ] % temperarily set to 12
 % Bone Interfaces: [ Ribs-others, spine-others, sternum-others ]                 -> [ 16, 17, 18 ] 
 
 for y = - h_torso / 2: dy: h_torso / 2
@@ -124,12 +129,12 @@ MskMedTab( find(MskMedTab >= 10) ) = 0;
 
 disp('The fill up time of A: ');
 tic;
-% for idx = 25 * x_idx_max * y_idx_max: 1: 26 * x_idx_max * y_idx_max 
+% for idx = 29 * x_idx_max * y_idx_max: 1: 30 * x_idx_max * y_idx_max 
 for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
     % idx = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
     p0 = idx;
-    if m == 13 && n == 15 && ell == 26
+    if m == 18 && n == 2 && ell == 30
         ;
     end
 
@@ -175,16 +180,20 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
     end
 end
 toc;
-% ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+% for idx = 29 * x_idx_max * y_idx_max: 1: 30 * x_idx_max * y_idx_max 
 for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
     % idx = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
     p0 = idx;
+    if m == 18 && n == 2 && ell == 30
+        ;
+    end
 
     if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
-        if mediumTable(p0) == 11 % air-bolus boundary
+        if mediumTable(p0) == 11 % air-bolus boundary pnt
             % check the validity of the LHS accepance.
+            % update the bolus
             SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
                                             squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 2, 'inner' );
 
@@ -192,9 +201,13 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
                 shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
                 epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
 
-        elseif mediumTable(p0) == 13 % skin-muscle
+        elseif mediumTable(p0) == 13 % bolus-muscle pnt
+            % update the bolus
             SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
                                             squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 2, 'outer' );
+            % update the fat tissue
+            SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
+                                            squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 7, 'inner' );
 
             if BoneMediumTable(p0) == 1 % normal bondary point
                 [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
@@ -204,6 +217,26 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
                 [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrRibPt_A( m, n, ell, ...
                     shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
                         MskMedTab, BoneMediumTable, epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
+            else
+                error('check');
+            end
+        elseif mediumTable(p0) == 12 % fat-muscle
+            % update the fat tissue
+            SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
+                                            squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 7, 'outer' );
+            if MskMedTab(p0) ~= 0
+                error('check');
+            end
+            if BoneMediumTable(p0) == 1 % normal bondary point
+                [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
+                    shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
+                    epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
+            elseif BoneMediumTable(p0) == 16  % rib boundary point
+                [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrRibPt_A( m, n, ell, ...
+                    shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
+                        MskMedTab, BoneMediumTable, epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
+            else
+                error('check');
             end
 
         end

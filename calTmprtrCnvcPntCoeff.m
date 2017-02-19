@@ -16,7 +16,7 @@ function coeff = calTmprtrCnvcPntCoeff( m, n, ell, shiftedCoordinateXYZ, x_idx_m
     SegValueXZ( m, ell, :, : ) = PntSegMed;
 
     [ PntQseg, TtrVol ] = calQsegXZ( m, n, ell, Phi, shiftedCoordinateXYZ, SegValueXZ, ...
-                                                        x_idx_max, sigmaMask, rho );
+                                                        x_idx_max, sigmaMask, rho, mediumTable );
 
     [ PntsIdx, PntsCrdnt ] = get27Pnts( m, n, ell, x_idx_max, y_idx_max, shiftedCoordinateXYZ );
     MidPntsCrdnt  = calMid27Pnts( PntsCrdnt );

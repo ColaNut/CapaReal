@@ -60,5 +60,10 @@ function [ GridShiftTableXZ, BoneMediumTableXZ ] = UpdateBoneMed( y, mediumTable
                                         air_x, air_z, dx, dz, GridShiftTableXZ, BoneMediumTableXZ, Ribs, SSBone );
         [ GridShiftTableXZ, BoneMediumTableXZ ] = UpdateTab_rib( 'right', x_grid_tableR, z_grid_tableR, ...
                                         air_x, air_z, dx, dz, GridShiftTableXZ, BoneMediumTableXZ, Ribs, SSBone );
+        % special cases 
+        BoneMediumTableXZ(17, 12) = 16;
+        BoneMediumTableXZ(17, 30) = 16;
+        BoneMediumTableXZ(35, 12) = 16;
+        BoneMediumTableXZ(35, 30) = 16;
     end
 end

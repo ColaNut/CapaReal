@@ -1,5 +1,5 @@
 function [ PntSARseg, TtrVol, MidPnts9Crdnt ] = calSARsegXZ( m, n, ell, PhiHlfY, ThrXYZCrndt, SegValueXZ, ...
-                                                        x_idx_max, sigma, rho )
+                                                        x_idx_max, sigma, rho, ThrMedValue )
 
     % notes actually: SARseg = zeros( 1, 1, 6, 8 );
     PntSARseg = zeros( 6, 8 );
@@ -19,7 +19,7 @@ function [ PntSARseg, TtrVol, MidPnts9Crdnt ] = calSARsegXZ( m, n, ell, PhiHlfY,
     MidPntsCrdnt = calMid27Pnts( PntsCrdnt );
     MidPnts9Crdnt = getMidPnts9CrdntXZ( MidPntsCrdnt );
     % MedValue     = get27MedValue( m, n, ell, ThrMedValue );
-    MidPhi       = cal27MidPhi( m, n, ell, PhiHlfY );
+    MidPhi       = cal27MidPhiXZ( m, n, ell, PhiHlfY, ThrMedValue );
 
 % Start from here: cal the volume, the E_x, the E_y and the E_z, and get the corresponding PntSegValue value.
     % p1

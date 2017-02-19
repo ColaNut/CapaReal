@@ -26,8 +26,8 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
         % % TmprtrTauMinus = get7Tmprtr(m, n, ell, t_idx - 1, TmprtrTau);
         % TmprtrTauMinus = [ p1, p2, p3, p4, p5, p6, p0 ]';
 
-        if mediumTable(m, n, ell) == 3 || mediumTable(m, n, ell) == 4 || mediumTable(m, n, ell) == 5 ...
-                                    || mediumTable(m, n, ell) == 14 || mediumTable(m, n, ell) == 15 
+        if mediumTable(m, n, ell) == 3 || mediumTable(m, n, ell) == 4 || mediumTable(m, n, ell) == 5 || mediumTable(m, n, ell) == 7 ...
+                  || mediumTable(m, n, ell) == 12 || mediumTable(m, n, ell) == 14 || mediumTable(m, n, ell) == 15 
             if MskMedTab( m, n, ell ) ~= 0 % normal point
                 [ PennesCoeff( m, n, ell, : ), RhoCapTerm(m, n, ell), XiRhoTerm(m, n, ell), QsTerm(m, n, ell) ] ...
                                     = calTmprtrNrmlPntCoeff( m, n, ell, shiftedCoordinateXYZ, ...
@@ -48,19 +48,21 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
                                         Phi, alpha, BoneMediumTable, MskMedTab );
         else
             % the remaining are the air, the bolus and the air-bolus boundary
-            if mediumTable( m, n, ell ) ~= 1 && mediumTable( m, n, ell ) ~= 2
-                if mediumTable( m, n, ell ) == 0
-                    XZ9Med = getXZ9Med(m, n, ell, mediumTable);
-                    if ~checkAirAround( XZ9Med )
+            if mediumTable( m, n, ell ) ~= 1 && mediumTable( m, n, ell ) ~= 2 && mediumTable( m, n, ell ) ~= 11 
+                % if mediumTable( m, n, ell ) == 0
+                %     XZ9Med = getXZ9Med(m, n, ell, mediumTable);
+                %     if ~checkAirAround( XZ9Med )
                         [m, n, ell]
-                        % error('Check Here');
-                    end
-                end
+                        error('Check Here');
+                %     end
+                % end
             end
         end
     end
 end
 toc;
+
+% load( 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0216_1cmFat\PreCalVariable.mat');
 
 % load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0207BoneTest\Case0207BoneTest.mat');
 disp('time to cal TmprtrTau');
@@ -109,18 +111,14 @@ for t = T_bgn + dt: dt: T_end
         % end
         % namely, [m, n, ell] = [19, 16, 12], [19, 17, 12], [19, 18, 12], [19, 19, 12], [19, 20, 12], 
         %      or [m, n, ell] = [19, 16, 30], [19, 17, 30], [19, 18, 30], [19, 19, 30], [19, 20, 30].
- 
-        if m == 15 && n == 15 && ell == 14
-            ;
-        end
 
         if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1  && ell >= 2 && ell <= z_idx_max - 1 
             PntSegMed = squeeze( SegMed(m, n, ell, :, :) );
             TmprtrTauMinus = get7Tmprtr(m, n, ell, t_idx - 1, TmprtrTau);
             % TmprtrTauMinus = [ p1, p2, p3, p4, p5, p6, p0 ]';
 
-            if mediumTable(m, n, ell) == 3 || mediumTable(m, n, ell) == 4 || mediumTable(m, n, ell) == 5 ...
-                                        || mediumTable(m, n, ell) == 14 || mediumTable(m, n, ell) == 15 
+            if mediumTable(m, n, ell) == 3 || mediumTable(m, n, ell) == 4 || mediumTable(m, n, ell) == 5 || mediumTable(m, n, ell) == 7 ...
+                  || mediumTable(m, n, ell) == 12 || mediumTable(m, n, ell) == 14 || mediumTable(m, n, ell) == 15 
                 if MskMedTab( m, n, ell ) ~= 0 % normal point
                     TmprtrTau( m, n, ell, t_idx ) = calTmprtrNrmlPnt( T_blood, TmprtrTauMinus, ...
                                 squeeze(PennesCoeff(m, n, ell, :)), squeeze(RhoCapTerm(m, n, ell)), ...

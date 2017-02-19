@@ -34,9 +34,9 @@
 % CaseName = 'Power300';
 % load( strcat(fname, '\', CaseName, '.mat') );
 
-% % % clc; clear; 
+clc; clear; 
 % % % % V_0 = 76.78;
-% Shift2d
+Shift2d
 % loadParas;
 tumor_m = tumor_x / dx + air_x / (2 * dx) + 1;
 tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1;
