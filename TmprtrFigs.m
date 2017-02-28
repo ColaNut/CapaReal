@@ -149,7 +149,7 @@ if flag_XZ_T == 1
     hold on;
     paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
     plotMap( paras2dXZ, dx, dz );
-    plotGridLineXZ( shiftedCoordinateXYZ, tumor_n );
+    % plotGridLineXZ( shiftedCoordinateXYZ, tumor_n );
     plotRibXZ(Ribs, SSBone, dx, dz);
     
     % ylabel(cbar, '$T$ ($^\circ$C)', 'Interpreter','LaTex', 'FontSize', 20);
@@ -293,7 +293,7 @@ if flag_XY_T == 1
     %             tumor_x, tumor_y, tumor_r_prime ];
     maskXY(paras2dXY(4), air_z, dx);
     plotXY( paras2dXY, dx, dy );
-    plotGridLineXY( shiftedCoordinateXYZ, tumor_ell );
+    % plotGridLineXY( shiftedCoordinateXYZ, tumor_ell );
     
     % ylabel(cbar, '$T$ ($^\circ$C)', 'Interpreter','LaTex', 'FontSize', 20);
     % saveas(figure(22), fullfile(fname, strcat(CaseName, 'TmprtrXY')), 'fig');
@@ -435,7 +435,7 @@ if flag_YZ_T == 1
     hold on;
     paras2dYZ = genParas2dYZ( tumor_x, paras, dy, dz );
     plotYZ( paras2dYZ, dy, dz );
-    plotGridLineYZ( shiftedCoordinateXYZ, tumor_m );
+    % plotGridLineYZ( shiftedCoordinateXYZ, tumor_m );
     
     % ylabel(cbar, '$T$ ($^\circ$C)', 'Interpreter','LaTex', 'FontSize', 20);
     % saveas(figure(23), fullfile(fname, strcat(CaseName, 'TmprtrYZ')), 'fig');

@@ -50,9 +50,9 @@ if flag_XZ == 1
         
         ell = int64( ( idx - m - ( n - 1 ) * x_idx_max ) / ( x_idx_max * y_idx_max ) + 1 );
 
-        % y = tumor_y;
+        y = tumor_y;
         % y = tumor_y - dy;
-        y = - h_torso / 2 + dy;
+        % y = - h_torso / 2 + dy;
         % y = - 10 / 100;
         CrossN = int32( y / dy + h_torso / ( 2 * dy ) + 1 );
         % CrossN = - 10 / ( 100 * dy )
@@ -106,7 +106,7 @@ if flag_XZ == 1
     hold on;
     plotMap( paras2dXZ, dx, dz );
     plotRibXZ(Ribs, SSBone, dx, dz);
-    plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
+    % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
     % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'fig');
     % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
 
@@ -119,7 +119,7 @@ if flag_XZ == 1
         % idx = ( ell - 1 ) * x_idx_max + m;
         tmp_m = mod( idx, x_idx_max );
         if tmp_m == 0
-            m = x_idx_max;
+             m = x_idx_max;
         else
             m = tmp_m;
         end
@@ -128,7 +128,7 @@ if flag_XZ == 1
 
         ell = int64( ( idx - m ) / x_idx_max + 1 );
 
-        if m == 18 && ell == 30
+        if m == 13 && ell == 27
             ;
         end
         if m >= 2 && m <= x_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
@@ -223,7 +223,7 @@ if flag_XZ == 1
     view(2);
     plotMap( paras2dXZ, dx, dz );
     plotRibXZ(Ribs, SSBone, dx, dz);
-    plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
+    % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
     % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'fig');
     % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
     save( strcat( fname, '\', CaseDate, 'TmprtrFigXZ.mat') );
@@ -317,7 +317,7 @@ if flag_XY == 1
     view(2);
     hold on;
     plotXY( paras2dXY, dx, dy );
-    plotGridLineXY( shiftedCoordinateXYZ, tumor_ell );
+    % plotGridLineXY( shiftedCoordinateXYZ, tumor_ell );
     % saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'fig');
     % saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'jpg');
 
@@ -440,7 +440,7 @@ if flag_XY == 1
     % axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * h_torso / 2, 100 * h_torso / 2 ]);
     maskXY(paras2dXY(4), air_z, dx);
     plotXY( paras2dXY, dx, dy );
-    plotGridLineXY( shiftedCoordinateXYZ, tumor_ell );
+    % plotGridLineXY( shiftedCoordinateXYZ, tumor_ell );
     % saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'fig');
     % saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'jpg');
     save( strcat( fname, '\', CaseDate, 'TmprtrFigXY.mat') );
@@ -531,7 +531,7 @@ if flag_YZ == 1
     hold on;
     % plotYZ( shiftedCoordinateXYZ, air_x, h_torso, air_z, x, paras2dYZ, dx, dy, dz, bolus_b, muscle_b );
     plotYZ( paras2dYZ, dy, dz );
-    plotGridLineYZ( shiftedCoordinateXYZ, tumor_m );
+    % plotGridLineYZ( shiftedCoordinateXYZ, tumor_m );
     set(gca,'fontsize',20);
     set(gca,'LineWidth',2.0);
     box on;
@@ -655,7 +655,7 @@ if flag_YZ == 1
     set(log_axes, 'Xtick', [-15, -10, -5, 0, 5, 10, 15]); 
     % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
     plotYZ( paras2dYZ, dy, dz );
-    plotGridLineYZ( shiftedCoordinateXYZ, tumor_m );
+    % plotGridLineYZ( shiftedCoordinateXYZ, tumor_m );
     axis equal;
     axis( [ - 15, 15, - 15, 15 ]);
     % axis( [ - 100 * h_torso / 2, 100 * h_torso / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);

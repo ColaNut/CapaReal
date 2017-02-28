@@ -20,97 +20,111 @@
 % saveas(figure(23), fullfile(fname, strcat(CaseName, 'TmprtrYZ')), 'fig');
 % saveas(figure(23), fullfile(fname, strcat(CaseName, 'TmprtrYZ')), 'jpg');
 
+f = 8 * 10^6;
+T = 5;
+S = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]';
+EPSILON_R = zeros(size(S));
+SIGMA = zeros(size(S));
+for idx = 1: 1: length(S)
+    [ EPSILON_R(idx), SIGMA(idx) ] = getEpsSig(f, S(idx), T);
+end
+[ EPSILON_R, SIGMA ]
 % clc; clear;
-% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0109\Power250currentEst.mat');
+% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0222_100kHz\Power250currentEst.mat');
 % W
-% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0109\Power280currentEst.mat');
+% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0222_100kHz\Power280currentEst.mat');
 % W
-% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0109\Power300currentEst.mat');
+% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0222_100kHz\Power300currentEst.mat');
 % W
 
-% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0205Bone';
+% % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0205Bone';
 
-% % Period 1
-% CaseName = 'Power300';
-% load( strcat(fname, '\', CaseName, '.mat') );
+% % % Period 1
+% % CaseName = 'Power300';
+% % load( strcat(fname, '\', CaseName, '.mat') );
 
-clc; clear; 
-% % % % V_0 = 76.78;
-Shift2d
-% loadParas;
-tumor_m = tumor_x / dx + air_x / (2 * dx) + 1;
-tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1;
-tumor_ell = tumor_z / dz + air_z / (2 * dz) + 1;
-
-% y = tumor_y + dy;
-y = 0;
-counter = 0;
-% for y = tumor_y - 2 * dy: dy: tumor_y - 2 * dy
-    y_idx = y / dy + h_torso / (2 * dy) + 1;
-    counter = counter + 9;
-    paras2dXZ = genParas2d( y, paras, dx, dy, dz );
-    figure(counter);
-    clf;
-    plotMap( paras2dXZ, dx, dz );
-    axis equal;
-    plotGridLineXZ( shiftedCoordinateXYZ, y_idx );
-    set(gcf, 'Position', get(0,'Screensize'));
-% end
-
-% % figure(3);
-plotRibXZ(Ribs, SSBone, dx, dz);
+% clc; clear; 
+% % % % % V_0 = 76.78;
+% Shift2d
+% % loadParas;
+% tumor_m = tumor_x / dx + air_x / (2 * dx) + 1;
+% tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1;
+% tumor_ell = tumor_z / dz + air_z / (2 * dz) + 1;
 
 % % y = tumor_y + dy;
-%     y = tumor_y;
+% y = 0;
+% counter = 0;
+% % for y = tumor_y - 2 * dy: dy: tumor_y - 2 * dy
 %     y_idx = y / dy + h_torso / (2 * dy) + 1;
+%     counter = counter + 9;
 %     paras2dXZ = genParas2d( y, paras, dx, dy, dz );
-%     figure(2);
+%     figure(counter);
 %     clf;
 %     plotMap( paras2dXZ, dx, dz );
 %     axis equal;
 %     plotGridLineXZ( shiftedCoordinateXYZ, y_idx );
 %     set(gcf, 'Position', get(0,'Screensize'));
-%     plotRibXZ(Ribs, SSBone, dx, dz);
 % % end
 
-% RibValid = zeros(size(- h_torso / 2: dy: h_torso / 2));
-% SSBoneValid = zeros(size(- h_torso / 2: dy: h_torso / 2));
-% for y = - h_torso / 2: dy: h_torso / 2
-%     y_idx = int64(y / dy + h_torso / (2 * dy) + 1);
-%     if y_idx == 8
-%         ;
-%     end
-%     [ RibValid(y_idx), SSBoneValid(y_idx) ] = Bone2d(y, Ribs, SSBone, dy, h_torso);
-% end
+% % % figure(3);
+% plotRibXZ(Ribs, SSBone, dx, dz);
 
-% counter = 10;
-% for x = tumor_x - 2 * dx: dx: tumor_x + 2 * dx
-%     counter = counter + 1;
-%     x_idx = x / dx + air_x / (2 * dx) + 1;
-%     paras2dYZ = genParas2dYZ( x, paras, dy, dz );
-%     figure(counter);
-%     clf;
-%     plotYZ( paras2dYZ, dy, dz );
-%     axis equal;
-%     plotGridLineYZ( shiftedCoordinateXYZ, x_idx);
-% end
+% % % y = tumor_y + dy;
+% %     y = tumor_y;
+% %     y_idx = y / dy + h_torso / (2 * dy) + 1;
+% %     paras2dXZ = genParas2d( y, paras, dx, dy, dz );
+% %     figure(2);
+% %     clf;
+% %     plotMap( paras2dXZ, dx, dz );
+% %     axis equal;
+% %     plotGridLineXZ( shiftedCoordinateXYZ, y_idx );
+% %     set(gcf, 'Position', get(0,'Screensize'));
+% %     plotRibXZ(Ribs, SSBone, dx, dz);
+% % % end
+
+% % RibValid = zeros(size(- h_torso / 2: dy: h_torso / 2));
+% % SSBoneValid = zeros(size(- h_torso / 2: dy: h_torso / 2));
+% % for y = - h_torso / 2: dy: h_torso / 2
+% %     y_idx = int64(y / dy + h_torso / (2 * dy) + 1);
+% %     if y_idx == 8
+% %         ;
+% %     end
+% %     [ RibValid(y_idx), SSBoneValid(y_idx) ] = Bone2d(y, Ribs, SSBone, dy, h_torso);
+% % end
+
+% % counter = 10;
+% % for x = tumor_x - 2 * dx: dx: tumor_x + 2 * dx
+% %     counter = counter + 1;
+% %     x_idx = x / dx + air_x / (2 * dx) + 1;
+% %     paras2dYZ = genParas2dYZ( x, paras, dy, dz );
+% %     figure(counter);
+% %     clf;
+% %     plotYZ( paras2dYZ, dy, dz );
+% %     axis equal;
+% %     plotGridLineYZ( shiftedCoordinateXYZ, x_idx);
+% % end
 
 
-% clc; clear;
-% CaseName = 'Power300';
-% load( strcat('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0109\', CaseName, '.mat') );
+% % clc; clear;
+% % CaseName = 'Power300';
+% % load( strcat('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0109\', CaseName, '.mat') );
 
-% flag_XZ = 1;
-% flag_XY = 0;
-% flag_YZ = 0;
-% PhiDstrbtn;
+% % flag_XZ = 1;
+% % flag_XY = 0;
+% % flag_YZ = 0;
+% % PhiDstrbtn;
 
-% lala = squeeze(SegMed(16, tumor_n + 2, 29, :, :));
-% Need to Rederive the octantCube.m
+% % lala = squeeze(SegMed(16, tumor_n + 2, 29, :, :));
+% % Need to Rederive the octantCube.m
 
-% AxA = 3;
-% if AxA == 3;
-%     disp('lala');
-% elseif AxA == 4;
-%     disp('lala4');
-% end
+% % AxA = 3;
+% % if AxA == 3;
+% %     disp('lala');
+% % elseif AxA == 4;
+% %     disp('lala4');
+% % end
+
+% openfig('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0222_100kHz\Power300TmprtrXZ.fig');
+% caxis auto;
+% openfig('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0221_3cmBolusNoFatBolusSigmaCase1\Power300TmprtrXZ.fig');
+% caxis auto;

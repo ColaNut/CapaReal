@@ -10,7 +10,8 @@ function [ PntQseg, TtrVol ] = calQsegXZ( m, n, ell, PhiHlfY, ThrXYZCrndt, SegVa
                   %  air,  bolus, muscle, lung, tumor, bone, fat
     % Q_met        = [ 0,      0,   4200, 4200, 42000,    4200 ]';
     % Q_met        = [ 0,      0,   4200, 4200, 42000,    0 ]';
-    Q_met          = [ 0,      0,   4200, 1700,  8000,    0,   5 ]';
+    % Q_met          = [ 0,      0,   4200, 1700,  8000,  4200,   5 ]';
+    Q_met          = [ 0,      0,   4200, 1700,  8000,  0,   5 ]';
     % Q_met        = [ 0,      0,   1700, 1700,  8000 ]';
 
     [ PntSARseg, TtrVol ] = calSARsegXZ( m, n, ell, PhiHlfY, ThrXYZCrndt, SegValueXZ, ...

@@ -6,26 +6,97 @@ Epsilon_0     = 10^(-9) / (36 * pi);
 Omega_0       = 2 * pi * 8 * 10^6; % 2 * pi * 8 MHz
 % V_0           = 100; 
 
-% paras1
-% rho           = [ 1,  1020,  1020,  1050, 1040 ]';
-              % air, bolus, muscle, lung  tumor , bone,   fat
-rho           = [ 1,  1020,  1020, 242.6,  1040,  1790,   900 ]';
-% epsilon_r_pre = [ 1, 113.0,   184, 264.9,  402,    7.3]';
-% sigma         = [ 0,  0.61, 0.685,  0.42, 0.68, 0.028 ]';
-epsilon_r_pre = [ 1, 113.0,   113, 264.9,   402,   7.3,    20 ]';
-sigma         = [ 0,  0.61,  0.61,  0.42,  0.68, 0.028, 0.047 ]';
-epsilon_r     = epsilon_r_pre - i * sigma ./ ( Omega_0 * Epsilon_0 );
+% Note, the corresponding 
 
-% % paras2
+% % paras1
+% % rho           = [ 1,  1020,  1020,  1050, 1040 ]';
+%               % air, bolus, muscle, lung  tumor , bone,   fat
+% rho           = [ 1,  1020,  1020, 242.6,  1040,  1790,   900 ]';
+% % epsilon_r_pre = [ 1, 113.0,   184, 264.9,  402,    7.3]';
+% % sigma         = [ 0,  0.61, 0.685,  0.42, 0.68, 0.028 ]';
+% epsilon_r_pre = [ 1, 113.0,   113, 264.9,   402,   7.3,    20 ]';
+% sigma         = [ 0,  0.61,  0.61,  0.42,  0.68, 0.028, 0.047 ]';
+% epsilon_r     = epsilon_r_pre - i * sigma ./ ( Omega_0 * Epsilon_0 );
+
+% % paras2: 100 kHz, the bone are left unchanged.
+% rho           = [ 1,  1020,  1020, 242.6,  1040,  1020,  1020 ]';
+% epsilon_r_pre = [ 1,   357,  9658,  7175,  8952,  9658, 48.94 ]';
+% sigma         = [ 0,  0.88,  0.21,  0.23, 0.402,  0.21, 0.0237 ]';
+% epsilon_r     = epsilon_r_pre - i * sigma ./ ( Omega_0 * Epsilon_0 );
+
+% % paras3: 1 MHz, the bone are left unchanged.
+% rho           = [ 1, 1020,  1020, 242.6,  1040,  1020,  1020 ]';
+% epsilon_r_pre = [ 1,    1,  1781,  1239,  1775,  1781, 20.31 ]';
+% sigma         = [ 0,  0.7,  0.59,  0.31,  0.51,  0.59, 0.0237 ]';
+% epsilon_r     = epsilon_r_pre - i * sigma ./ ( Omega_0 * Epsilon_0 );
+
+% % 3 cm bolus, no fat, bolus sigma modification case 1 
 % rho           = [ 1,  1020,  1020, 242.6,  1040,  1790,  1020 ]';
-% epsilon_r_pre = [ 1, 113.0,   113, 264.9,   402,   7.3, 113.0 ]';
+% epsilon_r_pre = [ 1, 113.0,   113, 264.9,   402,   7.3,   113 ]';
 % sigma         = [ 0,  0.61,  0.61,  0.42,  0.68, 0.028,  0.61 ]';
 % epsilon_r     = epsilon_r_pre - i * sigma ./ ( Omega_0 * Epsilon_0 );
 
-% rho           = [ 1,  1020,  1020, 242.6, 1040,  1020 ]';
-% epsilon_r_pre = [ 1, 113.0,   113, 264.9,  402, 113.0 ]';
-% sigma         = [ 0,  0.61,  0.61,  0.42, 0.68,  0.61 ]';
+% % 3 cm bolus, no fat, bolus sigma modification case 2 
+% rho           = [ 1,  1020,  1020, 242.6,  1040,  1790,  1020 ]';
+% epsilon_r_pre = [ 1,  76.5,   113, 264.9,   402,   7.3,   113 ]';
+% sigma         = [ 0,  0.85,  0.61,  0.42,  0.68, 0.028,  0.61 ]';
 % epsilon_r     = epsilon_r_pre - i * sigma ./ ( Omega_0 * Epsilon_0 );
+
+% paras set: 
+              % air, bolus, muscle, lung  tumor , bone,   fat
+rho           = [ 1,  1020,  1020, 242.6,  1040,  1790,   900 ]';
+epsilon_r_pre = [ 1, 113.0,   113, 264.9,   402,   7.3,    20 ]';
+sigma         = [ 0,  0.61,  0.61,  0.42,  0.68, 0.028, 0.047 ]';
+
+f = Omega_0 / ( 2 * pi );
+T = 5;
+% S = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]';
+EPSILON_R = zeros(size(S));
+SIGMA = zeros(size(S));
+for idx = 1: 1: length(S)
+    [ EPSILON_R(idx), SIGMA(idx) ] = getEpsSig(f, S(idx), T);
+end
+DiProp = [ EPSILON_R, SIGMA ];
+% Conc = 0;
+switch Conc
+    case 0
+        epsilon_r_pre(2) = DiProp(1, 1);
+        sigma(2) = DiProp(1, 2);
+    case 1
+        epsilon_r_pre(2) = DiProp(2, 1);
+        sigma(2) = DiProp(2, 2);
+    case 2
+        epsilon_r_pre(2) = DiProp(3, 1);
+        sigma(2) = DiProp(3, 2);
+    case 3
+        epsilon_r_pre(2) = DiProp(4, 1);
+        sigma(2) = DiProp(4, 2);
+    case 4
+        epsilon_r_pre(2) = DiProp(5, 1);
+        sigma(2) = DiProp(5, 2);
+    case 5
+        epsilon_r_pre(2) = DiProp(6, 1);
+        sigma(2) = DiProp(6, 2);
+    case 6
+        epsilon_r_pre(2) = DiProp(7, 1);
+        sigma(2) = DiProp(7, 2);
+    case 7
+        epsilon_r_pre(2) = DiProp(8, 1);
+        sigma(2) = DiProp(8, 2);
+    case 8
+        epsilon_r_pre(2) = DiProp(9, 1);
+        sigma(2) = DiProp(9, 2);
+    case 9
+        epsilon_r_pre(2) = DiProp(10, 1);
+        sigma(2) = DiProp(10, 2);
+    case 10
+        epsilon_r_pre(2) = DiProp(11, 1);
+        sigma(2) = DiProp(11, 2);
+    otherwise
+        error('chcek');
+end
+
+epsilon_r     = epsilon_r_pre - i * sigma ./ ( Omega_0 * Epsilon_0 );
 
 % There 'must' be a grid point at the origin.
 loadParas;
