@@ -22,6 +22,14 @@ tumor_ell = tumor_z / dz + air_z / (2 * dz) + 1;
 % counter = 0;
 % for y = tumor_y + dy: dy: tumor_y + dy
 % counter = counter + 1;
+for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+    [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
+    m_v = 2 * m - 1;
+    n_v = 2 * n - 1;
+    ell_v = 2 * ell - 1;
+    p0_v = ( ell_v - 1 ) * x_max_vertex * y_max_vertex + ( n_v - 1 ) * x_max_vertex + m_v;
+    bar_x_my_gmres_mod(idx) = bar_x_my_gmres(p0_v);
+end
 
 if flag_XZ == 1
 
@@ -59,7 +67,7 @@ if flag_XZ == 1
 
         if n == CrossN
             % XZmidY( ell, m ) = bar_x_my_gmres(idx);
-            PhiHlfY( m, 2, ell ) = bar_x_my_gmres(idx);
+            PhiHlfY( m, 2, ell ) = bar_x_my_gmres_mod(idx);
             ThrXYZCrndt( :, 2, :, :) = shiftedCoordinateXYZ( :, n, :, :);
             ThrMedValue( :, 2, : ) = mediumTable( :, n, : );
             SegValueXZ( m, ell, :, : ) = squeeze( SegMed( m, n, ell, :, : ) );
@@ -69,13 +77,13 @@ if flag_XZ == 1
         end
 
         if n == CrossN + 1
-            PhiHlfY( m, 3, ell ) = bar_x_my_gmres(idx);
+            PhiHlfY( m, 3, ell ) = bar_x_my_gmres_mod(idx);
             ThrXYZCrndt( :, 3, :, :) = shiftedCoordinateXYZ( :, n, :, :);
             ThrMedValue( :, 3, : ) = mediumTable( :, n, : );
         end
 
         if n == CrossN - 1
-            PhiHlfY( m, 1, ell ) = bar_x_my_gmres(idx);
+            PhiHlfY( m, 1, ell ) = bar_x_my_gmres_mod(idx);
             ThrXYZCrndt( :, 1, :, :) = shiftedCoordinateXYZ( :, n, :, :);
             ThrMedValue( :, 1, : ) = mediumTable( :, n, : );
         end
@@ -110,124 +118,124 @@ if flag_XZ == 1
     % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'fig');
     % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
 
-    % calculate the E field
-    SARseg = zeros( x_idx_max, z_idx_max, 6, 8 );
-    TtrVol = zeros( x_idx_max, z_idx_max, 6, 8 );
-    MidPnts9Crdnt = zeros( x_idx_max, z_idx_max, 9, 3 );
+    % % calculate the E field
+    % SARseg = zeros( x_idx_max, z_idx_max, 6, 8 );
+    % TtrVol = zeros( x_idx_max, z_idx_max, 6, 8 );
+    % MidPnts9Crdnt = zeros( x_idx_max, z_idx_max, 9, 3 );
 
-    for idx = 1: 1: x_idx_max * z_idx_max
-        % idx = ( ell - 1 ) * x_idx_max + m;
-        tmp_m = mod( idx, x_idx_max );
-        if tmp_m == 0
-             m = x_idx_max;
-        else
-            m = tmp_m;
-        end
+    % for idx = 1: 1: x_idx_max * z_idx_max
+    %     % idx = ( ell - 1 ) * x_idx_max + m;
+    %     tmp_m = mod( idx, x_idx_max );
+    %     if tmp_m == 0
+    %          m = x_idx_max;
+    %     else
+    %         m = tmp_m;
+    %     end
 
-        n = 2;
+    %     n = 2;
 
-        ell = int64( ( idx - m ) / x_idx_max + 1 );
+    %     ell = int64( ( idx - m ) / x_idx_max + 1 );
 
-        if m == 13 && ell == 27
-            ;
-        end
-        if m >= 2 && m <= x_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
-            [ SARseg( m, ell, :, : ), TtrVol( m, ell, :, : ), MidPnts9Crdnt( m, ell, :, : ) ] ...
-                        = calSARsegXZ( m, n, ell, PhiHlfY, ThrXYZCrndt, SegValueXZ, x_idx_max, sigma, rho, ThrMedValue );
-        end
-    end
+    %     if m == 13 && ell == 27
+    %         ;
+    %     end
+    %     if m >= 2 && m <= x_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
+    %         [ SARseg( m, ell, :, : ), TtrVol( m, ell, :, : ), MidPnts9Crdnt( m, ell, :, : ) ] ...
+    %                     = calSARsegXZ( m, n, ell, PhiHlfY, ThrXYZCrndt, SegValueXZ, x_idx_max, sigma, rho, ThrMedValue );
+    %     end
+    % end
 
-    % interpolation
-    tic;
-    disp('time for interpolation: ')
-    x_idx_maxI = 2 * x_idx_max - 1;
-    z_idx_maxI = 2 * z_idx_max - 1;
-    IntrpltPnts = zeros( x_idx_maxI, z_idx_maxI );
-    for idxI = 1: 1: x_idx_maxI * z_idx_maxI
-        % idxI = ( ellI - 1 ) * x_idx_maxI + mI;
-        tmp_mI = mod( idxI, x_idx_maxI );
-        if tmp_mI == 0
-            mI = x_idx_maxI;
-        else
-            mI = tmp_mI;
-        end
+    % % interpolation
+    % tic;
+    % disp('time for interpolation: ')
+    % x_idx_maxI = 2 * x_idx_max - 1;
+    % z_idx_maxI = 2 * z_idx_max - 1;
+    % IntrpltPnts = zeros( x_idx_maxI, z_idx_maxI );
+    % for idxI = 1: 1: x_idx_maxI * z_idx_maxI
+    %     % idxI = ( ellI - 1 ) * x_idx_maxI + mI;
+    %     tmp_mI = mod( idxI, x_idx_maxI );
+    %     if tmp_mI == 0
+    %         mI = x_idx_maxI;
+    %     else
+    %         mI = tmp_mI;
+    %     end
 
-        ellI = int64( ( idxI - mI ) / x_idx_maxI + 1 );
-        if mI == 35 && ellI == 60
-            ;
-        end
-        if mI >= 2 && mI <= x_idx_maxI - 1 && ellI >= 2 && ellI <= z_idx_maxI - 1 
-            IntrpltPnts(mI, ellI) = ExecIntrplt( mI, ellI, SARseg, TtrVol, 'XZ' );
-        end
-    end
-    toc;
+    %     ellI = int64( ( idxI - mI ) / x_idx_maxI + 1 );
+    %     if mI == 35 && ellI == 60
+    %         ;
+    %     end
+    %     if mI >= 2 && mI <= x_idx_maxI - 1 && ellI >= 2 && ellI <= z_idx_maxI - 1 
+    %         IntrpltPnts(mI, ellI) = ExecIntrplt( mI, ellI, SARseg, TtrVol, 'XZ' );
+    %     end
+    % end
+    % toc;
 
-    % plot SAR XZ
-    figure(2);
-    clf;
-    myRange = [ 1e-1, 1e4 ];
-    caxis(myRange);
-    cbar = colorbar('peer', gca, 'Yscale', 'log');
-    set(gca, 'Visible', 'off')
-    log_axes = axes('Position', get(gca, 'Position'));
-    ylabel(cbar, 'SAR (watt/kg)', 'Interpreter','LaTex', 'FontSize', 20);
-    set(cbar, 'FontSize', 18 );
-    hold on;
+    % % plot SAR XZ
+    % figure(2);
+    % clf;
+    % myRange = [ 1e-1, 1e4 ];
+    % caxis(myRange);
+    % cbar = colorbar('peer', gca, 'Yscale', 'log');
+    % set(gca, 'Visible', 'off')
+    % log_axes = axes('Position', get(gca, 'Position'));
+    % ylabel(cbar, 'SAR (watt/kg)', 'Interpreter','LaTex', 'FontSize', 20);
+    % set(cbar, 'FontSize', 18 );
+    % hold on;
 
+    % % disp('Time to plot SAR');
+    % % tic;
+    % % % x_mesh      = zeros( z_idx_max, x_idx_max );
+    % % % z_mesh      = zeros( z_idx_max, x_idx_max );
+    % % x_meshI = zeros( z_idx_maxI, x_idx_maxI );
+    % % z_meshI = zeros( z_idx_maxI, x_idx_maxI );
+    % % x_meshI = getMesh(x_mesh);
+    % % z_meshI = getMesh(z_mesh);
+    % % pcolor(x_meshI * 100, z_meshI * 100, log10( IntrpltPnts' ));
+    % % shading interp;
+    % % toc;
     % disp('Time to plot SAR');
     % tic;
-    % % x_mesh      = zeros( z_idx_max, x_idx_max );
-    % % z_mesh      = zeros( z_idx_max, x_idx_max );
-    % x_meshI = zeros( z_idx_maxI, x_idx_maxI );
-    % z_meshI = zeros( z_idx_maxI, x_idx_maxI );
-    % x_meshI = getMesh(x_mesh);
-    % z_meshI = getMesh(z_mesh);
-    % pcolor(x_meshI * 100, z_meshI * 100, log10( IntrpltPnts' ));
-    % shading interp;
+    % for idx = 1: 1: x_idx_max * z_idx_max
+    %     % idx = ( ell - 1 ) * x_idx_max + m;
+    %     tmp_m = mod( idx, x_idx_max );
+    %     if tmp_m == 0
+    %         m = int64(x_idx_max);
+    %     else
+    %         m = int64(tmp_m);
+    %     end
+
+    %     ell = int64( ( idx - m ) / x_idx_max + 1 );
+
+    %     if m >= 2 && m <= x_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1
+    %         Intrplt9Pnts     = getIntrplt9Pnts(m, ell, IntrpltPnts);
+    %         PntMidPnts9Crdnt = squeeze( MidPnts9Crdnt(m, ell, :, :) );
+    %         PntMidPnts9Crdnt(:, 2) = [];
+    %         plotSAR_Intrplt( squeeze( SARseg( m, ell, :, :) ), squeeze( TtrVol( m, ell, :, : ) ), ...
+    %                                 PntMidPnts9Crdnt, Intrplt9Pnts, 'XZ', 0 );
+    %     end
+
+    % end
     % toc;
-    disp('Time to plot SAR');
-    tic;
-    for idx = 1: 1: x_idx_max * z_idx_max
-        % idx = ( ell - 1 ) * x_idx_max + m;
-        tmp_m = mod( idx, x_idx_max );
-        if tmp_m == 0
-            m = int64(x_idx_max);
-        else
-            m = int64(tmp_m);
-        end
 
-        ell = int64( ( idx - m ) / x_idx_max + 1 );
-
-        if m >= 2 && m <= x_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1
-            Intrplt9Pnts     = getIntrplt9Pnts(m, ell, IntrpltPnts);
-            PntMidPnts9Crdnt = squeeze( MidPnts9Crdnt(m, ell, :, :) );
-            PntMidPnts9Crdnt(:, 2) = [];
-            plotSAR_Intrplt( squeeze( SARseg( m, ell, :, :) ), squeeze( TtrVol( m, ell, :, : ) ), ...
-                                    PntMidPnts9Crdnt, Intrplt9Pnts, 'XZ', 0 );
-        end
-
-    end
-    toc;
-
-    caxis(log10(myRange));
-    colormap jet;
-    % axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);
-    xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
-    ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
-    axis equal;
-    axis( [ - 20, 20, - 15, 15 ] );
-    set(log_axes,'fontsize',20);
-    set(log_axes,'LineWidth',2.0);
-    % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
-    box on;
-    view(2);
-    plotMap( paras2dXZ, dx, dz );
-    plotRibXZ(Ribs, SSBone, dx, dz);
-    % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'fig');
-    % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
-    save( strcat( fname, '\', CaseDate, 'TmprtrFigXZ.mat') );
-    % save('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0108\Case0108TmprtrFigXZ.mat');
+    % caxis(log10(myRange));
+    % colormap jet;
+    % % axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);
+    % xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
+    % ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
+    % axis equal;
+    % axis( [ - 20, 20, - 15, 15 ] );
+    % set(log_axes,'fontsize',20);
+    % set(log_axes,'LineWidth',2.0);
+    % % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
+    % box on;
+    % view(2);
+    % plotMap( paras2dXZ, dx, dz );
+    % plotRibXZ(Ribs, SSBone, dx, dz);
+    % % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
+    % % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'fig');
+    % % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
+    % save( strcat( fname, '\', CaseDate, 'TmprtrFigXZ.mat') );
+    % % save('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0108\Case0108TmprtrFigXZ.mat');
 end
 
 % end
@@ -265,7 +273,7 @@ if flag_XY == 1
 
         if ell == CrossEll
             % XZmidY( ell, m ) = bar_x_my_gmres(idx);
-            PhiTpElctrd( m, n, 2 ) = bar_x_my_gmres(idx);
+            PhiTpElctrd( m, n, 2 ) = bar_x_my_gmres_mod(idx);
             ThrXYZCrndt( :, :, 2, :) = shiftedCoordinateXYZ( :, :, ell, :);
             ThrMedValue( :, :, 2 ) = mediumTable( :, :, ell );
             SegValueXY( m, n, :, : ) = squeeze( SegMed( m, n, ell, :, : ) );
@@ -279,13 +287,13 @@ if flag_XY == 1
         end
 
         if ell == CrossEll + 1
-            PhiTpElctrd( m, n, 3 ) = bar_x_my_gmres(idx);
+            PhiTpElctrd( m, n, 3 ) = bar_x_my_gmres_mod(idx);
             ThrXYZCrndt( :, :, 3, :) = shiftedCoordinateXYZ( :, :, ell, :);
             ThrMedValue( :, :, 3 ) = mediumTable( :, :, ell );
         end
 
         if ell == CrossEll - 1
-            PhiTpElctrd( m, n, 1 ) = bar_x_my_gmres(idx);
+            PhiTpElctrd( m, n, 1 ) = bar_x_my_gmres_mod(idx);
             ThrXYZCrndt( :, :, 1, :) = shiftedCoordinateXYZ( :, :, ell, :);
             ThrMedValue( :, :, 1 ) = mediumTable( :, :, ell );
         end
@@ -479,8 +487,8 @@ if flag_YZ == 1
         % CrossN = - 10 / ( 100 * dy )
 
         if m == CrossM
-            % XZmidY( ell, m ) = bar_x_my_gmres(idx);
-            PhiYZ( 2, n, ell ) = bar_x_my_gmres(idx);
+            % XZmidY( ell, m ) = bar_x_my_gmres_mod(idx);
+            PhiYZ( 2, n, ell ) = bar_x_my_gmres_mod(idx);
             ThrXYZCrndt( 2, :, :, :) = shiftedCoordinateXYZ( m, :, :, :);
             ThrMedValue( 2, :, : ) = mediumTable( m, :, : );
             SegValueYZ( n, ell, :, : ) = squeeze( SegMed( m, n, ell, :, : ) );
@@ -490,13 +498,13 @@ if flag_YZ == 1
         end
 
         if m == CrossM + 1
-            PhiYZ( 3, n, ell ) = bar_x_my_gmres(idx);
+            PhiYZ( 3, n, ell ) = bar_x_my_gmres_mod(idx);
             ThrXYZCrndt( 3, :, :, :) = shiftedCoordinateXYZ( m, :, :, :);
             ThrMedValue( 3, :, : ) = mediumTable( m, :, : );
         end
 
         if m == CrossM - 1
-            PhiYZ( 1, n, ell ) = bar_x_my_gmres(idx);
+            PhiYZ( 1, n, ell ) = bar_x_my_gmres_mod(idx);
             ThrXYZCrndt( 1, :, :, :) = shiftedCoordinateXYZ( m, :, :, :);
             ThrMedValue( 1, :, : ) = mediumTable( m, :, : );
         end

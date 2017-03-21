@@ -138,7 +138,7 @@
 % dy = 1 / 100;
 % dz = 1 / 100;
 
-% Testing case: 2 cm bolus, re-estimate the parameters.
+% Testing case: 3 cm bolus, re-estimate the parameters.
 h_torso = 36 / 100;
 air_x = 50 / 100; % width: 50 cm
 air_z = 40 / 100; % height: 40 cm

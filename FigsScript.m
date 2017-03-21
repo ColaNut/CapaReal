@@ -1,33 +1,35 @@
-clc; clear;
+% clc; clear;
 PhiSAR_flag = 1;
 
 % Need to modify the 'save' in the PhiDstrbtn.m to make it accord with the 'load' in TmprtrFigs.m
 if PhiSAR_flag == 1
-    clc; clear;
-    CaseName = 'Power250_4';
-    load( strcat('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0301_8MHzSaline\', CaseName, '.mat') );
+    % clc; clear;
+    % CaseName = 'Power250_4';
+    % load( strcat('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0301_8MHzSaline\', CaseName, '.mat') );
+    load('Case0319.mat');
     % load( strcat('e:\Kevin\CapaReal\Case0301_8MHzSaline', '\', CaseName, '.mat') );
 
     flag_XZ = 1;
     flag_XY = 1;
     flag_YZ = 1;
 
-    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0301_8MHzSaline';
+    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0319';
+    CaseName = 'TMP';
     % fname = 'e:\Kevin\CapaReal\Case0301_8MHzSaline';
-    CaseDate = 'Case0301_8MHzSaline';
+    CaseDate = 'Case0319';
     PhiDstrbtn;
-    % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'fig');
-    % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
-    % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'fig');
-    % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
-    % saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'fig');
-    % saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'jpg');
-    % saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'fig');
-    % saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'jpg');
-    % saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'fig');
-    % saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'jpg');
-    % saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'fig');
-    % saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'jpg');
+    saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'fig');
+    saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
+    saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'fig');
+    saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
+    saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'fig');
+    saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'jpg');
+    saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'fig');
+    saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'jpg');
+    saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'fig');
+    saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'jpg');
+    saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'fig');
+    saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'jpg');
 end
 
 TumorTmptr_flag = 0;

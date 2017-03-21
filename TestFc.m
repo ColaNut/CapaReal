@@ -20,15 +20,91 @@
 % saveas(figure(23), fullfile(fname, strcat(CaseName, 'TmprtrYZ')), 'fig');
 % saveas(figure(23), fullfile(fname, strcat(CaseName, 'TmprtrYZ')), 'jpg');
 
-f = 8 * 10^6;
-T = 5;
-S = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]';
-EPSILON_R = zeros(size(S));
-SIGMA = zeros(size(S));
-for idx = 1: 1: length(S)
-    [ EPSILON_R(idx), SIGMA(idx) ] = getEpsSig(f, S(idx), T);
-end
-[ EPSILON_R, SIGMA ]
+% function BxB = TestFc
+%     BxB = zeros(1, 3);
+% end
+% plotMap( paras2dXZ, dx, dz );
+% plotRibXZ(Ribs, SSBone, dx, dz);
+% plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
+% axis equal;
+% [Tet32Value(5, 3), Tet32Value(6, 4);
+% Tet32Value(6, 3), Tet32Value(7, 4);
+% Tet32Value(7, 3), Tet32Value(8, 4);
+% Tet32Value(4, 3), Tet32Value(5, 4);
+% Tet32Value(8, 3), Tet32Value(1, 4);
+% Tet32Value(3, 3), Tet32Value(4, 4);
+% Tet32Value(2, 3), Tet32Value(3, 4);
+% Tet32Value(1, 3), Tet32Value(2, 4)]
+
+% counter = 0;
+% mnell_table = zeros(1, 3);
+% collectBPhi = 0;
+% for idx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
+%     if B_phi( idx ) ~= 0
+%         collectBPhi = vertcat(collectBPhi, B_phi(idx));
+%         counter = counter + 1;
+%         [ m, n, ell ] = getMNL(idx, x_max_vertex, y_max_vertex, z_max_vertex);
+%         mnell_table = vertcat(mnell_table, [m, n, ell]);
+%     end
+% end
+% counter
+CaseName = 'TMP';
+    % fname = 'e:\Kevin\CapaReal\Case0301_8MHzSaline';
+    CaseDate = 'Case0319';
+    % PhiDstrbtn;
+    saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'fig');
+    saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
+    saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'fig');
+    saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
+    saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'fig');
+    saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'jpg');
+    saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'fig');
+    saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'jpg');
+    saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'fig');
+    saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'jpg');
+    saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'fig');
+    saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'jpg');
+
+% [ sparseS_1, B_phi ] = PutOnTopElctrd( sparseS_1, B_phi, V_0, squeeze(mediumTable(:, 19, :)), tumor_x, tumor_y, ...
+%                                     dx, dy, dz, air_x, air_z, h_torso, x_max_vertex, y_max_vertex );
+
+% [X,Y,Z,V] = flow(10);
+% figure
+% slice(X,Y,Z,V,[6 9],2,0);
+% shading flat
+
+% [Xq,Yq,Zq] = meshgrid(1:1:2,1:1:3,1:1:4);
+% Vq = interp3(X,Y,Z,V,Xq,Yq,Zq);
+% figure
+% slice(Xq,Yq,Zq,Vq,[6 9],2,0);
+% shading flat
+% x_idx_max = 51;
+% y_idx_max = 37;
+% z_idx_max = 41;
+% x_max_vertex = 2 * ( x_idx_max - 1 ) + 1;
+% y_max_vertex = 2 * ( y_idx_max - 1 ) + 1;
+% z_max_vertex = 2 * ( z_idx_max - 1 ) + 1;
+% N_v = x_max_vertex * y_max_vertex * z_max_vertex;
+% N_e = 7 * (x_max_vertex - 1) * (y_max_vertex - 1) * (z_max_vertex - 1) ...
+%     + 3 * ( (x_max_vertex - 1) * (y_max_vertex - 1) + (y_max_vertex - 1) * (z_max_vertex - 1) + (x_max_vertex - 1) * (z_max_vertex - 1) ) ...
+%     - ( (x_max_vertex - 1) + (y_max_vertex - 1) + (z_max_vertex - 1) );
+% [X,Y,Z,V] = flow(10);
+% A_R = '101'
+% A_R(1) = '0';
+% A_R(2) = '1';
+% A_R(3) = '0';
+
+% A_R
+
+% f = 8 * 10^6;
+% T = 5;
+% S = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]';
+% EPSILON_R = zeros(size(S));
+% SIGMA = zeros(size(S));
+% for idx = 1: 1: length(S)
+%     [ EPSILON_R(idx), SIGMA(idx) ] = getEpsSig(f, S(idx), T);
+% end
+% [ EPSILON_R, SIGMA ]
 % clc; clear;
 % load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0222_100kHz\Power250currentEst.mat');
 % W

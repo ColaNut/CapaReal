@@ -1,22 +1,22 @@
-% clc; clear;
+clc; clear;
 digits;
 
 Mu_0          = 4 * pi * 10^(-7);
 Epsilon_0     = 10^(-9) / (36 * pi);
 Omega_0       = 2 * pi * 8 * 10^6; % 2 * pi * 8 MHz
-% V_0           = 100; 
+V_0           = 89; 
 
 % Note, the corresponding 
 
-% % paras1
-% % rho           = [ 1,  1020,  1020,  1050, 1040 ]';
-%               % air, bolus, muscle, lung  tumor , bone,   fat
-% rho           = [ 1,  1020,  1020, 242.6,  1040,  1790,   900 ]';
-% % epsilon_r_pre = [ 1, 113.0,   184, 264.9,  402,    7.3]';
-% % sigma         = [ 0,  0.61, 0.685,  0.42, 0.68, 0.028 ]';
-% epsilon_r_pre = [ 1, 113.0,   113, 264.9,   402,   7.3,    20 ]';
-% sigma         = [ 0,  0.61,  0.61,  0.42,  0.68, 0.028, 0.047 ]';
-% epsilon_r     = epsilon_r_pre - i * sigma ./ ( Omega_0 * Epsilon_0 );
+% paras1
+% rho           = [ 1,  1020,  1020,  1050, 1040 ]';
+              % air, bolus, muscle, lung  tumor , bone,   fat
+rho           = [ 1,  1020,  1020, 242.6,  1040,  1790,   900 ]';
+% epsilon_r_pre = [ 1, 113.0,   184, 264.9,  402,    7.3]';
+% sigma         = [ 0,  0.61, 0.685,  0.42, 0.68, 0.028 ]';
+epsilon_r_pre = [ 1, 113.0,   113, 264.9,   402,   7.3,    20 ]';
+sigma         = [ 0,  0.61,  0.61,  0.42,  0.68, 0.028, 0.047 ]';
+epsilon_r     = epsilon_r_pre - i * sigma ./ ( Omega_0 * Epsilon_0 );
 
 % % paras2: 100 kHz, the bone are left unchanged.
 % rho           = [ 1,  1020,  1020, 242.6,  1040,  1020,  1020 ]';
@@ -42,61 +42,61 @@ Omega_0       = 2 * pi * 8 * 10^6; % 2 * pi * 8 MHz
 % sigma         = [ 0,  0.85,  0.61,  0.42,  0.68, 0.028,  0.61 ]';
 % epsilon_r     = epsilon_r_pre - i * sigma ./ ( Omega_0 * Epsilon_0 );
 
-% paras set: 
-              % air, bolus, muscle, lung  tumor , bone,   fat
-rho           = [ 1,  1020,  1020, 242.6,  1040,  1790,   900 ]';
-epsilon_r_pre = [ 1, 113.0,   113, 264.9,   402,   7.3,    20 ]';
-sigma         = [ 0,  0.61,  0.61,  0.42,  0.68, 0.028, 0.047 ]';
+% % paras set: 
+%               % air, bolus, muscle, lung  tumor , bone,   fat
+% rho           = [ 1,  1020,  1020, 242.6,  1040,  1790,   900 ]';
+% epsilon_r_pre = [ 1, 113.0,   113, 264.9,   402,   7.3,    20 ]';
+% sigma         = [ 0,  0.61,  0.61,  0.42,  0.68, 0.028, 0.047 ]';
 
-f = Omega_0 / ( 2 * pi );
-T = 5;
-% S = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]';
-EPSILON_R = zeros(size(S));
-SIGMA = zeros(size(S));
-for idx = 1: 1: length(S)
-    [ EPSILON_R(idx), SIGMA(idx) ] = getEpsSig(f, S(idx), T);
-end
-DiProp = [ EPSILON_R, SIGMA ];
-% Conc = 0;
-switch Conc
-    case 0
-        epsilon_r_pre(2) = DiProp(1, 1);
-        sigma(2) = DiProp(1, 2);
-    case 1
-        epsilon_r_pre(2) = DiProp(2, 1);
-        sigma(2) = DiProp(2, 2);
-    case 2
-        epsilon_r_pre(2) = DiProp(3, 1);
-        sigma(2) = DiProp(3, 2);
-    case 3
-        epsilon_r_pre(2) = DiProp(4, 1);
-        sigma(2) = DiProp(4, 2);
-    case 4
-        epsilon_r_pre(2) = DiProp(5, 1);
-        sigma(2) = DiProp(5, 2);
-    case 5
-        epsilon_r_pre(2) = DiProp(6, 1);
-        sigma(2) = DiProp(6, 2);
-    case 6
-        epsilon_r_pre(2) = DiProp(7, 1);
-        sigma(2) = DiProp(7, 2);
-    case 7
-        epsilon_r_pre(2) = DiProp(8, 1);
-        sigma(2) = DiProp(8, 2);
-    case 8
-        epsilon_r_pre(2) = DiProp(9, 1);
-        sigma(2) = DiProp(9, 2);
-    case 9
-        epsilon_r_pre(2) = DiProp(10, 1);
-        sigma(2) = DiProp(10, 2);
-    case 10
-        epsilon_r_pre(2) = DiProp(11, 1);
-        sigma(2) = DiProp(11, 2);
-    otherwise
-        error('chcek');
-end
+% f = Omega_0 / ( 2 * pi );
+% T = 5;
+% % S = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]';
+% EPSILON_R = zeros(size(S));
+% SIGMA = zeros(size(S));
+% for idx = 1: 1: length(S)
+%     [ EPSILON_R(idx), SIGMA(idx) ] = getEpsSig(f, S(idx), T);
+% end
+% DiProp = [ EPSILON_R, SIGMA ];
+% % Conc = 0;
+% switch Conc
+%     case 0
+%         epsilon_r_pre(2) = DiProp(1, 1);
+%         sigma(2) = DiProp(1, 2);
+%     case 1
+%         epsilon_r_pre(2) = DiProp(2, 1);
+%         sigma(2) = DiProp(2, 2);
+%     case 2
+%         epsilon_r_pre(2) = DiProp(3, 1);
+%         sigma(2) = DiProp(3, 2);
+%     case 3
+%         epsilon_r_pre(2) = DiProp(4, 1);
+%         sigma(2) = DiProp(4, 2);
+%     case 4
+%         epsilon_r_pre(2) = DiProp(5, 1);
+%         sigma(2) = DiProp(5, 2);
+%     case 5
+%         epsilon_r_pre(2) = DiProp(6, 1);
+%         sigma(2) = DiProp(6, 2);
+%     case 6
+%         epsilon_r_pre(2) = DiProp(7, 1);
+%         sigma(2) = DiProp(7, 2);
+%     case 7
+%         epsilon_r_pre(2) = DiProp(8, 1);
+%         sigma(2) = DiProp(8, 2);
+%     case 8
+%         epsilon_r_pre(2) = DiProp(9, 1);
+%         sigma(2) = DiProp(9, 2);
+%     case 9
+%         epsilon_r_pre(2) = DiProp(10, 1);
+%         sigma(2) = DiProp(10, 2);
+%     case 10
+%         epsilon_r_pre(2) = DiProp(11, 1);
+%         sigma(2) = DiProp(11, 2);
+%     otherwise
+%         error('chcek');
+% end
 
-epsilon_r     = epsilon_r_pre - i * sigma ./ ( Omega_0 * Epsilon_0 );
+% epsilon_r     = epsilon_r_pre - i * sigma ./ ( Omega_0 * Epsilon_0 );
 
 % There 'must' be a grid point at the origin.
 loadParas;
@@ -185,152 +185,264 @@ shiftedCoordinateXYZ = constructCoordinateXYZ( GridShiftTable, paras, dx, dy, dz
 %     plotYZ( shiftedCoordinateXYZ, air_x, h_torso, air_z, x, paras2dYZ, dx, dy, dz );
 % end
 
-% BlsBndryMsk = zeros(x_idx_max, z_idx_max);c  
-% BlsBndryMsk = get1cmBlsBndryMsk( bolus_a, bolus_c, muscle_a, muscle_c, dx, dz, x_idx_max, z_idx_max, air_x, air_z );
+% % BlsBndryMsk = zeros(x_idx_max, z_idx_max);c  
+% % BlsBndryMsk = get1cmBlsBndryMsk( bolus_a, bolus_c, muscle_a, muscle_c, dx, dz, x_idx_max, z_idx_max, air_x, air_z );
 
 sparseA = cell( x_idx_max * y_idx_max * z_idx_max, 1 );
 B = zeros( x_idx_max * y_idx_max * z_idx_max, 1 );
 SegMed = ones( x_idx_max, y_idx_max, z_idx_max, 6, 8, 'uint8');
-% ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+% % ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 % Mask the medium table
 MskMedTab = mediumTable;
 % normal point remains the same, the boundary point are forced to zero
 MskMedTab( find(MskMedTab >= 10) ) = 0;
 
-disp('The fill up time of A: ');
-tic;
-% for idx = 29 * x_idx_max * y_idx_max: 1: 30 * x_idx_max * y_idx_max 
-for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
-    % idx = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
-    [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
-    p0 = idx;
-    if m == 18 && n == 2 && ell == 30
-        ;
-    end
+% disp('The fill up time of A: ');
+% tic;
+% % for idx = 29 * x_idx_max * y_idx_max: 1: 30 * x_idx_max * y_idx_max 
+% for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+%     % idx = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
+%     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
+%     p0 = idx;
+%     if m == 18 && n == 2 && ell == 30
+%         ;
+%     end
 
-    if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
-        if MskMedTab(p0) ~= 0 && BoneMediumTable(p0) == 1 % normal normal point
-        % if mediumTable(p0) == 1 || mediumTable(p0) == 2 || mediumTable(p0) == 3 || mediumTable(p0) == 4 || mediumTable(p0) == 5 
-            [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillNrmlPt_A( m, n, ell, ...
-                            shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab );
-        elseif MskMedTab(p0) == 0 && BoneMediumTable(p0) == 1 % normal bondary point
-            [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
-                shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
-                epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
-        elseif MskMedTab(p0) ~= 0 && BoneMediumTable(p0) >= 16 && BoneMediumTable(p0) <= 18 % rib normal point
-            [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillNrmlRibPt_A( m, n, ell, ...
-                shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
-                    MskMedTab, BoneMediumTable, epsilon_r );
-        elseif MskMedTab(p0) == 0 && BoneMediumTable(p0) == 16  % rib boundary point
-            [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrRibPt_A( m, n, ell, ...
-                shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
-                    MskMedTab, BoneMediumTable, epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
-        else
-            error('check');
-        end
-        % elseif MskMedTab(p0) ~= 0 && BoneMediumTable == 16
-        %     [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillNrmlRibPt_A( m, n, ell, ...
-        %                     shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, BoneMediumTable );
-        % elseif MskMedTab(p0) == 0 && BoneMediumTable == 16
-        % else 
-        %     % spine and sternum
-        % end
-    elseif ell == z_idx_max
-        sparseA{ p0 } = fillTop_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
-    elseif ell == 1
-        sparseA{ p0 } = fillBttm_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
-    elseif m == x_idx_max && ell >= 2 && ell <= z_idx_max - 1 
-        sparseA{ p0 } = fillRight_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
-    elseif m == 1 && ell >= 2 && ell <= z_idx_max - 1 
-        sparseA{ p0 } = fillLeft_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
-    elseif n == y_idx_max && m >= 2 && m <= x_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
-        sparseA{ p0 } = fillFront_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
-    elseif n == 1 && m >= 2 && m <= x_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
-        sparseA{ p0 } = fillBack_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
+%     if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
+%         if MskMedTab(p0) ~= 0 && BoneMediumTable(p0) == 1 % normal normal point
+%         % if mediumTable(p0) == 1 || mediumTable(p0) == 2 || mediumTable(p0) == 3 || mediumTable(p0) == 4 || mediumTable(p0) == 5 
+%             [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillNrmlPt_A( m, n, ell, ...
+%                             shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab );
+%         elseif MskMedTab(p0) == 0 && BoneMediumTable(p0) == 1 % normal bondary point
+%             [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
+%                 shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
+%                 epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
+%         elseif MskMedTab(p0) ~= 0 && BoneMediumTable(p0) >= 16 && BoneMediumTable(p0) <= 18 % rib normal point
+%             [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillNrmlRibPt_A( m, n, ell, ...
+%                 shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
+%                     MskMedTab, BoneMediumTable, epsilon_r );
+%         elseif MskMedTab(p0) == 0 && BoneMediumTable(p0) == 16  % rib boundary point
+%             [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrRibPt_A( m, n, ell, ...
+%                 shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
+%                     MskMedTab, BoneMediumTable, epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
+%         else
+%             error('check');
+%         end
+%         % elseif MskMedTab(p0) ~= 0 && BoneMediumTable == 16
+%         %     [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillNrmlRibPt_A( m, n, ell, ...
+%         %                     shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, BoneMediumTable );
+%         % elseif MskMedTab(p0) == 0 && BoneMediumTable == 16
+%         % else 
+%         %     % spine and sternum
+%         % end
+%     elseif ell == z_idx_max
+%         sparseA{ p0 } = fillTop_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
+%     elseif ell == 1
+%         sparseA{ p0 } = fillBttm_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
+%     elseif m == x_idx_max && ell >= 2 && ell <= z_idx_max - 1 
+%         sparseA{ p0 } = fillRight_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
+%     elseif m == 1 && ell >= 2 && ell <= z_idx_max - 1 
+%         sparseA{ p0 } = fillLeft_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
+%     elseif n == y_idx_max && m >= 2 && m <= x_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
+%         sparseA{ p0 } = fillFront_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
+%     elseif n == 1 && m >= 2 && m <= x_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
+%         sparseA{ p0 } = fillBack_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
+%     end
+% end
+% toc;
+
+% % for idx = 29 * x_idx_max * y_idx_max: 1: 30 * x_idx_max * y_idx_max 
+% for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+%     % idx = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
+%     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
+%     p0 = idx;
+
+%     if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
+%         if mediumTable(p0) == 11 % air-bolus boundary pnt
+%             % check the validity of the LHS accepance.
+%             % update the bolus
+%             SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
+%                                             squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 2, 'inner' );
+
+%             [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
+%                 shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
+%                 epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
+
+%         elseif mediumTable(p0) == 13 % bolus-muscle pnt
+%             % update the bolus
+%             SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
+%                                             squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 2, 'outer' );
+%             % update the fat tissue
+%             SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
+%                                             squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 7, 'inner' );
+
+%             if BoneMediumTable(p0) == 1 % normal bondary point
+%                 [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
+%                     shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
+%                     epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
+%             elseif BoneMediumTable(p0) == 16  % rib boundary point
+%                 [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrRibPt_A( m, n, ell, ...
+%                     shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
+%                         MskMedTab, BoneMediumTable, epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
+%             else
+%                 error('check');
+%             end
+%         elseif mediumTable(p0) == 12 % fat-muscle
+%             % update the fat tissue
+%             SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
+%                                             squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 7, 'outer' );
+%             if MskMedTab(p0) ~= 0
+%                 error('check');
+%             end
+%             if BoneMediumTable(p0) == 1 % normal bondary point
+%                 [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
+%                     shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
+%                     epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
+%             elseif BoneMediumTable(p0) == 16  % rib boundary point
+%                 [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrRibPt_A( m, n, ell, ...
+%                     shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
+%                         MskMedTab, BoneMediumTable, epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
+%             else
+%                 error('check');
+%             end
+
+%         end
+%     end
+% end
+
+% the above process update the medium value and construct the shiftedCoordinateXYZ
+x_max_vertex = 2 * ( x_idx_max - 1 ) + 1;
+y_max_vertex = 2 * ( y_idx_max - 1 ) + 1;
+z_max_vertex = 2 * ( z_idx_max - 1 ) + 1;
+N_v = x_max_vertex * y_max_vertex * z_max_vertex;
+N_e = 7 * (x_max_vertex - 1) * (y_max_vertex - 1) * (z_max_vertex - 1) ...
+    + 3 * ( (x_max_vertex - 1) * (y_max_vertex - 1) + (y_max_vertex - 1) * (z_max_vertex - 1) + (x_max_vertex - 1) * (z_max_vertex - 1) ) ...
+    - ( (x_max_vertex - 1) + (y_max_vertex - 1) + (z_max_vertex - 1) );
+
+Vertex_Crdnt = zeros( x_max_vertex, y_max_vertex, z_max_vertex, 3 );
+% tic;
+% Vertex_Crdnt = buildCoordinateXYZ_Vertex( shiftedCoordinateXYZ );
+% toc;
+% save('FEM_fullwave.mat', 'Vertex_Crdnt', 'SegMed');
+load('FEM_fullwave.mat');
+
+% slightly modify the SegMed
+tic;
+for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+    [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
+    if m == 1 || m == x_idx_max || ell == 1 && ell == z_idx_max 
+        SegMed(m, n, ell, :, :) = uint8(1);
     end
-end
+end 
 toc;
 
-% for idx = 29 * x_idx_max * y_idx_max: 1: 30 * x_idx_max * y_idx_max 
+tic;
 for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
-    % idx = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
-    p0 = idx;
-    if m == 18 && n == 2 && ell == 30
-        ;
+    if n == 1 || n == y_idx_max
+        tmpSeg = zeros(6, 8, 'uint8');
+        SegCopy = zeros(8, 1, 'uint8');
+        SegCopy(1) = SegMed(m, 2, ell, 4, 1);
+        SegCopy(2) = SegMed(m, 2, ell, 1, 1);
+        SegCopy(3) = SegMed(m, 2, ell, 1, 3);
+        SegCopy(4) = SegMed(m, 2, ell, 2, 1);
+        SegCopy(5) = SegMed(m, 2, ell, 2, 5);
+        SegCopy(6) = SegMed(m, 2, ell, 3, 1);
+        SegCopy(7) = SegMed(m, 2, ell, 3, 3);
+        SegCopy(8) = SegMed(m, 2, ell, 4, 5);
+
+        tmpSeg(4, 1) = SegCopy(1); tmpSeg(4, 2) = SegCopy(1); tmpSeg(4, 3) = SegCopy(1); tmpSeg(4, 4) = SegCopy(1); tmpSeg(5, 4) = SegCopy(1); tmpSeg(6, 1) = SegCopy(1);
+        tmpSeg(1, 1) = SegCopy(2); tmpSeg(1, 2) = SegCopy(2); tmpSeg(1, 7) = SegCopy(2); tmpSeg(1, 8) = SegCopy(2); tmpSeg(5, 3) = SegCopy(2); tmpSeg(6, 2) = SegCopy(2); 
+        tmpSeg(1, 3) = SegCopy(3); tmpSeg(1, 4) = SegCopy(3); tmpSeg(1, 5) = SegCopy(3); tmpSeg(1, 6) = SegCopy(3); tmpSeg(5, 2) = SegCopy(3); tmpSeg(6, 3) = SegCopy(3); 
+        tmpSeg(2, 1) = SegCopy(4); tmpSeg(2, 2) = SegCopy(4); tmpSeg(2, 3) = SegCopy(4); tmpSeg(2, 4) = SegCopy(4); tmpSeg(5, 1) = SegCopy(4); tmpSeg(6, 4) = SegCopy(4); 
+        tmpSeg(2, 5) = SegCopy(5); tmpSeg(2, 6) = SegCopy(5); tmpSeg(2, 7) = SegCopy(5); tmpSeg(2, 8) = SegCopy(5); tmpSeg(5, 8) = SegCopy(5); tmpSeg(6, 5) = SegCopy(5); 
+        tmpSeg(3, 1) = SegCopy(6); tmpSeg(3, 2) = SegCopy(6); tmpSeg(3, 7) = SegCopy(6); tmpSeg(3, 8) = SegCopy(6); tmpSeg(5, 7) = SegCopy(6); tmpSeg(6, 6) = SegCopy(6); 
+        tmpSeg(3, 3) = SegCopy(7); tmpSeg(3, 4) = SegCopy(7); tmpSeg(3, 5) = SegCopy(7); tmpSeg(3, 6) = SegCopy(7); tmpSeg(5, 6) = SegCopy(7); tmpSeg(6, 7) = SegCopy(7); 
+        tmpSeg(4, 5) = SegCopy(8); tmpSeg(4, 6) = SegCopy(8); tmpSeg(4, 7) = SegCopy(8); tmpSeg(4, 8) = SegCopy(8); tmpSeg(5, 5) = SegCopy(8); tmpSeg(6, 8) = SegCopy(8); 
+        SegMed(m, n, ell, :, :) = tmpSeg;
     end
+end 
+toc;
 
-    if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
-        if mediumTable(p0) == 11 % air-bolus boundary pnt
-            % check the validity of the LHS accepance.
-            % update the bolus
-            SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
-                                            squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 2, 'inner' );
+% flag = '000';
+% load('Case0317.mat');
+% clearvars sparseS_1 B_phi;
+% sparseS_1 = cell( N_v, 1 );
+% B_phi = zeros(N_v, 1);
+B_phi = zeros(N_v, 1);
+sparseS_1 = cell( N_v, 1 );
 
-            [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
-                shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
-                epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
+% tic;
+% disp('The filling time of S phi = b_phi: ');
+% for idx = 1: 1: N_v
+% % for idx = x_max_vertex * y_max_vertex * 65: 1: x_max_vertex * y_max_vertex * 66
+%     [ m, n, ell ] = getMNL(idx, x_max_vertex, y_max_vertex, z_max_vertex);
+%     if m >= 2  && m <= x_max_vertex - 1 && n >= 2 && n <= y_max_vertex - 1 && ell >= 2 && ell <= z_max_vertex - 1 
+%         if m == 34 && n == 2 && ell == 66
+%             ;
+%         end
+%         flag = getMNL_flag(m, n, ell);
+%         % flag = '000' or '111' -> SegMedIn = zeros(6, 8, 'uint8');
+%         % flag = 'otherwise'    -> SegMedIn = zeros(2, 8, 'uint8');
+%         SegMedIn = FetchSegMed( m, n, ell, SegMed, flag );
 
-        elseif mediumTable(p0) == 13 % bolus-muscle pnt
-            % update the bolus
-            SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
-                                            squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 2, 'outer' );
-            % update the fat tissue
-            SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
-                                            squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 7, 'inner' );
+%         % apply addition to boundary $\Gamma$.
+%         sparseS_1{ idx } = fillNrml_S1( m, n, ell, flag, ...
+%             Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedIn, epsilon_r );
+%     elseif ell == z_max_vertex
+%         sparseS_1{ idx } = fillTop_A( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex );
+%     elseif ell == 1
+%         sparseS_1{ idx } = fillBttm_A( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex );
+%     elseif m == x_max_vertex && ell >= 2 && ell <= z_max_vertex - 1 
+%         sparseS_1{ idx } = fillRight_A( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex );
+%     elseif m == 1 && ell >= 2 && ell <= z_max_vertex - 1 
+%         sparseS_1{ idx } = fillLeft_A( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex );
+%     elseif n == y_max_vertex && m >= 2 && m <= x_max_vertex - 1 && ell >= 2 && ell <= z_max_vertex - 1 
+%         sparseS_1{ idx } = fillFront_A( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex );
+%     elseif n == 1 && m >= 2 && m <= x_max_vertex - 1 && ell >= 2 && ell <= z_max_vertex - 1 
+%         sparseS_1{ idx } = fillBack_A( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex );
+%     end
+% end
+% toc;
+% % save('beforeElctrd.mat', 'sparseS_1');
+load('beforeElctrd.mat');
 
-            if BoneMediumTable(p0) == 1 % normal bondary point
-                [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
-                    shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
-                    epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
-            elseif BoneMediumTable(p0) == 16  % rib boundary point
-                [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrRibPt_A( m, n, ell, ...
-                    shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
-                        MskMedTab, BoneMediumTable, epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
-            else
-                error('check');
-            end
-        elseif mediumTable(p0) == 12 % fat-muscle
-            % update the fat tissue
-            SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
-                                            squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 7, 'outer' );
-            if MskMedTab(p0) ~= 0
-                error('check');
-            end
-            if BoneMediumTable(p0) == 1 % normal bondary point
-                [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
-                    shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
-                    epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
-            elseif BoneMediumTable(p0) == 16  % rib boundary point
-                [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrRibPt_A( m, n, ell, ...
-                    shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
-                        MskMedTab, BoneMediumTable, epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
-            else
-                error('check');
-            end
-
-        end
-    end
-end
-
+% clc; clear;
+% load('Case0319.mat');
 % put on electrodes
-[ Xtable, Ztable ] = fillTradlElctrd( bolus_a, bolus_c, dx, dz );
-% Xtable = [ int_grid_x, z1, int_grid_x, z2 ];
-% Ztable = [ x1, int_grid_z, x2, int_grid_z ];
-UpElecTb = false( x_idx_max, y_idx_max, z_idx_max );
+[ sparseS_1, B_phi ] = PutOnTopElctrd( sparseS_1, B_phi, V_0, squeeze(mediumTable(:, 19, :)), tumor_x, tumor_y, ...
+                                    dx, dy, dz, air_x, air_z, h_torso, x_max_vertex, y_max_vertex );
+sparseS_1 = PutOnDwnElctrd( sparseS_1, squeeze(mediumTable(:, 19, :)), tumor_x, tumor_y, ...
+                                    dx, dy, dz, air_x, air_z, h_torso, x_max_vertex, y_max_vertex );
 
-[ sparseA, B, UpElecTb ] = UpElectrode( sparseA, B, Xtable, Ztable, paras, V_0, x_idx_max, y_idx_max, dx, dy, dz, z_idx_max );
-[ sparseA, B ] = DwnElectrode( sparseA, B, Xtable, Ztable, paras, V_0, x_idx_max, y_idx_max, dx, dy, dz );
+% [ Xtable, Ztable ] = fillTradlElctrd( bolus_a, bolus_c, dx, dz );
+% % Xtable = [ int_grid_x, z1, int_grid_x, z2 ];
+% % Ztable = [ x1, int_grid_z, x2, int_grid_z ];
+% UpElecTb = false( x_idx_max, y_idx_max, z_idx_max );
+
+% [ sparseA, B, UpElecTb ] = UpElectrode( sparseA, B, Xtable, Ztable, paras, V_0, x_idx_max, y_idx_max, dx, dy, dz, z_idx_max );
+% [ sparseA, B ] = DwnElectrode( sparseA, B, Xtable, Ztable, paras, V_0, x_idx_max, y_idx_max, dx, dy, dz );
+
+% % check empty rows
+% counter = 0;
+% for idx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
+%     if isempty( B_phi( idx ) )
+%         counter = counter + 1;
+%         [ m, n, ell ] = getMNL(idx, x_max_vertex, y_max_vertex, z_max_vertex);
+%         [m, n, ell]
+%     end
+% end
+% counter
 
 % Normalize each rows
-for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
-    tmp_vector = sparseA{ idx };
+for idx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
+    tmp_vector = sparseS_1{ idx };
     num = uint8(size(tmp_vector, 2)) / 2;
     MAX_row_value = max( abs( tmp_vector( num + 1: 2 * num ) ) );
     tmp_vector( num + 1: 2 * num ) = tmp_vector( num + 1: 2 * num ) ./ MAX_row_value;
-    sparseA{ idx } = tmp_vector;
-    B( idx ) = B( idx ) ./ MAX_row_value;
+    sparseS_1{ idx } = tmp_vector;
+    B_phi( idx ) = B_phi( idx ) ./ MAX_row_value;
 end
 
 tol = 1e-6;
@@ -339,11 +451,11 @@ int_itr_num = 40;
 
 tic;
 disp('The gmres solutin of Ax = B: ');
-bar_x_my_gmres = my_gmres( sparseA, B, int_itr_num, tol, ext_itr_num );
+bar_x_my_gmres = my_gmres( sparseS_1, B_phi, int_itr_num, tol, ext_itr_num );
 toc;
 
 % save( strcat(fname, CaseName, '.mat') );
-% save('Case0103.mat');z
+save('Case0319.mat');
 
 % PhiDstrbtn;
 
@@ -356,6 +468,7 @@ toc;
 
 % save('FirstTest.mat');
 % PhiDstrbtn;
+FigsScript;
 
 % count = 0;
 % for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
