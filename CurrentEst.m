@@ -9,9 +9,19 @@
 % plotMap( paras2dXZ, dx, dz );
 
 % reorganize the Phi distribution
+bar_x_my_gmres_mod = zeros(x_idx_max * y_idx_max * z_idx_max, 1);
+for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+    [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
+    m_v = 2 * m - 1;
+    n_v = 2 * n - 1;
+    ell_v = 2 * ell - 1;
+    p0_v = ( ell_v - 1 ) * x_max_vertex * y_max_vertex + ( n_v - 1 ) * x_max_vertex + m_v;
+    bar_x_my_gmres_mod(idx) = bar_x_my_gmres(p0_v);
+end
+
 Phi = zeros( x_idx_max, y_idx_max, z_idx_max );
 for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
-    Phi(idx) = bar_x_my_gmres(idx);
+    Phi(idx) = bar_x_my_gmres_mod(idx);
 end
 
 % UpElecTb = false( x_idx_max, y_idx_max, z_idx_max );

@@ -58,8 +58,6 @@ if flag_XZ_T == 1
         %     end
         % end
         
-
-
         % if BioValid == true || mediumTable( m, n, ell ) == 2 % In bio or bolus
         if mediumTable(m, n, ell) == 2 || mediumTable(m, n, ell) == 3 || mediumTable(m, n, ell) == 4 || mediumTable(m, n, ell) == 7 ...
             || mediumTable(m, n, ell) == 5 || mediumTable(m, n, ell) == 12 || mediumTable(m, n, ell) == 14 || mediumTable(m, n, ell) == 15 
@@ -117,10 +115,6 @@ if flag_XZ_T == 1
                 m = int64(tmp_m);
             end
             ell = int64( ( idx - m ) / x_idx_max + 1 );
-
-            if m == 16 && ell == 10
-                ;
-            end
 
             if m >= 2 && m <= x_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1
                 PntSegValueXZ = squeeze( SegValueXZ(m, ell, :, :) );

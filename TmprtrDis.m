@@ -1,7 +1,16 @@
 % clc; clear;
 % load('TestCase2.mat');
 Phi = zeros( x_idx_max, y_idx_max, z_idx_max );
-Phi = getPhi( bar_x_my_gmres, x_idx_max, y_idx_max, z_idx_max );
+bar_x_my_gmres_mod = zeros(x_idx_max * y_idx_max * z_idx_max, 1);
+for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+    [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
+    m_v = 2 * m - 1;
+    n_v = 2 * n - 1;
+    ell_v = 2 * ell - 1;
+    p0_v = ( ell_v - 1 ) * x_max_vertex * y_max_vertex + ( n_v - 1 ) * x_max_vertex + m_v;
+    bar_x_my_gmres_mod(idx) = bar_x_my_gmres(p0_v);
+end
+Phi = getPhi( bar_x_my_gmres_mod, x_idx_max, y_idx_max, z_idx_max );
 
 % timer: [ 0, dt, ... T_end ];
 % dt = 15; % 10s

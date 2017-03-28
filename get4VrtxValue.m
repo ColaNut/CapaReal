@@ -25,6 +25,6 @@ end
 
 TtrVol = calTtrVol( P1_Crdt, P2_Crdt, P3_Crdt, P4_Crdt );
 
-Vrtx4Value = TtrVol * epsilonValue * Vrtx4Value;
+Vrtx4Value = epsilonValue * Vrtx4Value / (9 * TtrVol);
 
 end

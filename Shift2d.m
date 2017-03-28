@@ -1,10 +1,10 @@
-clc; clear;
+% clc; clear;
 digits;
 
 Mu_0          = 4 * pi * 10^(-7);
 Epsilon_0     = 10^(-9) / (36 * pi);
 Omega_0       = 2 * pi * 8 * 10^6; % 2 * pi * 8 MHz
-V_0           = 89; 
+% V_0           = 89; 
 
 % Note, the corresponding 
 
@@ -123,9 +123,9 @@ GridShiftTableXZ = cell( h_torso / dy + 1, 1);
 % GridShiftTableXZ: store [ 1, distance ], [ 3, distance ] and [ 2, distance ] for $x$-, $y$- and $z$ shift.
 
 mediumTable = ones( x_idx_max, y_idx_max, z_idx_max, 'uint8');
-% Normal Points: [ air, bolus, muscle, lung, tumor, ribs, spine, sternum ]       -> [  1,  2,  3,  4,  5,  6,  7,  8 ]
-% Interfaces:    [ air-bolus, bolus-muscle, muscle-lung, lung-tumor ] -> [ 11, 13, 12*, 14, 15 ] % temperarily set to 12
-% Bone Interfaces: [ Ribs-others, spine-others, sternum-others ]                 -> [ 16, 17, 18 ] 
+% Normal Points: [ air, bolus, muscle, lung, tumor, ribs, spine, sternum ] -> [  1,  2,  3,  4,  5,  6,  7,  8 ]
+% Interfaces:    [ air-bolus, bolus-muscle, muscle-lung, lung-tumor ]      -> [ 11, 13, 12*, 14, 15 ] % temperarily set to 12
+% Bone Interfaces: [ Ribs-others, spine-others, sternum-others ]           -> [ 16, 17, 18 ] 
 
 for y = - h_torso / 2: dy: h_torso / 2
     paras2dXZ = genParas2d( y, paras, dx, dy, dz );
@@ -367,53 +367,49 @@ toc;
 
 % flag = '000';
 % load('Case0317.mat');
-% clearvars sparseS_1 B_phi;
-% sparseS_1 = cell( N_v, 1 );
+% clearvars sparseS B_phi;
+% sparseS = cell( N_v, 1 );
 % B_phi = zeros(N_v, 1);
 B_phi = zeros(N_v, 1);
-sparseS_1 = cell( N_v, 1 );
+sparseS = cell( N_v, 1 );
 
-% tic;
-% disp('The filling time of S phi = b_phi: ');
-% for idx = 1: 1: N_v
-% % for idx = x_max_vertex * y_max_vertex * 65: 1: x_max_vertex * y_max_vertex * 66
-%     [ m, n, ell ] = getMNL(idx, x_max_vertex, y_max_vertex, z_max_vertex);
-%     if m >= 2  && m <= x_max_vertex - 1 && n >= 2 && n <= y_max_vertex - 1 && ell >= 2 && ell <= z_max_vertex - 1 
-%         if m == 34 && n == 2 && ell == 66
-%             ;
-%         end
-%         flag = getMNL_flag(m, n, ell);
-%         % flag = '000' or '111' -> SegMedIn = zeros(6, 8, 'uint8');
-%         % flag = 'otherwise'    -> SegMedIn = zeros(2, 8, 'uint8');
-%         SegMedIn = FetchSegMed( m, n, ell, SegMed, flag );
+tic;
+disp('The filling time of S phi = b_phi: ');
+for idx = 1: 1: N_v
+% for idx = x_max_vertex * y_max_vertex * 65: 1: x_max_vertex * y_max_vertex * 66
+    [ m, n, ell ] = getMNL(idx, x_max_vertex, y_max_vertex, z_max_vertex);
+    if m >= 2  && m <= x_max_vertex - 1 && n >= 2 && n <= y_max_vertex - 1 && ell >= 2 && ell <= z_max_vertex - 1 
+        flag = getMNL_flag(m, n, ell);
+        % flag = '000' or '111' -> SegMedIn = zeros(6, 8, 'uint8');
+        % flag = 'otherwise'    -> SegMedIn = zeros(2, 8, 'uint8');
+        SegMedIn = FetchSegMed( m, n, ell, SegMed, flag );
 
-%         % apply addition to boundary $\Gamma$.
-%         sparseS_1{ idx } = fillNrml_S1( m, n, ell, flag, ...
-%             Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedIn, epsilon_r );
-%     elseif ell == z_max_vertex
-%         sparseS_1{ idx } = fillTop_A( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex );
-%     elseif ell == 1
-%         sparseS_1{ idx } = fillBttm_A( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex );
-%     elseif m == x_max_vertex && ell >= 2 && ell <= z_max_vertex - 1 
-%         sparseS_1{ idx } = fillRight_A( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex );
-%     elseif m == 1 && ell >= 2 && ell <= z_max_vertex - 1 
-%         sparseS_1{ idx } = fillLeft_A( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex );
-%     elseif n == y_max_vertex && m >= 2 && m <= x_max_vertex - 1 && ell >= 2 && ell <= z_max_vertex - 1 
-%         sparseS_1{ idx } = fillFront_A( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex );
-%     elseif n == 1 && m >= 2 && m <= x_max_vertex - 1 && ell >= 2 && ell <= z_max_vertex - 1 
-%         sparseS_1{ idx } = fillBack_A( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex );
-%     end
-% end
-% toc;
-% % save('beforeElctrd.mat', 'sparseS_1');
-load('beforeElctrd.mat');
+        sparseS{ idx } = fillNrml_S( m, n, ell, flag, ...
+            Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedIn, epsilon_r, Omega_0 );
+    elseif ell == z_max_vertex
+        sparseS{ idx } = fillTop_A( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex );
+    elseif ell == 1
+        sparseS{ idx } = fillBttm_A( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex );
+    elseif m == x_max_vertex && ell >= 2 && ell <= z_max_vertex - 1 
+        sparseS{ idx } = fillRight_A( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex );
+    elseif m == 1 && ell >= 2 && ell <= z_max_vertex - 1 
+        sparseS{ idx } = fillLeft_A( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex );
+    elseif n == y_max_vertex && m >= 2 && m <= x_max_vertex - 1 && ell >= 2 && ell <= z_max_vertex - 1 
+        sparseS{ idx } = fillFront_A( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex );
+    elseif n == 1 && m >= 2 && m <= x_max_vertex - 1 && ell >= 2 && ell <= z_max_vertex - 1 
+        sparseS{ idx } = fillBack_A( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex );
+    end
+end
+toc;
+% save('beforeElctrd_S2.mat', 'sparseS');
+% load('beforeElctrd_S2.mat');
 
 % clc; clear;
 % load('Case0319.mat');
 % put on electrodes
-[ sparseS_1, B_phi ] = PutOnTopElctrd( sparseS_1, B_phi, V_0, squeeze(mediumTable(:, 19, :)), tumor_x, tumor_y, ...
+[ sparseS, B_phi ] = PutOnTopElctrd( sparseS, B_phi, V_0, squeeze(mediumTable(:, 19, :)), tumor_x, tumor_y, ...
                                     dx, dy, dz, air_x, air_z, h_torso, x_max_vertex, y_max_vertex );
-sparseS_1 = PutOnDwnElctrd( sparseS_1, squeeze(mediumTable(:, 19, :)), tumor_x, tumor_y, ...
+sparseS = PutOnDwnElctrd( sparseS, squeeze(mediumTable(:, 19, :)), tumor_x, tumor_y, ...
                                     dx, dy, dz, air_x, air_z, h_torso, x_max_vertex, y_max_vertex );
 
 % [ Xtable, Ztable ] = fillTradlElctrd( bolus_a, bolus_c, dx, dz );
@@ -437,11 +433,11 @@ sparseS_1 = PutOnDwnElctrd( sparseS_1, squeeze(mediumTable(:, 19, :)), tumor_x, 
 
 % Normalize each rows
 for idx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
-    tmp_vector = sparseS_1{ idx };
+    tmp_vector = sparseS{ idx };
     num = uint8(size(tmp_vector, 2)) / 2;
     MAX_row_value = max( abs( tmp_vector( num + 1: 2 * num ) ) );
     tmp_vector( num + 1: 2 * num ) = tmp_vector( num + 1: 2 * num ) ./ MAX_row_value;
-    sparseS_1{ idx } = tmp_vector;
+    sparseS{ idx } = tmp_vector;
     B_phi( idx ) = B_phi( idx ) ./ MAX_row_value;
 end
 
@@ -449,13 +445,15 @@ tol = 1e-6;
 ext_itr_num = 10;
 int_itr_num = 40;
 
+bar_x_my_gmres = zeros(size(B_phi));
 tic;
 disp('The gmres solutin of Ax = B: ');
-bar_x_my_gmres = my_gmres( sparseS_1, B_phi, int_itr_num, tol, ext_itr_num );
+bar_x_my_gmres = my_gmres( sparseS, B_phi, int_itr_num, tol, ext_itr_num );
 toc;
 
 % save( strcat(fname, CaseName, '.mat') );
-save('Case0319.mat');
+% save('Case0321_S2.mat');
+% load('Case0321_S2.mat');
 
 % PhiDstrbtn;
 
@@ -468,7 +466,7 @@ save('Case0319.mat');
 
 % save('FirstTest.mat');
 % PhiDstrbtn;
-FigsScript;
+% FigsScript;
 
 % count = 0;
 % for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max

@@ -1,41 +1,41 @@
 clc; clear; 
-fname = 'd:\Kevin\CapaReal\Case0301_8MHzSaline';
-% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0301_8MHzSaline';
-S = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]';
-for idx = 1: 1: length(S)
-    Conc = S(idx);
-    CaseName = strcat('Power250_', num2str(Conc));
+fname = 'd:\Kevin\CapaReal\Case0322';
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0322';
+% S = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]';
+% for idx = 1: 1: length(S)
+    % Conc = S(idx);
+    CaseName = 'Power250';
     V_0 = 81.32;
     Shift2d;
     save( strcat(fname, '\', CaseName, '.mat') );
-    CurrentEst;
-end
+    % CurrentEst;
+% end
 
 clc; clear;
-fname = 'd:\Kevin\CapaReal\Case0301_8MHzSaline';
-% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0301_8MHzSaline';
-S = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]';
-for idx = 1: 1: length(S)
-    Conc = S(idx);
-    CaseName = strcat('Power280_', num2str(Conc));
+fname = 'd:\Kevin\CapaReal\Case0322';
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0322';
+% S = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]';
+% for idx = 1: 1: length(S)
+    % Conc = S(idx);
+    CaseName = 'Power280';
     V_0 = 86.07;
     Shift2d;
     save( strcat(fname, '\', CaseName, '.mat') );
-    CurrentEst;
-end
+    % CurrentEst;
+% end
 
 clc; clear;
-fname = 'd:\Kevin\CapaReal\Case0301_8MHzSaline';
-% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0301_8MHzSaline';
-S = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]';
-for idx = 1: 1: length(S)
-    Conc = S(idx);
-    CaseName = strcat('Power300_', num2str(Conc));
+fname = 'd:\Kevin\CapaReal\Case0322';
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0322';
+% S = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]';
+% for idx = 1: 1: length(S)
+    % Conc = S(idx);
+    CaseName = 'Power300';
     V_0 = 89.09;
     Shift2d;
     save( strcat(fname, '\', CaseName, '.mat') );
-    CurrentEst;
-end
+    % CurrentEst;
+% end
 
 clc; clear;
 dt = 15;
@@ -44,14 +44,14 @@ timeNum_2   = 4 * 30;
 timeNum_3   = 4 * 15;
 timeNum_all = timeNum_1 + timeNum_2 + timeNum_3;
 
-% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0301_8MHzSaline';
-fname = 'd:\Kevin\CapaReal\Case0301_8MHzSaline';
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0322';
+fname = 'd:\Kevin\CapaReal\Case0322';
 
-S = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]';
-for idx = 1: 1: length(S)
-    Conc = S(idx);
+% S = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]';
+% for idx = 1: 1: length(S)
+    % Conc = S(idx);
     % Period 1
-    CaseName = strcat('Power250_', num2str(Conc));
+    CaseName = 'Power250';
     load( strcat(fname, '\', CaseName, '.mat') );
 
     % temperature initialization
@@ -80,20 +80,20 @@ for idx = 1: 1: length(S)
     TmprtrDis;
 
     % Period 2
-    CaseName = strcat('Power280_', num2str(Conc));
+    CaseName = 'Power280';
     load( strcat(fname, '\', CaseName, '.mat') );
     T_bgn = timeNum_1 * dt;
     timeNum = timeNum_2;
     TmprtrDis;
 
     % Period 3
-    CaseName = strcat('Power300_', num2str(Conc));
+    CaseName = 'Power300';
     load( strcat(fname, '\', CaseName, '.mat') );
     T_bgn = ( timeNum_1 + timeNum_2 ) * dt;
     timeNum = timeNum_3;
     TmprtrDis;
 
-    % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0301_8MHzSaline';
-    fname = 'd:\Kevin\CapaReal\Case0301_8MHzSaline';
-    save( strcat(fname, '\Case0301_8MHzSaline_', num2str(Conc), '.mat') );
-end
+    % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0322';
+    fname = 'd:\Kevin\CapaReal\Case0322';
+    save( strcat(fname, '\Case0322.mat') );
+% end

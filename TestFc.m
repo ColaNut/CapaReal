@@ -47,23 +47,30 @@
 %         mnell_table = vertcat(mnell_table, [m, n, ell]);
 %     end
 % end
-% counter
-CaseName = 'TMP';
-    % fname = 'e:\Kevin\CapaReal\Case0301_8MHzSaline';
-    CaseDate = 'Case0319';
-    % PhiDstrbtn;
-    saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'fig');
-    saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
-    saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'fig');
-    saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
-    saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'fig');
-    saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'jpg');
-    saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'fig');
-    saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'jpg');
-    saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'fig');
-    saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'jpg');
-    saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'fig');
-    saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'jpg');
+
+clc;
+clear;
+fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0322';
+CaseName = 'Case0322';
+load( strcat(fname, '\', CaseName, '.mat') );
+CurrentEst;
+% % counter
+% CaseName = 'TMP';
+%     % fname = 'e:\Kevin\CapaReal\Case0301_8MHzSaline';
+%     CaseDate = 'Case0319';
+%     % PhiDstrbtn;
+%     saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'fig');
+%     saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
+%     saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'fig');
+%     saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
+%     saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'fig');
+%     saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'jpg');
+%     saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'fig');
+%     saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'jpg');
+%     saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'fig');
+%     saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'jpg');
+%     saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'fig');
+%     saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'jpg');
 
 % [ sparseS_1, B_phi ] = PutOnTopElctrd( sparseS_1, B_phi, V_0, squeeze(mediumTable(:, 19, :)), tumor_x, tumor_y, ...
 %                                     dx, dy, dz, air_x, air_z, h_torso, x_max_vertex, y_max_vertex );
