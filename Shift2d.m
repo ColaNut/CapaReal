@@ -111,149 +111,217 @@ end
 
 % =========================================================================== %
 
-% % the above process update the medium value and construct the shiftedCoordinateXYZ
+% the above process update the medium value and construct the shiftedCoordinateXYZ
 
-% x_max_vertex = 2 * ( x_idx_max - 1 ) + 1;
-% y_max_vertex = 2 * ( y_idx_max - 1 ) + 1;
-% z_max_vertex = 2 * ( z_idx_max - 1 ) + 1;
-% N_v = x_max_vertex * y_max_vertex * z_max_vertex;
-% N_e = 7 * (x_max_vertex - 1) * (y_max_vertex - 1) * (z_max_vertex - 1) ...
-%     + 3 * ( (x_max_vertex - 1) * (y_max_vertex - 1) + (y_max_vertex - 1) * (z_max_vertex - 1) + (x_max_vertex - 1) * (z_max_vertex - 1) ) ...
-%     - ( (x_max_vertex - 1) + (y_max_vertex - 1) + (z_max_vertex - 1) );
+x_max_vertex = 2 * ( x_idx_max - 1 ) + 1;
+y_max_vertex = 2 * ( y_idx_max - 1 ) + 1;
+z_max_vertex = 2 * ( z_idx_max - 1 ) + 1;
+N_v = x_max_vertex * y_max_vertex * z_max_vertex;
+N_e = 7 * (x_max_vertex - 1) * (y_max_vertex - 1) * (z_max_vertex - 1) ...
+    + 3 * ( (x_max_vertex - 1) * (y_max_vertex - 1) + (y_max_vertex - 1) * (z_max_vertex - 1) + (x_max_vertex - 1) * (z_max_vertex - 1) ) ...
+    + (x_max_vertex - 1) + (y_max_vertex - 1) + (z_max_vertex - 1) ...
+    + 1 ;
 
-% Vertex_Crdnt = zeros( x_max_vertex, y_max_vertex, z_max_vertex, 3 );
+Vertex_Crdnt = zeros( x_max_vertex, y_max_vertex, z_max_vertex, 3 );
 % tic;
 % Vertex_Crdnt = buildCoordinateXYZ_Vertex( shiftedCoordinateXYZ );
 % toc;
 % save('FEM_A.mat', 'Vertex_Crdnt', 'SegMed');
-% % load('FEM_fullwave.mat');
+load('FEM_A.mat');
+% load('FEM_fullwave.mat');
 
-% % flag = '000';
-% % load('Case0317.mat');
-% % clearvars sparseS B_phi;
-% % sparseS = cell( N_v, 1 );
-% % B_phi = zeros(N_v, 1);
-% B_k = zeros(N_e, 1);
-% sparseK1 = cell( N_e, 1 );
+% flag = '000';
+% load('Case0317.mat');
+% clearvars sparseS B_phi;
+% sparseS = cell( N_v, 1 );
+% B_phi = zeros(N_v, 1);
+B_k = zeros(N_e, 1);
+sparseK1 = cell( N_e, 1 );
 
-% tic;
-% disp('The filling time of K_1 a = b_k: ');
-% for idx = 1: 1: N_v
-%     [ m, n, ell ] = getMNL(idx, x_max_vertex, y_max_vertex, z_max_vertex);
-%     if m >= 3  && m <= x_max_vertex - 1 && n >= 3 && n <= y_max_vertex - 1 && ell >= 3 && ell <= z_max_vertex - 1 
-%         flag = getMNL_flag(m, n, ell);
-%         % % flag = '000' or '111' -> SegMedIn = zeros(6, 8, 'uint8');
-%         % % flag = 'otherwise'    -> SegMedIn = zeros(2, 8, 'uint8');
-%         SegMedIn = cell( 7, 1 );
-%         SegMedIn{ 1 } = FetchSegMed( m, n, ell, SegMed, flag );
+% load('TMP0407.mat');
 
-%         idx_prm = get_idx_prm(m, n, ell, x_max_vertex, y_max_vertex);
+tic;
+disp('The filling time of K_1 a = b_k: ');
+for idx = 1: 1: N_v
+    [ m, n, ell ] = getMNL(idx, x_max_vertex, y_max_vertex, z_max_vertex);
+    if m >= 2 && m <= x_max_vertex && n >= 2 && n <= y_max_vertex && ell >= 2 && ell <= z_max_vertex 
+        flag = getMNL_flag(m, n, ell);
+        % flag = '000' or '111' -> SegMedIn = zeros(6, 8, 'uint8');
+        % flag = 'otherwise'    -> SegMedIn = zeros(2, 8, 'uint8');
+        SegMedIn = FetchSegMed( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
+        idx_prm = get_idx_prm(m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex);
 
-%         switch flag
-%             case { '111', '000' }
-%                 [ sparseK1{7 * ( idx_prm - 1 ) + 1}, sparseK1{7 * ( idx_prm - 1 ) + 2}, sparseK1{7 * ( idx_prm - 1 ) + 3}, ...
-%                     sparseK1{7 * ( idx_prm - 1 ) + 4}, sparseK1{7 * ( idx_prm - 1 ) + 5}, sparseK1{7 * ( idx_prm - 1 ) + 6}, ...
-%                     sparseK1{7 * ( idx_prm - 1 ) + 7} ] = fillNrml_K1( m, n, ell, flag, ...
-%                         Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedIn, epsilon_r, mu_r, Omega_0 );;
-%             case { '110', '001' }
+        % check the assignment index in Type1, Type2, Type3 and Type4.
+        % check the equality of the two fourTet types.
+        switch flag
+            case { '111', '000' }
+                [ sparseK1{7 * ( idx_prm - 1 ) + 1}, sparseK1{7 * ( idx_prm - 1 ) + 2}, sparseK1{7 * ( idx_prm - 1 ) + 3}, ...
+                    sparseK1{7 * ( idx_prm - 1 ) + 4}, sparseK1{7 * ( idx_prm - 1 ) + 5}, sparseK1{7 * ( idx_prm - 1 ) + 6}, ...
+                    sparseK1{7 * ( idx_prm - 1 ) + 7} ] = fillNrml_K1_Type1( m, n, ell, flag, ...
+                        Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedIn, epsilon_r, mu_r, Omega_0 );
+            case { '100', '011' }
+                % x-shift
+                auxiSegMed = zeros(6, 8, 'uint8');
+                auxiSegMed = getAuxiSegMed( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
+                [ sparseK1{7 * ( idx_prm - 1 ) + 1}, sparseK1{7 * ( idx_prm - 1 ) + 2}, sparseK1{7 * ( idx_prm - 1 ) + 3}, ...
+                    sparseK1{7 * ( idx_prm - 1 ) + 4}, sparseK1{7 * ( idx_prm - 1 ) + 5}, sparseK1{7 * ( idx_prm - 1 ) + 6}, ...
+                    sparseK1{7 * ( idx_prm - 1 ) + 7} ] = fillNrml_K1_Type2( m, n, ell, flag, ...
+                        Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedIn, auxiSegMed, epsilon_r, mu_r, Omega_0 );
+            case { '101', '010' }
+                % y-shift
+                auxiSegMed = zeros(6, 8, 'uint8');
+                auxiSegMed = getAuxiSegMed( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
+                [ sparseK1{7 * ( idx_prm - 1 ) + 1}, sparseK1{7 * ( idx_prm - 1 ) + 2}, sparseK1{7 * ( idx_prm - 1 ) + 3}, ...
+                    sparseK1{7 * ( idx_prm - 1 ) + 4}, sparseK1{7 * ( idx_prm - 1 ) + 5}, sparseK1{7 * ( idx_prm - 1 ) + 6}, ...
+                    sparseK1{7 * ( idx_prm - 1 ) + 7} ] = fillNrml_K1_Type3( m, n, ell, flag, ...
+                        Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedIn, auxiSegMed, epsilon_r, mu_r, Omega_0 );
+            case { '110', '001' }
+                % z-shift
+                auxiSegMed = zeros(6, 8, 'uint8');
+                auxiSegMed = getAuxiSegMed( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
+                [ sparseK1{7 * ( idx_prm - 1 ) + 1}, sparseK1{7 * ( idx_prm - 1 ) + 2}, sparseK1{7 * ( idx_prm - 1 ) + 3}, ...
+                    sparseK1{7 * ( idx_prm - 1 ) + 4}, sparseK1{7 * ( idx_prm - 1 ) + 5}, sparseK1{7 * ( idx_prm - 1 ) + 6}, ...
+                    sparseK1{7 * ( idx_prm - 1 ) + 7} ] = fillNrml_K1_Type4( m, n, ell, flag, ...
+                        Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedIn, auxiSegMed, epsilon_r, mu_r, Omega_0 );
+            otherwise
+                error('check');
+        end
+    end
 
-%             case { '100', '011' }
+    % check wheher x \le x_max_vertex or not
+    if m >= 2 && n >= 2 && ell == z_max_vertex
+        idx_prm = get_idx_prm(m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex);
+        [ sparseK1{7 * ( idx_prm - 1 ) + 1}, sparseK1{7 * ( idx_prm - 1 ) + 2}, ...
+            sparseK1{7 * ( idx_prm - 1 ) + 4} ] = fillTop_K1( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex );
+    end
+    if m == x_max_vertex && n >= 2 && ell >= 2
+        idx_prm = get_idx_prm(m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex);
+        [ sparseK1{7 * ( idx_prm - 1 ) + 2}, sparseK1{7 * ( idx_prm - 1 ) + 3}, ...
+            sparseK1{7 * ( idx_prm - 1 ) + 5} ] = fillRght_K1( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex );
+    end
+    if m >= 2 && n == y_max_vertex && ell >= 2
+        idx_prm = get_idx_prm(m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex);
+        [ sparseK1{7 * ( idx_prm - 1 ) + 1}, sparseK1{7 * ( idx_prm - 1 ) + 3}, ...
+            sparseK1{7 * ( idx_prm - 1 ) + 6} ] = fillFar_K1( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex );
+    end
 
-%             case { '101', '010' }
+    if m >= 2 && n == 1 && ell >= 2
+        vIdx = get_idx_prm(m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex);
+        [ sparseK1{ vIdx2eIdx(vIdx, 1, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
+            sparseK1{ vIdx2eIdx(vIdx, 3, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
+            sparseK1{ vIdx2eIdx(vIdx, 6, x_max_vertex, y_max_vertex, z_max_vertex) } ] ...
+            = fillNear_K1( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex );
+    end
+    if m == 1 && n >= 2 && ell >= 2
+        vIdx = get_idx_prm(m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex);
+        [ sparseK1{ vIdx2eIdx(vIdx, 2, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
+            sparseK1{ vIdx2eIdx(vIdx, 3, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
+            sparseK1{ vIdx2eIdx(vIdx, 5, x_max_vertex, y_max_vertex, z_max_vertex) } ] ...
+            = fillLeft_K1( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex );
+    end
+    if m >= 2 && n >= 2 && ell == 1
+        vIdx = get_idx_prm(m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex);
+        [ sparseK1{ vIdx2eIdx(vIdx, 1, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
+            sparseK1{ vIdx2eIdx(vIdx, 2, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
+            sparseK1{ vIdx2eIdx(vIdx, 4, x_max_vertex, y_max_vertex, z_max_vertex) } ] ...
+            = fillBttm_K1( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex );
+    end
 
-%             otherwise
-%                 error('check');
-%         end
+    if m >= 2 && n == 1 && ell == 1
+        vIdx = get_idx_prm(m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex);
+        sparseK1{ vIdx2eIdx(vIdx, 1, x_max_vertex, y_max_vertex, z_max_vertex) } ...
+            = fillLine1_K1( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex );
+    end
+    if m == 1 && n == 1 && ell >= 2
+        vIdx = get_idx_prm(m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex);
+        sparseK1{ vIdx2eIdx(vIdx, 3, x_max_vertex, y_max_vertex, z_max_vertex) } ...
+            = fillLine2_K1( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex );
+    end
+    if m == 1 && n >= 2 && ell == 1
+        vIdx = get_idx_prm(m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex);
+        sparseK1{ vIdx2eIdx(vIdx, 2, x_max_vertex, y_max_vertex, z_max_vertex) } ...
+            = fillLine3_K1( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex );
+    end
 
-%         sparseK1{ idx } = fillNrml_K1( m, n, ell, flag, ...
-%             Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedIn, epsilon_r, mu_r, Omega_0 );
-%     elseif ell == z_max_vertex
-%         sparseS{ idx } = fillTop_A( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex );
-%     elseif ell == 1
-%         sparseS{ idx } = fillBttm_A( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex );
-%     elseif m == x_max_vertex && ell >= 2 && ell <= z_max_vertex - 1 
-%         sparseS{ idx } = fillRight_A( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex );
-%     elseif m == 1 && ell >= 2 && ell <= z_max_vertex - 1 
-%         sparseS{ idx } = fillLeft_A( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex );
-%     elseif n == y_max_vertex && m >= 2 && m <= x_max_vertex - 1 && ell >= 2 && ell <= z_max_vertex - 1 
-%         sparseS{ idx } = fillFront_A( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex );
-%     elseif n == 1 && m >= 2 && m <= x_max_vertex - 1 && ell >= 2 && ell <= z_max_vertex - 1 
-%         sparseS{ idx } = fillBack_A( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex );
-%     end
-% end
-% toc;
-% % % save('beforeElctrd_S2.mat', 'sparseS');
-% % % load('beforeElctrd_S2.mat');
+end
+toc;
+% save('TMP0408.mat');
 
-% % % clc; clear;
-% % % load('Case0319.mat');
-% % % put on electrodes
-% % [ sparseS, B_phi ] = PutOnTopElctrd( sparseS, B_phi, V_0, squeeze(mediumTable(:, 19, :)), tumor_x, tumor_y, ...
-% %                                     dx, dy, dz, air_x, air_z, h_torso, x_max_vertex, y_max_vertex );
-% % sparseS = PutOnDwnElctrd( sparseS, squeeze(mediumTable(:, 19, :)), tumor_x, tumor_y, ...
-% %                                     dx, dy, dz, air_x, air_z, h_torso, x_max_vertex, y_max_vertex );
+% update the idx on the three face, three lines and one point stored in the first several part of sparseK1.
+% 
+% % save('beforeElctrd_S2.mat', 'sparseS');
+% % load('beforeElctrd_S2.mat');
+% save('TMP0407.mat');
 
-% % % [ Xtable, Ztable ] = fillTradlElctrd( bolus_a, bolus_c, dx, dz );
-% % % % Xtable = [ int_grid_x, z1, int_grid_x, z2 ];
-% % % % Ztable = [ x1, int_grid_z, x2, int_grid_z ];
-% % % UpElecTb = false( x_idx_max, y_idx_max, z_idx_max );
+% % clc; clear;
+% % load('Case0319.mat');
+% % put on electrodes
+% [ sparseS, B_phi ] = PutOnTopElctrd( sparseS, B_phi, V_0, squeeze(mediumTable(:, 19, :)), tumor_x, tumor_y, ...
+%                                     dx, dy, dz, air_x, air_z, h_torso, x_max_vertex, y_max_vertex );
+% sparseS = PutOnDwnElctrd( sparseS, squeeze(mediumTable(:, 19, :)), tumor_x, tumor_y, ...
+%                                     dx, dy, dz, air_x, air_z, h_torso, x_max_vertex, y_max_vertex );
 
-% % % [ sparseA, B, UpElecTb ] = UpElectrode( sparseA, B, Xtable, Ztable, paras, V_0, x_idx_max, y_idx_max, dx, dy, dz, z_idx_max );
-% % % [ sparseA, B ] = DwnElectrode( sparseA, B, Xtable, Ztable, paras, V_0, x_idx_max, y_idx_max, dx, dy, dz );
+% % [ Xtable, Ztable ] = fillTradlElctrd( bolus_a, bolus_c, dx, dz );
+% % % Xtable = [ int_grid_x, z1, int_grid_x, z2 ];
+% % % Ztable = [ x1, int_grid_z, x2, int_grid_z ];
+% % UpElecTb = false( x_idx_max, y_idx_max, z_idx_max );
 
-% % % % check empty rows
-% % % counter = 0;
-% % % for idx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
-% % %     if isempty( B_phi( idx ) )
-% % %         counter = counter + 1;
-% % %         [ m, n, ell ] = getMNL(idx, x_max_vertex, y_max_vertex, z_max_vertex);
-% % %         [m, n, ell]
-% % %     end
-% % % end
-% % % counter
+% % [ sparseA, B, UpElecTb ] = UpElectrode( sparseA, B, Xtable, Ztable, paras, V_0, x_idx_max, y_idx_max, dx, dy, dz, z_idx_max );
+% % [ sparseA, B ] = DwnElectrode( sparseA, B, Xtable, Ztable, paras, V_0, x_idx_max, y_idx_max, dx, dy, dz );
 
-% % % Normalize each rows
+% % % check empty rows
+% % counter = 0;
 % % for idx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
-% %     tmp_vector = sparseS{ idx };
-% %     num = uint8(size(tmp_vector, 2)) / 2;
-% %     MAX_row_value = max( abs( tmp_vector( num + 1: 2 * num ) ) );
-% %     tmp_vector( num + 1: 2 * num ) = tmp_vector( num + 1: 2 * num ) ./ MAX_row_value;
-% %     sparseS{ idx } = tmp_vector;
-% %     B_phi( idx ) = B_phi( idx ) ./ MAX_row_value;
+% %     if isempty( B_phi( idx ) )
+% %         counter = counter + 1;
+% %         [ m, n, ell ] = getMNL(idx, x_max_vertex, y_max_vertex, z_max_vertex);
+% %         [m, n, ell]
+% %     end
 % % end
+% % counter
 
-% % tol = 1e-6;
-% % ext_itr_num = 10;
-% % int_itr_num = 40;
+% % Normalize each rows
+% for idx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
+%     tmp_vector = sparseS{ idx };
+%     num = uint8(size(tmp_vector, 2)) / 2;
+%     MAX_row_value = max( abs( tmp_vector( num + 1: 2 * num ) ) );
+%     tmp_vector( num + 1: 2 * num ) = tmp_vector( num + 1: 2 * num ) ./ MAX_row_value;
+%     sparseS{ idx } = tmp_vector;
+%     B_phi( idx ) = B_phi( idx ) ./ MAX_row_value;
+% end
 
-% % bar_x_my_gmres = zeros(size(B_phi));
+% tol = 1e-6;
+% ext_itr_num = 10;
+% int_itr_num = 40;
+
+% bar_x_my_gmres = zeros(size(B_phi));
+% tic;
+% disp('The gmres solutin of Ax = B: ');
+% bar_x_my_gmres = my_gmres( sparseS, B_phi, int_itr_num, tol, ext_itr_num );
+% toc;
+
+% % save( strcat(fname, CaseName, '.mat') );
+% % save('Case0321_S2.mat');
+% % load('Case0321_S2.mat');
+
+% % PhiDstrbtn;
+
+% % CurrentEst;
+
+% % disp('The calculation time for inverse matrix: ');
 % % tic;
-% % disp('The gmres solutin of Ax = B: ');
-% % bar_x_my_gmres = my_gmres( sparseS, B_phi, int_itr_num, tol, ext_itr_num );
+% % bar_x = A \ B;
 % % toc;
 
-% % % save( strcat(fname, CaseName, '.mat') );
-% % % save('Case0321_S2.mat');
-% % % load('Case0321_S2.mat');
+% % save('FirstTest.mat');
+% % PhiDstrbtn;
+% % FigsScript;
 
-% % % PhiDstrbtn;
-
-% % % CurrentEst;
-
-% % % disp('The calculation time for inverse matrix: ');
-% % % tic;
-% % % bar_x = A \ B;
-% % % toc;
-
-% % % save('FirstTest.mat');
-% % % PhiDstrbtn;
-% % % FigsScript;
-
-% % % count = 0;
-% % % for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
-% % %     if A( idx, : ) == zeros( 1, x_idx_max * y_idx_max * z_idx_max );
-% % %         count = count + 1;
-% % %     end
-% % % end
-% % % % Need to check whether [ 3, 1, 0.3 ] & [ 3, 1, -0.3 ] are stored in the same cell(idx).
-% % % xy_grid_table format: [ x_coordonate, y_coordonate, difference ]
+% % count = 0;
+% % for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+% %     if A( idx, : ) == zeros( 1, x_idx_max * y_idx_max * z_idx_max );
+% %         count = count + 1;
+% %     end
+% % end
+% % % Need to check whether [ 3, 1, 0.3 ] & [ 3, 1, -0.3 ] are stored in the same cell(idx).
+% % xy_grid_table format: [ x_coordonate, y_coordonate, difference ]

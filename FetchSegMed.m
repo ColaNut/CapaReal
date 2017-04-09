@@ -1,5 +1,16 @@
-function SegMedIn = FetchSegMed( m, n, ell, SegMed, flag )
+function SegMedIn = FetchSegMed( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag )
 
+    if (m == x_max_vertex) || (n == y_max_vertex) || (ell == z_max_vertex)
+        switch flag 
+            case { '111', '000' }
+                SegMedIn = ones(6, 8, 'uint8');
+            case { '100', '011', '101', '010', '110', '001' }
+                SegMedIn = ones(2, 8, 'uint8');
+            otherwise
+                error('check');
+        end
+        return;
+    end
     switch flag
         case '111'
             SegMedIn = zeros(6, 8, 'uint8');
@@ -102,9 +113,9 @@ function SegMedIn = FetchSegMed( m, n, ell, SegMed, flag )
             % z_directin shift from '000'
             SegMedIn = zeros(2, 8, 'uint8');
 
-            SegMedInUp  = FetchSegMed( m, n, ell - 1, SegMed, '000' );
+            SegMedInUp  = FetchSegMed( m, n, ell - 1, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, '000' );
             SegMedIn(1, :) = SegMedInUp( 1, : );
-            SegMedInDwn = FetchSegMed( m, n, ell + 1, SegMed, '000' );
+            SegMedInDwn = FetchSegMed( m, n, ell + 1, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, '000' );
             SegMedIn(2, :) = SegMedInDwn( 3, : );
         case '011'
             % x_directin shift from '111'
@@ -115,9 +126,9 @@ function SegMedIn = FetchSegMed( m, n, ell, SegMed, flag )
             % x_directin shift from '000'
             SegMedIn = zeros(2, 8, 'uint8');
 
-            SegMedInL = FetchSegMed( m - 1, n, ell, SegMed, '000' );
+            SegMedInL = FetchSegMed( m - 1, n, ell, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, '000' );
             SegMedIn(1, :) = SegMedInL( 4, : );
-            SegMedInR = FetchSegMed( m + 1, n, ell, SegMed, '000' );
+            SegMedInR = FetchSegMed( m + 1, n, ell, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, '000' );
             SegMedIn(2, :) = SegMedInR( 2, : );
         case '101'
             % y_directin shift from '111'
@@ -128,9 +139,9 @@ function SegMedIn = FetchSegMed( m, n, ell, SegMed, flag )
             % y_directin shift from '000'
             SegMedIn = zeros(2, 8, 'uint8');
 
-            SegMedInNear  = FetchSegMed( m, n - 1, ell, SegMed, '000' );
+            SegMedInNear  = FetchSegMed( m, n - 1, ell, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, '000' );
             SegMedIn(1, :) = SegMedInNear( 5, : );
-            SegMedInFar = FetchSegMed( m, n + 1, ell, SegMed, '000' );
+            SegMedInFar = FetchSegMed( m, n + 1, ell, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, '000' );
             SegMedIn(2, :) = SegMedInFar( 6, : );
         otherwise
             error('check');
