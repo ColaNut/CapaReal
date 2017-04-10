@@ -3,17 +3,20 @@ digits;
 
 Mu_0          = 4 * pi * 10^(-7);
 Epsilon_0     = 10^(-9) / (36 * pi);
-Omega_0       = 2 * pi * 8 * 10^6; % 2 * pi * 8 MHz
+Omega_0       = 2 * pi * 100 * 10^3; % 2 * pi * 100 kHz
+J_0           = 300000;
 % V_0           = 89; 
 
 % Note, the corresponding 
 
 % paras: 
-rho         = [ 1, 4600 ]';
-epsilon_r   = [ 1,    1 ]';
-mu_prime    = [ 1,    1 ]';
-mu_db_prime = [ 0,  0.6 ]';
-mu_r        = mu_prime - i * mu_db_prime;
+rho           = [ 1, 4600 ]';
+epsilon_r_pre = [ 1,    1,    1 ]';
+sigma         = [ 0,    0, 10^9 ]';
+epsilon_r     = epsilon_r_pre - j * sigma / ( Omega_0 * Epsilon_0 );
+mu_prime      = [ 1,    1,    1 ]';
+mu_db_prime   = [ 0,  0.6,    0 ]';
+mu_r          = mu_prime - i * mu_db_prime;
 
 % There 'must' be a grid point at the origin.
 loadParas_Mag;
@@ -29,6 +32,7 @@ GridShiftTableXZ = cell( y_idx_max, 1);
 mediumTable = ones( x_idx_max, y_idx_max, z_idx_max, 'uint8');
 % medium1            : 1 
 % magnetic particle  : 2
+% conductor          : 3
 % current sheet bndry: 11
 
 for y = - w_y / 2: dy: w_y / 2
@@ -39,17 +43,6 @@ for y = - w_y / 2: dy: w_y / 2
         mediumTable(:, int64(y_idx), :) = getRoughMed_Mag( mediumTable(:, int64(y_idx), :), paras2dXZ_Mag );
     end
     [ GridShiftTableXZ{ int64(y_idx) }, mediumTable(:, int64(y_idx), :) ] = constructCoordinateXZ_all_Mag( paras2dXZ_Mag, mediumTable(:, int64(y_idx), :) );
-end
-
-for x = - w_x / 2: dx: w_x / 2
-    % the genParas2dXZ_Mag.m is the same as genParas2dYZ_Mag
-    paras2dYZ_Mag = genParas2dXZ_Mag( x, Paras_Mag );
-    x_idx = x / dx + w_x / (2 * dx) + 1;
-
-    y_grid_table = fillGridTableXZ_all_Mag( paras2dYZ_Mag );
-    x_idx = x / dx + w_x / (2 * dx) + 1;
-
-    [ GridShiftTableXZ, mediumTable ] = constructGridShiftTableXYZ_Mag( GridShiftTableXZ, int64(x_idx), y_grid_table, mediumTable, paras2dYZ_Mag );
 end
 
 % re-organize the GridShiftTable
@@ -63,7 +56,8 @@ for y_idx = 1: 1: w_y / dy + 1
     end
 end
 
-shiftedCoordinateXYZ = constructCoordinateXYZ( GridShiftTable, Paras_Mag, dx, dy, dz );
+tmpParas = [ w_y, w_x, w_z ];
+shiftedCoordinateXYZ = constructCoordinateXYZ( GridShiftTable, tmpParas, dx, dy, dz );
 
 % figure(1);
 % hold on;
@@ -109,6 +103,26 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
     end
 end
 
+% start from here: check the correctness of the above SegMed.
+% The currently putOnCurrent.m has a zigzag boundary
+n_far  =   ell_y / (2 * dy) + ( y_idx_max + 1 ) / 2;
+n_near = - ell_y / (2 * dy) + ( y_idx_max + 1 ) / 2;
+CurrentTable = zeros(x_idx_max, y_idx_max, z_idx_max, 6, 8, 3);
+% SegMedXZ = squeeze( SegMed(:, int64( (y_idx_max + 1) / 2 ), :, :, :) );
+% mediumXZ = squeeze( mediumTable(:, int64( (y_idx_max + 1) / 2 ), :) );
+for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+    [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
+    if n >= n_near && n <= n_far && mediumTable(m, n, ell) == 11
+        [ SegMed(m, n, ell, :, :), CurrentTable(m, n, ell, :, :, :) ] ...
+            = putOnCurrent(m, n, ell, x_idx_max, y_idx_max, shiftedCoordinateXYZ, mediumTable, J_0 );
+    end
+end
+
+% TD list:
+% 2. b_k; 
+% 3. GMRES solution; 
+% 4. Plot
+
 % =========================================================================== %
 
 % the above process update the medium value and construct the shiftedCoordinateXYZ
@@ -119,15 +133,14 @@ z_max_vertex = 2 * ( z_idx_max - 1 ) + 1;
 N_v = x_max_vertex * y_max_vertex * z_max_vertex;
 N_e = 7 * (x_max_vertex - 1) * (y_max_vertex - 1) * (z_max_vertex - 1) ...
     + 3 * ( (x_max_vertex - 1) * (y_max_vertex - 1) + (y_max_vertex - 1) * (z_max_vertex - 1) + (x_max_vertex - 1) * (z_max_vertex - 1) ) ...
-    + (x_max_vertex - 1) + (y_max_vertex - 1) + (z_max_vertex - 1) ...
-    + 1 ;
+    + (x_max_vertex - 1) + (y_max_vertex - 1) + (z_max_vertex - 1);
 
 Vertex_Crdnt = zeros( x_max_vertex, y_max_vertex, z_max_vertex, 3 );
 % tic;
 % Vertex_Crdnt = buildCoordinateXYZ_Vertex( shiftedCoordinateXYZ );
 % toc;
 % save('FEM_A.mat', 'Vertex_Crdnt', 'SegMed');
-load('FEM_A.mat');
+% load('FEM_A.mat');
 % load('FEM_fullwave.mat');
 
 % flag = '000';
@@ -144,6 +157,7 @@ tic;
 disp('The filling time of K_1 a = b_k: ');
 for idx = 1: 1: N_v
     [ m, n, ell ] = getMNL(idx, x_max_vertex, y_max_vertex, z_max_vertex);
+    % volume
     if m >= 2 && m <= x_max_vertex && n >= 2 && n <= y_max_vertex && ell >= 2 && ell <= z_max_vertex 
         flag = getMNL_flag(m, n, ell);
         % flag = '000' or '111' -> SegMedIn = zeros(6, 8, 'uint8');
@@ -189,6 +203,7 @@ for idx = 1: 1: N_v
     end
 
     % check wheher x \le x_max_vertex or not
+    % the three top-right-far faces
     if m >= 2 && n >= 2 && ell == z_max_vertex
         idx_prm = get_idx_prm(m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex);
         [ sparseK1{7 * ( idx_prm - 1 ) + 1}, sparseK1{7 * ( idx_prm - 1 ) + 2}, ...
@@ -205,6 +220,7 @@ for idx = 1: 1: N_v
             sparseK1{7 * ( idx_prm - 1 ) + 6} ] = fillFar_K1( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex );
     end
 
+    % the three bottom-left-near faces
     if m >= 2 && n == 1 && ell >= 2
         vIdx = get_idx_prm(m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex);
         [ sparseK1{ vIdx2eIdx(vIdx, 1, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
@@ -227,6 +243,7 @@ for idx = 1: 1: N_v
             = fillBttm_K1( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex );
     end
 
+    % three lines
     if m >= 2 && n == 1 && ell == 1
         vIdx = get_idx_prm(m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex);
         sparseK1{ vIdx2eIdx(vIdx, 1, x_max_vertex, y_max_vertex, z_max_vertex) } ...

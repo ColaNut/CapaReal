@@ -1,4 +1,4 @@
-function z_grid_table = fillGridTableXZ_all_Mag( paras_Mag )
+function [ x_grid_table, z_grid_table ] = fillGridTableXZ_all_Mag( paras_Mag )
 
 w_x          = paras_Mag(1);
 w_y          = paras_Mag(2);
@@ -13,23 +13,26 @@ dx           = paras_Mag(9);
 dy           = paras_Mag(10);
 dz           = paras_Mag(11);
 sample_valid = paras_Mag(12);
-circle_x     = paras_Mag(13);
 
 % z_grid_table = cell( size([ myCeil(- ell_z / 2, dz): dz: myFloor(ell_z / 2, dz) ]') );
 
-lgth = length([ myCeil(- ell_z / 2, dz): dz: myFloor(ell_z / 2, dz) ]');
+x_grid_table = [];
 z_grid_table = [];
 
-if isreal(circle_x)
-    % fill z table
-    for idx = 1: 1: lgth
-        int_grid_z = myCeil(- ell_z / 2, dz) + ( idx - 1 ) * dz;
+[ x_grid_table, z_grid_table ] = fillGridTable( 0, 0, r_c, r_c, dx, dz );
+% lgth = length([ myCeil(- ell_z / 2, dz): dz: myFloor(ell_z / 2, dz) ]');
+% z_grid_table = [];
 
-        [ x1, x1_diff ] = nearestIntGrid( circle_x, dx );
-        [ x2, x2_diff ] = nearestIntGrid( - circle_x, dx );
+% if isreal(circle_x)
+%     % fill z table
+%     for idx = 1: 1: lgth
+%         int_grid_z = myCeil(- ell_z / 2, dz) + ( idx - 1 ) * dz;
+
+%         [ x1, x1_diff ] = nearestIntGrid( circle_x, dx );
+%         [ x2, x2_diff ] = nearestIntGrid( - circle_x, dx );
         
-        z_grid_table = vertcat(z_grid_table, [ x1, int_grid_z, x1_diff, x2, int_grid_z, x2_diff ]);
-    end
-end
+%         z_grid_table = vertcat(z_grid_table, [ x1, int_grid_z, x1_diff, x2, int_grid_z, x2_diff ]);
+%     end
+% end
 
 end
