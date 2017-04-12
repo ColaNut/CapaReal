@@ -1,6 +1,6 @@
-function FaceCrdnt = p64Face( MidPntsCrdnt )
+function tmpMidCrdnt = p64Face( MidPntsCrdnt )
 
-    FaceCrdnt = zeros(5, 3);
+    tmpMidCrdnt = zeros(5, 3);
     tmpMidCrdnt(1, :) = squeeze( MidPntsCrdnt(1, 2, :) )';
     tmpMidCrdnt(2, :) = squeeze( MidPntsCrdnt(2, 1, :) )';
     tmpMidCrdnt(3, :) = squeeze( MidPntsCrdnt(2, 2, :) )';

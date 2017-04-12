@@ -1,6 +1,6 @@
 function [ K1_row_1, K1_row_2, K1_row_3, K1_row_4, K1_row_5, ...
-      K1_row_6, K1_row_7 ] = fillNrml_K1_Type4( m, n, ell, flag, Vertex_Crdnt, x_max_vertex, y_max_vertex, ...
-                                            z_max_vertex, PntSegMed, auxiSegMed, epsilon_r, mu_r, omega )
+      K1_row_6, K1_row_7, B_k ] = fillNrml_K1_Type4( m, n, ell, flag, Vertex_Crdnt, x_max_vertex, y_max_vertex, ...
+                                            z_max_vertex, PntSegMed, auxiSegMed, epsilon_r, mu_r, omega, B_k, J_0 )
       
     K1_row_1 = zeros(1, 26);
     K1_row_2 = zeros(1, 26);
@@ -46,6 +46,7 @@ function [ K1_row_1, K1_row_2, K1_row_3, K1_row_4, K1_row_5, ...
     % FaceCrdnt = p4FaceMidLyr( PntsCrdnt );
     tmpSegMed = [ PntSegMed(2, 1), PntSegMed(2, 8), PntSegMed(1, 5), PntSegMed(1, 4) ];
     K1_row_1(14: 26) = calK1_mn( FaceCrdnt, squeeze( PntsCrdnt(2, 4, :) ), tmpSegMed, mu_r, 'fourTet' );
+    B_k( K1_row_1(13) ) = calBk_m( FaceCrdnt, squeeze( PntsCrdnt(2, 4, :) ), tmpSegMed, J_0, 'fourTet' );
 
     % 2-nd edge
     K1_row_2(1)    = vIdx2eIdx(PntsIdx_prm(2, 5), 4, x_max_vertex, y_max_vertex, z_max_vertex);
@@ -76,6 +77,7 @@ function [ K1_row_1, K1_row_2, K1_row_3, K1_row_4, K1_row_5, ...
     % FaceCrdnt = p4FaceMidLyr( PntsCrdnt );
     tmpSegMed = [ PntSegMed(2, 7), PntSegMed(2, 6), PntSegMed(1, 7), PntSegMed(1, 6) ];
     K1_row_2(14: 26) = calK1_mn( FaceCrdnt, squeeze( PntsCrdnt(2, 2, :) ), tmpSegMed, mu_r, 'fourTet' );
+    B_k( K1_row_2(13) ) = calBk_m( FaceCrdnt, squeeze( PntsCrdnt(2, 2, :) ), tmpSegMed, J_0, 'fourTet' );
 
     % 3-rd edge
     K1_row_3(1)    = vIdx2eIdx(PntsIdx_prm(2, 6), 1, x_max_vertex, y_max_vertex, z_max_vertex);
@@ -117,6 +119,7 @@ function [ K1_row_1, K1_row_2, K1_row_3, K1_row_4, K1_row_5, ...
     FaceCrdnt = p1FaceMidLyr( PntsCrdnt );
     % K_1 [000, 1], [111, 1] 
     K1_row_3(26: 50) = calK1_mn( FaceCrdnt, squeeze( PntsCrdnt(1, 5, :) ), PntSegMed(1, :), mu_r, 'eightTet' );
+    B_k( K1_row_3(25) ) = calBk_m( FaceCrdnt, squeeze( PntsCrdnt(1, 5, :) ), PntSegMed(1, :), J_0, 'eightTet' );
     
     % 4-th edge
     K1_row_4(1)    = vIdx2eIdx(PntsIdx_prm(2, 5), 1, x_max_vertex, y_max_vertex, z_max_vertex);
@@ -138,13 +141,14 @@ function [ K1_row_1, K1_row_2, K1_row_3, K1_row_4, K1_row_5, ...
     
     FaceCrdnt = zeros(5, 3);
     FaceCrdnt(1, :) = squeeze( PntsCrdnt(1, 5, :) )';
-    FaceCrdnt(2, :) = squeeze( PntsCrdnt(2, 1, :) )';
+    FaceCrdnt(2, :) = squeeze( PntsCrdnt(2, 2, :) )';
     FaceCrdnt(3, :) = squeeze( PntsCrdnt(2, 5, :) )';
     FaceCrdnt(4, :) = squeeze( PntsCrdnt(2, 4, :) )';
     FaceCrdnt(5, :) = squeeze( PntsCrdnt(3, 5, :) )';
     tmpSegMed = zeros(1, 4, 'uint8');
     tmpSegMed = [ auxiSegMed(2, 8), PntSegMed(2, 7), PntSegMed(1, 6), auxiSegMed(1, 5) ];
     K1_row_4(14: 26) = calK1_mn( FaceCrdnt, squeeze( PntsCrdnt(2, 1, :) ), tmpSegMed, mu_r, 'fourTet' );
+    B_k( K1_row_4(13) ) = calBk_m( FaceCrdnt, squeeze( PntsCrdnt(2, 1, :) ), tmpSegMed, J_0, 'fourTet' );
 
     % 5-th edge
     K1_row_5(1)    = vIdx2eIdx(PntsIdx_prm(2, 2), 3, x_max_vertex, y_max_vertex, z_max_vertex);
@@ -173,6 +177,7 @@ function [ K1_row_1, K1_row_2, K1_row_3, K1_row_4, K1_row_5, ...
     FaceCrdnt(5, :) = squeeze( PntsCrdnt(2, 3, :) )';
     tmpSegMed = [ auxiSegMed(6, 2), auxiSegMed(1, 7), auxiSegMed(1, 6), auxiSegMed(6, 3) ];
     K1_row_5(14: 26) = calK1_mn( FaceCrdnt, squeeze( PntsCrdnt(1, 5, :) ), tmpSegMed, mu_r, 'fourTet' );
+    B_k( K1_row_5(13) ) = calBk_m( FaceCrdnt, squeeze( PntsCrdnt(1, 5, :) ), tmpSegMed, J_0, 'fourTet' );
 
     % 6-th edge
     K1_row_6(1)    = vIdx2eIdx(PntsIdx_prm(2, 5), 1, x_max_vertex, y_max_vertex, z_max_vertex);
@@ -201,6 +206,7 @@ function [ K1_row_1, K1_row_2, K1_row_3, K1_row_4, K1_row_5, ...
     FaceCrdnt(5, :) = squeeze( PntsCrdnt(2, 7, :) )';
     tmpSegMed = [ auxiSegMed(1, 4), auxiSegMed(2, 3), auxiSegMed(2, 2), auxiSegMed(1, 5) ];
     K1_row_6(14: 26) = calK1_mn( FaceCrdnt, squeeze( PntsCrdnt(1, 5, :) ), tmpSegMed, mu_r, 'fourTet' );
+    B_k( K1_row_6(13) ) = calBk_m( FaceCrdnt, squeeze( PntsCrdnt(1, 5, :) ), tmpSegMed, J_0, 'fourTet' );
 
     % 7-th edge
     K1_row_7(1)    = vIdx2eIdx(PntsIdx_prm(2, 2), 1, x_max_vertex, y_max_vertex, z_max_vertex);
@@ -232,5 +238,6 @@ function [ K1_row_1, K1_row_2, K1_row_3, K1_row_4, K1_row_5, ...
     tmpSegMed = zeros(1, 6, 'uint8');
     tmpSegMed = [ auxiSegMed(1, 6), auxiSegMed(1, 5), auxiSegMed(2, 2), auxiSegMed(2, 1), auxiSegMed(6, 4), auxiSegMed(6, 3) ];
     K1_row_7(20: 38) = calK1_mn( FaceCrdnt, squeeze( PntsCrdnt(1, 5, :) ), tmpSegMed, mu_r, 'sixTet' );
+    B_k( K1_row_7(19) ) = calBk_m( FaceCrdnt, squeeze( PntsCrdnt(1, 5, :) ), tmpSegMed, J_0, 'sixTet' );
 
 end

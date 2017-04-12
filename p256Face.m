@@ -1,6 +1,6 @@
-function FaceCrdnt = p256Face( MidPntsCrdnt )
+function tmpMidCrdnt = p256Face( MidPntsCrdnt )
 
-    FaceCrdnt = zeros(7, 3);
+    tmpMidCrdnt = zeros(7, 3);
     tmpMidCrdnt(1, :) = squeeze( MidPntsCrdnt(1, 2, :) )';
     tmpMidCrdnt(2, :) = squeeze( MidPntsCrdnt(1, 5, :) )';
     tmpMidCrdnt(3, :) = squeeze( MidPntsCrdnt(1, 4, :) )';

@@ -1,4 +1,4 @@
-function [ PntsIdx, PntsCrdnt ] = get27Pnts_prm( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex, shiftedCoordinateXYZ )
+function [ PntsIdx, PntsCrdnt ] = get27Pnts_prm( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt )
 
     PntsIdx     = zeros( 3, 9 );
     PntsCrdnt   = zeros( 3, 9, 3 );
@@ -35,35 +35,35 @@ function [ PntsIdx, PntsCrdnt ] = get27Pnts_prm( m, n, ell, x_max_vertex, y_max_
     PntsIdx( 3, 9 ) = get_idx_prm( m + 1, n + 1, ell + 1, x_max_vertex, y_max_vertex, z_max_vertex ); 
 
     % need to check whether to add squeeze or not.
-    PntsCrdnt( 1, 1, : ) = getCoord( m - 1, n - 1, ell - 1, shiftedCoordinateXYZ, x_max_vertex, y_max_vertex, z_max_vertex );
-    PntsCrdnt( 1, 2, : ) = getCoord( m    , n - 1, ell - 1, shiftedCoordinateXYZ, x_max_vertex, y_max_vertex, z_max_vertex );
-    PntsCrdnt( 1, 3, : ) = getCoord( m + 1, n - 1, ell - 1, shiftedCoordinateXYZ, x_max_vertex, y_max_vertex, z_max_vertex );
-    PntsCrdnt( 1, 4, : ) = getCoord( m - 1, n    , ell - 1, shiftedCoordinateXYZ, x_max_vertex, y_max_vertex, z_max_vertex );
-    PntsCrdnt( 1, 5, : ) = getCoord( m    , n    , ell - 1, shiftedCoordinateXYZ, x_max_vertex, y_max_vertex, z_max_vertex );
-    PntsCrdnt( 1, 6, : ) = getCoord( m + 1, n    , ell - 1, shiftedCoordinateXYZ, x_max_vertex, y_max_vertex, z_max_vertex );
-    PntsCrdnt( 1, 7, : ) = getCoord( m - 1, n + 1, ell - 1, shiftedCoordinateXYZ, x_max_vertex, y_max_vertex, z_max_vertex );
-    PntsCrdnt( 1, 8, : ) = getCoord( m    , n + 1, ell - 1, shiftedCoordinateXYZ, x_max_vertex, y_max_vertex, z_max_vertex );
-    PntsCrdnt( 1, 9, : ) = getCoord( m + 1, n + 1, ell - 1, shiftedCoordinateXYZ, x_max_vertex, y_max_vertex, z_max_vertex );
+    PntsCrdnt( 1, 1, : ) = getCoord( m - 1, n - 1, ell - 1, Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex );
+    PntsCrdnt( 1, 2, : ) = getCoord( m    , n - 1, ell - 1, Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex );
+    PntsCrdnt( 1, 3, : ) = getCoord( m + 1, n - 1, ell - 1, Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex );
+    PntsCrdnt( 1, 4, : ) = getCoord( m - 1, n    , ell - 1, Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex );
+    PntsCrdnt( 1, 5, : ) = getCoord( m    , n    , ell - 1, Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex );
+    PntsCrdnt( 1, 6, : ) = getCoord( m + 1, n    , ell - 1, Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex );
+    PntsCrdnt( 1, 7, : ) = getCoord( m - 1, n + 1, ell - 1, Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex );
+    PntsCrdnt( 1, 8, : ) = getCoord( m    , n + 1, ell - 1, Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex );
+    PntsCrdnt( 1, 9, : ) = getCoord( m + 1, n + 1, ell - 1, Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex );
 
-    PntsCrdnt( 2, 1, : ) = getCoord( m - 1, n - 1, ell    , shiftedCoordinateXYZ, x_max_vertex, y_max_vertex, z_max_vertex );
-    PntsCrdnt( 2, 2, : ) = getCoord( m    , n - 1, ell    , shiftedCoordinateXYZ, x_max_vertex, y_max_vertex, z_max_vertex );
-    PntsCrdnt( 2, 3, : ) = getCoord( m + 1, n - 1, ell    , shiftedCoordinateXYZ, x_max_vertex, y_max_vertex, z_max_vertex );
-    PntsCrdnt( 2, 4, : ) = getCoord( m - 1, n    , ell    , shiftedCoordinateXYZ, x_max_vertex, y_max_vertex, z_max_vertex );
-    PntsCrdnt( 2, 5, : ) = getCoord( m    , n    , ell    , shiftedCoordinateXYZ, x_max_vertex, y_max_vertex, z_max_vertex );
-    PntsCrdnt( 2, 6, : ) = getCoord( m + 1, n    , ell    , shiftedCoordinateXYZ, x_max_vertex, y_max_vertex, z_max_vertex );
-    PntsCrdnt( 2, 7, : ) = getCoord( m - 1, n + 1, ell    , shiftedCoordinateXYZ, x_max_vertex, y_max_vertex, z_max_vertex );
-    PntsCrdnt( 2, 8, : ) = getCoord( m    , n + 1, ell    , shiftedCoordinateXYZ, x_max_vertex, y_max_vertex, z_max_vertex );
-    PntsCrdnt( 2, 9, : ) = getCoord( m + 1, n + 1, ell    , shiftedCoordinateXYZ, x_max_vertex, y_max_vertex, z_max_vertex );
+    PntsCrdnt( 2, 1, : ) = getCoord( m - 1, n - 1, ell    , Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex );
+    PntsCrdnt( 2, 2, : ) = getCoord( m    , n - 1, ell    , Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex );
+    PntsCrdnt( 2, 3, : ) = getCoord( m + 1, n - 1, ell    , Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex );
+    PntsCrdnt( 2, 4, : ) = getCoord( m - 1, n    , ell    , Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex );
+    PntsCrdnt( 2, 5, : ) = getCoord( m    , n    , ell    , Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex );
+    PntsCrdnt( 2, 6, : ) = getCoord( m + 1, n    , ell    , Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex );
+    PntsCrdnt( 2, 7, : ) = getCoord( m - 1, n + 1, ell    , Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex );
+    PntsCrdnt( 2, 8, : ) = getCoord( m    , n + 1, ell    , Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex );
+    PntsCrdnt( 2, 9, : ) = getCoord( m + 1, n + 1, ell    , Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex );
 
-    PntsCrdnt( 3, 1, : ) = getCoord( m - 1, n - 1, ell + 1, shiftedCoordinateXYZ, x_max_vertex, y_max_vertex, z_max_vertex );
-    PntsCrdnt( 3, 2, : ) = getCoord( m    , n - 1, ell + 1, shiftedCoordinateXYZ, x_max_vertex, y_max_vertex, z_max_vertex );
-    PntsCrdnt( 3, 3, : ) = getCoord( m + 1, n - 1, ell + 1, shiftedCoordinateXYZ, x_max_vertex, y_max_vertex, z_max_vertex );
-    PntsCrdnt( 3, 4, : ) = getCoord( m - 1, n    , ell + 1, shiftedCoordinateXYZ, x_max_vertex, y_max_vertex, z_max_vertex );
-    PntsCrdnt( 3, 5, : ) = getCoord( m    , n    , ell + 1, shiftedCoordinateXYZ, x_max_vertex, y_max_vertex, z_max_vertex );
-    PntsCrdnt( 3, 6, : ) = getCoord( m + 1, n    , ell + 1, shiftedCoordinateXYZ, x_max_vertex, y_max_vertex, z_max_vertex );
-    PntsCrdnt( 3, 7, : ) = getCoord( m - 1, n + 1, ell + 1, shiftedCoordinateXYZ, x_max_vertex, y_max_vertex, z_max_vertex );
-    PntsCrdnt( 3, 8, : ) = getCoord( m    , n + 1, ell + 1, shiftedCoordinateXYZ, x_max_vertex, y_max_vertex, z_max_vertex );
-    PntsCrdnt( 3, 9, : ) = getCoord( m + 1, n + 1, ell + 1, shiftedCoordinateXYZ, x_max_vertex, y_max_vertex, z_max_vertex );
+    PntsCrdnt( 3, 1, : ) = getCoord( m - 1, n - 1, ell + 1, Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex );
+    PntsCrdnt( 3, 2, : ) = getCoord( m    , n - 1, ell + 1, Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex );
+    PntsCrdnt( 3, 3, : ) = getCoord( m + 1, n - 1, ell + 1, Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex );
+    PntsCrdnt( 3, 4, : ) = getCoord( m - 1, n    , ell + 1, Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex );
+    PntsCrdnt( 3, 5, : ) = getCoord( m    , n    , ell + 1, Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex );
+    PntsCrdnt( 3, 6, : ) = getCoord( m + 1, n    , ell + 1, Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex );
+    PntsCrdnt( 3, 7, : ) = getCoord( m - 1, n + 1, ell + 1, Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex );
+    PntsCrdnt( 3, 8, : ) = getCoord( m    , n + 1, ell + 1, Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex );
+    PntsCrdnt( 3, 9, : ) = getCoord( m + 1, n + 1, ell + 1, Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex );
 
     % PntsMed( 1, 1 ) = mediumTable( PntsIdx( 1, 1 ) );
     % PntsMed( 1, 2 ) = mediumTable( PntsIdx( 1, 2 ) );
