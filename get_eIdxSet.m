@@ -1,4 +1,4 @@
-function eIdxSet = get_eIdxSet( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex, front_A, phaseNum )
+function eIdxSet = get_eIdxSet( m, n, ell, x_max_vertex, y_max_vertex, z_max_vertex, phaseNum )
 
     eIdxSet = zeros(25, 1);
     m_v     = 2 * m - 1;

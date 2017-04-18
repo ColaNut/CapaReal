@@ -1,5 +1,5 @@
 function OneSideH_XZ = calH( P1_Crdt, P2_Crdt, P3_Crdt, P4_Crdt, sixEdge_A_Value, mu )
-    OneSideH_XZ = zeros(1, 1, 3);
+    OneSideH_XZ = zeros(3, 1);
 
     % sixEdge_A_Value = zeros(1, 6);
     tmp_curl_W = zeros(6, 3);

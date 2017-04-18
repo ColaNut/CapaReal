@@ -4,7 +4,7 @@ A_flag = 1;
 % Need to modify the 'save' in the PhiDstrbtn.m to make it accord with the 'load' in TmprtrFigs.m
 if A_flag == 1
     clc; clear;
-    load('TMP0411.mat');
+    load('TMP0418.mat');
     
     % CaseName = 'Power300';
     % load( strcat('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0220_1cmFat\', CaseName, '.mat') );

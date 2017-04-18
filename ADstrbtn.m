@@ -32,9 +32,12 @@ for idx = 1: 1: x_idx_max * z_idx_max
     [ m, ell ] = getML(idx, x_idx_max);
     n = ( y_idx_max + 1 ) / 2;
     if m >= 2 && m <= x_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1
+        if m == 6 && ell == 3
+            ;
+        end
         H_XZ(m, ell, :, :, :) = getH_XZ(m, n, ell, x_idx_max, y_idx_max, ...
                                     x_max_vertex, y_max_vertex, z_max_vertex, shiftedCoordinateXYZ, ...
-                                        A, mu_r * Mu_0, squeeze( SegMed( m, n, ell, :, : ) ) );
+                                        A, mu_r, squeeze( SegMed( m, n, ell, :, : ) ) );
     end
 end
 
@@ -144,7 +147,7 @@ if flag_XZ == 1
     colormap jet;
     % axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
-    ylabel('$y$ (cm)','Interpreter','LaTex', 'FontSize', 20);
+    ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
     axis equal;
     % axis( [ - 4, 4, - 4, 4 ] );
     % set(log_axes,'fontsize',20);
@@ -161,6 +164,19 @@ if flag_XZ == 1
     % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
     % save( strcat( fname, '\', CaseDate, 'TmprtrFigXZ.mat') );
     % save('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0108\Case0108TmprtrFigXZ.mat');
+
+    figure(3);
+
+    [ X_qui, Y_qui ] = meshgrid(-4:1:4, -4:1:4);
+    u = zeros(9);
+    v = zeros(9);
+
+    u = squeeze( H_XZ(2: 10, 2: 10, 1, 1, 1) );
+    w = squeeze( H_XZ(2: 10, 2: 10, 1, 1, 2) );
+    v = squeeze( H_XZ(2: 10, 2: 10, 1, 1, 3) );
+ 
+    quiver(X_qui, Y_qui, u, v);
+
 end
 
 % end

@@ -47,13 +47,20 @@
 %         mnell_table = vertcat(mnell_table, [m, n, ell]);
 %     end
 % end
+% clc; clear;
+% load('TMP0418.mat');
+ArndIdx  = zeros(26, 1);
+ArndIdx  = get26EdgeIdx(10, 9, 4, x_max_vertex, y_max_vertex, z_max_vertex);
+leftPnt  = sparseK1(ArndIdx);
+% ArndIdx  = get26EdgeIdx(8, 9, 8, x_max_vertex, y_max_vertex, z_max_vertex);
+% rightPnt = bar_x_my_gmres(ArndIdx);
 
-clc;
-clear;
-fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0322';
-CaseName = 'Case0322';
-load( strcat(fname, '\', CaseName, '.mat') );
-CurrentEst;
+% clc;
+% clear;
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0322';
+% CaseName = 'Case0322';
+% load( strcat(fname, '\', CaseName, '.mat') );
+% CurrentEst;
 % % counter
 % CaseName = 'TMP';
 %     % fname = 'e:\Kevin\CapaReal\Case0301_8MHzSaline';

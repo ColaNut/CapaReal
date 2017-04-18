@@ -32,3 +32,8 @@ The cal48TtrVol.m was cal8TtrVol.m not used.
 
 02/06: PowerMani.m calculate the temperature up to 50 min.
        ManiScript.m plot for \Phi, SAR, temperature-time and temperature distribution.
+
+04/14: Fix a bug in putOnCurrent.m in dealing with quadrant III.
+
+04/16: Debug list: check the input of the 28 cases.
+       Check the squeeze function

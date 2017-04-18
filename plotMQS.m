@@ -23,7 +23,7 @@ dz      = Paras_Mag(11) * 100;
 h_conductor = 0.5; % (cm)
 
 plotEllipse( r_c, 0, - r_c, 0, r_c, dx, dz );
-plotEllipse( r_c + h_conductor, 0, - r_c - h_conductor, 0, r_c + h_conductor, dx, dz );
+% plotEllipse( r_c + h_conductor, 0, - r_c - h_conductor, 0, r_c + h_conductor, dx, dz );
 
 % % plot electrode
 % t = linspace( 0, 2 * pi, 400 );
