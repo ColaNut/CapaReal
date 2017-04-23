@@ -1,13 +1,13 @@
-function [ m, n, ell, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex)
+function [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex)
 
     % implement only for volume
     vIdx_prm = ceil(eIdx / 7);
     edgeNum = (eIdx + 7) - 7 * vIdx_prm;
 
-    [ m_prm, n_prm, ell_prm ] = getMNL(vIdx_prm, x_max_vertex - 1, y_max_vertex - 1, z_max_vertex - 1);
-    m   = m_prm + 1;
-    n   = n_prm + 1;
-    ell = ell_prm + 1;
+    [ m_v_prm, n_v_prm, ell_v_prm ] = getMNL(vIdx_prm, x_max_vertex - 1, y_max_vertex - 1, z_max_vertex - 1);
+    m_v   = m_v_prm + 1;
+    n_v   = n_v_prm + 1;
+    ell_v = ell_v_prm + 1;
 
     % x_max_vertex_prm = x_max_vertex - 1;
     % y_max_vertex_prm = y_max_vertex - 1;

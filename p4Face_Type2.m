@@ -1,6 +1,6 @@
 function Extract9 = p4Face_Type2( Ori27, Text )
 
-switch Text
+ switch Text
     case 'Crdnt'
         Extract9 = zeros(1, 9, 3);
         Extract9(1, 1, :) = Ori27(1, 2, :);

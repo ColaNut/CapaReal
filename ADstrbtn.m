@@ -137,7 +137,7 @@ if flag_XZ == 1
             PntMidPnts9Crdnt = squeeze( MidPnts9Crdnt(m, ell, :, :) );
             PntMidPnts9Crdnt(:, 2) = [];
             % plotSAR_XZ( SARseg, TtrVol, PntMidPnts9Crdnt )
-            plotSAR_Intrplt( squeeze( SARseg( m, ell, :, :) ), squeeze( TtrVol( m, ell, :, : ) ), ...
+            plotSAR_Intrplt( squeeze( abs(SARseg( m, ell, :, :)) ), squeeze( TtrVol( m, ell, :, : ) ), ...
                                     PntMidPnts9Crdnt, Intrplt9Pnts, 'XZ', 1 );
         end
     end

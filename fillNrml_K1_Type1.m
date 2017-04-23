@@ -59,11 +59,9 @@ function [ K1_row_1, K1_row_2, K1_row_3, K1_row_4, K1_row_5, ...
     Side_Cflags = zeros(9, 1, 'uint8');
     Side_Cflags = p2Face_2( Pnts_Cflags, 'Med' );
     % K_1 [000, 1], [111, 1] 
-    K1_row_1(26: 50) = calK1_mn( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 5, :) ), PntSegMed(2, :), mu_r, 'eightTet' );
-    B_k( K1_row_1(25) ) = calBk_m( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 5, :) ), ...
-                                    Side_Cflags, Pnts_Cflags(2, 5), J_0, 'eightTet' );
-
-% start from here: implement the rest 6 + 21 cases of B_k
+    K1_row_1(26: 50) = calK1_Type1( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 5, :) ), PntSegMed(2, :), mu_r, '1' );
+    B_k( K1_row_1(25) ) = calBk_Type1( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 5, :) ), ...
+                                    Side_Cflags, Pnts_Cflags(2, 5), J_0, '1' );
 
     % 2-nd edge
     K1_row_2(1)    = vIdx2eIdx(PntsIdx_prm(2, 3), 1, x_max_vertex, y_max_vertex, z_max_vertex);
@@ -101,9 +99,9 @@ function [ K1_row_1, K1_row_2, K1_row_3, K1_row_4, K1_row_5, ...
     FaceCrdnt = p6Face_2( PntsCrdnt, 'Crdnt' );
     Side_Cflags = zeros(9, 1, 'uint8');
     Side_Cflags = p6Face_2( Pnts_Cflags, 'Med' );
-    K1_row_2(26: 50) = calK1_mn( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 5, :) ), PntSegMed(6, :), mu_r, 'eightTet' );
-    B_k( K1_row_2(25) ) = calBk_m( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 5, :) ), ...
-                                    Side_Cflags, Pnts_Cflags(2, 5), J_0, 'eightTet' );
+    K1_row_2(26: 50) = calK1_Type1( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 5, :) ), PntSegMed(6, :), mu_r, '2' );
+    B_k( K1_row_2(25) ) = calBk_Type1( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 5, :) ), ...
+                                    Side_Cflags, Pnts_Cflags(2, 5), J_0, '2' );
 
     % 3-rd edge
     K1_row_3(1)    = vIdx2eIdx(PntsIdx_prm(1, 5), 1, x_max_vertex, y_max_vertex, z_max_vertex);
@@ -142,9 +140,9 @@ function [ K1_row_1, K1_row_2, K1_row_3, K1_row_4, K1_row_5, ...
     Side_Cflags = zeros(9, 1, 'uint8');
     Side_Cflags = p3Face_2( Pnts_Cflags, 'Med' );
     % FaceCrdnt = p3Face( PntsCrdnt );
-    K1_row_3(26: 50) = calK1_mn( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 5, :) ), PntSegMed(3, :), mu_r, 'eightTet' );
-    B_k( K1_row_3(25) ) = calBk_m( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 5, :) ), ...
-                                    Side_Cflags, Pnts_Cflags(2, 5), J_0, 'eightTet' );
+    K1_row_3(26: 50) = calK1_Type1( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 5, :) ), PntSegMed(3, :), mu_r, '3' );
+    B_k( K1_row_3(25) ) = calBk_Type1( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 5, :) ), ...
+                                    Side_Cflags, Pnts_Cflags(2, 5), J_0, '3' );
 
     % 4-th edge
     K1_row_4(1)    = vIdx2eIdx(PntsIdx_prm(2, 2), 1, x_max_vertex, y_max_vertex, z_max_vertex);
@@ -170,9 +168,9 @@ function [ K1_row_1, K1_row_2, K1_row_3, K1_row_4, K1_row_5, ...
     Side_Cflags = p26Face_2( Pnts_Cflags, 'Med' );
     tmpSegMed = zeros(1, 4, 'uint8');
     tmpSegMed = [ PntSegMed(6, 4), PntSegMed(2, 1), PntSegMed(2, 8), PntSegMed(6, 5) ];
-    K1_row_4(14: 26) = calK1_mn( squeeze(FaceCrdnt), squeeze( PntsCrdnt(2, 5, :) ), tmpSegMed, mu_r, 'fourTet' );
-    B_k( K1_row_4(13) ) = calBk_m( squeeze(FaceCrdnt), squeeze( PntsCrdnt(2, 5, :) ), ...
-                                    Side_Cflags, Pnts_Cflags(2, 5), J_0, 'fourTet' );
+    K1_row_4(14: 26) = calK1_Type1( squeeze(FaceCrdnt), squeeze( PntsCrdnt(2, 5, :) ), tmpSegMed, mu_r, '4' );
+    B_k( K1_row_4(13) ) = calBk_Type1( squeeze(FaceCrdnt), squeeze( PntsCrdnt(2, 5, :) ), ...
+                                    Side_Cflags, Pnts_Cflags(2, 5), J_0, '4' );
 
     % 5-th edge
     K1_row_5(1)    = vIdx2eIdx(PntsIdx_prm(1, 5), 2, x_max_vertex, y_max_vertex, z_max_vertex);
@@ -198,9 +196,9 @@ function [ K1_row_1, K1_row_2, K1_row_3, K1_row_4, K1_row_5, ...
     Side_Cflags = p63Face_2( Pnts_Cflags, 'Med' );
     % FaceCrdnt = p63Face( PntsCrdnt );
     tmpSegMed = [ PntSegMed(4, 6), PntSegMed(6, 7), PntSegMed(6, 6), PntSegMed(4, 7) ];
-    K1_row_5(14: 26) = calK1_mn( squeeze(FaceCrdnt), squeeze( PntsCrdnt(2, 5, :) ), tmpSegMed, mu_r, 'fourTet' );
-    B_k( K1_row_5(13) ) = calBk_m( squeeze(FaceCrdnt), squeeze( PntsCrdnt(2, 5, :) ), ...
-                                    Side_Cflags, Pnts_Cflags(2, 5), J_0, 'fourTet' );
+    K1_row_5(14: 26) = calK1_Type1( squeeze(FaceCrdnt), squeeze( PntsCrdnt(2, 5, :) ), tmpSegMed, mu_r, '5' );
+    B_k( K1_row_5(13) ) = calBk_Type1( squeeze(FaceCrdnt), squeeze( PntsCrdnt(2, 5, :) ), ...
+                                    Side_Cflags, Pnts_Cflags(2, 5), J_0, '5' );
 
     % 6-th edge
     K1_row_6(1)    = vIdx2eIdx(PntsIdx_prm(2, 4), 3, x_max_vertex, y_max_vertex, z_max_vertex);
@@ -226,9 +224,9 @@ function [ K1_row_1, K1_row_2, K1_row_3, K1_row_4, K1_row_5, ...
     Side_Cflags = p32Face_2( Pnts_Cflags, 'Med' );
     % FaceCrdnt = p32Face( PntsCrdnt );
     tmpSegMed = [ PntSegMed(2, 6), PntSegMed(3, 1), PntSegMed(3, 8), PntSegMed(2, 7) ];
-    K1_row_6(14: 26) = calK1_mn( squeeze(FaceCrdnt), squeeze( PntsCrdnt(2, 5, :) ), tmpSegMed, mu_r, 'fourTet' );
-    B_k( K1_row_6(13) ) = calBk_m( squeeze(FaceCrdnt), squeeze( PntsCrdnt(2, 5, :) ), ...
-                                    Side_Cflags, Pnts_Cflags(2, 5), J_0, 'fourTet' );
+    K1_row_6(14: 26) = calK1_Type1( squeeze(FaceCrdnt), squeeze( PntsCrdnt(2, 5, :) ), tmpSegMed, mu_r, '6' );
+    B_k( K1_row_6(13) ) = calBk_Type1( squeeze(FaceCrdnt), squeeze( PntsCrdnt(2, 5, :) ), ...
+                                    Side_Cflags, Pnts_Cflags(2, 5), J_0, '6' );
 
     % 7-th edge
     K1_row_7(1)    = vIdx2eIdx(PntsIdx_prm(1, 2), 1, x_max_vertex, y_max_vertex, z_max_vertex);
@@ -263,8 +261,8 @@ function [ K1_row_1, K1_row_2, K1_row_3, K1_row_4, K1_row_5, ...
     % FaceCrdnt = p623Face( PntsCrdnt );
     tmpSegMed = zeros(1, 6, 'uint8');
     tmpSegMed = [ PntSegMed(6, 6), PntSegMed(6, 5), PntSegMed(2, 8), PntSegMed(2, 7), PntSegMed(3, 8), PntSegMed(3, 7) ];
-    K1_row_7(20: 38) = calK1_mn( squeeze(FaceCrdnt), squeeze( PntsCrdnt(2, 5, :) ), tmpSegMed, mu_r, 'sixTet' );
-    B_k( K1_row_7(19) ) = calBk_m( squeeze(FaceCrdnt), squeeze( PntsCrdnt(2, 5, :) ), ...
-                                    Side_Cflags, Pnts_Cflags(2, 5), J_0, 'sixTet' );
+    K1_row_7(20: 38) = calK1_Type1( squeeze(FaceCrdnt), squeeze( PntsCrdnt(2, 5, :) ), tmpSegMed, mu_r, '7' );
+    B_k( K1_row_7(19) ) = calBk_Type1( squeeze(FaceCrdnt), squeeze( PntsCrdnt(2, 5, :) ), ...
+                                    Side_Cflags, Pnts_Cflags(2, 5), J_0, '7' );
 
 end

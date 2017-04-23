@@ -50,10 +50,16 @@
 % clc; clear;
 % load('TMP0418.mat');
 ArndIdx  = zeros(26, 1);
-ArndIdx  = get26EdgeIdx(10, 9, 4, x_max_vertex, y_max_vertex, z_max_vertex);
-leftPnt  = sparseK1(ArndIdx);
-% ArndIdx  = get26EdgeIdx(8, 9, 8, x_max_vertex, y_max_vertex, z_max_vertex);
-% rightPnt = bar_x_my_gmres(ArndIdx);
+ArndIdx  = get26EdgeIdx(4, 9, 8, x_max_vertex, y_max_vertex, z_max_vertex);
+leftPnt  = B_k(ArndIdx);
+ArndIdx  = get26EdgeIdx(8, 9, 4, x_max_vertex, y_max_vertex, z_max_vertex);
+rightPnt = B_k(ArndIdx);
+
+% load('Case0421.mat');
+% tic;
+% disp('The gmres solutin of Ax = B: ');
+% bar_x_my_gmres = my_gmres( sparseK1, B_k, int_itr_num, tol, ext_itr_num );
+% toc;
 
 % clc;
 % clear;
