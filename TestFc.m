@@ -48,12 +48,21 @@
 %     end
 % end
 % clc; clear;
+% load('First.mat');
+A = gallery('neumann', 1600) + speye(1600);
+setup.type = 'croutt';
+setup.milu = 'row';
+setup.droptol = 0.1;
+[L,U] = ilu(A,setup);
+e = ones(size(A,2),1);
+norm(A*e-L*U*e)
+
 % load('TMP0418.mat');
-ArndIdx  = zeros(26, 1);
-ArndIdx  = get26EdgeIdx(4, 9, 8, x_max_vertex, y_max_vertex, z_max_vertex);
-leftPnt  = B_k(ArndIdx);
-ArndIdx  = get26EdgeIdx(8, 9, 4, x_max_vertex, y_max_vertex, z_max_vertex);
-rightPnt = B_k(ArndIdx);
+% ArndIdx  = zeros(26, 1);
+% ArndIdx  = get26EdgeIdx(4, 9, 8, x_max_vertex, y_max_vertex, z_max_vertex);
+% leftPnt  = B_k(ArndIdx);
+% ArndIdx  = get26EdgeIdx(8, 9, 4, x_max_vertex, y_max_vertex, z_max_vertex);
+% rightPnt = B_k(ArndIdx);
 
 % load('Case0421.mat');
 % tic;

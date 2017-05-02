@@ -1,7 +1,20 @@
 function [ S1_row ] = fillNrml_S( m, n, ell, flag, Vertex_Crdnt, x_max_vertex, y_max_vertex, ...
-                                            z_max_vertex, PntSegMed, epsilon_r, omega )
+                                            z_max_vertex, PntSegMed, epsilon_r, omega, varargin )
 
     % if m ~= 2 && m ~= x_max_vertex - 1 && n ~= 2 && n ~= y_max_vertex - 1 && ell ~= 2 && ell ~= z_max_vertex - 1 && 
+    nVarargs = length(varargin);
+    if nVarargs == 0
+        cal_mn = str2func('calS_mn');
+    elseif nVarargs == 1
+        if strcmp(varargin{1}, 'GVV')
+            cal_mn = str2func('calGVV_mn');
+        else
+            error('check');
+        end
+    else
+        error('check');
+    end
+
     switch flag
         case { '111', '000' }
             S1_row      = zeros( 1, 54 );
@@ -45,26 +58,26 @@ function [ S1_row ] = fillNrml_S( m, n, ell, flag, Vertex_Crdnt, x_max_vertex, y
             % each face have ten contribution: 9 on each face and 1 in the center.
             IndvdlValue = zeros(6, 10);
             % p1
-            IndvdlValue(1, :) = calS_mn( squeeze( PntsCrdnt(3, :, :) ), squeeze( PntsCrdnt(2, 5, :) ), PntSegMed(1, :), epsilon_r, 'Nrml', omega );
+            IndvdlValue(1, :) = cal_mn( squeeze( PntsCrdnt(3, :, :) ), squeeze( PntsCrdnt(2, 5, :) ), PntSegMed(1, :), epsilon_r, 'Nrml', omega );
             % if ell == z_max_vertex - 1
             %     IndvdlValue(1, :) = IndvdlValue(1, :) - S1_Gamma_p1( squeeze( PntsCrdnt(3, :, :) ), squeeze( PntsCrdnt(2, 5, :) ), PntSegMed(1, :), epsilon_r, [0, 0, 1], 'Nrml' );
             % end
             % p2
             FaceCrdnt  = zeros( 1, 9, 3 );
             FaceCrdnt = p2Face( PntsCrdnt );
-            IndvdlValue(2, :) = calS_mn( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 5, :) ), PntSegMed(2, :), epsilon_r, 'Nrml', omega );
+            IndvdlValue(2, :) = cal_mn( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 5, :) ), PntSegMed(2, :), epsilon_r, 'Nrml', omega );
             % p3
             FaceCrdnt = p3Face( PntsCrdnt );
-            IndvdlValue(3, :) = calS_mn( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 5, :) ), PntSegMed(3, :), epsilon_r, 'Nrml', omega );
+            IndvdlValue(3, :) = cal_mn( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 5, :) ), PntSegMed(3, :), epsilon_r, 'Nrml', omega );
             % p4
             FaceCrdnt = p4Face( PntsCrdnt );
-            IndvdlValue(4, :) = calS_mn( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 5, :) ), PntSegMed(4, :), epsilon_r, 'Nrml', omega );
+            IndvdlValue(4, :) = cal_mn( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 5, :) ), PntSegMed(4, :), epsilon_r, 'Nrml', omega );
             % p5
             FaceCrdnt = p5Face( PntsCrdnt );
-            IndvdlValue(5, :) = calS_mn( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 5, :) ), PntSegMed(5, :), epsilon_r, 'Nrml', omega );
+            IndvdlValue(5, :) = cal_mn( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 5, :) ), PntSegMed(5, :), epsilon_r, 'Nrml', omega );
             % p6
             FaceCrdnt = p6Face( PntsCrdnt );
-            IndvdlValue(6, :) = calS_mn( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 5, :) ), PntSegMed(6, :), epsilon_r, 'Nrml', omega );
+            IndvdlValue(6, :) = cal_mn( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 5, :) ), PntSegMed(6, :), epsilon_r, 'Nrml', omega );
 
             Contribution = zeros(3, 9);
 
@@ -128,10 +141,10 @@ function [ S1_row ] = fillNrml_S( m, n, ell, flag, Vertex_Crdnt, x_max_vertex, y
             tmpMidLyr    = zeros( 9, 3 );
             LidsValue    = zeros( 2, 10 );
             % p1
-            LidsValue(1, :) = calS_mn( squeeze( PntsCrdnt(2, :, :) ), squeeze( PntsCrdnt(1, 5, :) ), PntSegMed(1, :), epsilon_r, 'z_shift', omega ); 
+            LidsValue(1, :) = cal_mn( squeeze( PntsCrdnt(2, :, :) ), squeeze( PntsCrdnt(1, 5, :) ), PntSegMed(1, :), epsilon_r, 'z_shift', omega ); 
             % p3
             tmpMidLyr = p3FaceMidLyr( PntsCrdnt );
-            LidsValue(2, :) = calS_mn( tmpMidLyr, squeeze( PntsCrdnt(3, 5, :) ), PntSegMed(2, :), epsilon_r, 'z_shift', omega ); 
+            LidsValue(2, :) = cal_mn( tmpMidLyr, squeeze( PntsCrdnt(3, 5, :) ), PntSegMed(2, :), epsilon_r, 'z_shift', omega ); 
 
             % 9 middle points + lower + upper
             Contribution = zeros(11, 1);
@@ -187,10 +200,10 @@ function [ S1_row ] = fillNrml_S( m, n, ell, flag, Vertex_Crdnt, x_max_vertex, y
             LidsValue    = zeros( 2, 10 );
             % p4
             tmpMidLyr = p4FaceMidLyr( PntsCrdnt );
-            LidsValue(1, :) = calS_mn( tmpMidLyr, squeeze( PntsCrdnt(2, 4, :) ), PntSegMed(1, :), epsilon_r, 'x_shift', omega ); 
+            LidsValue(1, :) = cal_mn( tmpMidLyr, squeeze( PntsCrdnt(2, 4, :) ), PntSegMed(1, :), epsilon_r, 'x_shift', omega ); 
             % p2
             tmpMidLyr = p2FaceMidLyr( PntsCrdnt );
-            LidsValue(2, :) = calS_mn( tmpMidLyr, squeeze( PntsCrdnt(2, 6, :) ), PntSegMed(2, :), epsilon_r, 'x_shift', omega ); 
+            LidsValue(2, :) = cal_mn( tmpMidLyr, squeeze( PntsCrdnt(2, 6, :) ), PntSegMed(2, :), epsilon_r, 'x_shift', omega ); 
 
             % 9 middle points + left + right
             Contribution = zeros(11, 1);
@@ -246,10 +259,10 @@ function [ S1_row ] = fillNrml_S( m, n, ell, flag, Vertex_Crdnt, x_max_vertex, y
             LidsValue    = zeros( 2, 10 );
             % p4
             tmpMidLyr = p5FaceMidLyr( PntsCrdnt );
-            LidsValue(1, :) = calS_mn( tmpMidLyr, squeeze( PntsCrdnt(2, 2, :) ), PntSegMed(1, :), epsilon_r, 'x_shift', omega ); 
+            LidsValue(1, :) = cal_mn( tmpMidLyr, squeeze( PntsCrdnt(2, 2, :) ), PntSegMed(1, :), epsilon_r, 'x_shift', omega ); 
             % p2
             tmpMidLyr = p6FaceMidLyr( PntsCrdnt );
-            LidsValue(2, :) = calS_mn( tmpMidLyr, squeeze( PntsCrdnt(2, 8, :) ), PntSegMed(2, :), epsilon_r, 'x_shift', omega ); 
+            LidsValue(2, :) = cal_mn( tmpMidLyr, squeeze( PntsCrdnt(2, 8, :) ), PntSegMed(2, :), epsilon_r, 'x_shift', omega ); 
 
             % 9 middle points + left + right
             Contribution = zeros(11, 1);
@@ -281,4 +294,8 @@ function [ S1_row ] = fillNrml_S( m, n, ell, flag, Vertex_Crdnt, x_max_vertex, y
             error('check');
     end
 
+    if nVarargs == 1 && strcmp(varargin{1}, 'GVV')
+      cal_mn = str2func('calGVV_mn');
+      S1_row = S1_row';
+    end
 end

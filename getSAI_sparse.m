@@ -1,9 +1,11 @@
-function [ M, column_res ] = getSAI(A, Tol)
+function [ M, column_res ] = getSAI_sparse(A, dim, Tol)
+
+    zeroVec = zeros(dim, 1);
+    column_res = zeros(1, dim);
     % initialization of M
-    Id_Matrix = diag( repmat( 1, 1, size(A, 1) ) );
-    M = Id_Matrix; % n-by-n matrix
-    n = size(A, 2);
-    column_res = zeros(1, n);
+    % Id_Matrix = diag( repmat( 1, 1, size(A, 1) ) );
+    % M = Id_Matrix; % dim-by-dim matrix
+    M = cell(1, dim);
 
     % J = cell(1, ColNum);
     % I = cell(1, ColNum);
@@ -11,19 +13,19 @@ function [ M, column_res ] = getSAI(A, Tol)
 
     ns = 10; % number of improvement steps allowed per column
 
-% output the relative residual to a rows to check
-
-    for column = 1: 1: n
-        if column == 665
-            ;
-        end
-        ek = Id_Matrix(:, column);
-        mk = M(:, column);
+    for column = 1: 1: dim
+        % ek = Id_Matrix(:, column);
+        ek = zeroVec;
+        ek(column) = 1; % 'column' happen to be k
+        mk = zeros( size(ek) );
+        mk = ek;
         J = find( mk );
         I = [];
         for step = 1: 1: ns
-            trim_A = A(:, J);
-            for idx = 1: 1: n
+            trim_A = zeros(dim, length(J));
+            % the J must be in the order from small to large
+            trim_A = getA_Jcol(A, dim, J);
+            for idx = 1: 1: dim
                 if ~isempty( find( trim_A(idx, :) ) )
                     I = vertcat( I, idx );
                 end
@@ -33,30 +35,33 @@ function [ M, column_res ] = getSAI(A, Tol)
             hat_ek = ek(I);
             % solve for hat_mk and calculate residual
             [ Q, R ] = qr(hat_A);
-            R = R(1: length(J), :);
-            Q = Q(:, 1: length(J));
             hat_mk = R \ ( Q' * hat_ek );
             resid = trim_A * hat_mk - ek;
 
             if step == ns || norm(resid) <= Tol
-                new_mk = zeros(size(mk));
-                for idx = 1: 1: length(J)
-                    new_mk( J(idx) ) = hat_mk(idx);
-                end
-                M(:, column) = new_mk;
+                sparse_mk = zeros(2 * length(J), 1);
+                sparse_mk(1: length(J)) = J;
+                sparse_mk(length(J)+ 1: end) = hat_mk;
+                M{ column } = sparse_mk;
                 column_res(column) = norm(resid);
                 break
             else
-                Ell = find(resid);
+                Ell = find( resid );
                 counter = 1;
-
                 % union to get tilde J
                 tilde_J = [];
                 Ell_length = length(Ell);
                 while counter <= Ell_length
-                    tmp_tilde_J = find( A( Ell(counter), : ) );
+                    tmp = A{ Ell(counter) };
+                    A_row = tmp';
+                    tmp_tilde_J = A_row( find( A_row( length(A_row) / 2 + 1: end ) ) );
+                    try
                     if ~isempty( tmp_tilde_J )
                         tilde_J = vertcat( tilde_J, tmp_tilde_J' );
+                    end
+                    catch
+                        tilde_J
+                        tmp_tilde_J
                     end
                     counter = counter + 1;
                 end
@@ -76,8 +81,10 @@ function [ M, column_res ] = getSAI(A, Tol)
                 rhoSQ = zeros( size(tilde_J) );
                 tilde_J_length = length(tilde_J);
                 for idx = 1: 1: tilde_J_length
-                    rhoSQ(idx) = norm(resid)^2 - ( resid' * A(:, tilde_J(idx)) )^2 / norm( A(:, tilde_J(idx)) )^2;
+                    rhoSQ(idx) = norm(resid)^2 - ( resid' * getA_Jcol(A, dim, tilde_J(idx)) )^2 / norm( getA_Jcol(A, dim, tilde_J(idx)) )^2;
                 end
+                tmpMin = 0;
+                minI = [];
                 [ tmpMin, minI ] = min(rhoSQ);
                 J = sort( vertcat( J, tilde_J(minI) ) );
             end

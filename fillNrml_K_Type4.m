@@ -124,7 +124,7 @@ function varargout = fillNrml_K_Type4( m_v, n_v, ell_v, flag, Vertex_Crdnt, x_ma
     Side_Cflags(5) = Pnts_Cflags(3, 5);
     % FaceCrdnt = p4FaceMidLyr( PntsCrdnt );
     tmpSegMed = [ PntSegMed(2, 7), PntSegMed(2, 6), PntSegMed(1, 7), PntSegMed(1, 6) ];
-    [ K1_row_2(14: 26), KEV_row_2(7: 12), KVE_col_2(1: 6) ] = calK_Type4( FaceCrdnt, squeeze( PntsCrdnt(2, 2, :) ), tmpSegMed, mu_r, epsilon_r, corner_flag, '2' );
+    [ K1_row_2(14: 26), KEV_row_2(7: 12), KVE_col_2(7: 12) ] = calK_Type4( FaceCrdnt, squeeze( PntsCrdnt(2, 2, :) ), tmpSegMed, mu_r, epsilon_r, corner_flag, '2' );
     B_k( K1_row_2(13) ) = calBk_Type4( FaceCrdnt, squeeze( PntsCrdnt(2, 2, :) ), ...
                                     Side_Cflags, Pnts_Cflags(2, 2), J_0, '2' );
 
