@@ -41,7 +41,17 @@ for idx = 1: 1: x_idx_max * z_idx_max
     end
 end
 
-bar_x_my_gmres_TMP = zeros(x_idx_max * y_idx_max * z_idx_max, 1);
+bar_x_my_gmres_mod = zeros(x_idx_max * y_idx_max * z_idx_max, 1);
+for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+    [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
+    m_v = 2 * m - 1;
+    n_v = 2 * n - 1;
+    ell_v = 2 * ell - 1;
+    p0_v = ( ell_v - 1 ) * x_max_vertex * y_max_vertex + ( n_v - 1 ) * x_max_vertex + m_v;
+    bar_x_my_gmres_mod(idx) = bar_x_my_gmres_phi(p0_v);
+end
+
+% bar_x_my_gmres_TMP = zeros(x_idx_max * y_idx_max * z_idx_max, 1);
 
 if flag_XZ == 1
 
@@ -58,7 +68,7 @@ if flag_XZ == 1
         CrossN = int32( w_y / (2 * dy) + 1 );
 
         if n == CrossN
-            PhiHlfY( m, 2, ell ) = bar_x_my_gmres_TMP(idx);
+            PhiHlfY( m, 2, ell ) = bar_x_my_gmres_mod(idx);
             ThrXYZCrndt( :, 2, :, :) = shiftedCoordinateXYZ( :, n, :, :);
             ThrMedValue( :, 2, : ) = mediumTable( :, n, : );
             SegValueXZ( m, ell, :, : ) = squeeze( SegMed( m, n, ell, :, : ) );
@@ -67,12 +77,12 @@ if flag_XZ == 1
             % paras2dXZ = genParas2d( y, paras, dx, dy, dz );
         end
         if n == CrossN + 1
-            PhiHlfY( m, 3, ell ) = bar_x_my_gmres_TMP(idx);
+            PhiHlfY( m, 3, ell ) = bar_x_my_gmres_mod(idx);
             ThrXYZCrndt( :, 3, :, :) = shiftedCoordinateXYZ( :, n, :, :);
             ThrMedValue( :, 3, : ) = mediumTable( :, n, : );
         end
         if n == CrossN - 1
-            PhiHlfY( m, 1, ell ) = bar_x_my_gmres_TMP(idx);
+            PhiHlfY( m, 1, ell ) = bar_x_my_gmres_mod(idx);
             ThrXYZCrndt( :, 1, :, :) = shiftedCoordinateXYZ( :, n, :, :);
             ThrMedValue( :, 1, : ) = mediumTable( :, n, : );
         end
@@ -97,7 +107,7 @@ if flag_XZ == 1
         [ m, ell ] = getML(idx, x_idx_max);
         for f_idx = 1: 1: 6
             for n_idx = 1: 1: 8
-                SARseg(m, ell, f_idx, n_idx) = norm( squeeze( H_XZ(m, ell, f_idx, n_idx, :) ) );
+                SARseg(m, ell, f_idx, n_idx) = SARseg(m, ell, f_idx, n_idx) + norm( squeeze( H_XZ(m, ell, f_idx, n_idx, :) ) );
             end
         end
     end

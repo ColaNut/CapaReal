@@ -149,7 +149,7 @@
 %     B(idx) = B(idx) ./ MAX_row_value;
 % end
 
-% load('tmpp.mat');
+load('tmpp.mat');
 
 Tol = 0.2: 0.1: 1.0;
 r_SAI = zeros(length(Tol), 1);
@@ -168,38 +168,38 @@ r_SAI = zeros(length(Tol), 1);
 %     r_SAI(idx) = norm(A * ( A_SAI * B ) - B) / norm(B);
 % end
 
-dim = size(A, 1);
-sparseA = cell(1, dim);
-A_SAI = zeros(dim, dim);
-try
-for idx = 1: 1: dim
-    if idx == 13
-        ;
-    end
-    sparseA{ idx } = Nrml2Sparse( A(:, idx)' )';
-end
-catch
-    idx
-end
+% dim = size(A, 1);
+% sparseA = cell(1, dim);
+% A_SAI = zeros(dim, dim);
+% for idx = 1: 1: dim
+%     sparseA{ idx } = Nrml2Sparse( A(:, idx)' )';
+% end
 
-sparseA_SAI = cell(1, dim);
-
-tic;
-[ sparseA_SAI, column_res ] = getSAI_sparse(sparseA, dim, 0.3);
-toc;
-
-for idx = 1: 1: dim
-    A_SAI(:, idx) = sparse2NrmlVec( sparseA_SAI{ idx }, dim );
-end
+% sparseA_SAI = cell(1, dim);
+% tic;
+% disp('Calculation time of SAI');
+% [ sparseA_SAI, column_res ] = getSAI_sparse(sparseA, dim, 0.3, 27);
+% toc;
+% for idx = 1: 1: dim
+%     A_SAI(:, idx) = sparse2NrmlVec( sparseA_SAI{ idx }, dim );
+% end
 
 A_Inv = inv(A);
 
-x = A \ B;
-
+% x = A \ B;
 
 % r = norm(A * x - B);
 relRes = norm( A_SAI * B - x ) / norm(x)
 relRes2 = norm( B - A * A_SAI * B ) / norm(B)
+
+Id_Matrix = diag( repmat( 1, 1, size(A, 1) ) );
+
+AM_norm = norm(A * A_SAI - Id_Matrix, 'fro')
+CondiNum = cond(A * A_SAI)
+
+AM_norm_inv = norm(A * A_Inv - Id_Matrix, 'fro')
+CondiNum_inv = cond(A * A_Inv)
+
 
 % length(find(column_res > 0.4));
 % Id_Matrix = diag( repmat( 1, 1, size(A, 1) ) );

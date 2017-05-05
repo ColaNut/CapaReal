@@ -49,13 +49,111 @@
 % end
 % clc; clear;
 % load('First.mat');
-A = gallery('neumann', 1600) + speye(1600);
-setup.type = 'croutt';
-setup.milu = 'row';
-setup.droptol = 0.1;
-[L,U] = ilu(A,setup);
-e = ones(size(A,2),1);
-norm(A*e-L*U*e)
+% load('Case0504.mat', 'sparseK1', 'MidMat3', 'N_e');
+% sparseK = cell( N_e, 1 );
+% tic;
+% NrmlRow_K1 = zeros(1, N_e);
+% NrmlRow_MidMat3 = zeros(1, N_e);
+% for e_idx = 1: 1: N_e
+%     NrmlRow_K1 = sparse2NrmlVec( sparseK1{ e_idx }', N_e )';
+%     NrmlRow_MidMat3 = sparse2NrmlVec( MidMat3{ e_idx }', N_e )';
+%     sparseK{ e_idx } = Nrml2Sparse( NrmlRow_K1 - NrmlRow_MidMat3 );
+% end
+% toc;
+
+% tic;
+% M_KEV = mySparse2MatlabSparse( sparseKEV(1: 100), 100, N_v, 'Row' );
+% M_KVE = mySparse2MatlabSparse( sparseKVE(1: 100), N_v, 100, 'Col' );
+% toc;
+% disp('Calculation time of matrix product in 100^2 unit');
+% tic;
+% Test_product = M_KEV * G_VV_inv * M_KVE;
+% toc;
+
+% % check NaN
+% disp('KEV nan and infty check');
+% for idx = 1: 1: N_e
+%     tmp_vector = sparseKEV{ idx };
+%     lgth = length(tmp_vector);
+%     for idx2 = 1: 1: lgth
+%         if isnan( tmp_vector(idx2) )
+%             [idx, idx2]
+%         elseif isinf( tmp_vector(idx2) )
+%             [idx, idx2]
+%         end
+%     end
+% end
+% load('Case0504_LU_1e2.mat', 'B_k', 'sparseK1', 'sparseKEV', 'sparseKVE');
+
+load('M_G_VV_inv0505.mat');
+% Tol = 0.4;
+% sparseG_VV_inv = cell(1, N_v);
+% disp('The calculation time of SAI: ');
+% tic;
+% sparseG_VV_inv = getSAI_sparse(sparseGVV, N_v, Tol);
+% toc;
+% % G_VV = zeros(N_v);
+% % G_VV = recoverMatrix( sparseGVV, N_v );
+
+% % M_sparseGVV = mySparse2MatlabSparse( sparseGVV, N_v, N_v, 'Col' );
+% % disp('Time for the calculation of inverse of G_VV');
+% % tic;
+% % M_G_VV_inv = inv(M_sparseGVV);
+% % toc;
+
+% % figure(13);
+% % M_G_VV_inv(find(M_G_VV_inv <= 1)) = 0;
+% % max(M_G_VV_inv)
+% % spy(M_G_VV_inv);
+% M_sparseGVV_inv_spai = mySparse2MatlabSparse( sparseG_VV_inv, N_v, N_v, 'Col' );
+% figure(13);
+% % TMP_Mat(find(TMP_Mat <= 1)) = 0;
+% spy(M_sparseGVV_inv_spai);
+
+% eIdx = vIdx2eIdx(11111, 3, x_max_vertex, y_max_vertex, z_max_vertex);
+% disp('KVE nan and infty check');
+% for idx = 1: 1: N_e
+%     tmp_vector = m_three{ idx };
+%     lgth = length(tmp_vector);
+%     for idx2 = 1: 1: lgth
+%         if isnan( tmp_vector(idx2) )
+%             [idx, idx2]
+%         elseif isinf( tmp_vector(idx2) )
+%             [idx, idx2]
+%         end
+%     end
+% end
+
+% tic;
+% MidMat2 = cell(N_e, 1);
+% MidMat2 = getProduct2( sparseKEV, sparseG_VV_inv, N_v );
+% toc;
+% % get MidMat3
+% tic;
+% MidMat3 = cell(N_e, 1);
+% MidMat3 = getProduct2( MidMat2, sparseKVE, N_v );
+% toc;
+
+
+
+% AFigsScript;
+% load('0502Debug.mat');
+% Matlab_sparse_test = mySparse2MatlabSparse( sparseK, N_e );
+
+% tic;
+% disp('Calculation time of testing gmres.')
+% bar_x_my_gmres_test = my_gmres( sparseK, B_k, int_itr_num, tol, ext_itr_num );
+% toc;
+% AFigsScript
+% load('0502Debug.mat');
+% Matlab_sparse = mySparse2MatlabSparse( sparseK, N_e );
+% A = gallery('neumann', 1600) + speye(1600);
+% setup.type = 'croutt';
+% setup.milu = 'row';
+% setup.droptol = 0.1;
+% [L,U] = ilu(A,setup);
+% e = ones(size(A,2),1);
+% norm(A*e-L*U*e)
 
 % load('TMP0418.mat');
 % ArndIdx  = zeros(26, 1);

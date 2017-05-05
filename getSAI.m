@@ -14,9 +14,6 @@ function [ M, column_res ] = getSAI(A, Tol)
 % output the relative residual to a rows to check
 
     for column = 1: 1: n
-        if column == 665
-            ;
-        end
         ek = Id_Matrix(:, column);
         mk = M(:, column);
         J = find( mk );

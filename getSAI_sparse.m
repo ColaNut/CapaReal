@@ -1,4 +1,4 @@
-function [ M, column_res ] = getSAI_sparse(A, dim, Tol)
+function [ M, column_res ] = getSAI_sparse(A, dim, Tol, ns)
 
     zeroVec = zeros(dim, 1);
     column_res = zeros(1, dim);
@@ -11,7 +11,7 @@ function [ M, column_res ] = getSAI_sparse(A, dim, Tol)
     % I = cell(1, ColNum);
     J = [];
 
-    ns = 10; % number of improvement steps allowed per column
+    % ns = 27; % number of improvement steps allowed per column
 
     for column = 1: 1: dim
         % ek = Id_Matrix(:, column);
@@ -35,6 +35,8 @@ function [ M, column_res ] = getSAI_sparse(A, dim, Tol)
             hat_ek = ek(I);
             % solve for hat_mk and calculate residual
             [ Q, R ] = qr(hat_A);
+            R = R(1: length(J), :);
+            Q = Q(:, 1: length(J));
             hat_mk = R \ ( Q' * hat_ek );
             resid = trim_A * hat_mk - ek;
 
@@ -55,14 +57,14 @@ function [ M, column_res ] = getSAI_sparse(A, dim, Tol)
                     tmp = A{ Ell(counter) };
                     A_row = tmp';
                     tmp_tilde_J = A_row( find( A_row( length(A_row) / 2 + 1: end ) ) );
-                    try
+                    % try
                     if ~isempty( tmp_tilde_J )
                         tilde_J = vertcat( tilde_J, tmp_tilde_J' );
                     end
-                    catch
-                        tilde_J
-                        tmp_tilde_J
-                    end
+                    % catch
+                    %     tilde_J
+                    %     tmp_tilde_J
+                    % end
                     counter = counter + 1;
                 end
                 % delete repeated index

@@ -373,7 +373,7 @@ function varargout = fillNrml_K_Type4( m_v, n_v, ell_v, flag, Vertex_Crdnt, x_ma
                 case 3
                     varargout{1} = KVE_col_1;
                     varargout{2} = KVE_col_2;
-                    varargout{3} = KVE_col_3;
+                    varargout{3} = KVE_col_4;
                 otherwise
                     error('check');
             end

@@ -11,6 +11,9 @@ function MidMat2 = getProduct2( sparseKEV, sparseG_VV_inv, n_mid )
         % row_2 = zeros(1, n_mid);
         % disp('unit time');
         % tic;
+        if m == 200
+            return;
+        end
         row_2 = [];
         K_EV_row = sparseKEV{ m };
         for n = 1: 1: N
@@ -26,7 +29,7 @@ function MidMat2 = getProduct2( sparseKEV, sparseG_VV_inv, n_mid )
                     tmpSum = tmpSum + K_EV_row(length(K_EV_row) / 2 + Match) * G_VV_inv_col(length(G_VV_inv_col) / 2 + idx);
                 end
             end
-            if tmpSum
+            if ~isempty(tmpSum)
                 row_2 = insertIdx( row_2, n, tmpSum );
             end
         end

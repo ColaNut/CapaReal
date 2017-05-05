@@ -1,22 +1,22 @@
 % clc; clear;
-PhiSAR_flag = 0;
+PhiSAR_flag = 1;
 
 % Need to modify the 'save' in the PhiDstrbtn.m to make it accord with the 'load' in TmprtrFigs.m
 if PhiSAR_flag == 1
-    clc; clear;
-    CaseName = 'Power300';
-    load( strcat('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0220_1cmFat\', CaseName, '.mat') );
+    % clc; clear;
+    CaseName = 'Case0503_PHI_enhance';
+    % load( strcat('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0220_1cmFat\', CaseName, '.mat') );
     % load('Case0220_1cmFat.mat');
     % load( strcat('e:\Kevin\CapaReal\Case0220_1cmFat', '\', CaseName, '.mat') );
-
+    % load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0503_PHI_enhance\0502_PHI.mat');
     flag_XZ = 1;
     flag_XY = 1;
     flag_YZ = 1;
 
-    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0220_1cmFat';
-    CaseName = '0321';
-    % fname = 'e:\Kevin\CapaReal\Case0220_1cmFat';
-    CaseDate = 'Case0220_1cmFat';
+    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0503_PHI_enhance';
+    % CaseName = '0321';
+    % % fname = 'e:\Kevin\CapaReal\Case0220_1cmFat';
+    CaseDate = 'Case0503_PHI_enhancex';
     PhiDstrbtn;
     saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'fig');
     saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
@@ -49,7 +49,7 @@ if TumorTmptr_flag == 1
     saveas(figure(4), fullfile(fname, 'TumorTmprtr'), 'jpg');
 end
 
-Tmprtr_flag = 1;
+Tmprtr_flag = 0;
 
 if Tmprtr_flag == 1
     clc; clear;
