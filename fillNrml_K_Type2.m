@@ -294,7 +294,7 @@ function varargout = fillNrml_K_Type2( m_v, n_v, ell_v, flag, Vertex_Crdnt, x_ma
     K1_row_7(19)   = vIdx2eIdx(PntsIdx_prm(2, 5), 7, x_max_vertex, y_max_vertex, z_max_vertex);
 
     KEV_row_7(1: 7) = p463Face_2( PntsIdx, 'Med' )';
-    KEV_row_7(8)    = PntsIdx(2, 5);
+    KEV_row_7(8)    = PntsIdx(2, 4);
     KVE_col_7(1: 8) = KEV_row_7(1: 8)';
 
     FaceCrdnt = zeros(1, 7, 3);

@@ -1,4 +1,4 @@
-function OneSideH_XZ = getSideH_XZ( CntrlCrdnt, SideCrdnt, IdxSet, A, mu, SideSegMed, SideText )
+function OneSideH_XZ = getSideH( CntrlCrdnt, SideCrdnt, IdxSet, A, mu, SideSegMed, SideText )
     OneSideH_XZ = zeros(1, 8, 3);
 
 switch SideText

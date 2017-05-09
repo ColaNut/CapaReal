@@ -612,12 +612,12 @@ switch SideIdx
             FourTet_v(vec, :) = 0;
         end
 
-        KVxE_Value(1) = FourTet_v(3, 4) + FourTet_v(4, 4);
-        KVxE_Value(2) = FourTet_v(2, 4) + FourTet_v(3, 3);
-        KVxE_Value(3) = FourTet_v(1, 4) + FourTet_v(2, 3) + FourTet_v(3, 2) + FourTet_v(4, 3);
-        KVxE_Value(4) = FourTet_v(1, 1) + FourTet_v(4, 1);
-        KVxE_Value(5) = FourTet_v(1, 3) + FourTet_v(2, 2);
-        KVxE_Value(6) = FourTet_v(1, 2) + FourTet_v(2, 1) + FourTet_v(3, 1) + FourTet_v(4, 2);
+        KVE_Value(1) = FourTet_v(3, 4) + FourTet_v(4, 4);
+        KVE_Value(2) = FourTet_v(2, 4) + FourTet_v(3, 3);
+        KVE_Value(3) = FourTet_v(1, 4) + FourTet_v(2, 3) + FourTet_v(3, 2) + FourTet_v(4, 3);
+        KVE_Value(4) = FourTet_v(1, 1) + FourTet_v(4, 1);
+        KVE_Value(5) = FourTet_v(1, 3) + FourTet_v(2, 2);
+        KVE_Value(6) = FourTet_v(1, 2) + FourTet_v(2, 1) + FourTet_v(3, 1) + FourTet_v(4, 2);
     case '7'
         K1_Value  = zeros(1, 19);
         KEV_Value = zeros(1, 8);

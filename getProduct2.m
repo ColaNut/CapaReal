@@ -6,14 +6,10 @@ function MidMat2 = getProduct2( sparseKEV, sparseG_VV_inv, n_mid )
     N = length(sparseG_VV_inv);
     MidMat2 = cell(M, 1);
 
-    parfor m = 1: 1: M
+    for m = 1: 1: M
         % K_EV_row = sparse2NrmlVec( sparseKEV{ m }', n_mid )';
         % row_2 = zeros(1, n_mid);
         % disp('unit time');
-        % tic;
-        if m == 200
-            return;
-        end
         row_2 = [];
         K_EV_row = sparseKEV{ m };
         for n = 1: 1: N
@@ -34,6 +30,5 @@ function MidMat2 = getProduct2( sparseKEV, sparseG_VV_inv, n_mid )
             end
         end
         MidMat2{ m } = row_2;
-        % toc;
     end
 end

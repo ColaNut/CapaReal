@@ -185,7 +185,7 @@ function varargout = fillNrml_K_Type1( m_v, n_v, ell_v, flag, Vertex_Crdnt, x_ma
     
     KEV_row_4(1: 5) = p26Face_2( PntsIdx, 'Med' )';
     KEV_row_4(6)    = PntsIdx(2, 5);
-    KEV_col_4(1: 6) = KEV_row_4(1: 6)';
+    KVE_col_4(1: 6) = KEV_row_4(1: 6)';
 
     FaceCrdnt = zeros(1, 5, 3);
     FaceCrdnt = p26Face_2( PntsCrdnt, 'Crdnt' );
@@ -193,7 +193,7 @@ function varargout = fillNrml_K_Type1( m_v, n_v, ell_v, flag, Vertex_Crdnt, x_ma
     Side_Cflags = p26Face_2( Pnts_Cflags, 'Med' );
     tmpSegMed = zeros(1, 4, 'uint8');
     tmpSegMed = [ PntSegMed(6, 4), PntSegMed(2, 1), PntSegMed(2, 8), PntSegMed(6, 5) ];
-    [ K1_row_4(14: 26), KEV_row_4(7: 12), KEV_col_4(7: 12) ] = calK_Type1( squeeze(FaceCrdnt), squeeze( PntsCrdnt(2, 5, :) ), tmpSegMed, mu_r, epsilon_r, corner_flag, '4' );
+    [ K1_row_4(14: 26), KEV_row_4(7: 12), KVE_col_4(7: 12) ] = calK_Type1( squeeze(FaceCrdnt), squeeze( PntsCrdnt(2, 5, :) ), tmpSegMed, mu_r, epsilon_r, corner_flag, '4' );
     B_k( K1_row_4(13) ) = calBk_Type1( squeeze(FaceCrdnt), squeeze( PntsCrdnt(2, 5, :) ), ...
                                     Side_Cflags, Pnts_Cflags(2, 5), J_0, '4' );
 
@@ -215,7 +215,7 @@ function varargout = fillNrml_K_Type1( m_v, n_v, ell_v, flag, Vertex_Crdnt, x_ma
     % end
     KEV_row_5(1: 5) = p63Face_2( PntsIdx, 'Med' )';
     KEV_row_5(6)    = PntsIdx(2, 5);
-    KEV_col_5(1: 6) = KEV_row_5(1: 6)';
+    KVE_col_5(1: 6) = KEV_row_5(1: 6)';
 
     FaceCrdnt = zeros(1, 5, 3);
     FaceCrdnt = p63Face_2( PntsCrdnt, 'Crdnt' );
@@ -223,7 +223,7 @@ function varargout = fillNrml_K_Type1( m_v, n_v, ell_v, flag, Vertex_Crdnt, x_ma
     Side_Cflags = p63Face_2( Pnts_Cflags, 'Med' );
     % FaceCrdnt = p63Face( PntsCrdnt );
     tmpSegMed = [ PntSegMed(4, 6), PntSegMed(6, 7), PntSegMed(6, 6), PntSegMed(4, 7) ];
-    [ K1_row_5(14: 26), KEV_row_5(7: 12), KEV_col_5(7: 12) ] = calK_Type1( squeeze(FaceCrdnt), squeeze( PntsCrdnt(2, 5, :) ), tmpSegMed, mu_r, epsilon_r, corner_flag, '5' );
+    [ K1_row_5(14: 26), KEV_row_5(7: 12), KVE_col_5(7: 12) ] = calK_Type1( squeeze(FaceCrdnt), squeeze( PntsCrdnt(2, 5, :) ), tmpSegMed, mu_r, epsilon_r, corner_flag, '5' );
     B_k( K1_row_5(13) ) = calBk_Type1( squeeze(FaceCrdnt), squeeze( PntsCrdnt(2, 5, :) ), ...
                                     Side_Cflags, Pnts_Cflags(2, 5), J_0, '5' );
 
@@ -246,7 +246,7 @@ function varargout = fillNrml_K_Type1( m_v, n_v, ell_v, flag, Vertex_Crdnt, x_ma
 
     KEV_row_6(1: 5) = p32Face_2( PntsIdx, 'Med' )';
     KEV_row_6(6)    = PntsIdx(2, 5);
-    KEV_col_6(1: 6) = KEV_row_6(1: 6)';
+    KVE_col_6(1: 6) = KEV_row_6(1: 6)';
 
     FaceCrdnt = zeros(1, 5, 3);
     FaceCrdnt = p32Face_2( PntsCrdnt, 'Crdnt' );
@@ -254,7 +254,7 @@ function varargout = fillNrml_K_Type1( m_v, n_v, ell_v, flag, Vertex_Crdnt, x_ma
     Side_Cflags = p32Face_2( Pnts_Cflags, 'Med' );
     % FaceCrdnt = p32Face( PntsCrdnt );
     tmpSegMed = [ PntSegMed(2, 6), PntSegMed(3, 1), PntSegMed(3, 8), PntSegMed(2, 7) ];
-    [ K1_row_6(14: 26), KEV_row_6(7: 12), KEV_col_6(7: 12) ] = calK_Type1( squeeze(FaceCrdnt), squeeze( PntsCrdnt(2, 5, :) ), tmpSegMed, mu_r, epsilon_r, corner_flag, '6' );
+    [ K1_row_6(14: 26), KEV_row_6(7: 12), KVE_col_6(7: 12) ] = calK_Type1( squeeze(FaceCrdnt), squeeze( PntsCrdnt(2, 5, :) ), tmpSegMed, mu_r, epsilon_r, corner_flag, '6' );
     B_k( K1_row_6(13) ) = calBk_Type1( squeeze(FaceCrdnt), squeeze( PntsCrdnt(2, 5, :) ), ...
                                     Side_Cflags, Pnts_Cflags(2, 5), J_0, '6' );
 

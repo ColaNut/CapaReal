@@ -3,6 +3,7 @@
 *.jpg
 *.fig
 *.xlsx
+*.vsd
 RibIdx.txt
 3cmBolus.txt
 1cmFat.txt

@@ -13,7 +13,7 @@ function [ M, column_res ] = getSAI_sparse(A, dim, Tol, ns)
 
     % ns = 27; % number of improvement steps allowed per column
 
-    for column = 1: 1: dim
+    parfor column = 1: 1: dim
         % ek = Id_Matrix(:, column);
         ek = zeroVec;
         ek(column) = 1; % 'column' happen to be k
