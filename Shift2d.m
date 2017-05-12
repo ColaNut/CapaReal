@@ -117,8 +117,6 @@ disp('Calculation of vertex coordinate');
 Vertex_Crdnt = buildCoordinateXYZ_Vertex( shiftedCoordinateXYZ );
 toc;
 
-save('GVV_test.mat');
-
 % === % =================== % === %
 % === % Filling of Matrices % === %
 % === % =================== % === %
@@ -236,57 +234,6 @@ for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
 end
 toc;
 
-% boundary condition on \Gamma for K
-for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
-    [ m_v, n_v, ell_v ] = getMNL(vIdx, x_max_vertex, y_max_vertex, z_max_vertex);
-    vIdx_prm = get_idx_prm( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
-    % the three top-right-far faces
-    if m_v >= 2 && m_v <= x_max_vertex && n_v >= 2 && n_v <= y_max_vertex && ell_v == z_max_vertex
-        [ sparseK1{7 * ( vIdx_prm - 1 ) + 1}, sparseK1{7 * ( vIdx_prm - 1 ) + 2}, ...
-            sparseK1{7 * ( vIdx_prm - 1 ) + 4} ] = fillTop_K1( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
-    end
-    if m_v == x_max_vertex && n_v >= 2 && n_v <= y_max_vertex && ell_v >= 2 && ell_v <= z_max_vertex
-        [ sparseK1{7 * ( vIdx_prm - 1 ) + 2}, sparseK1{7 * ( vIdx_prm - 1 ) + 3}, ...
-            sparseK1{7 * ( vIdx_prm - 1 ) + 5} ] = fillRght_K1( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
-    end
-    if m_v >= 2 && m_v <= x_max_vertex && n_v == y_max_vertex && ell_v >= 2 && ell_v <= z_max_vertex
-        [ sparseK1{7 * ( vIdx_prm - 1 ) + 1}, sparseK1{7 * ( vIdx_prm - 1 ) + 3}, ...
-            sparseK1{7 * ( vIdx_prm - 1 ) + 6} ] = fillFar_K1( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
-    end
-    % the three near-left-bottom faces
-    if m_v >= 2 && m_v <= x_max_vertex && n_v == 1 && ell_v >= 2 && ell_v <= z_max_vertex
-        [ sparseK1{ vIdx2eIdx(vIdx_prm, 1, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
-            sparseK1{ vIdx2eIdx(vIdx_prm, 3, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
-            sparseK1{ vIdx2eIdx(vIdx_prm, 6, x_max_vertex, y_max_vertex, z_max_vertex) } ] ...
-            = fillNear_K1( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
-    end
-    if m_v == 1 && n_v >= 2 && n_v <= y_max_vertex && ell_v >= 2 && ell_v <= z_max_vertex
-        [ sparseK1{ vIdx2eIdx(vIdx_prm, 2, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
-            sparseK1{ vIdx2eIdx(vIdx_prm, 3, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
-            sparseK1{ vIdx2eIdx(vIdx_prm, 5, x_max_vertex, y_max_vertex, z_max_vertex) } ] ...
-            = fillLeft_K1( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
-    end
-    if m_v >= 2 && m_v <= x_max_vertex && n_v >= 2 && n_v <= y_max_vertex && ell_v == 1
-        [ sparseK1{ vIdx2eIdx(vIdx_prm, 1, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
-            sparseK1{ vIdx2eIdx(vIdx_prm, 2, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
-            sparseK1{ vIdx2eIdx(vIdx_prm, 4, x_max_vertex, y_max_vertex, z_max_vertex) } ] ...
-            = fillBttm_K1( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
-    end
-    % three lines
-    if m_v >= 2 && m_v <= x_max_vertex && n_v == 1 && ell_v == 1
-        sparseK1{ vIdx2eIdx(vIdx_prm, 1, x_max_vertex, y_max_vertex, z_max_vertex) } ...
-            = fillLine1_K1( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
-    end
-    if m_v == 1 && n_v == 1 && ell_v >= 2  && ell_v <= z_max_vertex
-        sparseK1{ vIdx2eIdx(vIdx_prm, 3, x_max_vertex, y_max_vertex, z_max_vertex) } ...
-            = fillLine2_K1( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
-    end
-    if m_v == 1 && n_v >= 2 && n_v <= y_max_vertex && ell_v == 1
-        sparseK1{ vIdx2eIdx(vIdx_prm, 2, x_max_vertex, y_max_vertex, z_max_vertex) } ...
-            = fillLine3_K1( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
-    end
-end
-
 % GVV matrix
 sparseGVV = cell(1, N_v);
 disp('The filling time of G_VV: ');
@@ -330,67 +277,135 @@ tic;
 M_three = M_KEV * M_sparseGVV_inv_spai * M_KVE;
 toc;
 
-disp('Transforming from M_three to m_three in the first 100 rows: ');
-tic;
-TMP_m_three = cell( N_e, 1 );
-TMP_m_three = Msparse2msparse(M_three, 100);
-toc;
-save('TMP_m_three.mat', 'TMP_m_three', 'sparseK1', 'sparseKEV', 'sparseGVV', 'sparseGVV_inv', 'sparseKVE' );
+% disp('Transforming from M_three to m_three in the first 100 rows: ');
+% tic;
+% TMP_m_three = cell( N_e, 1 );
+% TMP_m_three = Msparse2msparse(M_three, 100);
+% toc;
+% save('TMP_m_three.mat', 'TMP_m_three', 'sparseK1', 'sparseKEV', 'sparseGVV', 'sparseGVV_inv', 'sparseKVE' );
 
 M_K = sparse(N_e, N_e);
 M_K1 = mySparse2MatlabSparse( sparseK1, N_e, N_e, 'Row' );
 M_K = M_K1 - M_three;
 
-% % === % ===================== % === %
-% % === % Normalization Process % === %
-% % === % ===================== % === %
-
-% Normalize each rows
-disp('Normalization');
+sparseK = cell(N_e, 1);
+disp('Transforming from M_K to sparseK : ');
 tic;
-for idx = 1: 1: N_e
-    % non-zero index: nz_idx
-    nz_idx = find(M_K(idx, :));
-    MAX_row_value = full( max( abs(M_K(idx, nz_idx)) ) );
-    M_K(idx, nz_idx) = M_K(idx, nz_idx) / MAX_row_value;
-    B_k( idx ) = B_k( idx ) ./ MAX_row_value;
-end
+sparseK = Msparse2msparse(M_K);
 toc;
 
-save('Normalized.mat', 'M_K', 'B_k');
+% boundary condition on \Gamma for K
+for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
+    [ m_v, n_v, ell_v ] = getMNL(vIdx, x_max_vertex, y_max_vertex, z_max_vertex);
+    vIdx_prm = get_idx_prm( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
+    % the three top-right-far faces
+    if m_v >= 2 && m_v <= x_max_vertex && n_v >= 2 && n_v <= y_max_vertex && ell_v == z_max_vertex
+        [ sparseK{7 * ( vIdx_prm - 1 ) + 1}, sparseK{7 * ( vIdx_prm - 1 ) + 2}, ...
+            sparseK{7 * ( vIdx_prm - 1 ) + 4} ] = fillTop_K1( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
+    end
+    if m_v == x_max_vertex && n_v >= 2 && n_v <= y_max_vertex && ell_v >= 2 && ell_v <= z_max_vertex
+        [ sparseK{7 * ( vIdx_prm - 1 ) + 2}, sparseK{7 * ( vIdx_prm - 1 ) + 3}, ...
+            sparseK{7 * ( vIdx_prm - 1 ) + 5} ] = fillRght_K1( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
+    end
+    if m_v >= 2 && m_v <= x_max_vertex && n_v == y_max_vertex && ell_v >= 2 && ell_v <= z_max_vertex
+        [ sparseK{7 * ( vIdx_prm - 1 ) + 1}, sparseK{7 * ( vIdx_prm - 1 ) + 3}, ...
+            sparseK{7 * ( vIdx_prm - 1 ) + 6} ] = fillFar_K1( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
+    end
+    % the three near-left-bottom faces
+    if m_v >= 2 && m_v <= x_max_vertex && n_v == 1 && ell_v >= 2 && ell_v <= z_max_vertex
+        [ sparseK{ vIdx2eIdx(vIdx_prm, 1, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
+            sparseK{ vIdx2eIdx(vIdx_prm, 3, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
+            sparseK{ vIdx2eIdx(vIdx_prm, 6, x_max_vertex, y_max_vertex, z_max_vertex) } ] ...
+            = fillNear_K1( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
+    end
+    if m_v == 1 && n_v >= 2 && n_v <= y_max_vertex && ell_v >= 2 && ell_v <= z_max_vertex
+        [ sparseK{ vIdx2eIdx(vIdx_prm, 2, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
+            sparseK{ vIdx2eIdx(vIdx_prm, 3, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
+            sparseK{ vIdx2eIdx(vIdx_prm, 5, x_max_vertex, y_max_vertex, z_max_vertex) } ] ...
+            = fillLeft_K1( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
+    end
+    if m_v >= 2 && m_v <= x_max_vertex && n_v >= 2 && n_v <= y_max_vertex && ell_v == 1
+        [ sparseK{ vIdx2eIdx(vIdx_prm, 1, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
+            sparseK{ vIdx2eIdx(vIdx_prm, 2, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
+            sparseK{ vIdx2eIdx(vIdx_prm, 4, x_max_vertex, y_max_vertex, z_max_vertex) } ] ...
+            = fillBttm_K1( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
+    end
+    % three lines
+    if m_v >= 2 && m_v <= x_max_vertex && n_v == 1 && ell_v == 1
+        sparseK{ vIdx2eIdx(vIdx_prm, 1, x_max_vertex, y_max_vertex, z_max_vertex) } ...
+            = fillLine1_K1( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
+    end
+    if m_v == 1 && n_v == 1 && ell_v >= 2  && ell_v <= z_max_vertex
+        sparseK{ vIdx2eIdx(vIdx_prm, 3, x_max_vertex, y_max_vertex, z_max_vertex) } ...
+            = fillLine2_K1( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
+    end
+    if m_v == 1 && n_v >= 2 && n_v <= y_max_vertex && ell_v == 1
+        sparseK{ vIdx2eIdx(vIdx_prm, 2, x_max_vertex, y_max_vertex, z_max_vertex) } ...
+            = fillLine3_K1( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
+    end
+end
 
-% % === % ========================= % === %
-% % === % Old Normalization Process % === %
-% % === % ========================= % === %
+% % === % ============================ % === %
+% % === % Sparse Normalization Process % === %
+% % === % ============================ % === %
 
+% % Normalize each rows
+% disp('Normalization');
+% tic;
 % for idx = 1: 1: N_e
-%     tmp_vector = sparseK{ idx };
-%     num = uint64(size(tmp_vector, 2)) / 2;
-%     MAX_row_value = max( abs( tmp_vector( num + 1: 2 * num ) ) );
-%     tmp_vector( num + 1: 2 * num ) = tmp_vector( num + 1: 2 * num ) ./ MAX_row_value;
-%     sparseK{ idx } = tmp_vector;
+%     % non-zero index: nz_idx
+%     nz_idx = find(M_K(idx, :));
+%     MAX_row_value = full( max( abs(M_K(idx, nz_idx)) ) );
+%     M_K(idx, nz_idx) = M_K(idx, nz_idx) / MAX_row_value;
 %     B_k( idx ) = B_k( idx ) ./ MAX_row_value;
 % end
+% toc;
 
-% % === % =========================== % === %
-% % === % LU preconditioner and GMRES % === %
-% % === % =========================== % === %
+% save('Normalized.mat', 'M_K', 'B_k');
+
+% % === % ================ % === %
+% % === % Check empty rows % === %
+% % === % ================ % === %
+
+for eIdx = 1: 1: N_e
+    if isempty(sparseK{ eIdx })
+        [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex)
+    end
+end
+
+% === % ========================= % === %
+% === % Old Normalization Process % === %
+% === % ========================= % === %
+
+for idx = 1: 1: N_e
+    tmp_vector = sparseK{ idx };
+    num = uint64(size(tmp_vector, 2)) / 2;
+    MAX_row_value = max( abs( tmp_vector( num + 1: 2 * num ) ) );
+    tmp_vector( num + 1: 2 * num ) = tmp_vector( num + 1: 2 * num ) ./ MAX_row_value;
+    sparseK{ idx } = tmp_vector;
+    B_k( idx ) = B_k( idx ) ./ MAX_row_value;
+end
+
+% === % =========================== % === %
+% === % LU preconditioner and GMRES % === %
+% === % =========================== % === %
 
 tol = 1e-6;
-ext_itr_num = 2;
-int_itr_num = 10;
+ext_itr_num = 5;
+int_itr_num = 20;
 
 bar_x_my_gmres = zeros(size(B_k));
+nrmlM_K      = mySparse2MatlabSparse( sparseK, N_e, N_e, 'Row' );
 tic;
 disp('Calculation time of iLU: ')
-[ L_K, U_K ] = ilu( M_K, struct('type', 'ilutp', 'droptol', 1e-2) );
+[ L_K, U_K ] = ilu( nrmlM_K, struct('type', 'ilutp', 'droptol', 1e-2) );
 toc;
 tic;
 disp('The gmres solutin of Ax = B: ');
-bar_x_my_gmres = gmres( M_K, B_k, int_itr_num, tol, ext_itr_num, L_K, U_K );
+bar_x_my_gmres = my_gmres( sparseK, B_k, int_itr_num, tol, ext_itr_num, L_K, U_K );
 toc;
 
-save('Case0508_1e2.mat');
+save('Case0511_1e2.mat', 'bar_x_my_gmres');
 
 AFigsScript;
 

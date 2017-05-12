@@ -31,27 +31,40 @@
 
 % load('GVV_test.mat');
 
+% M_sparseGVV = mySparse2MatlabSparse( sparseGVV, N_v, N_v, 'Col' );
 % sparseId = sparse([1: 1: N_v], [1: 1: N_v], ones(1, N_v), N_v, N_v);
 % n_s = 27;
-% for Tol = 0.1: 0.1: 0.5
+% for Tol = 0.1: 0.1: 0.6
 %     sparseGVV_inv = cell(1, N_v);
 %     disp('The calculation time of SAI: ');
 %     tic;
-%     sparseGVV_inv = getSAI_sparse(sparseGVV, N_v, Tol, n_s);
+%     [ sparseGVV_inv, column_res ] = getSAI_sparse(sparseGVV, N_v, Tol, n_s);
 %     toc;
 %     M_sparseGVV_inv_spai = mySparse2MatlabSparse( sparseGVV_inv, N_v, N_v, 'Col' );
-%     disp('The calculation time of 2-condition number of AM: ');
 %     tic;
 %     cond2 = cond(full(M_sparseGVV * M_sparseGVV_inv_spai), 2);
 %     disp( strcat( 'For Tol = ', num2str(Tol), ', the 2-condition number is ', num2str(cond2) ) );
+%     disp('The calculation time of 2-condition number of AM: ');
 %     toc;
-%     disp('The calculation time of Frobenius norm of AM - I: ');
 %     tic;
 %     f_norm = norm(M_sparseGVV * M_sparseGVV_inv_spai - sparseId, 'fro');
 %     disp( strcat( 'and the Frobenius norm is ', num2str(f_norm) ) );
+%     disp('The calculation time of Frobenius norm of AM - I: ');
 %     toc;
-%     save( strcat('SAI_Tol', num2str(Tol), '.mat'), 'sparseGVV_inv', 'cond2', 'f_norm' );
+%     save( strcat('SAI_Tol', num2str(Tol), '.mat'), 'sparseGVV_inv', 'column_res', 'cond2', 'f_norm' );
 % end
+
+% tic;
+% cond2 = cond(full(M_sparseGVV * M_GVV_inv), 2);
+% disp('The calculation time of 2-condition number of A A^(-1): ');
+% toc;
+% tic;
+% f_norm = norm(M_sparseGVV * M_GVV_inv - sparseId, 'fro');
+% disp('The calculation time of Frobenius norm of A A^(-1) - I: ');
+% toc;
+% disp( strcat( 'The 2-condition number of A A^(-1) is ', num2str(cond2) ) );
+% disp( strcat( 'and the Frobenius norm of A A^(-1) - I is ', num2str(f_norm) ) );
+% save( 'RealGVV_inv.mat', 'cond2', 'f_norm' );
 
 % === % ===== % === %
 % === % AMEND % === %
@@ -77,13 +90,13 @@
 %     save( strcat('SAI_Tol', num2str(Tol), '.mat'), 'sparseGVV_inv', 'cond2', 'f_norm' );
 % end
 
-% disp('The calculation time of 2-condition number of A A^(-1): ');
 % tic;
 % cond2 = cond(full(M_sparseGVV * M_GVV_inv), 2);
+% disp('The calculation time of 2-condition number of A A^(-1): ');
 % toc;
-% disp('The calculation time of Frobenius norm of A A^(-1) - I: ');
 % tic;
 % f_norm = norm(M_sparseGVV * M_GVV_inv - sparseId, 'fro');
+% disp('The calculation time of Frobenius norm of A A^(-1) - I: ');
 % toc;
 % disp( strcat( 'The 2-condition number of A A^(-1) is ', num2str(cond2) ) );
 % disp( strcat( 'and the Frobenius norm of A A^(-1) - I is ', num2str(f_norm) ) );
@@ -93,20 +106,20 @@
 % === % Rest % === %
 % === % ==== % === %
 
-% load('GVV_test.mat');
-% M_sparseGVV = mySparse2MatlabSparse( sparseGVV, N_v, N_v, 'Col' );
-% sparseId = sparse([1: 1: N_v], [1: 1: N_v], ones(1, N_v), N_v, N_v);
-% disp('The calculation time of 2-condition number of A: ');
-% tic;
-% cond2 = cond(full(M_sparseGVV), 2);
-% toc;
-% disp('The calculation time of Frobenius norm of A - I: ');
-
-% tic;
-% f_norm = norm(M_sparseGVV - sparseId, 'fro');
-% toc;
-% disp( strcat( 'The 2-condition number of A I is ', num2str(cond2) ) );
-% disp( strcat( 'and the Frobenius norm of A I - I is ', num2str(f_norm) ) );
+load('GVV_test.mat');
+sparseId = sparse([1: 1: N_v], [1: 1: N_v], ones(1, N_v), N_v, N_v);
+M_sparseGVV = mySparse2MatlabSparse( sparseGVV, N_v, N_v, 'Col' );
+sparseId = sparse([1: 1: N_v], [1: 1: N_v], ones(1, N_v), N_v, N_v);
+tic;
+cond2 = cond(full(M_sparseGVV), 2);
+disp('The calculation time of 2-condition number of A: ');
+toc;
+tic;
+f_norm = norm(M_sparseGVV - sparseId, 'fro');
+disp('The calculation time of Frobenius norm of A - I: ');
+toc;
+disp( strcat( 'The 2-condition number of A I is ', num2str(cond2) ) );
+disp( strcat( 'and the Frobenius norm of A I - I is ', num2str(f_norm) ) );
 
 % === % ========================= % === %
 % === % Visualization of Matrices % === %

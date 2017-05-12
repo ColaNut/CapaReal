@@ -61,6 +61,8 @@ if P1_flag && P2_flag && P3_flag
         x = sum( [P1_Crdt(1), P2_Crdt(1), P3_Crdt(1)] ) / 3;
         z = sum( [P1_Crdt(3), P2_Crdt(3), P3_Crdt(3)] ) / 3;
         J = J_0 * [ - z, 0, x ] / norm( [ - z, 0, x ] );
+        % projArea = ( x_1 * y_2 + x_3 * y_1 + x_2 * y_3 ...
+                    % - x_3 * y_2 - x_1 * y_3 - x_2 * y_1 ) / 2;
         projArea = abs( P1_Crdt(1) * P2_Crdt(2) + P3_Crdt(1) * P1_Crdt(2) + P2_Crdt(1) * P3_Crdt(2) ...
                     - P3_Crdt(1) * P2_Crdt(2) - P1_Crdt(1) * P3_Crdt(2) - P2_Crdt(1) * P1_Crdt(2) ) / 2;
         % triArea = norm( calTriVec( P1_Crdt, P2_Crdt, P3_Crdt ) );
@@ -119,8 +121,12 @@ end
 
 TtrVol = calTtrVol( P1_Crdt, P2_Crdt, P3_Crdt, P4_Crdt );
 
+if projArea < 0
+    error('check');
+end
+
 if TtrVol ~= 0
-    BkTet = dot( GradDiff, J ) * sqrt( 1 + (A_1 / A_3)^2 + (A_2 / A_3)^2 ) * projArea / (9 * TtrVol);
+    BkTet = dot( GradDiff, J ) * sqrt( 1 + (A_1 / A_3)^2 + (A_2 / A_3)^2 ) * 2 * projArea / (9 * TtrVol);
 else
     BkTet = 0;
 end

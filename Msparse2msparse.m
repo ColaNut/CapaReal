@@ -19,21 +19,26 @@ function m_three = Msparse2msparse( M_three, varargin )
     for idx = 1: 1: n - 1
         First = nextFirst;
         nextFirst = (First - 1) + find(row_idx(First: end) == idx + 1, 1);
-        % if isempty(First) || isempty(nextFirst)
-        %     error('check');
-        % end
+        if isempty(First)
+            error('check');
+        end
+        if isempty(nextFirst)
+            nextFirst = length(row_idx) + 1
+        end
         IdxLength = nextFirst - First;
         candidateRow = zeros(1, 2 * IdxLength);
         candidateRow(1: IdxLength)       = col_idx(First: nextFirst - 1);
         candidateRow(IdxLength + 1: end) = value(First: nextFirst - 1);
-
         % row_idx(First: nextFirst - 1) = [];
         % col_idx(First: nextFirst - 1) = [];
         % value(First: nextFirst - 1)   = [];
         m_three{ idx } = candidateRow;
+        if nextFirst == length(row_idx) + 1
+            break;
+        end
     end
 
-    if nVarargs ~= 1
+    if nVarargs ~= 1 && ( nextFirst ~= length(row_idx) + 1 )
         IdxLength = length(row_idx(nextFirst: end));
         candidateRow = zeros(1, 2 * IdxLength);
         candidateRow(1: IdxLength)       = col_idx(nextFirst: end);

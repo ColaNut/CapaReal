@@ -37,3 +37,5 @@ The cal48TtrVol.m was cal8TtrVol.m not used.
 
 04/16: Debug list: check the input of the 28 cases.
        Check the squeeze function
+
+05/10: Modify to a smaller model.
