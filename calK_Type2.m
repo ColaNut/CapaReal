@@ -392,12 +392,10 @@ switch SideIdx
         K1_Value(6)  = FourTet_e(3, 5);
         K1_Value(7)  = FourTet_e(3, 1) + FourTet_e(4, 4);
         K1_Value(8)  = FourTet_e(4, 2);
-
         K1_Value(9)  = FourTet_e(1, 3) + FourTet_e(4, 3);
         K1_Value(10) = FourTet_e(1, 5) + FourTet_e(2, 2);
         K1_Value(11) = FourTet_e(2, 6) + FourTet_e(3, 6);
         K1_Value(12) = FourTet_e(3, 4) + FourTet_e(4, 6);
-
         K1_Value(13) = FourTet_e(1, 6) + FourTet_e(2, 4) + FourTet_e(3, 2) + FourTet_e(4, 5);
 
         KEV_Value(1) = FourTet_v(3, 2) + FourTet_v(4, 3);

@@ -1,6 +1,22 @@
 function varargout = fillNrml_K_Type2( m_v, n_v, ell_v, flag, Vertex_Crdnt, x_max_vertex, y_max_vertex, ...
-                    z_max_vertex, PntSegMed, auxiSegMed, epsilon_r, mu_r, omega, B_k, SheetPntsTable, J_0, corner_flag )
-      
+                    z_max_vertex, PntSegMed, auxiSegMed, epsilon_r, mu_r, omega, B_k, SheetPntsTable, J_0, corner_flag, varargin )
+    
+    nVarargs = length(varargin);
+    if nVarargs == 1
+        tiltType = varargin{1};
+        if strcmp(tiltType, 'Oblique')
+            error('Description');
+        end
+        K_row_2  = ones(3, 26);
+        K_row_4  = ones(3, 26);
+        K_row_5  = ones(3, 26);
+        K_row_7  = ones(3, 38);
+        B_k_row2 = ones(3, 1);
+        B_k_row4 = ones(3, 1);
+        B_k_row5 = ones(3, 1);
+        B_k_row7 = ones(3, 1);
+    end
+
     K1_row_1    = ones(1, 50);
     K1_row_2    = ones(1, 26);
     K1_row_3    = ones(1, 26);
@@ -116,8 +132,11 @@ function varargout = fillNrml_K_Type2( m_v, n_v, ell_v, flag, Vertex_Crdnt, x_ma
     % FaceCrdnt = p6Face( PntsCrdnt );
     tmpSegMed = [ PntSegMed(2, 1), PntSegMed(1, 4), PntSegMed(1, 5), PntSegMed(2, 8) ];
     [ K1_row_2(14: 26), KEV_row_2(7: 12), KVE_col_2(7: 12) ] = calK_Type2( FaceCrdnt, squeeze( PntsCrdnt(2, 5, :) ), tmpSegMed, mu_r, epsilon_r, corner_flag, '2' );
-    B_k( K1_row_2(13) ) = calBk_Type2( FaceCrdnt, squeeze( PntsCrdnt(2, 5, :) ), ...
-                                    Side_Cflags, Pnts_Cflags(2, 5), J_0, '2' );
+    if nVarargs == 1
+        K_row_2(:, 1: 13) = repmat(K1_row_2(1: 13), 3, 1);
+        [ K_row_2(:, 14: 26), B_k_row2 ] = CurrentType2( FaceCrdnt, squeeze( PntsCrdnt(2, 5, :) ), ...
+                                    Side_Cflags, Pnts_Cflags(2, 5), tmpSegMed, J_0, mu_r, '2' );
+    end
 
     % 3-rd edge
     K1_row_3(1)    = vIdx2eIdx(PntsIdx_prm(2, 5), 6, x_max_vertex, y_max_vertex, z_max_vertex);
@@ -187,8 +206,13 @@ function varargout = fillNrml_K_Type2( m_v, n_v, ell_v, flag, Vertex_Crdnt, x_ma
     tmpSegMed = zeros(1, 4, 'uint8');
     tmpSegMed = [ PntSegMed(1, 4), auxiSegMed(6, 1), auxiSegMed(6, 8), PntSegMed(1, 5) ];
     [ K1_row_4(14: 26), KEV_row_4(7: 12), KVE_col_4(7: 12) ] = calK_Type2( squeeze(FaceCrdnt), squeeze( PntsCrdnt(2, 4, :) ), tmpSegMed, mu_r, epsilon_r, corner_flag, '4' );
-    B_k( K1_row_4(13) ) = calBk_Type2( squeeze(FaceCrdnt), squeeze( PntsCrdnt(2, 4, :) ), ...
-                                    Side_Cflags, Pnts_Cflags(2, 4), J_0, '4' );
+    if nVarargs == 1
+        if strcmp(tiltType, 'Horizental')
+            K_row_4(:, 1: 13) = repmat(K1_row_4(1: 13), 3, 1);
+            [ K_row_4(:, 14: 26), B_k_row4 ] = CurrentType2( squeeze(FaceCrdnt), squeeze( PntsCrdnt(2, 4, :) ), ...
+                                    Side_Cflags, Pnts_Cflags(2, 4), tmpSegMed, J_0, mu_r, '4' );
+        end
+    end
 
     % 5-th edge
     K1_row_5(1)    = vIdx2eIdx(PntsIdx_prm(2, 5), 2, x_max_vertex, y_max_vertex, z_max_vertex);
@@ -228,8 +252,13 @@ function varargout = fillNrml_K_Type2( m_v, n_v, ell_v, flag, Vertex_Crdnt, x_ma
     Side_Cflags(5) = Pnts_Cflags(2, 6);
     tmpSegMed = [ PntSegMed(2, 8), PntSegMed(2, 7), PntSegMed(1, 6), PntSegMed(1, 5) ];
     [ K1_row_5(14: 26), KEV_row_5(7: 12), KVE_col_5(7: 12) ] = calK_Type2( FaceCrdnt, squeeze( PntsCrdnt(1, 2, :) ), tmpSegMed, mu_r, epsilon_r, corner_flag, '5' );
-    B_k( K1_row_5(13) ) = calBk_Type2( FaceCrdnt, squeeze( PntsCrdnt(1, 2, :) ), ...
-                                    Side_Cflags, Pnts_Cflags(1, 2), J_0, '5' );
+    if nVarargs == 1
+        if strcmp(tiltType, 'Vertical')
+            K_row_5(:, 1: 13) = repmat(K1_row_5(1: 13), 3, 1);
+            [ K_row_5(:, 14: 26), B_k_row5 ] = CurrentType2( FaceCrdnt, squeeze( PntsCrdnt(1, 2, :) ), ...
+                                    Side_Cflags, Pnts_Cflags(1, 2), tmpSegMed, J_0, mu_r, '5' );
+        end
+    end
 
     % 6-th edge
     K1_row_6(1)    = vIdx2eIdx(PntsIdx_prm(1, 5), 1, x_max_vertex, y_max_vertex, z_max_vertex);
@@ -309,55 +338,100 @@ function varargout = fillNrml_K_Type2( m_v, n_v, ell_v, flag, Vertex_Crdnt, x_ma
     B_k( K1_row_7(19) ) = calBk_Type2( squeeze(FaceCrdnt), squeeze( PntsCrdnt(2, 4, :) ), ...
                                     Side_Cflags, Pnts_Cflags(2, 4), J_0, '7' );
 
-    Flags = find( corner_flag(2, :) );
-    if isempty(Flags)
-        varargout{1}  = K1_row_1;
-        varargout{2}  = K1_row_2;
-        varargout{3}  = K1_row_3;
-        varargout{4}  = K1_row_4;
-        varargout{5}  = K1_row_5;
-        varargout{6}  = K1_row_6;
-        varargout{7}  = K1_row_7;
-        varargout{8}  = KEV_row_1;
-        varargout{9}  = KEV_row_2;
-        varargout{10} = KEV_row_3;
-        varargout{11} = KEV_row_4;
-        varargout{12} = KEV_row_5;
-        varargout{13} = KEV_row_6;
-        varargout{14} = KEV_row_7;
-        varargout{15} = KVE_col_1;
-        varargout{16} = KVE_col_2;
-        varargout{17} = KVE_col_3;
-        varargout{18} = KVE_col_4;
-        varargout{19} = KVE_col_5;
-        varargout{20} = KVE_col_6;
-        varargout{21} = KVE_col_7;
-        varargout{22} = B_k;
+    if nVarargs == 1
+        if strcmp(tiltType, 'Horizental')
+            varargout{1} = K_row_2(1, :);
+            varargout{2} = K_row_2(2, :);
+            varargout{3} = K_row_2(3, :);
+            varargout{4} = K_row_4(1, :);
+            varargout{5} = K_row_4(2, :);
+            varargout{6} = K_row_4(3, :);
+            varargout{7} = B_k_row2(1);
+            varargout{8} = B_k_row2(2);
+            varargout{9} = B_k_row2(3);
+            varargout{10} = B_k_row4(1);
+            varargout{11} = B_k_row4(2);
+            varargout{12} = B_k_row4(3);
+        % elseif strcmp(tiltType, 'Oblique')
+        %     varargout{1} = K_row_2(1, :);
+        %     varargout{2} = K_row_2(2, :);
+        %     varargout{3} = K_row_2(3, :);
+        %     varargout{4} = K_row_7(1, :);
+        %     varargout{5} = K_row_7(2, :);
+        %     varargout{6} = K_row_7(3, :);
+        %     varargout{7} = B_k_row2(1);
+        %     varargout{8} = B_k_row2(2);
+        %     varargout{9} = B_k_row2(3);
+        %     varargout{10} = B_k_row7(1);
+        %     varargout{11} = B_k_row7(2);
+        %     varargout{12} = B_k_row7(3);
+        elseif strcmp(tiltType, 'Vertical')
+            varargout{1} = K_row_2(1, :);
+            varargout{2} = K_row_2(2, :);
+            varargout{3} = K_row_2(3, :);
+            varargout{4} = K_row_5(1, :);
+            varargout{5} = K_row_5(2, :);
+            varargout{6} = K_row_5(3, :);
+            varargout{7} = B_k_row2(1);
+            varargout{8} = B_k_row2(2);
+            varargout{9} = B_k_row2(3);
+            varargout{10} = B_k_row5(1);
+            varargout{11} = B_k_row5(2);
+            varargout{12} = B_k_row5(3);
+        else
+            error('Check');
+        end
     else
-        if length(Flags) == 1
-            switch Flags
-                case 6
+        Flags = find( corner_flag(2, :) );
+        if isempty(Flags)
+            varargout{1}  = K1_row_1;
+            varargout{2}  = K1_row_2;
+            varargout{3}  = K1_row_3;
+            varargout{4}  = K1_row_4;
+            varargout{5}  = K1_row_5;
+            varargout{6}  = K1_row_6;
+            varargout{7}  = K1_row_7;
+            varargout{8}  = KEV_row_1;
+            varargout{9}  = KEV_row_2;
+            varargout{10} = KEV_row_3;
+            varargout{11} = KEV_row_4;
+            varargout{12} = KEV_row_5;
+            varargout{13} = KEV_row_6;
+            varargout{14} = KEV_row_7;
+            varargout{15} = KVE_col_1;
+            varargout{16} = KVE_col_2;
+            varargout{17} = KVE_col_3;
+            varargout{18} = KVE_col_4;
+            varargout{19} = KVE_col_5;
+            varargout{20} = KVE_col_6;
+            varargout{21} = KVE_col_7;
+            varargout{22} = B_k;
+        else
+            if length(Flags) == 1
+                switch Flags
+                    case 6
+                        varargout{1} = KVE_col_1;
+                        varargout{2} = KVE_col_3;
+                        varargout{3} = KVE_col_6;
+                    case 2
+                        varargout{1} = KVE_col_2;
+                        varargout{2} = KVE_col_3;
+                        varargout{3} = KVE_col_5;
+                    case 3
+                        varargout{1} = KVE_col_1;
+                        varargout{2} = KVE_col_2;
+                        varargout{3} = KVE_col_4;
+                    otherwise
+                        error('check');
+                end
+            elseif length(Flags) == 2
+                if Flags == [3, 6];
                     varargout{1} = KVE_col_1;
-                    varargout{2} = KVE_col_3;
-                    varargout{3} = KVE_col_6;
-                case 2
+                elseif Flags == [2, 6];
+                    varargout{1} = KVE_col_3;
+                elseif Flags == [2, 3];
                     varargout{1} = KVE_col_2;
-                    varargout{2} = KVE_col_3;
-                    varargout{3} = KVE_col_5;
-                case 3
-                    varargout{1} = KVE_col_1;
-                    varargout{2} = KVE_col_2;
-                    varargout{3} = KVE_col_4;
-                otherwise
-                    error('check');
-            end
-        elseif length(Flags) == 2
-            if Flags == [3, 6];
-                varargout{1} = KVE_col_1;
-            elseif Flags == [2, 6];
-                varargout{1} = KVE_col_3;
-            elseif Flags == [2, 3];
-                varargout{1} = KVE_col_2;
+                end
             end
         end
     end

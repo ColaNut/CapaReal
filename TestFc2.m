@@ -2,24 +2,87 @@
 % ==== % BORDER LINE % ==== %
 % ==== % =========== % ==== %
 
-tol = 1e-6;
-ext_itr_num = 10;
-int_itr_num = 50;
+sparseAug =  cell( 3 * arndNum * 2 * (y_n - 1), 1 );
+AugBk     = zeros( 3 * arndNum * 2 * (y_n - 1), 1 );
+counter = int64(0);
+for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
+    [ m_v, n_v, ell_v ] = getMNL(vIdx, x_max_vertex, y_max_vertex, z_max_vertex);
+    vIdx_prm = get_idx_prm( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
 
-bar_x_my_gmres = zeros(size(B_k));
-% nrmlM_K      = mySparse2MatlabSparse( sparseK, N_e, N_e, 'Row' );
+    auxiSegMed = ones(6, 8, 'uint8');
+    corner_flag = false(2, 6);
+    flag = getMNL_flag(m_v, n_v, ell_v);
+    SegMedIn = FetchSegMed( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
+    % volume
+    switch flag
+        case { '111', '000' }
+            fc = str2func('fillNrml_K_Type1');
+        case { '100', '011' }
+            fc = str2func('fillNrml_K_Type2');
+            auxiSegMed = getAuxiSegMed( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
+        case { '101', '010' }
+            fc = str2func('fillNrml_K_Type3');
+            auxiSegMed = getAuxiSegMed( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
+        case { '110', '001' }
+            fc = str2func('fillNrml_K_Type4');
+            auxiSegMed = getAuxiSegMed( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
+        otherwise
+            error('check');
+    end
+    
+    TiltType = '';
+    EdgeRx = [0, 0];
+    if n_v >= 2 && SheetPntsTable(m_v, n_v, ell_v) == 1 && SheetPntsTable(m_v, n_v - 1, ell_v) == 1
+        if Vertex_Crdnt(m_v, n_v, ell_v, 1) <= 0 && Vertex_Crdnt(m_v, n_v, ell_v, 3) > 0
+            counter = counter + 1;
+            % II-quadrant 
+            if SheetPntsTable(m_v - 1, n_v, ell_v) == 1
+                TiltType = 'Horizental';
+                % EdgeRx = [2, 4];
+            elseif SheetPntsTable(m_v - 1, n_v, ell_v - 1) == 1
+                TiltType = 'Oblique';
+                % EdgeRx = [2, 7];
+            elseif SheetPntsTable(m_v, n_v, ell_v - 1) == 1
+                TiltType = 'Vertical';
+                % EdgeRx = [2, 5];
+            end
+            [ sparseAug{6 * ( counter - 1 ) + 1}, sparseAug{6 * ( counter - 1 ) + 2}, sparseAug{6 * ( counter - 1 ) + 3}, ...
+                sparseAug{6 * ( counter - 1 ) + 4}, sparseAug{6 * ( counter - 1 ) + 5}, sparseAug{6 * ( counter - 1 ) + 6}, ...
+                AugBk(6 * ( counter - 1 ) + 1), AugBk(6 * ( counter - 1 ) + 2), AugBk(6 * ( counter - 1 ) + 3), ...
+                AugBk(6 * ( counter - 1 ) + 4), AugBk(6 * ( counter - 1 ) + 5), AugBk(6 * ( counter - 1 ) + 6) ] ...
+            = fc( m_v, n_v, ell_v, flag, ...
+                Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedIn, auxiSegMed, epsilon_r, mu_r, Omega_0, ...
+                B_k, SheetPntsTable, J_0, corner_flag, TiltType );
+        end
+    end
+end
+
+count = 0;
+for idx = 1: 1: 3 * arndNum * 2 * (y_n - 1), 1
+    if isempty(sparseAug{ idx })
+        count = count + 1;
+    end
+end
+count
+
+% tol = 1e-6;
+% ext_itr_num = 10;
+% int_itr_num = 50;
+
+% bar_x_my_gmres = zeros(size(B_k));
+% % nrmlM_K      = mySparse2MatlabSparse( sparseK, N_e, N_e, 'Row' );
+% % tic;
+% % disp('Calculation time of iLU: ')
+% % [ L_K, U_K ] = ilu( nrmlM_K, struct('type', 'ilutp', 'droptol', 1e-2) );
+% % toc;
 % tic;
-% disp('Calculation time of iLU: ')
-% [ L_K, U_K ] = ilu( nrmlM_K, struct('type', 'ilutp', 'droptol', 1e-2) );
+% disp('The gmres solutin of Ax = B: ');
+% bar_x_my_gmres = my_gmres( sparseK, B_k, int_itr_num, tol, ext_itr_num );
 % toc;
-tic;
-disp('The gmres solutin of Ax = B: ');
-bar_x_my_gmres = my_gmres( sparseK, B_k, int_itr_num, tol, ext_itr_num );
-toc;
 
-% save('Case0511_1e2.mat', 'bar_x_my_gmres');
+% % save('Case0511_1e2.mat', 'bar_x_my_gmres');
 
-AFigsScript;
+% AFigsScript;
 
 % load('0511sparseK1_equal_sparseK.mat', 'sparseK', 'B_k');
 % % === % =========================================== % === %
