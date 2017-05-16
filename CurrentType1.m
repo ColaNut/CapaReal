@@ -31,7 +31,7 @@ switch SideIdx
         K1_Value = zeros(3, 25);
         J = zeros(3, 1);
 
-        quadrantMask = zeros(8, 6, 3);
+        quadrantMask = zeros(8, 1);
         quadrantMask = getMask(quadtantNum, 'Type1-2', 8);
 
         % K_1: the 1-st to the 8-th tetdrahedron
@@ -82,14 +82,17 @@ switch SideIdx
         K1_Value = zeros(3, 13);
         J = zeros(3, 1);
 
-        % FourTet_e(1) = calBC( CntrlCrdnt', SideCrdnt(4, :), SideCrdnt(5, :), SideCrdnt(3, :), ...
-        %                         Cntrl_Cflag, Side_Cflag(4), Side_Cflag(5), Side_Cflag(3), 3, 'ext', J_0 );
+        quadrantMask = zeros(4, 1);
+        quadrantMask = getMask(quadtantNum, 'Type1-4', 4);
+
+        [ FourTet_e(1, :, :), J ] = calBC( CntrlCrdnt', SideCrdnt(4, :), SideCrdnt(5, :), SideCrdnt(3, :), ...
+                                Cntrl_Cflag, Side_Cflag(4), Side_Cflag(5), Side_Cflag(3), 3, 'ext', J_0, J, mu_r(SegMed(1)), quadrantMask(1) );
         [ FourTet_e(2, :, :), J ] = calBC( CntrlCrdnt', SideCrdnt(2, :), SideCrdnt(5, :), SideCrdnt(3, :), ...
-                                Cntrl_Cflag, Side_Cflag(2), Side_Cflag(5), Side_Cflag(3), 3, 'inn', J_0, J, mu_r(SegMed(2)) );
+                                Cntrl_Cflag, Side_Cflag(2), Side_Cflag(5), Side_Cflag(3), 3, 'inn', J_0, J, mu_r(SegMed(2)), quadrantMask(2) );
         [ FourTet_e(3, :, :), J ] = calBC( CntrlCrdnt', SideCrdnt(2, :), SideCrdnt(3, :), SideCrdnt(1, :), ...
-                                Cntrl_Cflag, Side_Cflag(2), Side_Cflag(3), Side_Cflag(1), 2, 'inn', J_0, J, mu_r(SegMed(3)) );
-        % FourTet_e(4) = calBC( CntrlCrdnt', SideCrdnt(4, :), SideCrdnt(3, :), SideCrdnt(1, :), ...
-        %                         Cntrl_Cflag, Side_Cflag(4), Side_Cflag(3), Side_Cflag(1), 2, 'ext', J_0 );
+                                Cntrl_Cflag, Side_Cflag(2), Side_Cflag(3), Side_Cflag(1), 2, 'inn', J_0, J, mu_r(SegMed(3)), quadrantMask(3) );
+        [ FourTet_e(4, :, :), J ] = calBC( CntrlCrdnt', SideCrdnt(4, :), SideCrdnt(3, :), SideCrdnt(1, :), ...
+                                Cntrl_Cflag, Side_Cflag(4), Side_Cflag(3), Side_Cflag(1), 2, 'ext', J_0, J, mu_r(SegMed(4)), quadrantMask(4) );
         
         K1_Value = Tet2K1(K1_Value, FourTet_e, 'Type1-4');
     case '5'
@@ -97,14 +100,17 @@ switch SideIdx
         K1_Value = zeros(3, 13);
         J = zeros(3, 1);
 
+        quadrantMask = zeros(4, 1);
+        quadrantMask = getMask(quadtantNum, 'Type1-5', 4);
+
         [ FourTet_e(1, :, :), J ] = calBC( SideCrdnt(5, :), CntrlCrdnt', SideCrdnt(4, :), SideCrdnt(3, :), ...
-                                Side_Cflag(5), Cntrl_Cflag, Side_Cflag(4), Side_Cflag(3), 5, 'ext', J_0, J, mu_r(SegMed(1)) );
-        % FourTet_e(2) = calBC( SideCrdnt(5, :), CntrlCrdnt', SideCrdnt(2, :), SideCrdnt(3, :), ...
-        %                         Side_Cflag(5), Cntrl_Cflag, Side_Cflag(2), Side_Cflag(3), 5, 'inn', J_0 );
-        % FourTet_e(3) = calBC( CntrlCrdnt', SideCrdnt(2, :), SideCrdnt(3, :), SideCrdnt(1, :), ...
-        %                         Cntrl_Cflag, Side_Cflag(2), Side_Cflag(3), Side_Cflag(1), 2, 'inn', J_0 );
+                                Side_Cflag(5), Cntrl_Cflag, Side_Cflag(4), Side_Cflag(3), 5, 'ext', J_0, J, mu_r(SegMed(1)), quadrantMask(1) );
+        [ FourTet_e(2, :, :), J ] = calBC( SideCrdnt(5, :), CntrlCrdnt', SideCrdnt(2, :), SideCrdnt(3, :), ...
+                                Side_Cflag(5), Cntrl_Cflag, Side_Cflag(2), Side_Cflag(3), 5, 'inn', J_0, J, mu_r(SegMed(2)), quadrantMask(2) );
+        [ FourTet_e(3, :, :), J ] = calBC( CntrlCrdnt', SideCrdnt(2, :), SideCrdnt(3, :), SideCrdnt(1, :), ...
+                                Cntrl_Cflag, Side_Cflag(2), Side_Cflag(3), Side_Cflag(1), 2, 'inn', J_0, J, mu_r(SegMed(3)), quadrantMask(3) );
         [ FourTet_e(4, :, :), J ] = calBC( CntrlCrdnt', SideCrdnt(4, :), SideCrdnt(3, :), SideCrdnt(1, :), ...
-                                Cntrl_Cflag, Side_Cflag(4), Side_Cflag(3), Side_Cflag(1), 2, 'ext', J_0, J, mu_r(SegMed(4)) );
+                                Cntrl_Cflag, Side_Cflag(4), Side_Cflag(3), Side_Cflag(1), 2, 'ext', J_0, J, mu_r(SegMed(4)), quadrantMask(4) );
         K1_Value = Tet2K1(K1_Value, FourTet_e, 'Type1-5');
     case '6'
         Bk_m = 0;
@@ -125,19 +131,23 @@ switch SideIdx
         K1_Value = zeros(3, 19);
         J = zeros(3, 1);
 
+        quadrantMask = zeros(6, 1);
+        quadrantMask = getMask(quadtantNum, 'Type1-7', 4);
+
         % K_1: the 1-st to the 8-th tetdrahedron
-        % SixTet_e(1) = calBC( CntrlCrdnt', SideCrdnt(7, :), SideCrdnt(4, :), SideCrdnt(3, :), ...
-        %                         Cntrl_Cflag, Side_Cflag(7), Side_Cflag(4), Side_Cflag(3), 3, 'inn', J_0 );
-        % SixTet_e(2) = calBC( CntrlCrdnt', SideCrdnt(7, :), SideCrdnt(6, :), SideCrdnt(3, :), ...
-        %                         Cntrl_Cflag, Side_Cflag(7), Side_Cflag(6), Side_Cflag(3), 3, 'ext', J_0 );
+        [ SixTet_e(1, :, :), J ] = calBC( CntrlCrdnt', SideCrdnt(7, :), SideCrdnt(4, :), SideCrdnt(3, :), ...
+                                Cntrl_Cflag, Side_Cflag(7), Side_Cflag(4), Side_Cflag(3), 3, 'inn', J_0, J, mu_r(SegMed(1)), quadrantMask(1) );
+        [ SixTet_e(2, :, :), J ] = calBC( CntrlCrdnt', SideCrdnt(7, :), SideCrdnt(6, :), SideCrdnt(3, :), ...
+                                Cntrl_Cflag, Side_Cflag(7), Side_Cflag(6), Side_Cflag(3), 3, 'ext', J_0, J, mu_r(SegMed(2)), quadrantMask(2) );
         [ SixTet_e(3, :, :), J ] = calBC( CntrlCrdnt', SideCrdnt(5, :), SideCrdnt(6, :), SideCrdnt(3, :), ...
-                                Cntrl_Cflag, Side_Cflag(5), Side_Cflag(6), Side_Cflag(3), 3, 'inn', J_0, J, mu_r(SegMed(3)) );
+                                Cntrl_Cflag, Side_Cflag(5), Side_Cflag(6), Side_Cflag(3), 3, 'inn', J_0, J, mu_r(SegMed(3)), quadrantMask(3) );
         [ SixTet_e(4, :, :), J ] = calBC( CntrlCrdnt', SideCrdnt(5, :), SideCrdnt(2, :), SideCrdnt(3, :), ...
-                                Cntrl_Cflag, Side_Cflag(5), Side_Cflag(2), Side_Cflag(3), 3, 'ext', J_0, J, mu_r(SegMed(4)) );
-        % SixTet_e(5) = calBC( CntrlCrdnt', SideCrdnt(1, :), SideCrdnt(2, :), SideCrdnt(3, :), ...
-        %                         Cntrl_Cflag, Side_Cflag(1), Side_Cflag(2), Side_Cflag(3), 3, 'inn', J_0 );
-        % SixTet_e(6) = calBC( CntrlCrdnt', SideCrdnt(1, :), SideCrdnt(4, :), SideCrdnt(3, :), ...
-        %                         Cntrl_Cflag, Side_Cflag(1), Side_Cflag(4), Side_Cflag(3), 3, 'ext', J_0 );
+                                Cntrl_Cflag, Side_Cflag(5), Side_Cflag(2), Side_Cflag(3), 3, 'ext', J_0, J, mu_r(SegMed(4)), quadrantMask(4) );
+        [ SixTet_e(5, :, :), J ] = calBC( CntrlCrdnt', SideCrdnt(1, :), SideCrdnt(2, :), SideCrdnt(3, :), ...
+                                Cntrl_Cflag, Side_Cflag(1), Side_Cflag(2), Side_Cflag(3), 3, 'inn', J_0, J, mu_r(SegMed(5)), quadrantMask(5) );
+        [ SixTet_e(6, :, :), J ] = calBC( CntrlCrdnt', SideCrdnt(1, :), SideCrdnt(4, :), SideCrdnt(3, :), ...
+                                Cntrl_Cflag, Side_Cflag(1), Side_Cflag(4), Side_Cflag(3), 3, 'ext', J_0, J, mu_r(SegMed(6)), quadrantMask(6) );
+
         K1_Value = Tet2K1(K1_Value, SixTet_e, 'Type1-7');
     end
 

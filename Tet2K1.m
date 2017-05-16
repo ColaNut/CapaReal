@@ -124,6 +124,27 @@ function K1_Value = Tet2K1(K1_Value, Tet_e, TypeSubType)
             K1_Value(:, 11) = squeeze(FourTet_e(2, 6, :)) + squeeze(FourTet_e(3, 4, :));
             K1_Value(:, 12) = squeeze(FourTet_e(3, 6, :)) + squeeze(FourTet_e(4, 6, :));
             K1_Value(:, 13) = squeeze(FourTet_e(1, 5, :)) + squeeze(FourTet_e(2, 5, :)) + squeeze(FourTet_e(3, 2, :)) + squeeze(FourTet_e(4, 2, :));
+        case 'Type2-7'
+            K1_Value(:, 1)  = squeeze(SixTet_e(1, 4, :)) + squeeze(SixTet_e(6, 1, :));
+            K1_Value(:, 2)  = squeeze(SixTet_e(1, 1, :));
+            K1_Value(:, 3)  = squeeze(SixTet_e(1, 2, :)) + squeeze(SixTet_e(2, 2, :));
+            K1_Value(:, 4)  = squeeze(SixTet_e(2, 1, :));
+            K1_Value(:, 5)  = squeeze(SixTet_e(2, 4, :)) + squeeze(SixTet_e(3, 1, :));
+            K1_Value(:, 6)  = squeeze(SixTet_e(3, 3, :));
+            K1_Value(:, 7)  = squeeze(SixTet_e(3, 5, :)) + squeeze(SixTet_e(4, 2, :));
+            K1_Value(:, 8)  = squeeze(SixTet_e(4, 6, :));
+            K1_Value(:, 9)  = squeeze(SixTet_e(4, 3, :)) + squeeze(SixTet_e(5, 3, :));
+            K1_Value(:, 10) = squeeze(SixTet_e(5, 6, :));
+            K1_Value(:, 11) = squeeze(SixTet_e(5, 2, :)) + squeeze(SixTet_e(6, 5, :));
+            K1_Value(:, 12) = squeeze(SixTet_e(6, 3, :));
+            K1_Value(:, 13) = squeeze(SixTet_e(1, 5, :)) + squeeze(SixTet_e(6, 2, :));
+            K1_Value(:, 14) = squeeze(SixTet_e(1, 3, :)) + squeeze(SixTet_e(2, 3, :));
+            K1_Value(:, 15) = squeeze(SixTet_e(2, 5, :)) + squeeze(SixTet_e(3, 2, :));
+            K1_Value(:, 16) = squeeze(SixTet_e(3, 6, :)) + squeeze(SixTet_e(4, 4, :));
+            K1_Value(:, 17) = squeeze(SixTet_e(4, 5, :)) + squeeze(SixTet_e(5, 5, :));
+            K1_Value(:, 18) = squeeze(SixTet_e(5, 4, :)) + squeeze(SixTet_e(6, 6, :));
+            K1_Value(:, 19) = squeeze(SixTet_e(1, 6, :)) + squeeze(SixTet_e(2, 6, :)) + squeeze(SixTet_e(3, 4, :)) ...
+                            + squeeze(SixTet_e(4, 1, :)) + squeeze(SixTet_e(5, 1, :)) + squeeze(SixTet_e(6, 4, :));
         case 'Type3-2'
             EightTet_e = Tet_e;
             K1_Value(:, 1)  = squeeze(EightTet_e(1, 3, :)) + squeeze(EightTet_e(8, 2, :));
@@ -249,6 +270,27 @@ function K1_Value = Tet2K1(K1_Value, Tet_e, TypeSubType)
             K1_Value(:, 11) = squeeze(FourTet_e(2, 4, :)) + squeeze(FourTet_e(3, 1, :));
             K1_Value(:, 12) = squeeze(FourTet_e(3, 5, :)) + squeeze(FourTet_e(4, 3, :));
             K1_Value(:, 13) = squeeze(FourTet_e(1, 4, :)) + squeeze(FourTet_e(2, 6, :)) + squeeze(FourTet_e(3, 4, :)) + squeeze(FourTet_e(4, 1, :));
+        case 'Type4-7'
+            K1_Value(:, 1)  = squeeze(SixTet_e(1, 6, :)) + squeeze(SixTet_e(6, 5, :));
+            K1_Value(:, 2)  = squeeze(SixTet_e(1, 2, :));
+            K1_Value(:, 3)  = squeeze(SixTet_e(1, 3, :)) + squeeze(SixTet_e(2, 3, :));
+            K1_Value(:, 4)  = squeeze(SixTet_e(2, 2, :));
+            K1_Value(:, 5)  = squeeze(SixTet_e(2, 6, :)) + squeeze(SixTet_e(3, 5, :));
+            K1_Value(:, 6)  = squeeze(SixTet_e(3, 4, :));
+            K1_Value(:, 7)  = squeeze(SixTet_e(3, 6, :)) + squeeze(SixTet_e(4, 4, :));
+            K1_Value(:, 8)  = squeeze(SixTet_e(4, 5, :));
+            K1_Value(:, 9)  = squeeze(SixTet_e(4, 6, :)) + squeeze(SixTet_e(5, 6, :));
+            K1_Value(:, 10) = squeeze(SixTet_e(5, 5, :));
+            K1_Value(:, 11) = squeeze(SixTet_e(5, 4, :)) + squeeze(SixTet_e(6, 6, :));
+            K1_Value(:, 12) = squeeze(SixTet_e(6, 4, :));
+            K1_Value(:, 13) = squeeze(SixTet_e(1, 4, :)) + squeeze(SixTet_e(6, 1, :));
+            K1_Value(:, 14) = squeeze(SixTet_e(1, 1, :)) + squeeze(SixTet_e(2, 1, :));
+            K1_Value(:, 15) = squeeze(SixTet_e(2, 4, :)) + squeeze(SixTet_e(3, 1, :));
+            K1_Value(:, 16) = squeeze(SixTet_e(3, 2, :)) + squeeze(SixTet_e(4, 1, :));
+            K1_Value(:, 17) = squeeze(SixTet_e(4, 3, :)) + squeeze(SixTet_e(5, 3, :));
+            K1_Value(:, 18) = squeeze(SixTet_e(5, 1, :)) + squeeze(SixTet_e(6, 2, :));
+            K1_Value(:, 19) = squeeze(SixTet_e(1, 5, :)) + squeeze(SixTet_e(2, 5, :)) + squeeze(SixTet_e(3, 3, :)) ...
+                              + squeeze(SixTet_e(4, 2, :)) + squeeze(SixTet_e(5, 2, :)) + squeeze(SixTet_e(6, 3, :));
         otherwise
             error('check');
     end

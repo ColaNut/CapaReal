@@ -2,8 +2,10 @@ function varargout = fillNrml_K_Type3( m_v, n_v, ell_v, flag, Vertex_Crdnt, x_ma
                     z_max_vertex, PntSegMed, auxiSegMed, epsilon_r, mu_r, omega, B_k, SheetPntsTable, J_0, corner_flag, varargin )
     
     nVarargs = length(varargin);
-    if nVarargs == 1
-        tiltType = varargin{1};
+    if nVarargs == 3 || nVarargs == 4
+        tiltType    = varargin{1};
+        quadrantNum = varargin{2};
+        SegMed      = varargin{3};
         K_row_2  = ones(3, 50);
         K_row_4  = ones(3, 26);
         K_row_5  = ones(3, 26);
@@ -12,6 +14,121 @@ function varargout = fillNrml_K_Type3( m_v, n_v, ell_v, flag, Vertex_Crdnt, x_ma
         B_k_row4 = ones(3, 1);
         B_k_row5 = ones(3, 1);
         B_k_row7 = ones(3, 1);
+    end
+
+    if quadrantNum == 1
+        auxiSegMedSUB = ones(6, 8, 'uint8');
+        corner_flagSUB = false(2, 6);
+        flagSUB = getMNL_flag(m_v, n_v, ell_v + 1);
+        SegMedInSUB = FetchSegMed( m_v, n_v, ell_v + 1, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
+        % % volume
+        % switch flagSUB
+        %     case { '111', '000' }
+        %         fc = str2func('fillNrml_K_Type1');
+        %     case { '100', '011' }
+                fc = str2func('fillNrml_K_Type2');
+                auxiSegMedSUB = getAuxiSegMed( m_v, n_v, ell_v + 1, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flagSUB );
+        %     case { '101', '010' }
+        %         fc = str2func('fillNrml_K_Type3');
+        %         auxiSegMedSUB = getAuxiSegMed( m_v, n_v, ell_v + 1, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flagSUB );
+        %     case { '110', '001' }
+                % fc = str2func('fillNrml_K_Type4');
+                % auxiSegMedSUB = getAuxiSegMed( m_v, n_v, ell_v + 1, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flagSUB );
+        %     otherwise
+        %         error('check');
+        % end
+    end
+
+    if quadrantNum == 4 && strcmp(tiltType, 'Horizental')
+        auxiSegMedSUB = ones(6, 8, 'uint8');
+        corner_flagSUB = false(2, 6);
+        flagSUB = getMNL_flag(m_v + 1, n_v, ell_v);
+        SegMedInSUB = FetchSegMed( m_v + 1, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
+        % % volume
+        % switch flagSUB
+        %     case { '111', '000' }
+                % fc = str2func('fillNrml_K_Type1');
+        %     case { '100', '011' }
+                % fc = str2func('fillNrml_K_Type2');
+                % auxiSegMedSUB = getAuxiSegMed( m_v + 1, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flagSUB );
+        %     case { '101', '010' }
+        %         fc = str2func('fillNrml_K_Type3');
+        %         auxiSegMedSUB = getAuxiSegMed( m_v + 1, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flagSUB );
+        %     case { '110', '001' }
+                fc = str2func('fillNrml_K_Type4');
+                auxiSegMedSUB = getAuxiSegMed( m_v + 1, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flagSUB );
+        %     otherwise
+        %         error('check');
+        % end
+    end
+
+    if quadrantNum == 4 && strcmp(tiltType, 'Vertical')
+        auxiSegMedSUB = ones(6, 8, 'uint8');
+        corner_flagSUB = false(2, 6);
+        flagSUB = getMNL_flag(m_v, n_v, ell_v + 1);
+        SegMedInSUB = FetchSegMed( m_v, n_v, ell_v + 1, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
+        % % volume
+        % switch flagSUB
+        %     case { '111', '000' }
+                % fc = str2func('fillNrml_K_Type1');
+        %     case { '100', '011' }
+                fc = str2func('fillNrml_K_Type2');
+                auxiSegMedSUB = getAuxiSegMed( m_v, n_v, ell_v + 1, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flagSUB );
+        %     case { '101', '010' }
+        %         fc = str2func('fillNrml_K_Type3');
+        %         auxiSegMedSUB = getAuxiSegMed( m_v, n_v, ell_v + 1, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flagSUB );
+        %     case { '110', '001' }
+                % fc = str2func('fillNrml_K_Type4');
+                % auxiSegMedSUB = getAuxiSegMed( m_v, n_v, ell_v + 1, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flagSUB );
+        %     otherwise
+        %         error('check');
+        % end
+    end
+
+    if quadrantNum == 4 && strcmp(tiltType, 'Oblique')
+        auxiSegMedSUB = ones(6, 8, 'uint8');
+        corner_flagSUB = false(2, 6);
+        flagSUB = getMNL_flag(m_v + 1, n_v, ell_v + 1);
+        SegMedInSUB = FetchSegMed( m_v + 1, n_v, ell_v + 1, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
+        % % volume
+        % switch flagSUB
+        %     case { '111', '000' }
+                fc = str2func('fillNrml_K_Type1');
+        %     case { '100', '011' }
+                % fc = str2func('fillNrml_K_Type2');
+                % auxiSegMedSUB = getAuxiSegMed( m_v + 1, n_v, ell_v + 1, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flagSUB );
+        %     case { '101', '010' }
+        %         fc = str2func('fillNrml_K_Type3');
+        %         auxiSegMedSUB = getAuxiSegMed( m_v + 1, n_v, ell_v + 1, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flagSUB );
+        %     case { '110', '001' }
+                % fc = str2func('fillNrml_K_Type4');
+                % auxiSegMedSUB = getAuxiSegMed( m_v + 1, n_v, ell_v + 1, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flagSUB );
+        %     otherwise
+        %         error('check');
+        % end
+    end
+
+    if quadrantNum == 3 
+        auxiSegMedSUB = ones(6, 8, 'uint8');
+        corner_flagSUB = false(2, 6);
+        flagSUB = getMNL_flag(m_v + 1, n_v, ell_v);
+        SegMedInSUB = FetchSegMed( m_v + 1, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
+        % % volume
+        % switch flagSUB
+        %     case { '111', '000' }
+        %         fc = str2func('fillNrml_K_Type1');
+        %     case { '100', '011' }
+                % fc = str2func('fillNrml_K_Type2');
+                % auxiSegMedSUB = getAuxiSegMed( m_v + 1, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flagSUB );
+        %     case { '101', '010' }
+        %         fc = str2func('fillNrml_K_Type3');
+        %         auxiSegMedSUB = getAuxiSegMed( m_v + 1, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flagSUB );
+        %     case { '110', '001' }
+                fc = str2func('fillNrml_K_Type4');
+                auxiSegMedSUB = getAuxiSegMed( m_v + 1, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flagSUB );
+        %     otherwise
+        %         error('check');
+        % end
     end
 
     K1_row_1    = ones(1, 26);
@@ -134,10 +251,10 @@ function varargout = fillNrml_K_Type3( m_v, n_v, ell_v, flag, Vertex_Crdnt, x_ma
     Side_Cflags = p5Face_Type3( Pnts_Cflags, 'Med' );
     % K_1 [000, 1], [111, 1] 
     [ K1_row_2(26: 50), KEV_row_2(11: 20), KVE_col_2(11: 20) ] = calK_Type3( squeeze(FaceCrdnt), squeeze( PntsCrdnt(2, 2, :) ), PntSegMed(1, :), mu_r, epsilon_r, corner_flag, '2' );
-    if nVarargs == 1
+    if nVarargs == 3
         K_row_2(:, 1: 25) = repmat(K1_row_2(1: 25), 3, 1);
         [ K_row_2(:, 26: 50), B_k_row2 ] = CurrentType3( squeeze(FaceCrdnt), squeeze( PntsCrdnt(2, 2, :) ), ...
-                                    Side_Cflags, Pnts_Cflags(2, 2), PntSegMed(1, :), J_0, mu_r, '2' );
+                                    Side_Cflags, Pnts_Cflags(2, 2), PntSegMed(1, :), J_0, mu_r, '2', quadrantNum );
     end
 
     % 3-rd edge
@@ -220,11 +337,25 @@ function varargout = fillNrml_K_Type3( m_v, n_v, ell_v, flag, Vertex_Crdnt, x_ma
     tmpSegMed = [ auxiSegMed(2, 4), PntSegMed(1, 1), PntSegMed(1, 8), auxiSegMed(2, 5) ];
     % 
     [ K1_row_4(14: 26), KEV_row_4(7: 12), KVE_col_4(7: 12) ] = calK_Type3( FaceCrdnt, squeeze( PntsCrdnt(2, 2, :) ), tmpSegMed, mu_r, epsilon_r, corner_flag, '4' );
-    if nVarargs == 1
+    if nVarargs == 3 || nVarargs == 4
         if strcmp(tiltType, 'Horizental')
-            K_row_4(:, 1: 13) = repmat(K1_row_4(1: 13), 3, 1);
-            [ K_row_4(:, 14: 26), B_k_row4 ] = CurrentType3( FaceCrdnt, squeeze( PntsCrdnt(2, 2, :) ), ...
-                                    Side_Cflags, Pnts_Cflags(2, 2), tmpSegMed, J_0, mu_r, '4' );
+            if quadrantNum == 2 || quadrantNum == 1 || ( nVarargs == 4 && quadrantNum == 3 )
+                K_row_4(:, 1: 13) = repmat(K1_row_4(1: 13), 3, 1);
+                [ K_row_4(:, 14: 26), B_k_row4 ] = CurrentType3( FaceCrdnt, squeeze( PntsCrdnt(2, 2, :) ), ...
+                                        Side_Cflags, Pnts_Cflags(2, 2), tmpSegMed, J_0, mu_r, '4', quadrantNum );
+            elseif quadrantNum == 4
+                % fc = type4
+                [ K_row_4(1, :), K_row_4(2, :), K_row_4(3, :), B_k_row4 ] ...
+                = fc( m_v + 1, n_v, ell_v, flagSUB, ...
+                    Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedInSUB, auxiSegMedSUB, epsilon_r, mu_r, Omega_0, ...
+                    B_k, SheetPntsTable, J_0, corner_flagSUB, TiltType, quadrantNum, SegMed, 'help' );
+            elseif quadrantNum == 3
+                % fc = type4
+                [ K_row_4(1, :), K_row_4(2, :), K_row_4(3, :), B_k_row4 ] ...
+                = fc( m_v + 1, n_v, ell_v, flagSUB, ...
+                    Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedInSUB, auxiSegMedSUB, epsilon_r, mu_r, Omega_0, ...
+                    B_k, SheetPntsTable, J_0, corner_flagSUB, TiltType, quadrantNum, SegMed, 'help' );
+            end
         end
     end
 
@@ -266,11 +397,23 @@ function varargout = fillNrml_K_Type3( m_v, n_v, ell_v, flag, Vertex_Crdnt, x_ma
     Side_Cflags(5) = Pnts_Cflags(1, 6);
     tmpSegMed = [ PntSegMed(1, 6), auxiSegMed(3, 3), auxiSegMed(3, 2), PntSegMed(1, 7) ];
     [ K1_row_5(14: 26), KEV_row_5(7: 12), KVE_col_5(7: 12) ] = calK_Type3( FaceCrdnt, squeeze( PntsCrdnt(2, 2, :) ), tmpSegMed, mu_r, epsilon_r, corner_flag, '5' );
-    if nVarargs == 1
+    if nVarargs == 3 || nVarargs == 4
         if strcmp(tiltType, 'Vertical')
-            K_row_5(:, 1: 13) = repmat(K1_row_5(1: 13), 3, 1);
-            [ K_row_5(:, 14: 26), B_k_row5 ] = CurrentType3( FaceCrdnt, squeeze( PntsCrdnt(2, 2, :) ), ...
-                                    Side_Cflags, Pnts_Cflags(2, 2), tmpSegMed, J_0, mu_r, '5' );
+            if quadrantNum == 2 || ( nVarargs == 4 && quadrantNum == 1 ) || ( nVarargs == 4 && quadrantNum == 4 ) || quadrantNum == 3
+                K_row_5(:, 1: 13) = repmat(K1_row_5(1: 13), 3, 1);
+                [ K_row_5(:, 14: 26), B_k_row5 ] = CurrentType3( FaceCrdnt, squeeze( PntsCrdnt(2, 2, :) ), ...
+                                        Side_Cflags, Pnts_Cflags(2, 2), tmpSegMed, J_0, mu_r, '5', quadrantNum );
+            elseif quadrantNum == 1
+                [ K_row_5(1, :), K_row_5(2, :), K_row_5(3, :), B_k_row5 ] ...
+                = fc( m_v, n_v, ell_v + 1, flagSUB, ...
+                    Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedInSUB, auxiSegMedSUB, epsilon_r, mu_r, Omega_0, ...
+                    B_k, SheetPntsTable, J_0, corner_flagSUB, TiltType, quadrantNum, SegMed, 'help' );
+            elseif quadrantNum == 4
+                [ K_row_5(1, :), K_row_5(2, :), K_row_5(3, :), B_k_row5 ] ...
+                = fc( m_v, n_v, ell_v + 1, flagSUB, ...
+                    Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedInSUB, auxiSegMedSUB, epsilon_r, mu_r, Omega_0, ...
+                    B_k, SheetPntsTable, J_0, corner_flagSUB, TiltType, quadrantNum, SegMed, 'help' );
+            end
         end
     end
 
@@ -349,15 +492,56 @@ function varargout = fillNrml_K_Type3( m_v, n_v, ell_v, flag, Vertex_Crdnt, x_ma
     tmpSegMed = zeros(1, 6, 'uint8');
     tmpSegMed = [ auxiSegMed(5, 8), auxiSegMed(2, 5), auxiSegMed(2, 6), auxiSegMed(3, 1), auxiSegMed(3, 2), auxiSegMed(5, 7) ];
     [ K1_row_7(20: 38), KEV_row_7(9: 16), KVE_col_7(9: 16) ] = calK_Type3( squeeze(FaceCrdnt), squeeze( PntsCrdnt(1, 4, :) ), tmpSegMed, mu_r, epsilon_r, corner_flag, '7' );
-    if nVarargs == 1
+    if nVarargs == 3 || nVarargs == 4
         if strcmp(tiltType, 'Oblique')
-            K_row_7(:, 1: 19) = repmat(K1_row_7(1: 19), 3, 1);
-            [ K_row_7(:, 20: 38), B_k_row7 ] = CurrentType3( squeeze(FaceCrdnt), squeeze( PntsCrdnt(1, 4, :) ), ...
-                                    Side_Cflags, Pnts_Cflags(1, 4), tmpSegMed, J_0, mu_r, '7' );
+            if quadrantNum == 2 || ( nVarargs == 4 && quadrantNum == 4 )
+                K_row_7(:, 1: 19) = repmat(K1_row_7(1: 19), 3, 1);
+                [ K_row_7(:, 20: 38), B_k_row7 ] = CurrentType3( squeeze(FaceCrdnt), squeeze( PntsCrdnt(1, 4, :) ), ...
+                                        Side_Cflags, Pnts_Cflags(1, 4), tmpSegMed, J_0, mu_r, '7', quadrantNum );
+            elseif quadrantNum == 1
+                [ K_row_7(1, :), K_row_7(2, :), K_row_7(3, :), B_k_row7 ] ...
+                = fc( m_v, n_v, ell_v + 1, flagSUB, ...
+                    Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedInSUB, auxiSegMedSUB, epsilon_r, mu_r, Omega_0, ...
+                    B_k, SheetPntsTable, J_0, corner_flagSUB, TiltType, quadrantNum, SegMed, 'help' );
+            elseif quadrantNum == 4
+                [ K_row_7(1, :), K_row_7(2, :), K_row_7(3, :), B_k_row7 ] ...
+                = fc( m_v + 1, n_v, ell_v + 1, flagSUB, ...
+                    Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedInSUB, auxiSegMedSUB, epsilon_r, mu_r, Omega_0, ...
+                    B_k, SheetPntsTable, J_0, corner_flagSUB, TiltType, quadrantNum, SegMed, 'help' );
+            elseif quadrantNum == 3
+                [ K_row_7(1, :), K_row_7(2, :), K_row_7(3, :), B_k_row7 ] ...
+                = fc( m_v + 1, n_v, ell_v, flagSUB, ...
+                    Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedInSUB, auxiSegMedSUB, epsilon_r, mu_r, Omega_0, ...
+                    B_k, SheetPntsTable, J_0, corner_flagSUB, TiltType, quadrantNum, SegMed, 'help' );
+            end
         end
     end
 
-    if nVarargs == 1
+    if nVarargs == 4
+        if strcmp(tiltType, 'Horizental') && quadrantNum == 3 
+            varargout{1} = K_row_4(1, :);
+            varargout{2} = K_row_4(2, :);
+            varargout{3} = K_row_4(3, :);
+            varargout{4} = B_k_row4;
+            return
+        end
+        if strcmp(tiltType, 'Vertical') && ( quadrantNum == 1 || quadrantNum == 4 )
+            varargout{1} = K_row_5(1, :);
+            varargout{2} = K_row_5(2, :);
+            varargout{3} = K_row_5(3, :);
+            varargout{4} = B_k_row5;
+            return
+        end
+        if strcmp(tiltType, 'Oblique') && quadrantNum == 4
+            varargout{1} = K_row_7(1, :);
+            varargout{2} = K_row_7(2, :);
+            varargout{3} = K_row_7(3, :);
+            varargout{4} = B_k_row7;
+            return
+        end
+    end
+
+    if nVarargs == 3
         if strcmp(tiltType, 'Horizental')
             varargout{1} = K_row_2(1, :);
             varargout{2} = K_row_2(2, :);

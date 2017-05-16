@@ -414,6 +414,20 @@ for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
                 TiltType = 'Vertical';
                 % EdgeRx = [2, 5];
             end
+        elseif Vertex_Crdnt(m_v, n_v, ell_v, 1) >= 0 && Vertex_Crdnt(m_v, n_v, ell_v, 3) <= 0
+            % IV-quadrant 
+            quadtantNum = 4;
+            if SheetPntsTable(m_v + 1, n_v, ell_v) == 1
+                TiltType = 'Horizental';
+                % EdgeRx = [2, 4];
+            elseif SheetPntsTable(m_v + 1, n_v, ell_v + 1) == 1
+                TiltType = 'Oblique';
+                % EdgeRx = [2, 7];
+            elseif SheetPntsTable(m_v, n_v, ell_v + 1) == 1
+                TiltType = 'Vertical';
+                % EdgeRx = [2, 5];
+            end
+        end
         end
         [ sparseAug{6 * ( counter - 1 ) + 1}, sparseAug{6 * ( counter - 1 ) + 2}, sparseAug{6 * ( counter - 1 ) + 3}, ...
             sparseAug{6 * ( counter - 1 ) + 4}, sparseAug{6 * ( counter - 1 ) + 5}, sparseAug{6 * ( counter - 1 ) + 6}, ...
@@ -421,7 +435,7 @@ for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
             AugBk(6 * ( counter - 1 ) + 4), AugBk(6 * ( counter - 1 ) + 5), AugBk(6 * ( counter - 1 ) + 6) ] ...
         = fc( m_v, n_v, ell_v, flag, ...
             Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedIn, auxiSegMed, epsilon_r, mu_r, Omega_0, ...
-            B_k, SheetPntsTable, J_0, corner_flag, TiltType, quadtantNum );
+            B_k, SheetPntsTable, J_0, corner_flag, TiltType, quadtantNum, SegMed );
     end
 end
 
