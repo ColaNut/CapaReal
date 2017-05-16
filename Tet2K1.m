@@ -125,6 +125,7 @@ function K1_Value = Tet2K1(K1_Value, Tet_e, TypeSubType)
             K1_Value(:, 12) = squeeze(FourTet_e(3, 6, :)) + squeeze(FourTet_e(4, 6, :));
             K1_Value(:, 13) = squeeze(FourTet_e(1, 5, :)) + squeeze(FourTet_e(2, 5, :)) + squeeze(FourTet_e(3, 2, :)) + squeeze(FourTet_e(4, 2, :));
         case 'Type2-7'
+            SixTet_e = Tet_e;
             K1_Value(:, 1)  = squeeze(SixTet_e(1, 4, :)) + squeeze(SixTet_e(6, 1, :));
             K1_Value(:, 2)  = squeeze(SixTet_e(1, 1, :));
             K1_Value(:, 3)  = squeeze(SixTet_e(1, 2, :)) + squeeze(SixTet_e(2, 2, :));
@@ -271,6 +272,7 @@ function K1_Value = Tet2K1(K1_Value, Tet_e, TypeSubType)
             K1_Value(:, 12) = squeeze(FourTet_e(3, 5, :)) + squeeze(FourTet_e(4, 3, :));
             K1_Value(:, 13) = squeeze(FourTet_e(1, 4, :)) + squeeze(FourTet_e(2, 6, :)) + squeeze(FourTet_e(3, 4, :)) + squeeze(FourTet_e(4, 1, :));
         case 'Type4-7'
+            SixTet_e = Tet_e;
             K1_Value(:, 1)  = squeeze(SixTet_e(1, 6, :)) + squeeze(SixTet_e(6, 5, :));
             K1_Value(:, 2)  = squeeze(SixTet_e(1, 2, :));
             K1_Value(:, 3)  = squeeze(SixTet_e(1, 3, :)) + squeeze(SixTet_e(2, 3, :));

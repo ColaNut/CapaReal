@@ -132,7 +132,7 @@ switch SideIdx
         J = zeros(3, 1);
 
         quadrantMask = zeros(6, 1);
-        quadrantMask = getMask(quadtantNum, 'Type1-7', 4);
+        quadrantMask = getMask(quadtantNum, 'Type1-7', 6);
 
         % K_1: the 1-st to the 8-th tetdrahedron
         [ SixTet_e(1, :, :), J ] = calBC( CntrlCrdnt', SideCrdnt(7, :), SideCrdnt(4, :), SideCrdnt(3, :), ...

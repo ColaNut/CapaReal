@@ -427,7 +427,19 @@ for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
                 TiltType = 'Vertical';
                 % EdgeRx = [2, 5];
             end
-        end
+        elseif Vertex_Crdnt(m_v, n_v, ell_v, 1) <= 0 && Vertex_Crdnt(m_v, n_v, ell_v, 3) <= 0
+            % III-quadrant 
+            quadtantNum = 3;
+            if SheetPntsTable(m_v + 1, n_v, ell_v) == 1
+                TiltType = 'Horizental';
+                % EdgeRx = [2, 4];
+            elseif SheetPntsTable(m_v + 1, n_v, ell_v - 1) == 1
+                TiltType = 'Oblique';
+                % EdgeRx = [2, 7];
+            elseif SheetPntsTable(m_v, n_v, ell_v - 1) == 1
+                TiltType = 'Vertical';
+                % EdgeRx = [2, 5];
+            end
         end
         [ sparseAug{6 * ( counter - 1 ) + 1}, sparseAug{6 * ( counter - 1 ) + 2}, sparseAug{6 * ( counter - 1 ) + 3}, ...
             sparseAug{6 * ( counter - 1 ) + 4}, sparseAug{6 * ( counter - 1 ) + 5}, sparseAug{6 * ( counter - 1 ) + 6}, ...
@@ -446,6 +458,12 @@ for idx = 1: 1: 3 * arndNum  * (y_n - 1)
     end
 end
 count
+
+for idx = 1: 1: arndNum  * (y_n - 1)
+    if AugBk( 3 * ( idx - 1 ) + 3 ) == 0
+        idx
+    end
+end
 % % === % ============================ % === %
 % % === % Sparse Normalization Process % === %
 % % === % ============================ % === %

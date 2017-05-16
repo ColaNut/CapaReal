@@ -1,4 +1,4 @@
-function [ K1_Value, J ] = CurrentType4( SideCrdnt, CntrlCrdnt, Side_Cflag, Cntrl_Cflag, SegMed, J_0, mu_r, SideIdx, quadtantNum )
+function [ K1_Value, J ] = CurrentType4( SideCrdnt, CntrlCrdnt, Side_Cflag, Cntrl_Cflag, SegMed, J_0, mu_r, SideIdx, quadrantNum )
 % Cflag -> current flag
 % the center point is a column vector; while the side point are row vector.
 
@@ -24,7 +24,7 @@ switch SideIdx
         J = zeros(3, 1);
 
         quadrantMask = zeros(4, 1);
-        quadrantMask = getMask(quadtantNum, 'Type4-2', 4);
+        quadrantMask = getMask(quadrantNum, 'Type4-2', 4);
 
         [ FourTet_e(1, :, :), J ] = calBC( SideCrdnt(5, :), SideCrdnt(3, :), CntrlCrdnt', SideCrdnt(4, :), ...
                                 Side_Cflag(5), Side_Cflag(3), Cntrl_Cflag, Side_Cflag(4), 4, 'inn', J_0, J, mu_r(SegMed(1)), quadrantMask(1) );
@@ -66,7 +66,7 @@ switch SideIdx
         J = zeros(3, 1);
 
         quadrantMask = zeros(4, 1);
-        quadrantMask = getMask(quadtantNum, 'Type4-4', 4);
+        quadrantMask = getMask(quadrantNum, 'Type4-4', 4);
 
         [ FourTet_e(1, :, :), J ] = calBC( SideCrdnt(5, :), SideCrdnt(3, :), SideCrdnt(4, :), CntrlCrdnt', ...
                                 Side_Cflag(5), Side_Cflag(3), Side_Cflag(4), Cntrl_Cflag, 5, 'inn', J_0, J, mu_r(SegMed(1)), quadrantMask(1) );
@@ -85,7 +85,7 @@ switch SideIdx
         J = zeros(3, 1);
 
         quadrantMask = zeros(4, 1);
-        quadrantMask = getMask(quadtantNum, 'Type4-5', 4);
+        quadrantMask = getMask(quadrantNum, 'Type4-5', 4);
 
         [ FourTet_e(1, :, :), J ] = calBC( SideCrdnt(5, :), CntrlCrdnt', SideCrdnt(3, :), SideCrdnt(4, :), ...
                                 Side_Cflag(5), Cntrl_Cflag, Side_Cflag(3), Side_Cflag(4), 4, 'inn', J_0, J, mu_r(SegMed(1)), quadrantMask(1) );
@@ -117,8 +117,8 @@ switch SideIdx
         K1_Value = zeros(3, 19);
         J = zeros(3, 1);
 
-        quadrantMask = zeros(4, 1);
-        quadrantMask = getMask(quadtantNum, 'Type4-7', 4);
+        quadrantMask = zeros(6, 1);
+        quadrantMask = getMask(quadrantNum, 'Type4-7', 6);
 
         % K_1: the 1-st to the 8-th tetdrahedron
         [ SixTet_e(1, :, :), J ] = calBC( SideCrdnt(7, :), CntrlCrdnt', SideCrdnt(4, :), SideCrdnt(3, :), ...

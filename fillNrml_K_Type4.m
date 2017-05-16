@@ -24,7 +24,7 @@ function varargout = fillNrml_K_Type4( m_v, n_v, ell_v, flag, Vertex_Crdnt, x_ma
         auxiSegMedSUB = ones(6, 8, 'uint8');
         corner_flagSUB = false(2, 6);
         flagSUB = getMNL_flag(m_v, n_v, ell_v + 1);
-        SegMedInSUB = FetchSegMed( m_v, n_v, ell_v + 1, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
+        SegMedInSUB = FetchSegMed( m_v, n_v, ell_v + 1, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flagSUB );
         % % volume
         % switch flagSUB
         %     case { '111', '000' }
@@ -43,11 +43,57 @@ function varargout = fillNrml_K_Type4( m_v, n_v, ell_v, flag, Vertex_Crdnt, x_ma
         % end
     end
 
+    if quadrantNum == 4 && strcmp(tiltType, 'Horizental')
+        auxiSegMedSUB = ones(6, 8, 'uint8');
+        corner_flagSUB = false(2, 6);
+        flagSUB = getMNL_flag(m_v + 1, n_v, ell_v);
+        SegMedInSUB = FetchSegMed( m_v + 1, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flagSUB );
+        % % volume
+        % switch flagSUB
+        %     case { '111', '000' }
+                % fc = str2func('fillNrml_K_Type1');
+        %     case { '100', '011' }
+                % fc = str2func('fillNrml_K_Type2');
+                % auxiSegMedSUB = getAuxiSegMed( m_v + 1, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flagSUB );
+        %     case { '101', '010' }
+                fc = str2func('fillNrml_K_Type3');
+                auxiSegMedSUB = getAuxiSegMed( m_v + 1, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flagSUB );
+        %     case { '110', '001' }
+                % fc = str2func('fillNrml_K_Type4');
+                % auxiSegMedSUB = getAuxiSegMed( m_v + 1, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flagSUB );
+        %     otherwise
+        %         error('check');
+        % end
+    end
+
+    if quadrantNum == 4 && strcmp(tiltType, 'Vertical')
+        auxiSegMedSUB = ones(6, 8, 'uint8');
+        corner_flagSUB = false(2, 6);
+        flagSUB = getMNL_flag(m_v, n_v, ell_v + 1);
+        SegMedInSUB = FetchSegMed( m_v, n_v, ell_v + 1, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flagSUB );
+        % % volume
+        % switch flagSUB
+        %     case { '111', '000' }
+                fc = str2func('fillNrml_K_Type1');
+        %     case { '100', '011' }
+                % fc = str2func('fillNrml_K_Type2');
+                % auxiSegMedSUB = getAuxiSegMed( m_v, n_v, ell_v + 1, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flagSUB );
+        %     case { '101', '010' }
+        %         fc = str2func('fillNrml_K_Type3');
+        %         auxiSegMedSUB = getAuxiSegMed( m_v, n_v, ell_v + 1, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flagSUB );
+        %     case { '110', '001' }
+                % fc = str2func('fillNrml_K_Type4');
+                % auxiSegMedSUB = getAuxiSegMed( m_v, n_v, ell_v + 1, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flagSUB );
+        %     otherwise
+        %         error('check');
+        % end
+    end
+
     if quadrantNum == 3 
         auxiSegMedSUB = ones(6, 8, 'uint8');
         corner_flagSUB = false(2, 6);
         flagSUB = getMNL_flag(m_v + 1, n_v, ell_v);
-        SegMedInSUB = FetchSegMed( m_v + 1, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
+        SegMedInSUB = FetchSegMed( m_v + 1, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flagSUB );
         % % volume
         % switch flagSUB
         %     case { '111', '000' }
@@ -286,12 +332,18 @@ function varargout = fillNrml_K_Type4( m_v, n_v, ell_v, flag, Vertex_Crdnt, x_ma
                 K_row_4(:, 1: 13) = repmat(K1_row_4(1: 13), 3, 1);
                 [ K_row_4(:, 14: 26), B_k_row4 ] = CurrentType4( FaceCrdnt, squeeze( PntsCrdnt(2, 1, :) ), ...
                                         Side_Cflags, Pnts_Cflags(2, 1), tmpSegMed, J_0, mu_r, '4', quadrantNum );
-            elseif quadrantNum == 3
+            elseif quadrantNum == 3 
                 % fc = type3
                 [ K_row_4(1, :), K_row_4(2, :), K_row_4(3, :), B_k_row4 ] ...
                 = fc( m_v + 1, n_v, ell_v, flagSUB, ...
-                    Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedInSUB, auxiSegMedSUB, epsilon_r, mu_r, Omega_0, ...
-                    B_k, SheetPntsTable, J_0, corner_flagSUB, TiltType, quadrantNum, SegMed, 'help' );
+                    Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedInSUB, auxiSegMedSUB, epsilon_r, mu_r, omega, ...
+                    B_k, SheetPntsTable, J_0, corner_flagSUB, tiltType, quadrantNum, SegMed, 'help' );
+            elseif quadrantNum == 4 
+                % fc = type3
+                [ K_row_4(1, :), K_row_4(2, :), K_row_4(3, :), B_k_row4 ] ...
+                = fc( m_v + 1, n_v, ell_v, flagSUB, ...
+                    Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedInSUB, auxiSegMedSUB, epsilon_r, mu_r, omega, ...
+                    B_k, SheetPntsTable, J_0, corner_flagSUB, tiltType, quadrantNum, SegMed, 'help' );
             end
         end
     end
@@ -343,8 +395,14 @@ function varargout = fillNrml_K_Type4( m_v, n_v, ell_v, flag, Vertex_Crdnt, x_ma
             elseif quadrantNum == 1
                 [ K_row_5(1, :), K_row_5(2, :), K_row_5(3, :), B_k_row5 ] ...
                 = fc( m_v, n_v, ell_v + 1, flagSUB, ...
-                    Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedInSUB, auxiSegMedSUB, epsilon_r, mu_r, Omega_0, ...
-                    B_k, SheetPntsTable, J_0, corner_flagSUB, TiltType, quadrantNum, SegMed, 'help' );
+                    Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedInSUB, auxiSegMedSUB, epsilon_r, mu_r, omega, ...
+                    B_k, SheetPntsTable, J_0, corner_flagSUB, tiltType, quadrantNum, SegMed, 'help' );
+            elseif quadrantNum == 4
+                % fc = type 1
+                [ K_row_5(1, :), K_row_5(2, :), K_row_5(3, :), B_k_row5 ] ...
+                = fc( m_v, n_v, ell_v + 1, flagSUB, ...
+                    Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedInSUB, auxiSegMedSUB, epsilon_r, mu_r, omega, ...
+                    B_k, SheetPntsTable, J_0, corner_flagSUB, tiltType, quadrantNum, SegMed, 'help' );
             end
         end
     end

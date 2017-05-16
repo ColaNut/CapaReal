@@ -32,7 +32,7 @@ switch SideIdx
         J = zeros(3, 1);
 
         quadrantMask = zeros(4, 1);
-        quadrantMask = getMask(quadtantNum, 'Type2-2', 4);
+        quadrantMask = getMask(quadrantNum, 'Type2-2', 4);
 
         [ FourTet_e(1, :, :), J ] = calBC( SideCrdnt(4, :), CntrlCrdnt', SideCrdnt(5, :), SideCrdnt(3, :), ...
                                 Side_Cflag(4), Cntrl_Cflag, Side_Cflag(5), Side_Cflag(3), 5, 'inn', J_0, J, mu_r(SegMed(1)), quadrantMask(1) );
@@ -64,7 +64,7 @@ switch SideIdx
         J = zeros(3, 1);
 
         quadrantMask = zeros(4, 1);
-        quadrantMask = getMask(quadtantNum, 'Type2-4', 4);
+        quadrantMask = getMask(quadrantNum, 'Type2-4', 4);
 
         [ FourTet_e(1, :, :), J ] = calBC( SideCrdnt(4, :), SideCrdnt(5, :), SideCrdnt(3, :), CntrlCrdnt', ...
                                 Side_Cflag(4), Side_Cflag(5), Side_Cflag(3), Cntrl_Cflag, 6, 'inn', J_0, J, mu_r(SegMed(1)), quadrantMask(1) );
@@ -82,7 +82,7 @@ switch SideIdx
         J = zeros(3, 1);
 
         quadrantMask = zeros(4, 1);
-        quadrantMask = getMask(quadtantNum, 'Type2-5', 4);
+        quadrantMask = getMask(quadrantNum, 'Type2-5', 4);
 
         [ FourTet_e(1, :, :), J ] = calBC( SideCrdnt(5, :), SideCrdnt(3, :), SideCrdnt(4, :), CntrlCrdnt', ...
                                 Side_Cflag(5), Side_Cflag(3), Side_Cflag(4), Cntrl_Cflag, 5, 'inn', J_0, J, mu_r(SegMed(1)), quadrantMask(1) );
@@ -114,7 +114,7 @@ switch SideIdx
         J = zeros(3, 1);
 
         quadrantMask = zeros(6, 1);
-        quadrantMask = getMask(quadtantNum, 'Type2-7', 4);
+        quadrantMask = getMask(quadrantNum, 'Type2-7', 6);
 
         % K_1: the 1-st to the 8-th tetdrahedron
         [ SixTet_e(1, :, :), J ] = calBC( SideCrdnt(7, :), SideCrdnt(4, :), SideCrdnt(3, :), CntrlCrdnt', ...

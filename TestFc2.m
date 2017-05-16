@@ -2,69 +2,128 @@
 % ==== % BORDER LINE % ==== %
 % ==== % =========== % ==== %
 
-sparseAug =  cell( 3 * arndNum * 2 * (y_n - 1), 1 );
-AugBk     = zeros( 3 * arndNum * 2 * (y_n - 1), 1 );
-counter = int64(0);
-for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
-    [ m_v, n_v, ell_v ] = getMNL(vIdx, x_max_vertex, y_max_vertex, z_max_vertex);
-    vIdx_prm = get_idx_prm( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
+% y_n = 0;
+% arndNum = length( find(SheetPntsTable(:, int64(w_y / (2 * dy) + 1), :) == 1) );
+% for v_idx = 1: 1: x_max_vertex * z_max_vertex
+%     [ m_v, ell_v ] = getML(v_idx, x_max_vertex);
+%     if SheetPntsTable(m_v, int64(w_y / (2 * dy) + 1), ell_v) == 1;
+%         y_n = length( find( SheetPntsTable(m_v, :, ell_v) == 1 ) );
+%         break
+%     end
+% end
+% sparseAug =  cell( 3 * arndNum * 2 * (y_n - 1), 1 );
+% AugBk     = zeros( 3 * arndNum * 2 * (y_n - 1), 1 );
 
-    auxiSegMed = ones(6, 8, 'uint8');
-    corner_flag = false(2, 6);
-    flag = getMNL_flag(m_v, n_v, ell_v);
-    SegMedIn = FetchSegMed( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
-    % volume
-    switch flag
-        case { '111', '000' }
-            fc = str2func('fillNrml_K_Type1');
-        case { '100', '011' }
-            fc = str2func('fillNrml_K_Type2');
-            auxiSegMed = getAuxiSegMed( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
-        case { '101', '010' }
-            fc = str2func('fillNrml_K_Type3');
-            auxiSegMed = getAuxiSegMed( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
-        case { '110', '001' }
-            fc = str2func('fillNrml_K_Type4');
-            auxiSegMed = getAuxiSegMed( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
-        otherwise
-            error('check');
-    end
+% % boundary condition on current sheet 
+% counter = int64(0);
+% for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
+%     [ m_v, n_v, ell_v ] = getMNL(vIdx, x_max_vertex, y_max_vertex, z_max_vertex);
+%     vIdx_prm = get_idx_prm( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
+
+%     auxiSegMed = ones(6, 8, 'uint8');
+%     corner_flag = false(2, 6);
+%     flag = getMNL_flag(m_v, n_v, ell_v);
+%     SegMedIn = FetchSegMed( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
+%     % volume
+%     switch flag
+%         case { '111', '000' }
+%             fc = str2func('fillNrml_K_Type1');
+%         case { '100', '011' }
+%             fc = str2func('fillNrml_K_Type2');
+%             auxiSegMed = getAuxiSegMed( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
+%         case { '101', '010' }
+%             fc = str2func('fillNrml_K_Type3');
+%             auxiSegMed = getAuxiSegMed( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
+%         case { '110', '001' }
+%             fc = str2func('fillNrml_K_Type4');
+%             auxiSegMed = getAuxiSegMed( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
+%         otherwise
+%             error('check');
+%     end
     
-    TiltType = '';
-    EdgeRx = [0, 0];
-    if n_v >= 2 && SheetPntsTable(m_v, n_v, ell_v) == 1 && SheetPntsTable(m_v, n_v - 1, ell_v) == 1
-        if Vertex_Crdnt(m_v, n_v, ell_v, 1) <= 0 && Vertex_Crdnt(m_v, n_v, ell_v, 3) > 0
-            counter = counter + 1;
-            % II-quadrant 
-            if SheetPntsTable(m_v - 1, n_v, ell_v) == 1
-                TiltType = 'Horizental';
-                % EdgeRx = [2, 4];
-            elseif SheetPntsTable(m_v - 1, n_v, ell_v - 1) == 1
-                TiltType = 'Oblique';
-                % EdgeRx = [2, 7];
-            elseif SheetPntsTable(m_v, n_v, ell_v - 1) == 1
-                TiltType = 'Vertical';
-                % EdgeRx = [2, 5];
-            end
-            [ sparseAug{6 * ( counter - 1 ) + 1}, sparseAug{6 * ( counter - 1 ) + 2}, sparseAug{6 * ( counter - 1 ) + 3}, ...
-                sparseAug{6 * ( counter - 1 ) + 4}, sparseAug{6 * ( counter - 1 ) + 5}, sparseAug{6 * ( counter - 1 ) + 6}, ...
-                AugBk(6 * ( counter - 1 ) + 1), AugBk(6 * ( counter - 1 ) + 2), AugBk(6 * ( counter - 1 ) + 3), ...
-                AugBk(6 * ( counter - 1 ) + 4), AugBk(6 * ( counter - 1 ) + 5), AugBk(6 * ( counter - 1 ) + 6) ] ...
-            = fc( m_v, n_v, ell_v, flag, ...
-                Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedIn, auxiSegMed, epsilon_r, mu_r, Omega_0, ...
-                B_k, SheetPntsTable, J_0, corner_flag, TiltType );
-        end
+%     TiltType = '';
+%     EdgeRx = [0, 0];
+%     if n_v >= 2 && SheetPntsTable(m_v, n_v, ell_v) == 1 && SheetPntsTable(m_v, n_v - 1, ell_v) == 1
+%         counter = counter + 1;
+%         if counter == 72 
+%             ;
+%         end
+%         if Vertex_Crdnt(m_v, n_v, ell_v, 1) <= 0 && Vertex_Crdnt(m_v, n_v, ell_v, 3) >= 0
+%             % II-quadrant 
+%             quadtantNum = 2;
+%             if SheetPntsTable(m_v - 1, n_v, ell_v) == 1
+%                 TiltType = 'Horizental';
+%                 % EdgeRx = [2, 4];
+%             elseif SheetPntsTable(m_v - 1, n_v, ell_v - 1) == 1
+%                 TiltType = 'Oblique';
+%                 % EdgeRx = [2, 7];
+%             elseif SheetPntsTable(m_v, n_v, ell_v - 1) == 1
+%                 TiltType = 'Vertical';
+%                 % EdgeRx = [2, 5];
+%             end
+%         elseif Vertex_Crdnt(m_v, n_v, ell_v, 1) >= 0 && Vertex_Crdnt(m_v, n_v, ell_v, 3) >= 0
+%             % I-quadrant 
+%             quadtantNum = 1;
+%             if SheetPntsTable(m_v - 1, n_v, ell_v) == 1
+%                 TiltType = 'Horizental';
+%                 % EdgeRx = [2, 4];
+%             elseif SheetPntsTable(m_v - 1, n_v, ell_v + 1) == 1
+%                 TiltType = 'Oblique';
+%                 % EdgeRx = [2, 7];
+%             elseif SheetPntsTable(m_v, n_v, ell_v + 1) == 1
+%                 TiltType = 'Vertical';
+%                 % EdgeRx = [2, 5];
+%             end
+%         elseif Vertex_Crdnt(m_v, n_v, ell_v, 1) >= 0 && Vertex_Crdnt(m_v, n_v, ell_v, 3) <= 0
+%             % IV-quadrant 
+%             quadtantNum = 4;
+%             if SheetPntsTable(m_v + 1, n_v, ell_v) == 1
+%                 TiltType = 'Horizental';
+%                 % EdgeRx = [2, 4];
+%             elseif SheetPntsTable(m_v + 1, n_v, ell_v + 1) == 1
+%                 TiltType = 'Oblique';
+%                 % EdgeRx = [2, 7];
+%             elseif SheetPntsTable(m_v, n_v, ell_v + 1) == 1
+%                 TiltType = 'Vertical';
+%                 % EdgeRx = [2, 5];
+%             end
+%         elseif Vertex_Crdnt(m_v, n_v, ell_v, 1) <= 0 && Vertex_Crdnt(m_v, n_v, ell_v, 3) <= 0
+%             % III-quadrant 
+%             quadtantNum = 3;
+%             if SheetPntsTable(m_v + 1, n_v, ell_v) == 1
+%                 TiltType = 'Horizental';
+%                 % EdgeRx = [2, 4];
+%             elseif SheetPntsTable(m_v + 1, n_v, ell_v - 1) == 1
+%                 TiltType = 'Oblique';
+%                 % EdgeRx = [2, 7];
+%             elseif SheetPntsTable(m_v, n_v, ell_v - 1) == 1
+%                 TiltType = 'Vertical';
+%                 % EdgeRx = [2, 5];
+%             end
+%         end
+%         [ sparseAug{6 * ( counter - 1 ) + 1}, sparseAug{6 * ( counter - 1 ) + 2}, sparseAug{6 * ( counter - 1 ) + 3}, ...
+%             sparseAug{6 * ( counter - 1 ) + 4}, sparseAug{6 * ( counter - 1 ) + 5}, sparseAug{6 * ( counter - 1 ) + 6}, ...
+%             AugBk(6 * ( counter - 1 ) + 1), AugBk(6 * ( counter - 1 ) + 2), AugBk(6 * ( counter - 1 ) + 3), ...
+%             AugBk(6 * ( counter - 1 ) + 4), AugBk(6 * ( counter - 1 ) + 5), AugBk(6 * ( counter - 1 ) + 6) ] ...
+%         = fc( m_v, n_v, ell_v, flag, ...
+%             Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedIn, auxiSegMed, epsilon_r, mu_r, Omega_0, ...
+%             B_k, SheetPntsTable, J_0, corner_flag, TiltType, quadtantNum, SegMed );
+%     end
+% end
+
+% count = 0;
+% for idx = 1: 1: 3 * arndNum  * (y_n - 1)
+%     if isempty(sparseAug{ idx })
+%         count = count + 1;
+%     end
+% end
+% count
+
+for idx = 1: 1: arndNum  * (y_n - 1)
+    if AugBk( 3 * ( idx - 1 ) + 3 ) == 0
+        idx
     end
 end
-
-count = 0;
-for idx = 1: 1: 3 * arndNum * 2 * (y_n - 1), 1
-    if isempty(sparseAug{ idx })
-        count = count + 1;
-    end
-end
-count
-
 % tol = 1e-6;
 % ext_itr_num = 10;
 % int_itr_num = 50;
