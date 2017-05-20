@@ -1,4 +1,4 @@
-function [ K1_Value, J ] = CurrentType2( SideCrdnt, CntrlCrdnt, Side_Cflag, Cntrl_Cflag, SegMed, J_0, mu_r, SideIdx, quadrantNum )
+function [ K1_Value, J ] = CurrentType2( SideCrdnt, CntrlCrdnt, Side_Cflag, Cntrl_Cflag, SegMed, J_0, mu_r, SideIdx, quadrantNum, varargin )
 % Cflag -> current flag
 % the center point is a column vector; while the side point are row vector.
 
@@ -27,12 +27,18 @@ switch SideIdx
 
         Bk_m = sum(EightTet_e);
     case '2'
-        FourTet_e = zeros(4, 6, 3);
-        K1_Value = zeros(3, 13);
+        nVarargs = length(varargin);
+        if nVarargs == 1
+            TiltType = varargin{1};
+        else
+            error('check');
+        end
+        FourTet_e = zeros(4, 6, 4);
+        K1_Value = zeros(4, 13);
         J = zeros(3, 1);
 
         quadrantMask = zeros(4, 1);
-        quadrantMask = getMask(quadrantNum, 'Type2-2', 4);
+        quadrantMask = getMask(quadrantNum, 'Type2-2', 4, TiltType);
 
         [ FourTet_e(1, :, :), J ] = calBC( SideCrdnt(4, :), CntrlCrdnt', SideCrdnt(5, :), SideCrdnt(3, :), ...
                                 Side_Cflag(4), Cntrl_Cflag, Side_Cflag(5), Side_Cflag(3), 5, 'inn', J_0, J, mu_r(SegMed(1)), quadrantMask(1) );
@@ -41,9 +47,15 @@ switch SideIdx
         [ FourTet_e(3, :, :), J ] = calBC( CntrlCrdnt', SideCrdnt(3, :), SideCrdnt(1, :), SideCrdnt(2, :), ...
                                 Cntrl_Cflag, Side_Cflag(3), Side_Cflag(1), Side_Cflag(2), 1, 'inn', J_0, J, mu_r(SegMed(3)), quadrantMask(3) );
         [ FourTet_e(4, :, :), J ] = calBC( SideCrdnt(4, :), CntrlCrdnt', SideCrdnt(3, :), SideCrdnt(1, :), ...
-                                Side_Cflag(4), Cntrl_Cflag, Side_Cflag(3), Side_Cflag(1), 1, 'inn', J_0, J, mu_r(SegMed(4)), quadrantMask(4) );
+                                Side_Cflag(4), Cntrl_Cflag, Side_Cflag(3), Side_Cflag(1), 4, 'inn', J_0, J, mu_r(SegMed(4)), quadrantMask(4) );
 
         K1_Value = Tet2K1(K1_Value, FourTet_e, 'Type2-2');
+        if length( find( K1_Value(4, :) ) )~= 9
+            TiltType
+            quadrantNum
+            quadrantMask
+            error('check the Tet2K1');
+        end
     case '3'
         Bk_m = 0;
         FourTet_e = zeros(4, 1);
@@ -59,8 +71,8 @@ switch SideIdx
 
         Bk_m = sum(FourTet_e);
     case '4'
-        FourTet_e = zeros(4, 6, 3);
-        K1_Value = zeros(3, 13);
+        FourTet_e = zeros(4, 6, 4);
+        K1_Value = zeros(4, 13);
         J = zeros(3, 1);
 
         quadrantMask = zeros(4, 1);
@@ -76,9 +88,14 @@ switch SideIdx
                                 Side_Cflag(4), Side_Cflag(3), Side_Cflag(1), Cntrl_Cflag, 5, 'inn', J_0, J, mu_r(SegMed(4)), quadrantMask(4) );
         
         K1_Value = Tet2K1(K1_Value, FourTet_e, 'Type2-4');
+        if length( find( K1_Value(4, :) ) )~= 9
+            quadrantNum
+            quadrantMask
+            error('check the Tet2K1');
+        end
     case '5'
-        FourTet_e = zeros(4, 6, 3);
-        K1_Value = zeros(3, 13);
+        FourTet_e = zeros(4, 6, 4);
+        K1_Value = zeros(4, 13);
         J = zeros(3, 1);
 
         quadrantMask = zeros(4, 1);
@@ -94,6 +111,11 @@ switch SideIdx
                                 Side_Cflag(3), Side_Cflag(4), Cntrl_Cflag, Side_Cflag(1), 2, 'inn', J_0, J, mu_r(SegMed(4)), quadrantMask(4) );
 
         K1_Value = Tet2K1(K1_Value, FourTet_e, 'Type2-5');
+        if length( find( K1_Value(4, :) ) )~= 9
+            quadrantNum
+            quadrantMask
+            error('check the Tet2K1');
+        end
     case '6'
         Bk_m = 0;
         FourTet_e = zeros(4, 1);
@@ -109,8 +131,8 @@ switch SideIdx
 
         Bk_m = sum(FourTet_e);
     case '7'
-        SixTet_e = zeros(6, 6, 3);
-        K1_Value = zeros(3, 19);
+        SixTet_e = zeros(6, 6, 4);
+        K1_Value = zeros(4, 19);
         J = zeros(3, 1);
 
         quadrantMask = zeros(6, 1);
@@ -131,6 +153,11 @@ switch SideIdx
                                        Side_Cflag(4), Side_Cflag(3), Cntrl_Cflag, Side_Cflag(1), 4, 'ext', J_0, J, mu_r(SegMed(6)), quadrantMask(6) );
 
         K1_Value = Tet2K1(K1_Value, SixTet_e, 'Type2-7');
+        if length( find( K1_Value(4, :) ) )~= 9
+            quadrantNum
+            quadrantMask
+            error('check the Tet2K1');
+        end
     end
 
 end

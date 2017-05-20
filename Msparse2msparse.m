@@ -18,7 +18,7 @@ function m_three = Msparse2msparse( M_three, varargin )
 
     for idx = 1: 1: n - 1
         First = nextFirst;
-        nextFirst = (First - 1) + find(row_idx(First: end) == idx + 1, 1);
+        nextFirst = (First - 1) + my_find(row_idx(First: end), idx + 1);
         if isempty(First)
             error('check');
         end

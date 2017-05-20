@@ -4,6 +4,7 @@ bar_x_my_gmres_TMP = zeros(x_idx_max * y_idx_max * z_idx_max, 1);
 if flag_XZ == 1
     H_XZ = zeros(x_idx_max, z_idx_max, 6, 8, 3); 
     % CrossN = int64( w_y / dy );
+    % CrossN = shIdx;
     CrossN = int64( w_y / (2 * dy) + 1 );
     n = CrossN;
     for idx = 1: 1: x_idx_max * z_idx_max
@@ -85,15 +86,16 @@ if flag_XZ == 1
 
     % plot H distribution in the XZ plane
     figure(2);
+    set(figure(2),'name', Fname,'numbertitle','off')
     clf;
-    % myRange = [ 1e-10, 1e4 ];
+    % myRange = [ 1e-3, 1e4 ];
     % caxis(myRange);
     % cbar = colorbar('peer', gca, 'Yscale', 'log');
     % set(gca, 'Visible', 'off')
     % log_axes = axes('Position', get(gca, 'Position'));
     % ylabel(cbar, '$H$ (A/m)', 'Interpreter','LaTex', 'FontSize', 20);
     % set(cbar, 'FontSize', 18 );
-    % hold on;
+    hold on;
 
     disp('Time to plot SAR');
     tic;
@@ -119,7 +121,7 @@ if flag_XZ == 1
     ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
     % set(log_axes,'fontsize',20);
     % set(log_axes,'LineWidth',2.0);
-    % zlabel('$H$ (A/m)','Interpreter','LaTex', 'FontSize', 20);
+    zlabel('$H$ (A/m)','Interpreter','LaTex', 'FontSize', 20);
     box on;
     view(2);
     hold on;
@@ -304,8 +306,9 @@ if flag_XY == 1
 
     % plot electrode SAR
     figure(7);
+    set(figure(7),'name', Fname,'numbertitle','off')
     clf;
-    % myRange = [ 1e-2, 1e0 ];
+    % myRange = [ 1e-3, 1e4 ];
     % caxis(myRange);
     % cbar = colorbar('peer', gca, 'Yscale', 'log');
     % set(gca, 'Visible', 'off')
@@ -363,6 +366,7 @@ if flag_XY == 1
 
     % caxis(log10(myRange));
     colormap jet;
+    colorbar
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$y$ (cm)','Interpreter','LaTex', 'FontSize', 20);
     axis equal;
@@ -544,8 +548,9 @@ if flag_YZ == 1
 
     % plot SAR
     figure(12);
+    set(figure(12),'name', Fname,'numbertitle','off')
     clf;
-    % myRange = [ 1e-9, 1e4 ];
+    % myRange = [ 1e-3, 1e3 ];
     % caxis(myRange);
     % cbar = colorbar('peer', gca, 'Yscale', 'log');
     % set(gca, 'Visible', 'off')

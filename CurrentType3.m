@@ -1,4 +1,4 @@
-function [ K1_Value, J ] = CurrentType3( SideCrdnt, CntrlCrdnt, Side_Cflag, Cntrl_Cflag, SegMed, J_0, mu_r, SideIdx, quadrantNum )
+function [ K1_Value, J ] = CurrentType3( SideCrdnt, CntrlCrdnt, Side_Cflag, Cntrl_Cflag, SegMed, J_0, mu_r, SideIdx, quadrantNum, varargin )
 % Cflag -> current flag
 % the center point is a column vector; while the side point are row vector.
 
@@ -19,12 +19,18 @@ switch SideIdx
 
         Bk_m = sum(FourTet_e);
     case '2'
-        EightTet_e = zeros(8, 6, 3);
-        K1_Value = zeros(3, 25);
+        nVarargs = length(varargin);
+        if nVarargs == 1
+            TiltType = varargin{1};
+        else
+            error('check');
+        end
+        EightTet_e = zeros(8, 6, 4);
+        K1_Value = zeros(4, 25);
         J = zeros(3, 1);
 
         quadrantMask = zeros(8, 1);
-        quadrantMask = getMask(quadrantNum, 'Type3-2', 8);
+        quadrantMask = getMask(quadrantNum, 'Type3-2', 8, TiltType);
 
         % K_1: the 1-st to the 8-th tetdrahedron
         [ EightTet_e(1, :, :), J ] = calBC( SideCrdnt(5, :), CntrlCrdnt', SideCrdnt(9, :), SideCrdnt(6, :), ...
@@ -45,6 +51,12 @@ switch SideIdx
                                 Side_Cflag(5), Cntrl_Cflag, Side_Cflag(6), Side_Cflag(3), 1, 'ext', J_0, J, mu_r(SegMed(8)), quadrantMask(8) );
 
         K1_Value = Tet2K1(K1_Value, EightTet_e, 'Type3-2');
+        if length( find( K1_Value(4, :) ) )~= 9
+            TiltType
+            quadrantNum
+            quadrantMask
+            error('check the Tet2K1');
+        end
         % Bk_m = sum(EightTet_e);
     case '3'
         Bk_m = 0;
@@ -61,8 +73,8 @@ switch SideIdx
 
         Bk_m = sum(FourTet_e);
     case '4'
-        FourTet_e = zeros(4, 6, 3);
-        K1_Value = zeros(3, 13);
+        FourTet_e = zeros(4, 6, 4);
+        K1_Value = zeros(4, 13);
         J = zeros(3, 1);
 
         quadrantMask = zeros(4, 1);
@@ -78,10 +90,15 @@ switch SideIdx
                                 Cntrl_Cflag, Side_Cflag(3), Side_Cflag(4), Side_Cflag(1), 1, 'ext', J_0, J, mu_r(SegMed(4)), quadrantMask(4) );
 
         K1_Value = Tet2K1(K1_Value, FourTet_e, 'Type3-4');
+        if length( find( K1_Value(4, :) ) )~= 9
+            quadrantNum
+            quadrantMask
+            error('check the Tet2K1');
+        end
         % Bk_m = sum(FourTet_e);
     case '5'
-        FourTet_e = zeros(4, 6, 3);
-        K1_Value = zeros(3, 13);
+        FourTet_e = zeros(4, 6, 4);
+        K1_Value = zeros(4, 13);
         J = zeros(3, 1);
 
         quadrantMask = zeros(4, 1);
@@ -97,6 +114,11 @@ switch SideIdx
                                 Side_Cflag(4), Side_Cflag(3), Cntrl_Cflag, Side_Cflag(1), 4, 'ext', J_0, J, mu_r(SegMed(4)), quadrantMask(4) );
 
         K1_Value = Tet2K1(K1_Value, FourTet_e, 'Type3-5');
+        if length( find( K1_Value(4, :) ) )~= 9
+            quadrantNum
+            quadrantMask
+            error('check the Tet2K1');
+        end
         % Bk_m = sum(FourTet_e);
     case '6'
         Bk_m = 0;
@@ -113,8 +135,8 @@ switch SideIdx
 
         Bk_m = sum(FourTet_e);
     case '7'
-        SixTet_e = zeros(6, 6, 3);
-        K1_Value = zeros(3, 19);
+        SixTet_e = zeros(6, 6, 4);
+        K1_Value = zeros(4, 19);
         J = zeros(3, 1);
 
         quadrantMask = zeros(6, 1);
@@ -135,6 +157,11 @@ switch SideIdx
                                 Side_Cflag(4), Side_Cflag(1), Side_Cflag(3), Cntrl_Cflag, 6, 'ext', J_0, J, mu_r(SegMed(6)), quadrantMask(6) );
 
         K1_Value = Tet2K1(K1_Value, SixTet_e, 'Type3-7');
+        if length( find( K1_Value(4, :) ) )~= 9
+            quadrantNum
+            quadrantMask
+            error('check the Tet2K1');
+        end
         % Bk_m = sum(SixTet_e);, :, :
     end
 

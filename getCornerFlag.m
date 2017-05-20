@@ -1,27 +1,38 @@
 function corner_flag = getCornerFlag(m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex)
     
     corner_flag = false(2, 6);
+    % up
     if ell_v == z_max_vertex
         corner_flag(1, 1) = true;
     end
+
+    % left
     if m_v == 2
         corner_flag(1, 2) = true;
     end
     if m_v == 1
         corner_flag(2, 2) = true;
     end
+
+    % down
     if ell_v == 2
         corner_flag(1, 3) = true;
     end
     if ell_v == 1
         corner_flag(2, 3) = true;
     end
+
+    % right
     if m_v == x_max_vertex
         corner_flag(1, 4) = true;
     end
+
+    % far
     if n_v == y_max_vertex
         corner_flag(1, 5) = true;
     end
+
+    % near
     if n_v == 2
         corner_flag(1, 6) = true;
     end

@@ -14,8 +14,9 @@ if A_flag == 1
     flag_XZ = 1;
     flag_XY = 1;
     flag_YZ = 1;
-
-    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0509MQS';
+    
+    Fname = 'K_1_NBC';
+    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0518MQS';
     % CaseName = '0321';
     % fname = 'e:\Kevin\CapaReal\Case0220_1cmFat';
     % CaseDate = 'Case0220_1cmFat';

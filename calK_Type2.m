@@ -160,7 +160,7 @@ switch SideIdx
         [ FourTet_e(1, :), FourTet_v(1, :) ] = get6E4V( SideCrdnt(4, :), CntrlCrdnt', SideCrdnt(5, :), SideCrdnt(3, :), 5, 'inn', mu_r( FaceSegMed(1) ), epsilon_r( FaceSegMed(1) ) );
         [ FourTet_e(2, :), FourTet_v(2, :) ] = get6E4V( CntrlCrdnt', SideCrdnt(5, :), SideCrdnt(3, :), SideCrdnt(2, :), 2, 'inn', mu_r( FaceSegMed(2) ), epsilon_r( FaceSegMed(2) ) );
         [ FourTet_e(3, :), FourTet_v(3, :) ] = get6E4V( CntrlCrdnt', SideCrdnt(3, :), SideCrdnt(1, :), SideCrdnt(2, :), 1, 'inn', mu_r( FaceSegMed(3) ), epsilon_r( FaceSegMed(3) ) );
-        [ FourTet_e(4, :), FourTet_v(4, :) ] = get6E4V( SideCrdnt(4, :), CntrlCrdnt', SideCrdnt(3, :), SideCrdnt(1, :), 1, 'inn', mu_r( FaceSegMed(4) ), epsilon_r( FaceSegMed(4) ) );
+        [ FourTet_e(4, :), FourTet_v(4, :) ] = get6E4V( SideCrdnt(4, :), CntrlCrdnt', SideCrdnt(3, :), SideCrdnt(1, :), 4, 'inn', mu_r( FaceSegMed(4) ), epsilon_r( FaceSegMed(4) ) );
 
         if corner_flag(1, 1)
             vec = [1, 2];
