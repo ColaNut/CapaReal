@@ -3,6 +3,7 @@
 % === % =========================================== % === %
 clc; clear;
 digits;
+disp('K_1');
 
 Mu_0          = 4 * pi * 10^(-7);
 Epsilon_0     = 10^(-9) / (36 * pi);
@@ -137,10 +138,15 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
     end
 end
 
+% edgeTable_check = false(size(B_k));
+
 B_k       = zeros(N_e, 1);
+edgeTable = false(size(B_k));
 sparseK1  = cell( N_e, 1 );
 sparseKEV = cell( N_e, 1 );
 sparseKVE = cell( 1, N_e );
+edgeScript;
+
 tic;
 disp('The filling time of K_1, K_EV, K_VE and B: ');
 for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
@@ -185,7 +191,7 @@ for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
             sparseKVE{7 * ( vIdx_prm - 1 ) + 5}, sparseKVE{7 * ( vIdx_prm - 1 ) + 6}, sparseKVE{7 * ( vIdx_prm - 1 ) + 7}, B_k ] ...
             = fc( m_v, n_v, ell_v, flag, ...
                 Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedIn, auxiSegMed, epsilon_r, mu_r, Omega_0, ...
-                B_k, SheetPntsTable, J_0, corner_flag );
+                B_k, SheetPntsTable, J_0, corner_flag, edgeTable );
     end
     % three surfaces
     if m_v >= 2 && m_v <= x_max_vertex && n_v == 1 && ell_v >= 2 && ell_v <= z_max_vertex
@@ -200,7 +206,7 @@ for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
             sparseKVE{ vIdx2eIdx(vIdx_prm, 6, x_max_vertex, y_max_vertex, z_max_vertex) } ] ...
             = fc( m_v, n_v, ell_v, flag, ...
                         Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedIn, auxiSegMed, epsilon_r, mu_r, Omega_0, ...
-                        B_k, SheetPntsTable, J_0, corner_flag );
+                        B_k, SheetPntsTable, J_0, corner_flag, edgeTable );
     end
     if m_v == 1 && n_v >= 2 && n_v <= y_max_vertex && ell_v >= 2 && ell_v <= z_max_vertex
         [ sparseK1{ vIdx2eIdx(vIdx_prm, 2, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
@@ -214,7 +220,7 @@ for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
             sparseKVE{ vIdx2eIdx(vIdx_prm, 5, x_max_vertex, y_max_vertex, z_max_vertex) } ] ...
             = fc( m_v, n_v, ell_v, flag, ...
                         Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedIn, auxiSegMed, epsilon_r, mu_r, Omega_0, ...
-                        B_k, SheetPntsTable, J_0, corner_flag );
+                        B_k, SheetPntsTable, J_0, corner_flag, edgeTable );
     end
     if m_v >= 2 && m_v <= x_max_vertex && n_v >= 2 && n_v <= y_max_vertex && ell_v == 1
         [ sparseK1{ vIdx2eIdx(vIdx_prm, 1, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
@@ -228,7 +234,7 @@ for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
             sparseKVE{ vIdx2eIdx(vIdx_prm, 4, x_max_vertex, y_max_vertex, z_max_vertex) } ] ...
             = fc( m_v, n_v, ell_v, flag, ...
                         Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedIn, auxiSegMed, epsilon_r, mu_r, Omega_0, ...
-                        B_k, SheetPntsTable, J_0, corner_flag );
+                        B_k, SheetPntsTable, J_0, corner_flag, edgeTable );
     end
     % three lines
     if m_v >= 2 && m_v <= x_max_vertex && n_v == 1 && ell_v == 1
@@ -237,7 +243,7 @@ for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
             sparseKVE{ vIdx2eIdx(vIdx_prm, 1, x_max_vertex, y_max_vertex, z_max_vertex) } ] ...
             = fc( m_v, n_v, ell_v, flag, ...
                         Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedIn, auxiSegMed, epsilon_r, mu_r, Omega_0, ...
-                        B_k, SheetPntsTable, J_0, corner_flag );
+                        B_k, SheetPntsTable, J_0, corner_flag, edgeTable );
     end
     if m_v == 1 && n_v == 1 && ell_v >= 2 && ell_v <= z_max_vertex
         [ sparseK1{ vIdx2eIdx(vIdx_prm, 3, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
@@ -245,7 +251,7 @@ for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
             sparseKVE{ vIdx2eIdx(vIdx_prm, 3, x_max_vertex, y_max_vertex, z_max_vertex) } ] ...
             = fc( m_v, n_v, ell_v, flag, ...
                         Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedIn, auxiSegMed, epsilon_r, mu_r, Omega_0, ...
-                        B_k, SheetPntsTable, J_0, corner_flag );
+                        B_k, SheetPntsTable, J_0, corner_flag, edgeTable );
     end
     if m_v == 1 && n_v >= 2 && n_v <= y_max_vertex && ell_v == 1
         [ sparseK1{ vIdx2eIdx(vIdx_prm, 2, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
@@ -253,12 +259,17 @@ for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
             sparseKVE{ vIdx2eIdx(vIdx_prm, 2, x_max_vertex, y_max_vertex, z_max_vertex) } ] ...
             = fc( m_v, n_v, ell_v, flag, ...
                         Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedIn, auxiSegMed, epsilon_r, mu_r, Omega_0, ...
-                        B_k, SheetPntsTable, J_0, corner_flag );
+                        B_k, SheetPntsTable, J_0, corner_flag, edgeTable );
     end
 end
 toc;
 
-% GVV matrix
+sparseK1_keep = sparseK1;
+
+% % === % ========== % === %
+% % === % GVV matrix % === %
+% % === % ========== % === %
+
 sparseGVV = cell(1, N_v);
 disp('The filling time of G_VV: ');
 tic;
@@ -301,12 +312,12 @@ load( strcat('SAI_Tol', num2str(Tol), '.mat'), 'sparseGVV_inv' );
 % M_three = M_KEV * M_sparseGVV_inv_spai * M_KVE;
 % toc;
 
-% disp('Transforming from M_three to m_three in the first 100 rows: ');
-% tic;
-% TMP_m_three = cell( N_e, 1 );
-% TMP_m_three = Msparse2msparse(M_three, 100);
-% toc;
-% save('TMP_m_three.mat', 'TMP_m_three', 'sparseK1', 'sparseKEV', 'sparseGVV', 'sparseGVV_inv', 'sparseKVE' );
+% % disp('Transforming from M_three to m_three in the first 100 rows: ');
+% % tic;
+% % TMP_m_three = cell( N_e, 1 );
+% % TMP_m_three = Msparse2msparse(M_three, 100);
+% % toc;
+% % save('TMP_m_three.mat', 'TMP_m_three', 'sparseK1', 'sparseKEV', 'sparseGVV', 'sparseGVV_inv', 'sparseKVE' );
 
 % M_K = sparse(N_e, N_e);
 % M_K1 = mySparse2MatlabSparse( sparseK1, N_e, N_e, 'Row' );
@@ -318,6 +329,16 @@ load( strcat('SAI_Tol', num2str(Tol), '.mat'), 'sparseGVV_inv' );
 % sparseK = Msparse2msparse(M_K);
 % toc;
 sparseK = sparseK1;
+
+% % === % ===================================== % === %
+% % === % Recover the original rows in sparseK1 % === %
+% % === % ===================================== % === %
+
+for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
+    if edgeTable(vIdx)
+        sparseK{ vIdx } = sparseK1_keep{ vIdx };
+    end
+end
 
 % % boundary condition on \Gamma for K
 % for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
@@ -372,170 +393,211 @@ sparseK = sparseK1;
 
 % save('UnNormalized.mat', 'sparseK', 'B_k');
 
-% === % ============================================= % === %
-% === % Imposed cboundary conditions on current sheet % === %
-% === % ============================================= % === %
+% === % =================================================== % === %
+% === % Imposed cboundary conditions on current sheet Ver.1 % === %
+% === % =================================================== % === %
 
-y_n = 0;
-arndNum = length( find(SheetPntsTable(:, int64(w_y / (2 * dy) + 1), :) == 1) );
-for v_idx = 1: 1: x_max_vertex * z_max_vertex
-    [ m_v, ell_v ] = getML(v_idx, x_max_vertex);
-    if SheetPntsTable(m_v, int64(w_y / (2 * dy) + 1), ell_v) == 1;
-        y_n = length( find( SheetPntsTable(m_v, :, ell_v) == 1 ) );
-        break
-    end
-end
-EdgeTable = false(N_e, 2); % first row for filled in; second row for prohibition look-up table
-EdgeTable(:, 2) = logical(B_k);
-sparseAug     =  cell( 3 * arndNum * 2 * (y_n - 1), 1 );
-CurrentIdxSet =  cell(     arndNum * 2 * (y_n - 1), 1 );
-AugBk         = zeros( 3 * arndNum * 2 * (y_n - 1), 1 );
+% y_n = 0;
+% arndNum = length( find(SheetPntsTable(:, int64(w_y / (2 * dy) + 1), :) == 1) );
+% for v_idx = 1: 1: x_max_vertex * z_max_vertex
+%     [ m_v, ell_v ] = getML(v_idx, x_max_vertex);
+%     if SheetPntsTable(m_v, int64(w_y / (2 * dy) + 1), ell_v) == 1;
+%         y_n = length( find( SheetPntsTable(m_v, :, ell_v) == 1 ) );
+%         break
+%     end
+% end
+% EdgeTable = false(N_e, 2); % first row for filled in; second row for prohibition look-up table
+% EdgeTable(:, 2) = logical(B_k);
+% sparseAug     =  cell( 3 * arndNum * 2 * (y_n - 1), 1 );
+% CurrentIdxSet =  cell(     arndNum * 2 * (y_n - 1), 1 );
+% AugBk         = zeros( 3 * arndNum * 2 * (y_n - 1), 1 );
 
-% boundary condition on current sheet 
-counter = int64(0);
-for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
-    [ m_v, n_v, ell_v ] = getMNL(vIdx, x_max_vertex, y_max_vertex, z_max_vertex);
-    vIdx_prm = get_idx_prm( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
+% % boundary condition on current sheet 
+% counter = int64(0);
+% for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
+%     [ m_v, n_v, ell_v ] = getMNL(vIdx, x_max_vertex, y_max_vertex, z_max_vertex);
+%     vIdx_prm = get_idx_prm( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
 
-    if m_v == 9 && n_v == 9 && ell_v == 13
-        ;
-    end
-    auxiSegMed = ones(6, 8, 'uint8');
-    corner_flag = false(2, 6);
-    flag = getMNL_flag(m_v, n_v, ell_v);
-    SegMedIn = FetchSegMed( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
-    % volume
-    switch flag
-        case { '111', '000' }
-            fc = str2func('fillNrml_K_Type1');
-            tpflag = 'type1';
-        case { '100', '011' }
-            fc = str2func('fillNrml_K_Type2');
-            tpflag = 'type2';
-            auxiSegMed = getAuxiSegMed( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
-        case { '101', '010' }
-            fc = str2func('fillNrml_K_Type3');
-            tpflag = 'type3';
-            auxiSegMed = getAuxiSegMed( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
-        case { '110', '001' }
-            fc = str2func('fillNrml_K_Type4');
-            tpflag = 'type4';
-            auxiSegMed = getAuxiSegMed( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
-        otherwise
-            error('check');
-    end
-    
-    TiltType = '';
-    EdgeRx = [0, 0];
-    if n_v >= 2 && SheetPntsTable(m_v, n_v, ell_v) == 1 && SheetPntsTable(m_v, n_v - 1, ell_v) == 1
-        counter = counter + 1;
-        if counter == 72 
-            ;
-        end
-        if Vertex_Crdnt(m_v, n_v, ell_v, 1) <= 0 && Vertex_Crdnt(m_v, n_v, ell_v, 3) >= 0
-            % II-quadrant 
-            quadtantNum = 2;
-            tpflag = strcat(tpflag, '-II');
-            if SheetPntsTable(m_v - 1, n_v, ell_v) == 1
-                TiltType = 'Horizental';
-                % EdgeRx = [2, 4];
-            elseif SheetPntsTable(m_v - 1, n_v, ell_v - 1) == 1
-                TiltType = 'Oblique';
-                % EdgeRx = [2, 7];
-            elseif SheetPntsTable(m_v, n_v, ell_v - 1) == 1
-                TiltType = 'Vertical';
-                % EdgeRx = [2, 5];
-            end
-        elseif Vertex_Crdnt(m_v, n_v, ell_v, 1) >= 0 && Vertex_Crdnt(m_v, n_v, ell_v, 3) >= 0
-            % I-quadrant 
-            quadtantNum = 1;
-            tpflag = strcat(tpflag, '-I');
-            if SheetPntsTable(m_v - 1, n_v, ell_v) == 1
-                TiltType = 'Horizental';
-                % EdgeRx = [2, 4];
-            elseif SheetPntsTable(m_v - 1, n_v, ell_v + 1) == 1
-                TiltType = 'Oblique';
-                % EdgeRx = [2, 7];
-            elseif SheetPntsTable(m_v, n_v, ell_v + 1) == 1
-                TiltType = 'Vertical';
-                % EdgeRx = [2, 5];
-            end
-        elseif Vertex_Crdnt(m_v, n_v, ell_v, 1) >= 0 && Vertex_Crdnt(m_v, n_v, ell_v, 3) <= 0
-            % IV-quadrant 
-            quadtantNum = 4;
-            tpflag = strcat(tpflag, '-IV');
-            if SheetPntsTable(m_v + 1, n_v, ell_v) == 1
-                TiltType = 'Horizental';
-                % EdgeRx = [2, 4];
-            elseif SheetPntsTable(m_v + 1, n_v, ell_v + 1) == 1
-                TiltType = 'Oblique';
-                % EdgeRx = [2, 7];
-            elseif SheetPntsTable(m_v, n_v, ell_v + 1) == 1
-                TiltType = 'Vertical';
-                % EdgeRx = [2, 5];
-            end
-        elseif Vertex_Crdnt(m_v, n_v, ell_v, 1) <= 0 && Vertex_Crdnt(m_v, n_v, ell_v, 3) <= 0
-            % III-quadrant 
-            quadtantNum = 3;
-            tpflag = strcat(tpflag, '-III');
-            if SheetPntsTable(m_v + 1, n_v, ell_v) == 1
-                TiltType = 'Horizental';
-                % EdgeRx = [2, 4];
-            elseif SheetPntsTable(m_v + 1, n_v, ell_v - 1) == 1
-                TiltType = 'Oblique';
-                % EdgeRx = [2, 7];
-            elseif SheetPntsTable(m_v, n_v, ell_v - 1) == 1
-                TiltType = 'Vertical';
-                % EdgeRx = [2, 5];
-            end
-        end
-        [ sparseAug{6 * ( counter - 1 ) + 1}, sparseAug{6 * ( counter - 1 ) + 2}, sparseAug{6 * ( counter - 1 ) + 3}, ...
-            CurrentIdxSet{ 2 * (counter - 1) + 1 }, ...
-            sparseAug{6 * ( counter - 1 ) + 4}, sparseAug{6 * ( counter - 1 ) + 5}, sparseAug{6 * ( counter - 1 ) + 6}, ...
-            CurrentIdxSet{ 2 * (counter - 1) + 2 }, ...
-            AugBk(6 * ( counter - 1 ) + 1), AugBk(6 * ( counter - 1 ) + 2), AugBk(6 * ( counter - 1 ) + 3), ...
-            AugBk(6 * ( counter - 1 ) + 4), AugBk(6 * ( counter - 1 ) + 5), AugBk(6 * ( counter - 1 ) + 6) ] ...
-        = fc( m_v, n_v, ell_v, flag, ...
-            Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedIn, auxiSegMed, epsilon_r, mu_r, Omega_0, ...
-            B_k, SheetPntsTable, J_0, corner_flag, TiltType, quadtantNum, SegMed );
+%     if m_v == 9 && n_v == 9 && ell_v == 13
+%         ;
+%     end
+%     auxiSegMed = ones(6, 8, 'uint8');
+%     corner_flag = false(2, 6);
+%     flag = getMNL_flag(m_v, n_v, ell_v);
+%     SegMedIn = FetchSegMed( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
+%     % volume
+%     switch flag
+%         case { '111', '000' }
+%             fc = str2func('fillNrml_K_Type1');
+%             tpflag = 'type1';
+%         case { '100', '011' }
+%             fc = str2func('fillNrml_K_Type2');
+%             tpflag = 'type2';
+%             auxiSegMed = getAuxiSegMed( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
+%         case { '101', '010' }
+%             fc = str2func('fillNrml_K_Type3');
+%             tpflag = 'type3';
+%             auxiSegMed = getAuxiSegMed( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
+%         case { '110', '001' }
+%             fc = str2func('fillNrml_K_Type4');
+%             tpflag = 'type4';
+%             auxiSegMed = getAuxiSegMed( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
+%         otherwise
+%             error('check');
+%     end
 
-        % replace the sparseK matrix
-        lastFlag = false;
-        if SheetPntsTable(m_v, n_v + 1, ell_v) == 0
-            lastFlag = true;
-        end
-        AuxiIdx = zeros(6, 1);
-        [ AuxiIdx, EdgeTable ] = getAuxiIdx(m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, tpflag, TiltType, lastFlag, ...
-                        EdgeTable, CurrentIdxSet{ 2 * (counter - 1) + 1 }, CurrentIdxSet{ 2 * (counter - 1) + 2 });
-        sparseK{ AuxiIdx(1) } = sparseAug{ 6 * (counter - 1) + 1 };
-        sparseK{ AuxiIdx(2) } = sparseAug{ 6 * (counter - 1) + 2 };
-        sparseK{ AuxiIdx(3) } = sparseAug{ 6 * (counter - 1) + 3 };
-        sparseK{ AuxiIdx(4) } = sparseAug{ 6 * (counter - 1) + 4 };
-        sparseK{ AuxiIdx(5) } = sparseAug{ 6 * (counter - 1) + 5 };
-        sparseK{ AuxiIdx(6) } = sparseAug{ 6 * (counter - 1) + 6 };
-        B_k( AuxiIdx(1) ) = AugBk( 6 * (counter - 1) + 1 );
-        B_k( AuxiIdx(2) ) = AugBk( 6 * (counter - 1) + 2 );
-        B_k( AuxiIdx(3) ) = AugBk( 6 * (counter - 1) + 3 );
-        B_k( AuxiIdx(4) ) = AugBk( 6 * (counter - 1) + 4 );
-        B_k( AuxiIdx(5) ) = AugBk( 6 * (counter - 1) + 5 );
-        B_k( AuxiIdx(6) ) = AugBk( 6 * (counter - 1) + 6 );
-    end
-end
+%     TiltType = '';
+%     EdgeRx = [0, 0];
+%     if n_v >= 2 && SheetPntsTable(m_v, n_v, ell_v) == 1 && SheetPntsTable(m_v, n_v - 1, ell_v) == 1
+%         counter = counter + 1;
+%         if Vertex_Crdnt(m_v, n_v, ell_v, 1) <= 0 && Vertex_Crdnt(m_v, n_v, ell_v, 3) >= 0
+%             % II-quadrant 
+%             quadtantNum = 2;
+%             tpflag = strcat(tpflag, '-II');
+%             if SheetPntsTable(m_v - 1, n_v, ell_v) == 1
+%                 TiltType = 'Horizental';
+%                 % EdgeRx = [2, 4];
+%             elseif SheetPntsTable(m_v - 1, n_v, ell_v - 1) == 1
+%                 TiltType = 'Oblique';
+%                 % EdgeRx = [2, 7];
+%             elseif SheetPntsTable(m_v, n_v, ell_v - 1) == 1
+%                 TiltType = 'Vertical';
+%                 % EdgeRx = [2, 5];
+%             end
+%         elseif Vertex_Crdnt(m_v, n_v, ell_v, 1) >= 0 && Vertex_Crdnt(m_v, n_v, ell_v, 3) >= 0
+%             % I-quadrant 
+%             quadtantNum = 1;
+%             tpflag = strcat(tpflag, '-I');
+%             if SheetPntsTable(m_v - 1, n_v, ell_v) == 1
+%                 TiltType = 'Horizental';
+%                 % EdgeRx = [2, 4];
+%             elseif SheetPntsTable(m_v - 1, n_v, ell_v + 1) == 1
+%                 TiltType = 'Oblique';
+%                 % EdgeRx = [2, 7];
+%             elseif SheetPntsTable(m_v, n_v, ell_v + 1) == 1
+%                 TiltType = 'Vertical';
+%                 % EdgeRx = [2, 5];
+%             end
+%         elseif Vertex_Crdnt(m_v, n_v, ell_v, 1) >= 0 && Vertex_Crdnt(m_v, n_v, ell_v, 3) <= 0
+%             % IV-quadrant 
+%             quadtantNum = 4;
+%             tpflag = strcat(tpflag, '-IV');
+%             if SheetPntsTable(m_v + 1, n_v, ell_v) == 1
+%                 TiltType = 'Horizental';
+%                 % EdgeRx = [2, 4];
+%             elseif SheetPntsTable(m_v + 1, n_v, ell_v + 1) == 1
+%                 TiltType = 'Oblique';
+%                 % EdgeRx = [2, 7];
+%             elseif SheetPntsTable(m_v, n_v, ell_v + 1) == 1
+%                 TiltType = 'Vertical';
+%                 % EdgeRx = [2, 5];
+%             end
+%         elseif Vertex_Crdnt(m_v, n_v, ell_v, 1) <= 0 && Vertex_Crdnt(m_v, n_v, ell_v, 3) <= 0
+%             % III-quadrant 
+%             quadtantNum = 3;
+%             tpflag = strcat(tpflag, '-III');
+%             if SheetPntsTable(m_v + 1, n_v, ell_v) == 1
+%                 TiltType = 'Horizental';
+%                 % EdgeRx = [2, 4];
+%             elseif SheetPntsTable(m_v + 1, n_v, ell_v - 1) == 1
+%                 TiltType = 'Oblique';
+%                 % EdgeRx = [2, 7];
+%             elseif SheetPntsTable(m_v, n_v, ell_v - 1) == 1
+%                 TiltType = 'Vertical';
+%                 % EdgeRx = [2, 5];
+%             end
+%         end
+%         [ sparseAug{6 * ( counter - 1 ) + 1}, sparseAug{6 * ( counter - 1 ) + 2}, sparseAug{6 * ( counter - 1 ) + 3}, ...
+%             CurrentIdxSet{ 2 * (counter - 1) + 1 }, ...
+%             sparseAug{6 * ( counter - 1 ) + 4}, sparseAug{6 * ( counter - 1 ) + 5}, sparseAug{6 * ( counter - 1 ) + 6}, ...
+%             CurrentIdxSet{ 2 * (counter - 1) + 2 }, ...
+%             AugBk(6 * ( counter - 1 ) + 1), AugBk(6 * ( counter - 1 ) + 2), AugBk(6 * ( counter - 1 ) + 3), ...
+%             AugBk(6 * ( counter - 1 ) + 4), AugBk(6 * ( counter - 1 ) + 5), AugBk(6 * ( counter - 1 ) + 6) ] ...
+%         = fc( m_v, n_v, ell_v, flag, ...
+%             Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedIn, auxiSegMed, epsilon_r, mu_r, Omega_0, ...
+%             B_k, SheetPntsTable, J_0, corner_flag, TiltType, quadtantNum, SegMed );
 
-count = 0;
-for idx = 1: 1: 3 * arndNum * 2 * (y_n - 1)
-    if isempty(sparseAug{ idx })
-        count = count + 1;
-    end
-end
-count
+%         % replace the sparseK matrix
+%         lastFlag = false;
+%         if SheetPntsTable(m_v, n_v + 1, ell_v) == 0
+%             lastFlag = true;
+%         end
+%         AuxiIdx = zeros(6, 1);
+%         [ AuxiIdx, EdgeTable ] = getAuxiIdx(m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, tpflag, TiltType, lastFlag, ...
+%                         EdgeTable, CurrentIdxSet{ 2 * (counter - 1) + 1 }, CurrentIdxSet{ 2 * (counter - 1) + 2 });
+%         sparseK{ AuxiIdx(1) } = sparseAug{ 6 * (counter - 1) + 1 };
+%         sparseK{ AuxiIdx(2) } = sparseAug{ 6 * (counter - 1) + 2 };
+%         sparseK{ AuxiIdx(3) } = sparseAug{ 6 * (counter - 1) + 3 };
+%         sparseK{ AuxiIdx(4) } = sparseAug{ 6 * (counter - 1) + 4 };
+%         sparseK{ AuxiIdx(5) } = sparseAug{ 6 * (counter - 1) + 5 };
+%         sparseK{ AuxiIdx(6) } = sparseAug{ 6 * (counter - 1) + 6 };
+%         B_k( AuxiIdx(1) ) = AugBk( 6 * (counter - 1) + 1 );
+%         B_k( AuxiIdx(2) ) = AugBk( 6 * (counter - 1) + 2 );
+%         B_k( AuxiIdx(3) ) = AugBk( 6 * (counter - 1) + 3 );
+%         B_k( AuxiIdx(4) ) = AugBk( 6 * (counter - 1) + 4 );
+%         B_k( AuxiIdx(5) ) = AugBk( 6 * (counter - 1) + 5 );
+%         B_k( AuxiIdx(6) ) = AugBk( 6 * (counter - 1) + 6 );
+%     end
+% end
 
-for idx = 1: 1: arndNum  * (y_n - 1)
-    if AugBk( 3 * ( idx - 1 ) + 3 ) == 0
-        idx
-    end
-end
+% count = 0;
+% for idx = 1: 1: 3 * arndNum * 2 * (y_n - 1)
+%     if isempty(sparseAug{ idx })
+%         count = count + 1;
+%     end
+% end
+% count
 
+% for idx = 1: 1: arndNum  * (y_n - 1)
+%     if AugBk( 3 * ( idx - 1 ) + 3 ) == 0
+%         idx
+%     end
+% end
+
+% === % =================================================== % === %
+% === % Imposed cboundary conditions on current sheet Ver.2 % === %
+% === % =================================================== % === %
+
+% for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
+%     [ m_v, n_v, ell_v ] = getMNL(vIdx, x_max_vertex, y_max_vertex, z_max_vertex);
+%     vIdx_prm = get_idx_prm( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
+
+%     auxiSegMed = ones(6, 8, 'uint8');
+%     flag = getMNL_flag(m_v, n_v, ell_v);
+%     corner_flag = false(2, 6);
+%     % first row: prime coordinate
+%     % second row: original coordinate
+%     corner_flag = getCornerFlag(m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex);
+%     % 1: up; 2: left; 3: down; 4: righ; 5: far; 6: near
+%     % flag = '000' or '111' -> SegMedIn = zeros(6, 8, 'uint8');
+%     % flag = 'otherwise'    -> SegMedIn = zeros(2, 8, 'uint8');
+%     SegMedIn = FetchSegMed( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
+
+%     % volume
+%     switch flag
+%         case { '111', '000' }
+%             fc = str2func('fillNrml_K_Type1');
+%         case { '100', '011' }
+%             fc = str2func('fillNrml_K_Type2');
+%             auxiSegMed = getAuxiSegMed( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
+%         case { '101', '010' }
+%             fc = str2func('fillNrml_K_Type3');
+%             auxiSegMed = getAuxiSegMed( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
+%         case { '110', '001' }
+%             fc = str2func('fillNrml_K_Type4');
+%             auxiSegMed = getAuxiSegMed( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
+%         otherwise
+%             error('check');
+%     end
+%     % volume
+%     if m_v >= 2 && m_v <= x_max_vertex && n_v >= 2 && n_v <= y_max_vertex && ell_v >= 2 && ell_v <= z_max_vertex
+%         sparseK1( 7 * ( vIdx_prm - 1 ) + 1: 7 * ( vIdx_prm - 1 ) + 7 ) ...
+%             = fc( m_v, n_v, ell_v, flag, ...
+%                 Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedIn, auxiSegMed, epsilon_r, mu_r, Omega_0, ...
+%                 B_k, SheetPntsTable, J_0, corner_flag, ...
+%                 sparseK1( 7 * ( vIdx_prm - 1 ) + 1: 7 * ( vIdx_prm - 1 ) + 7 ) );
+%     end
+% end
 % % === % ============================ % === %
 % % === % Sparse Normalization Process % === %
 % % === % ============================ % === %
@@ -552,21 +614,21 @@ end
 % end
 % toc;
 
-save('NormalizedNBC_K1.mat', 'sparseK', 'B_k');
+% save('NormalizedNBC_K1.mat', 'sparseK', 'B_k');
 
 % % === % ================ % === %
 % % === % Check empty rows % === %
 % % === % ================ % === %
 
-% for eIdx = 1: 1: N_e
-%     if isempty(sparseK{ eIdx })
-%         [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex)
-%     end
-% end
+for eIdx = 1: 1: N_e
+    if isempty(sparseK{ eIdx })
+        [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex)
+    end
+end
 
-% === % ========================= % === %
-% === % Old Normalization Process % === %
-% === % ========================= % === %
+% === % =============================== % === %
+% === % my_sparse Normalization Process % === %
+% === % =============================== % === %
 
 for idx = 1: 1: N_e
     tmp_vector = sparseK{ idx };
@@ -581,24 +643,26 @@ end
 % === % LU preconditioner and GMRES % === %
 % === % =========================== % === %
 
-tol = 1e-6;
-ext_itr_num = 5;
-int_itr_num = 10;
+% tol = 1e-6;
+% ext_itr_num = 10;
+% int_itr_num = 50;
 
 bar_x_my_gmres = zeros(size(B_k));
 nrmlM_K      = mySparse2MatlabSparse( sparseK, N_e, N_e, 'Row' );
-tic;
-disp('Calculation time of iLU: ')
-[ L_K, U_K ] = ilu( nrmlM_K, struct('type', 'ilutp', 'droptol', 1e-1, 'udiag', 1) );
-toc;
-tic;
-disp('The gmres solutin of Ax = B: ');
-bar_x_my_gmres = gmres( nrmlM_K, B_k, int_itr_num, tol, ext_itr_num, L_K, U_K );
-toc;
+bar_x_my_gmres = nrmlM_K\B_k;
+% tic;
+% disp('The gmres solutin of Ax = B: ');
+% bar_x_my_gmres = gmres( nrmlM_K, B_k, int_itr_num, tol, ext_itr_num );
+% toc;
 
-save('Case0520_1e2NBC_K1.mat', 'bar_x_my_gmres');
+% save('Case0524_noPre_NBC.mat', 'bar_x_my_gmres', 'B_k');
 
 AFigsScript;
+
+tic;
+disp('Calculation time of iLU: ')
+[ L_K, U_K ] = ilu( nrmlM_K, struct('type', 'ilutp', 'droptol', 1e-3) );
+toc;
 
 % % % Need to check whether [ 3, 1, 0.3 ] & [ 3, 1, -0.3 ] are stored in the same cell(idx).
 % % xy_grid_table format: [ x_coordonate, y_coordonate, difference ]

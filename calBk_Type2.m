@@ -38,7 +38,7 @@ switch SideIdx
         FourTet(3) = getWmJ( CntrlCrdnt', SideCrdnt(3, :), SideCrdnt(1, :), SideCrdnt(2, :), ...
                                 Cntrl_Cflag, Side_Cflag(3), Side_Cflag(1), Side_Cflag(2), 1, 'inn', J_0 );
         FourTet(4) = getWmJ( SideCrdnt(4, :), CntrlCrdnt', SideCrdnt(3, :), SideCrdnt(1, :), ...
-                                Side_Cflag(4), Cntrl_Cflag, Side_Cflag(3), Side_Cflag(1), 1, 'inn', J_0 );
+                                Side_Cflag(4), Cntrl_Cflag, Side_Cflag(3), Side_Cflag(1), 4, 'inn', J_0 );
 
         Bk_m = sum(FourTet);
     case '3'

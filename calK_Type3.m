@@ -626,7 +626,7 @@ switch SideIdx
 
         % K_1: the 1-st to the 8-th tetdrahedron
         [ SixTet_e(1, :), SixTet_v(1, :) ] = get6E4V( SideCrdnt(4, :), SideCrdnt(3, :), SideCrdnt(7, :), CntrlCrdnt', 6, 'ext', mu_r( FaceSegMed(1) ), epsilon_r( FaceSegMed(1) ) );
-        [ SixTet_e(2, :), SixTet_v(2, :) ] = get6E4V( SideCrdnt(3, :), SideCrdnt(7, :), SideCrdnt(6, :), CntrlCrdnt', 6, 'ext', mu_r( FaceSegMed(2) ), epsilon_r( FaceSegMed(2) ) );
+        [ SixTet_e(2, :), SixTet_v(2, :) ] = get6E4V( SideCrdnt(3, :), SideCrdnt(7, :), CntrlCrdnt', SideCrdnt(6, :), 6, 'ext', mu_r( FaceSegMed(2) ), epsilon_r( FaceSegMed(2) ) );
         [ SixTet_e(3, :), SixTet_v(3, :) ] = get6E4V( SideCrdnt(3, :), CntrlCrdnt', SideCrdnt(6, :), SideCrdnt(5, :), 4, 'inn', mu_r( FaceSegMed(3) ), epsilon_r( FaceSegMed(3) ) );
         [ SixTet_e(4, :), SixTet_v(4, :) ] = get6E4V( SideCrdnt(3, :), SideCrdnt(2, :), CntrlCrdnt', SideCrdnt(5, :), 1, 'inn', mu_r( FaceSegMed(4) ), epsilon_r( FaceSegMed(4) ) );
         [ SixTet_e(5, :), SixTet_v(5, :) ] = get6E4V( SideCrdnt(1, :), SideCrdnt(3, :), SideCrdnt(2, :), CntrlCrdnt', 1, 'inn', mu_r( FaceSegMed(5) ), epsilon_r( FaceSegMed(5) ) );

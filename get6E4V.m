@@ -3,6 +3,7 @@ function [ Edge6Value, Vrtx4Value ] = get6E4V( P1_Crdt, P2_Crdt, P3_Crdt, P4_Crd
 Edge6Value = zeros(1, 6);
 Vrtx4Value = zeros(1, 4);
 tmp_curl_W = zeros(6, 3);
+nabla      = zeros(4, 3);
 
 TtrVol = calTtrVol( P1_Crdt, P2_Crdt, P3_Crdt, P4_Crdt );
 

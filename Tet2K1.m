@@ -1,5 +1,33 @@
 function K1_Value = Tet2K1(K1_Value, Tet_e, TypeSubType)
     switch TypeSubType
+        case 'Type1-1'
+            EightTet_e = Tet_e;
+            K1_Value(1)  = EightTet_e(8, 4) + EightTet_e(1, 5);
+            K1_Value(2)  = EightTet_e(1, 6);
+            K1_Value(3)  = EightTet_e(1, 4) + EightTet_e(2, 6);
+            K1_Value(4)  = EightTet_e(2, 5);
+            K1_Value(5)  = EightTet_e(2, 4) + EightTet_e(3, 6);
+            K1_Value(6)  = EightTet_e(3, 4);
+            K1_Value(7)  = EightTet_e(3, 5) + EightTet_e(4, 5);
+            K1_Value(8)  = EightTet_e(4, 4);
+            K1_Value(9)  = EightTet_e(4, 6) + EightTet_e(5, 5);
+            K1_Value(10) = EightTet_e(5, 4);
+            K1_Value(11) = EightTet_e(5, 6) + EightTet_e(6, 4);
+            K1_Value(12) = EightTet_e(6, 5);
+            K1_Value(13) = EightTet_e(6, 6) + EightTet_e(7, 4);
+            K1_Value(14) = EightTet_e(7, 6);
+            K1_Value(15) = EightTet_e(7, 5) + EightTet_e(8, 5);
+            K1_Value(16) = EightTet_e(8, 6);
+            K1_Value(17) = EightTet_e(1, 3) + EightTet_e(8, 2);
+            K1_Value(18) = EightTet_e(1, 2) + EightTet_e(2, 3);
+            K1_Value(19) = EightTet_e(2, 1) + EightTet_e(3, 2);
+            K1_Value(20) = EightTet_e(3, 1) + EightTet_e(4, 1);
+            K1_Value(21) = EightTet_e(4, 2) + EightTet_e(5, 1);
+            K1_Value(22) = EightTet_e(5, 2) + EightTet_e(6, 1);
+            K1_Value(23) = EightTet_e(6, 3) + EightTet_e(7, 2);
+            K1_Value(24) = EightTet_e(7, 3) + EightTet_e(8, 3);
+            K1_Value(25) = EightTet_e(1, 1) + EightTet_e(2, 2) + EightTet_e(3, 3) + EightTet_e(4, 3) ...
+                           + EightTet_e(5, 3) + EightTet_e(6, 2) + EightTet_e(7, 1) + EightTet_e(8, 1);
         case 'Type1-2'
             EightTet_e = Tet_e;
             K1_Value(:, 1)  = squeeze(EightTet_e(8, 4, :)) + squeeze(EightTet_e(1, 5, :));
@@ -28,6 +56,34 @@ function K1_Value = Tet2K1(K1_Value, Tet_e, TypeSubType)
             K1_Value(:, 24) = squeeze(EightTet_e(7, 3, :)) + squeeze(EightTet_e(8, 3, :));
             K1_Value(:, 25) = squeeze(EightTet_e(1, 1, :)) + squeeze(EightTet_e(2, 2, :)) + squeeze(EightTet_e(3, 3, :)) + squeeze(EightTet_e(4, 3, :)) ...
                              + squeeze(EightTet_e(5, 3, :)) + squeeze(EightTet_e(6, 2, :)) + squeeze(EightTet_e(7, 1, :)) + squeeze(EightTet_e(8, 1, :));
+        case 'Type1-3'
+            EightTet_e = Tet_e;
+            K1_Value(:, 1)  = squeeze(EightTet_e(1, 5, :)) + squeeze(EightTet_e(8, 4, :));
+            K1_Value(:, 2)  = squeeze(EightTet_e(1, 6, :));
+            K1_Value(:, 3)  = squeeze(EightTet_e(1, 4, :)) + squeeze(EightTet_e(2, 6, :));
+            K1_Value(:, 4)  = squeeze(EightTet_e(2, 3, :));
+            K1_Value(:, 5)  = squeeze(EightTet_e(2, 2, :)) + squeeze(EightTet_e(3, 5, :));
+            K1_Value(:, 6)  = squeeze(EightTet_e(3, 1, :));
+            K1_Value(:, 7)  = squeeze(EightTet_e(3, 3, :)) + squeeze(EightTet_e(4, 3, :));
+            K1_Value(:, 8)  = squeeze(EightTet_e(4, 1, :));
+            K1_Value(:, 9)  = squeeze(EightTet_e(4, 5, :)) + squeeze(EightTet_e(5, 3, :));
+            K1_Value(:, 10) = squeeze(EightTet_e(5, 1, :));
+            K1_Value(:, 11) = squeeze(EightTet_e(5, 5, :)) + squeeze(EightTet_e(6, 2, :));
+            K1_Value(:, 12) = squeeze(EightTet_e(6, 3, :));
+            K1_Value(:, 13) = squeeze(EightTet_e(6, 6, :)) + squeeze(EightTet_e(7, 4, :));
+            K1_Value(:, 14) = squeeze(EightTet_e(7, 6, :));
+            K1_Value(:, 15) = squeeze(EightTet_e(7, 5, :)) + squeeze(EightTet_e(8, 5, :));
+            K1_Value(:, 16) = squeeze(EightTet_e(8, 6, :));
+            K1_Value(:, 17) = squeeze(EightTet_e(1, 3, :)) + squeeze(EightTet_e(8, 2, :));
+            K1_Value(:, 18) = squeeze(EightTet_e(1, 2, :)) + squeeze(EightTet_e(2, 5, :));
+            K1_Value(:, 19) = squeeze(EightTet_e(2, 1, :)) + squeeze(EightTet_e(3, 4, :));
+            K1_Value(:, 20) = squeeze(EightTet_e(3, 2, :)) + squeeze(EightTet_e(4, 2, :));
+            K1_Value(:, 21) = squeeze(EightTet_e(4, 4, :)) + squeeze(EightTet_e(5, 2, :));
+            K1_Value(:, 22) = squeeze(EightTet_e(5, 4, :)) + squeeze(EightTet_e(6, 1, :));
+            K1_Value(:, 23) = squeeze(EightTet_e(6, 5, :)) + squeeze(EightTet_e(7, 2, :));
+            K1_Value(:, 24) = squeeze(EightTet_e(7, 3, :)) + squeeze(EightTet_e(8, 3, :));
+            K1_Value(:, 25) = squeeze(EightTet_e(1, 1, :)) + squeeze(EightTet_e(2, 4, :)) + squeeze(EightTet_e(3, 6, :)) + squeeze(EightTet_e(4, 6, :)) ...
+                             + squeeze(EightTet_e(5, 6, :)) + squeeze(EightTet_e(6, 4, :)) + squeeze(EightTet_e(7, 1, :)) + squeeze(EightTet_e(8, 1, :));
         case 'Type1-4'
             FourTet_e = Tet_e;
             K1_Value(:, 1)  = squeeze(FourTet_e(1, 5, :)) + squeeze(FourTet_e(4, 4, :));
@@ -58,6 +114,21 @@ function K1_Value = Tet2K1(K1_Value, Tet_e, TypeSubType)
             K1_Value(:, 11) = squeeze(FourTet_e(2, 4, :)) + squeeze(FourTet_e(3, 1, :));
             K1_Value(:, 12) = squeeze(FourTet_e(3, 3, :)) + squeeze(FourTet_e(4, 3, :));
             K1_Value(:, 13) = squeeze(FourTet_e(1, 5, :)) + squeeze(FourTet_e(2, 5, :)) + squeeze(FourTet_e(3, 2, :)) + squeeze(FourTet_e(4, 2, :));
+        case 'Type1-6'
+            FourTet_e = Tet_e;
+            K1_Value(:, 1)  = squeeze(FourTet_e(1, 6, :)) + squeeze(FourTet_e(4, 4, :));
+            K1_Value(:, 2)  = squeeze(FourTet_e(1, 4, :));
+            K1_Value(:, 3)  = squeeze(FourTet_e(1, 5, :)) + squeeze(FourTet_e(2, 6, :));
+            K1_Value(:, 4)  = squeeze(FourTet_e(2, 4, :));
+            K1_Value(:, 5)  = squeeze(FourTet_e(2, 5, :)) + squeeze(FourTet_e(3, 4, :));
+            K1_Value(:, 6)  = squeeze(FourTet_e(3, 5, :));
+            K1_Value(:, 7)  = squeeze(FourTet_e(3, 6, :)) + squeeze(FourTet_e(4, 6, :));
+            K1_Value(:, 8)  = squeeze(FourTet_e(4, 5, :));
+            K1_Value(:, 9)  = squeeze(FourTet_e(1, 2, :)) + squeeze(FourTet_e(4, 1, :));
+            K1_Value(:, 10) = squeeze(FourTet_e(1, 1, :)) + squeeze(FourTet_e(2, 2, :));
+            K1_Value(:, 11) = squeeze(FourTet_e(2, 1, :)) + squeeze(FourTet_e(3, 1, :));
+            K1_Value(:, 12) = squeeze(FourTet_e(3, 3, :)) + squeeze(FourTet_e(4, 3, :));
+            K1_Value(:, 13) = squeeze(FourTet_e(1, 3, :)) + squeeze(FourTet_e(2, 3, :)) + squeeze(FourTet_e(3, 2, :)) + squeeze(FourTet_e(4, 2, :));
         case 'Type1-7'
             SixTet_e = Tet_e;
             K1_Value(:, 1)  = squeeze(SixTet_e(1, 6, :)) + squeeze(SixTet_e(6, 6, :));
@@ -79,6 +150,34 @@ function K1_Value = Tet2K1(K1_Value, Tet_e, TypeSubType)
             K1_Value(:, 17) = squeeze(SixTet_e(4, 2, :)) + squeeze(SixTet_e(5, 2, :));
             K1_Value(:, 18) = squeeze(SixTet_e(5, 1, :)) + squeeze(SixTet_e(6, 1, :));
             K1_Value(:, 19) = sum(squeeze(SixTet_e(:, 3, :)))';
+        case 'Type2-1'
+            EightTet_e = Tet_e;
+            K1_Value(1)  = EightTet_e(1, 4) + EightTet_e(8, 2);
+            K1_Value(2)  = EightTet_e(1, 1);
+            K1_Value(3)  = EightTet_e(1, 2) + EightTet_e(2, 2);
+            K1_Value(4)  = EightTet_e(2, 1);
+            K1_Value(5)  = EightTet_e(2, 4) + EightTet_e(3, 1);
+            K1_Value(6)  = EightTet_e(3, 2);
+            K1_Value(7)  = EightTet_e(3, 4) + EightTet_e(4, 1);
+            K1_Value(8)  = EightTet_e(4, 4);
+            K1_Value(9)  = EightTet_e(4, 2) + EightTet_e(5, 1);
+            K1_Value(10) = EightTet_e(5, 4);
+            K1_Value(11) = EightTet_e(5, 2) + EightTet_e(6, 2);
+            K1_Value(12) = EightTet_e(6, 4);
+            K1_Value(13) = EightTet_e(6, 1) + EightTet_e(7, 4);
+            K1_Value(14) = EightTet_e(7, 2);
+            K1_Value(15) = EightTet_e(7, 1) + EightTet_e(8, 4);
+            K1_Value(16) = EightTet_e(8, 1);
+            K1_Value(17) = EightTet_e(1, 5) + EightTet_e(8, 3);
+            K1_Value(18) = EightTet_e(1, 3) + EightTet_e(2, 3);
+            K1_Value(19) = EightTet_e(2, 5) + EightTet_e(3, 3);
+            K1_Value(20) = EightTet_e(3, 6) + EightTet_e(4, 5);
+            K1_Value(21) = EightTet_e(4, 6) + EightTet_e(5, 5);
+            K1_Value(22) = EightTet_e(5, 6) + EightTet_e(6, 6);
+            K1_Value(23) = EightTet_e(6, 5) + EightTet_e(7, 6);
+            K1_Value(24) = EightTet_e(7, 3) + EightTet_e(8, 5);
+            K1_Value(25) = EightTet_e(1, 6) + EightTet_e(2, 6) + EightTet_e(3, 5) + EightTet_e(4, 3) ...
+                             + EightTet_e(5, 3) + EightTet_e(6, 3) + EightTet_e(7, 5) + EightTet_e(8, 6);
         case 'Type2-2'
             FourTet_e = Tet_e;
             K1_Value(:, 1)  = squeeze(FourTet_e(1, 3, :)) + squeeze(FourTet_e(4, 2, :));
@@ -94,6 +193,21 @@ function K1_Value = Tet2K1(K1_Value, Tet_e, TypeSubType)
             K1_Value(:, 11) = squeeze(FourTet_e(2, 3, :)) + squeeze(FourTet_e(3, 3, :));
             K1_Value(:, 12) = squeeze(FourTet_e(3, 2, :)) + squeeze(FourTet_e(4, 5, :));
             K1_Value(:, 13) = squeeze(FourTet_e(1, 5, :)) + squeeze(FourTet_e(2, 2, :)) + squeeze(FourTet_e(3, 1, :)) + squeeze(FourTet_e(4, 4, :));
+        case 'Type2-3'
+            FourTet_e = Tet_e;
+            K1_Value(1)  = FourTet_e(1, 5) + FourTet_e(4, 4);
+            K1_Value(2)  = FourTet_e(1, 4);
+            K1_Value(3)  = FourTet_e(1, 6) + FourTet_e(2, 6);
+            K1_Value(4)  = FourTet_e(2, 4);
+            K1_Value(5)  = FourTet_e(2, 5) + FourTet_e(3, 4);
+            K1_Value(6)  = FourTet_e(3, 5);
+            K1_Value(7)  = FourTet_e(3, 6) + FourTet_e(4, 6);
+            K1_Value(8)  = FourTet_e(4, 5);
+            K1_Value(9)  = FourTet_e(1, 1) + FourTet_e(4, 1);
+            K1_Value(10) = FourTet_e(1, 2) + FourTet_e(2, 2);
+            K1_Value(11) = FourTet_e(2, 1) + FourTet_e(3, 1);
+            K1_Value(12) = FourTet_e(3, 3) + FourTet_e(4, 3);
+            K1_Value(13) = FourTet_e(1, 3) + FourTet_e(2, 3) + FourTet_e(3, 2) + FourTet_e(4, 2);
         case 'Type2-4'
             FourTet_e = Tet_e;
             K1_Value(:, 1)  = squeeze(FourTet_e(1, 2, :)) + squeeze(FourTet_e(4, 1, :));
@@ -124,6 +238,21 @@ function K1_Value = Tet2K1(K1_Value, Tet_e, TypeSubType)
             K1_Value(:, 11) = squeeze(FourTet_e(2, 6, :)) + squeeze(FourTet_e(3, 4, :));
             K1_Value(:, 12) = squeeze(FourTet_e(3, 6, :)) + squeeze(FourTet_e(4, 6, :));
             K1_Value(:, 13) = squeeze(FourTet_e(1, 5, :)) + squeeze(FourTet_e(2, 5, :)) + squeeze(FourTet_e(3, 2, :)) + squeeze(FourTet_e(4, 2, :));
+        case 'Type2-6'
+            FourTet_e = Tet_e;
+            K1_Value(1)  = FourTet_e(1, 5) + FourTet_e(4, 3);
+            K1_Value(2)  = FourTet_e(1, 3);
+            K1_Value(3)  = FourTet_e(1, 1) + FourTet_e(2, 2);
+            K1_Value(4)  = FourTet_e(2, 1);
+            K1_Value(5)  = FourTet_e(2, 4) + FourTet_e(3, 1);
+            K1_Value(6)  = FourTet_e(3, 2);
+            K1_Value(7)  = FourTet_e(3, 4) + FourTet_e(4, 1);
+            K1_Value(8)  = FourTet_e(4, 5);
+            K1_Value(9)  = FourTet_e(1, 6) + FourTet_e(4, 6);
+            K1_Value(10) = FourTet_e(1, 2) + FourTet_e(2, 3);
+            K1_Value(11) = FourTet_e(2, 5) + FourTet_e(3, 3);
+            K1_Value(12) = FourTet_e(3, 6) + FourTet_e(4, 4);
+            K1_Value(13) = FourTet_e(1, 4) + FourTet_e(2, 6) + FourTet_e(3, 5) + FourTet_e(4, 2);
         case 'Type2-7'
             SixTet_e = Tet_e;
             K1_Value(:, 1)  = squeeze(SixTet_e(1, 4, :)) + squeeze(SixTet_e(6, 1, :));
@@ -146,6 +275,21 @@ function K1_Value = Tet2K1(K1_Value, Tet_e, TypeSubType)
             K1_Value(:, 18) = squeeze(SixTet_e(5, 4, :)) + squeeze(SixTet_e(6, 6, :));
             K1_Value(:, 19) = squeeze(SixTet_e(1, 6, :)) + squeeze(SixTet_e(2, 6, :)) + squeeze(SixTet_e(3, 4, :)) ...
                             + squeeze(SixTet_e(4, 1, :)) + squeeze(SixTet_e(5, 1, :)) + squeeze(SixTet_e(6, 4, :));
+        case 'Type3-1'
+            FourTet_e = Tet_e;
+            K1_Value(1)  = FourTet_e(1, 5) + FourTet_e(4, 4);
+            K1_Value(2)  = FourTet_e(1, 4);
+            K1_Value(3)  = FourTet_e(1, 6) + FourTet_e(2, 6);
+            K1_Value(4)  = FourTet_e(2, 2);
+            K1_Value(5)  = FourTet_e(2, 3) + FourTet_e(3, 2);
+            K1_Value(6)  = FourTet_e(3, 3);
+            K1_Value(7)  = FourTet_e(3, 6) + FourTet_e(4, 6);
+            K1_Value(8)  = FourTet_e(4, 5);
+            K1_Value(9)  = FourTet_e(1, 1) + FourTet_e(4, 1);
+            K1_Value(10) = FourTet_e(1, 2) + FourTet_e(2, 4);
+            K1_Value(11) = FourTet_e(2, 1) + FourTet_e(3, 1);
+            K1_Value(12) = FourTet_e(3, 5) + FourTet_e(4, 3);
+            K1_Value(13) = FourTet_e(1, 3) + FourTet_e(2, 5) + FourTet_e(3, 4) + FourTet_e(4, 2);
         case 'Type3-2'
             EightTet_e = Tet_e;
             K1_Value(:, 1)  = squeeze(EightTet_e(1, 3, :)) + squeeze(EightTet_e(8, 2, :));
@@ -174,6 +318,21 @@ function K1_Value = Tet2K1(K1_Value, Tet_e, TypeSubType)
             K1_Value(:, 24) = squeeze(EightTet_e(7, 6, :)) + squeeze(EightTet_e(8, 5, :));
             K1_Value(:, 25) = squeeze(EightTet_e(1, 1, :)) + squeeze(EightTet_e(2, 4, :)) + squeeze(EightTet_e(3, 6, :)) + squeeze(EightTet_e(4, 6, :)) ...
                              + squeeze(EightTet_e(5, 6, :)) + squeeze(EightTet_e(6, 5, :)) + squeeze(EightTet_e(7, 2, :)) + squeeze(EightTet_e(8, 1, :));
+        case 'Type3-3'
+            FourTet_e = Tet_e;
+            K1_Value(1)  = FourTet_e(1, 5) + FourTet_e(4, 2);
+            K1_Value(2)  = FourTet_e(1, 1);
+            K1_Value(3)  = FourTet_e(1, 3) + FourTet_e(2, 2);
+            K1_Value(4)  = FourTet_e(2, 3);
+            K1_Value(5)  = FourTet_e(2, 6) + FourTet_e(3, 4);
+            K1_Value(6)  = FourTet_e(3, 6);
+            K1_Value(7)  = FourTet_e(3, 5) + FourTet_e(4, 6);
+            K1_Value(8)  = FourTet_e(4, 3);
+            K1_Value(9)  = FourTet_e(1, 4) + FourTet_e(4, 1);
+            K1_Value(10) = FourTet_e(1, 2) + FourTet_e(2, 1);
+            K1_Value(11) = FourTet_e(2, 5) + FourTet_e(3, 2);
+            K1_Value(12) = FourTet_e(3, 3) + FourTet_e(4, 5);
+            K1_Value(13) = FourTet_e(1, 6) + FourTet_e(2, 4) + FourTet_e(3, 1) + FourTet_e(4, 4);
         case 'Type3-4'
             FourTet_e = Tet_e;
             K1_Value(:, 1)  = squeeze(FourTet_e(1, 6, :)) + squeeze(FourTet_e(4, 5, :));
@@ -204,6 +363,21 @@ function K1_Value = Tet2K1(K1_Value, Tet_e, TypeSubType)
             K1_Value(:, 11) = squeeze(FourTet_e(2, 6, :)) + squeeze(FourTet_e(3, 4, :));
             K1_Value(:, 12) = squeeze(FourTet_e(3, 5, :)) + squeeze(FourTet_e(4, 6, :));
             K1_Value(:, 13) = squeeze(FourTet_e(1, 6, :)) + squeeze(FourTet_e(2, 4, :)) + squeeze(FourTet_e(3, 1, :)) + squeeze(FourTet_e(4, 4, :));
+        case 'Type3-6'
+            FourTet_e = Tet_e;
+            K1_Value(1)  = FourTet_e(1, 4) + FourTet_e(4, 1);
+            K1_Value(2)  = FourTet_e(1, 2);
+            K1_Value(3)  = FourTet_e(1, 1) + FourTet_e(2, 1);
+            K1_Value(4)  = FourTet_e(2, 2);
+            K1_Value(5)  = FourTet_e(2, 4) + FourTet_e(3, 2);
+            K1_Value(6)  = FourTet_e(3, 4);
+            K1_Value(7)  = FourTet_e(3, 1) + FourTet_e(4, 2);
+            K1_Value(8)  = FourTet_e(4, 4);
+            K1_Value(9)  = FourTet_e(1, 6) + FourTet_e(4, 5);
+            K1_Value(10) = FourTet_e(1, 3) + FourTet_e(2, 3);
+            K1_Value(11) = FourTet_e(2, 6) + FourTet_e(3, 6);
+            K1_Value(12) = FourTet_e(3, 5) + FourTet_e(4, 6);
+            K1_Value(13) = FourTet_e(1, 5) + FourTet_e(2, 5) + FourTet_e(3, 3) + FourTet_e(4, 3);
         case 'Type3-7'
             SixTet_e = Tet_e;
             K1_Value(:, 1)  = squeeze(SixTet_e(1, 1, :)) + squeeze(SixTet_e(6, 2, :));
@@ -226,6 +400,21 @@ function K1_Value = Tet2K1(K1_Value, Tet_e, TypeSubType)
             K1_Value(:, 18) = squeeze(SixTet_e(5, 3, :)) + squeeze(SixTet_e(6, 5, :));
             K1_Value(:, 19) = squeeze(SixTet_e(1, 5, :)) + squeeze(SixTet_e(2, 2, :)) + squeeze(SixTet_e(3, 1, :)) ...
                             + squeeze(SixTet_e(4, 2, :)) + squeeze(SixTet_e(5, 5, :)) + squeeze(SixTet_e(6, 6, :));
+        case 'Type4-1'
+            FourTet_e = Tet_e;
+            K1_Value(1)  = FourTet_e(1, 4) + FourTet_e(4, 2);
+            K1_Value(2)  = FourTet_e(1, 2);
+            K1_Value(3)  = FourTet_e(1, 1) + FourTet_e(2, 1);
+            K1_Value(4)  = FourTet_e(2, 3);
+            K1_Value(5)  = FourTet_e(2, 5) + FourTet_e(3, 3);
+            K1_Value(6)  = FourTet_e(3, 5);
+            K1_Value(7)  = FourTet_e(3, 1) + FourTet_e(4, 1);
+            K1_Value(8)  = FourTet_e(4, 4);
+            K1_Value(9)  = FourTet_e(1, 6) + FourTet_e(4, 6);
+            K1_Value(10) = FourTet_e(1, 3) + FourTet_e(2, 2);
+            K1_Value(11) = FourTet_e(2, 6) + FourTet_e(3, 6);
+            K1_Value(12) = FourTet_e(3, 4) + FourTet_e(4, 5);
+            K1_Value(13) = FourTet_e(1, 5) + FourTet_e(2, 4) + FourTet_e(3, 2) + FourTet_e(4, 3);
         case 'Type4-2'
             FourTet_e = Tet_e;
             K1_Value(:, 1)  = squeeze(FourTet_e(1, 5, :)) + squeeze(FourTet_e(4, 3, :));
@@ -241,6 +430,34 @@ function K1_Value = Tet2K1(K1_Value, Tet_e, TypeSubType)
             K1_Value(:, 11) = squeeze(FourTet_e(2, 3, :)) + squeeze(FourTet_e(3, 3, :));
             K1_Value(:, 12) = squeeze(FourTet_e(3, 6, :)) + squeeze(FourTet_e(4, 4, :));
             K1_Value(:, 13) = squeeze(FourTet_e(1, 4, :)) + squeeze(FourTet_e(2, 6, :)) + squeeze(FourTet_e(3, 5, :)) + squeeze(FourTet_e(4, 2, :));
+        case 'Type4-3'
+            EightTet_e = Tet_e;
+            K1_Value(1)  = EightTet_e(1, 4) + EightTet_e(8, 2);
+            K1_Value(2)  = EightTet_e(1, 1);
+            K1_Value(3)  = EightTet_e(1, 2) + EightTet_e(2, 2);
+            K1_Value(4)  = EightTet_e(2, 1);
+            K1_Value(5)  = EightTet_e(2, 4) + EightTet_e(3, 1);
+            K1_Value(6)  = EightTet_e(3, 3);
+            K1_Value(7)  = EightTet_e(3, 5) + EightTet_e(4, 2);
+            K1_Value(8)  = EightTet_e(4, 6);
+            K1_Value(9)  = EightTet_e(4, 3) + EightTet_e(5, 2);
+            K1_Value(10) = EightTet_e(5, 6);
+            K1_Value(11) = EightTet_e(5, 3) + EightTet_e(6, 3);
+            K1_Value(12) = EightTet_e(6, 6);
+            K1_Value(13) = EightTet_e(6, 2) + EightTet_e(7, 5);
+            K1_Value(14) = EightTet_e(7, 3);
+            K1_Value(15) = EightTet_e(7, 1) + EightTet_e(8, 4);
+            K1_Value(16) = EightTet_e(8, 1);
+            K1_Value(17) = EightTet_e(1, 5) + EightTet_e(8, 3);
+            K1_Value(18) = EightTet_e(1, 3) + EightTet_e(2, 3);
+            K1_Value(19) = EightTet_e(2, 5) + EightTet_e(3, 2);
+            K1_Value(20) = EightTet_e(3, 6) + EightTet_e(4, 4);
+            K1_Value(21) = EightTet_e(4, 5) + EightTet_e(5, 4);
+            K1_Value(22) = EightTet_e(5, 5) + EightTet_e(6, 5);
+            K1_Value(23) = EightTet_e(6, 4) + EightTet_e(7, 6);
+            K1_Value(24) = EightTet_e(7, 2) + EightTet_e(8, 5);
+            K1_Value(25) = EightTet_e(1, 6) + EightTet_e(2, 6) + EightTet_e(3, 4) + EightTet_e(4, 1) ...
+                             + EightTet_e(5, 1) + EightTet_e(6, 1) + EightTet_e(7, 4) + EightTet_e(8, 6);
         case 'Type4-4'
             FourTet_e = Tet_e;
             K1_Value(:, 1)  = squeeze(FourTet_e(1, 4, :)) + squeeze(FourTet_e(4, 2, :));
@@ -271,6 +488,21 @@ function K1_Value = Tet2K1(K1_Value, Tet_e, TypeSubType)
             K1_Value(:, 11) = squeeze(FourTet_e(2, 4, :)) + squeeze(FourTet_e(3, 1, :));
             K1_Value(:, 12) = squeeze(FourTet_e(3, 5, :)) + squeeze(FourTet_e(4, 3, :));
             K1_Value(:, 13) = squeeze(FourTet_e(1, 4, :)) + squeeze(FourTet_e(2, 6, :)) + squeeze(FourTet_e(3, 4, :)) + squeeze(FourTet_e(4, 1, :));
+        case 'Type4-6'
+            FourTet_e = Tet_e;
+            K1_Value(1)  = FourTet_e(1, 3) + FourTet_e(4, 2);
+            K1_Value(2)  = FourTet_e(1, 2);
+            K1_Value(3)  = FourTet_e(1, 6) + FourTet_e(2, 4);
+            K1_Value(4)  = FourTet_e(2, 5);
+            K1_Value(5)  = FourTet_e(2, 6) + FourTet_e(3, 4);
+            K1_Value(6)  = FourTet_e(3, 6);
+            K1_Value(7)  = FourTet_e(3, 5) + FourTet_e(4, 6);
+            K1_Value(8)  = FourTet_e(4, 3);
+            K1_Value(9)  = FourTet_e(1, 1) + FourTet_e(4, 1);
+            K1_Value(10) = FourTet_e(1, 4) + FourTet_e(2, 1);
+            K1_Value(11) = FourTet_e(2, 3) + FourTet_e(3, 2);
+            K1_Value(12) = FourTet_e(3, 3) + FourTet_e(4, 5);
+            K1_Value(13) = FourTet_e(1, 5) + FourTet_e(2, 2) + FourTet_e(3, 1) + FourTet_e(4, 4);
         case 'Type4-7'
             SixTet_e = Tet_e;
             K1_Value(:, 1)  = squeeze(SixTet_e(1, 6, :)) + squeeze(SixTet_e(6, 5, :));
