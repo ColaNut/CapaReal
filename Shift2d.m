@@ -3,7 +3,7 @@
 % === % =========================================== % === %
 clc; clear;
 digits;
-disp('K_1');
+disp('K, case 1');
 
 Mu_0          = 4 * pi * 10^(-7);
 Epsilon_0     = 10^(-9) / (36 * pi);
@@ -192,9 +192,8 @@ for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
             = fc( m_v, n_v, ell_v, flag, ...
                 Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedIn, auxiSegMed, epsilon_r, mu_r, Omega_0, ...
                 B_k, SheetPntsTable, J_0, corner_flag, edgeTable );
-    end
     % three surfaces
-    if m_v >= 2 && m_v <= x_max_vertex && n_v == 1 && ell_v >= 2 && ell_v <= z_max_vertex
+    elseif m_v >= 2 && m_v <= x_max_vertex && n_v == 1 && ell_v >= 2 && ell_v <= z_max_vertex
         [ sparseK1{ vIdx2eIdx(vIdx_prm, 1, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
             sparseK1{ vIdx2eIdx(vIdx_prm, 3, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
             sparseK1{ vIdx2eIdx(vIdx_prm, 6, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
@@ -207,8 +206,7 @@ for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
             = fc( m_v, n_v, ell_v, flag, ...
                         Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedIn, auxiSegMed, epsilon_r, mu_r, Omega_0, ...
                         B_k, SheetPntsTable, J_0, corner_flag, edgeTable );
-    end
-    if m_v == 1 && n_v >= 2 && n_v <= y_max_vertex && ell_v >= 2 && ell_v <= z_max_vertex
+    elseif m_v == 1 && n_v >= 2 && n_v <= y_max_vertex && ell_v >= 2 && ell_v <= z_max_vertex
         [ sparseK1{ vIdx2eIdx(vIdx_prm, 2, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
             sparseK1{ vIdx2eIdx(vIdx_prm, 3, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
             sparseK1{ vIdx2eIdx(vIdx_prm, 5, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
@@ -221,8 +219,7 @@ for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
             = fc( m_v, n_v, ell_v, flag, ...
                         Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedIn, auxiSegMed, epsilon_r, mu_r, Omega_0, ...
                         B_k, SheetPntsTable, J_0, corner_flag, edgeTable );
-    end
-    if m_v >= 2 && m_v <= x_max_vertex && n_v >= 2 && n_v <= y_max_vertex && ell_v == 1
+    elseif m_v >= 2 && m_v <= x_max_vertex && n_v >= 2 && n_v <= y_max_vertex && ell_v == 1
         [ sparseK1{ vIdx2eIdx(vIdx_prm, 1, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
             sparseK1{ vIdx2eIdx(vIdx_prm, 2, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
             sparseK1{ vIdx2eIdx(vIdx_prm, 4, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
@@ -235,36 +232,33 @@ for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
             = fc( m_v, n_v, ell_v, flag, ...
                         Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedIn, auxiSegMed, epsilon_r, mu_r, Omega_0, ...
                         B_k, SheetPntsTable, J_0, corner_flag, edgeTable );
-    end
     % three lines
-    if m_v >= 2 && m_v <= x_max_vertex && n_v == 1 && ell_v == 1
+    elseif m_v >= 2 && m_v <= x_max_vertex && n_v == 1 && ell_v == 1
         [ sparseK1{ vIdx2eIdx(vIdx_prm, 1, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
             sparseKEV{ vIdx2eIdx(vIdx_prm, 1, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
             sparseKVE{ vIdx2eIdx(vIdx_prm, 1, x_max_vertex, y_max_vertex, z_max_vertex) } ] ...
             = fc( m_v, n_v, ell_v, flag, ...
                         Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedIn, auxiSegMed, epsilon_r, mu_r, Omega_0, ...
                         B_k, SheetPntsTable, J_0, corner_flag, edgeTable );
-    end
-    if m_v == 1 && n_v == 1 && ell_v >= 2 && ell_v <= z_max_vertex
+    elseif m_v == 1 && n_v == 1 && ell_v >= 2 && ell_v <= z_max_vertex
         [ sparseK1{ vIdx2eIdx(vIdx_prm, 3, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
             sparseKEV{ vIdx2eIdx(vIdx_prm, 3, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
             sparseKVE{ vIdx2eIdx(vIdx_prm, 3, x_max_vertex, y_max_vertex, z_max_vertex) } ] ...
             = fc( m_v, n_v, ell_v, flag, ...
                         Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedIn, auxiSegMed, epsilon_r, mu_r, Omega_0, ...
                         B_k, SheetPntsTable, J_0, corner_flag, edgeTable );
-    end
-    if m_v == 1 && n_v >= 2 && n_v <= y_max_vertex && ell_v == 1
+    elseif m_v == 1 && n_v >= 2 && n_v <= y_max_vertex && ell_v == 1
         [ sparseK1{ vIdx2eIdx(vIdx_prm, 2, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
             sparseKEV{ vIdx2eIdx(vIdx_prm, 2, x_max_vertex, y_max_vertex, z_max_vertex) }, ...
             sparseKVE{ vIdx2eIdx(vIdx_prm, 2, x_max_vertex, y_max_vertex, z_max_vertex) } ] ...
             = fc( m_v, n_v, ell_v, flag, ...
                         Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedIn, auxiSegMed, epsilon_r, mu_r, Omega_0, ...
                         B_k, SheetPntsTable, J_0, corner_flag, edgeTable );
+    else
+        [m_v, n_v, ell_v]
     end
 end
 toc;
-
-sparseK1_keep = sparseK1;
 
 % % === % ========== % === %
 % % === % GVV matrix % === %
@@ -293,52 +287,105 @@ toc;
 % % === % =================== % === %
 
 % Refer to GVV_test.m
-
-Tol = 0.1;
+Tol = 0.2;
+% GVV_test;
 load( strcat('SAI_Tol', num2str(Tol), '.mat'), 'sparseGVV_inv' );
+
+% % === % ===================== % === %
+% % === % Check Valid my_sparse % === %
+% % === % ===================== % === %
+
+if ~( checkRow(sparseK1) && checkRow(sparseKEV) && checkCol(sparseGVV_inv) && checkCol(sparseKVE) )
+    error('check');
+end
+
+% === % =================================== % === %
+% === % Transform from mySparse to M_sparse % === %
+% === % =================================== % === %
+
+M_K1 = mySparse2MatlabSparse( sparseK1, N_e, N_e, 'Row' );
+M_three = sparse(N_e, N_e);
+M_KEV      = mySparse2MatlabSparse( sparseKEV, N_e, N_v, 'Row' );
+M_sparseGVV_inv_spai = mySparse2MatlabSparse( sparseGVV_inv, N_v, N_v, 'Col' );
+M_KVE      = mySparse2MatlabSparse( sparseKVE, N_v, N_e, 'Col' );
+
+% % === % ========================== % === %
+% % === % Test For Invalid Filled-in % === %
+% % === % ========================== % === %
+
+% x_max_vertex_prm = x_max_vertex - 1;
+% y_max_vertex_prm = y_max_vertex - 1;
+% z_max_vertex_prm = z_max_vertex - 1;
+
+% % 8 possible mask points 
+% MaskIdx_prm = x_max_vertex_prm * y_max_vertex_prm * z_max_vertex_prm / 2 + x_max_vertex_prm * y_max_vertex_prm / 2 + x_max_vertex_prm / 2;
+% Middle_eIdx = 7 * ( x_max_vertex_prm * y_max_vertex_prm * z_max_vertex_prm / 2 + x_max_vertex_prm * y_max_vertex_prm / 2 + x_max_vertex_prm / 2 ) + 1;
+% MaskIdxes = [ vIdx2eIdx(MaskIdx_prm, 1, x_max_vertex, y_max_vertex, z_max_vertex), ...
+%                 vIdx2eIdx(MaskIdx_prm, 2, x_max_vertex, y_max_vertex, z_max_vertex), ...
+%                 vIdx2eIdx(MaskIdx_prm, 3, x_max_vertex, y_max_vertex, z_max_vertex), ...
+%                 vIdx2eIdx(MaskIdx_prm, 4, x_max_vertex, y_max_vertex, z_max_vertex), ...
+%                 vIdx2eIdx(MaskIdx_prm, 5, x_max_vertex, y_max_vertex, z_max_vertex), ...
+%                 vIdx2eIdx(MaskIdx_prm, 6, x_max_vertex, y_max_vertex, z_max_vertex), ...
+%                 vIdx2eIdx(MaskIdx_prm, 7, x_max_vertex, y_max_vertex, z_max_vertex), ...
+%                 Middle_eIdx ];
+
+% % M_check = sparse(N_e, 8);
+% % for itr = 1: 1: 8
+% %     M_check(:, itr) = M_K1(:, MaskIdxes(itr));
+% % end
+
+% % for exItr = 1: 1: 8
+% %     tmpCheck = find(M_check(:, exItr));
+% %     for itr = 1: 1: length( tmpCheck )
+% %         [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(tmpCheck(itr), x_max_vertex, y_max_vertex, z_max_vertex)
+% %     end
+% % end
+
+% % check for vertex:
+% MiddleV_idx = int64( x_max_vertex * y_max_vertex * z_max_vertex / 2);
+% [ m_v, n_v, ell_v ] = getMNL(MiddleV_idx, x_max_vertex, y_max_vertex, z_max_vertex)
+% M_checkV = sparse(N_e, 1);
+% M_checkV = M_KEV(:, MiddleV_idx);
+
+% ValidPnts = get27Pnts_KEV( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
+
 
 % % === % ========================= % === %
 % % === % Matrices product to get K % === %
 % % === % ========================= % === %
 
-% M_three = sparse(N_e, N_e);
-% M_KEV      = mySparse2MatlabSparse( sparseKEV, N_e, N_v, 'Row' );
-% M_sparseGVV_inv_spai = mySparse2MatlabSparse( sparseGVV_inv, N_v, N_v, 'Col' );
-% % M_G_VV_inv = mySparse2MatlabSparse( sparseG_VV_inv, N_v, N_v, 'Col' );
-% M_KVE      = mySparse2MatlabSparse( sparseKVE, N_v, N_e, 'Col' );
+disp('The calculation time of matrix product: ');
+tic;
+M_three = M_KEV * M_sparseGVV_inv_spai * M_KVE;
+toc;
 
-% disp('The calculation time of matrix product: ');
+% disp('Transforming from M_three to m_three in the first 100 rows: ');
 % tic;
-% M_three = M_KEV * M_sparseGVV_inv_spai * M_KVE;
+% TMP_m_three = cell( N_e, 1 );
+% TMP_m_three = Msparse2msparse(M_three, 100);
 % toc;
+% save('TMP_m_three.mat', 'TMP_m_three', 'sparseK1', 'sparseKEV', 'sparseGVV', 'sparseGVV_inv', 'sparseKVE' );
 
-% % disp('Transforming from M_three to m_three in the first 100 rows: ');
-% % tic;
-% % TMP_m_three = cell( N_e, 1 );
-% % TMP_m_three = Msparse2msparse(M_three, 100);
-% % toc;
-% % save('TMP_m_three.mat', 'TMP_m_three', 'sparseK1', 'sparseKEV', 'sparseGVV', 'sparseGVV_inv', 'sparseKVE' );
-
-% M_K = sparse(N_e, N_e);
-% M_K1 = mySparse2MatlabSparse( sparseK1, N_e, N_e, 'Row' );
+M_K = sparse(N_e, N_e);
 % M_K = M_K1 - M_three;
+M_K = - M_three;
 
 % sparseK = cell(N_e, 1);
 % disp('Transforming from M_K to sparseK : ');
 % tic;
 % sparseK = Msparse2msparse(M_K);
 % toc;
-sparseK = sparseK1;
+% sparseK = sparseK1;
 
 % % === % ===================================== % === %
 % % === % Recover the original rows in sparseK1 % === %
 % % === % ===================================== % === %
 
-for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
-    if edgeTable(vIdx)
-        sparseK{ vIdx } = sparseK1_keep{ vIdx };
-    end
-end
+% for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
+%     if edgeTable(vIdx)
+%         sparseK{ vIdx } = sparseK1_keep{ vIdx };
+%     end
+% end
 
 % % boundary condition on \Gamma for K
 % for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
@@ -601,8 +648,17 @@ end
 % % === % ============================ % === %
 % % === % Sparse Normalization Process % === %
 % % === % ============================ % === %
-
+tic;
+disp('Time for saving');
+save('0604.mat', 'B_k', 'M_K1', 'M_KEV', 'M_sparseGVV_inv_spai', 'M_KVE');
+toc;
 % % Normalize each rows
+tic;
+disp('Time for normalization');
+sptmp = spdiags( 1 ./ max(abs(M_K),[], 2), 0, N_e, N_e );
+nrmlM_K = sptmp * M_K;
+B_k = sptmp * B_k;
+toc;
 % disp('Normalization');
 % tic;
 % for idx = 1: 1: N_e
@@ -620,49 +676,52 @@ end
 % % === % Check empty rows % === %
 % % === % ================ % === %
 
-for eIdx = 1: 1: N_e
-    if isempty(sparseK{ eIdx })
-        [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex)
-    end
-end
+% for eIdx = 1: 1: N_e
+%     if isempty(sparseK{ eIdx })
+%         [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex)
+%     end
+% end
 
 % === % =============================== % === %
 % === % my_sparse Normalization Process % === %
 % === % =============================== % === %
 
-for idx = 1: 1: N_e
-    tmp_vector = sparseK{ idx };
-    num = uint64(size(tmp_vector, 2)) / 2;
-    MAX_row_value = max( abs( tmp_vector( num + 1: 2 * num ) ) );
-    tmp_vector( num + 1: 2 * num ) = tmp_vector( num + 1: 2 * num ) ./ MAX_row_value;
-    sparseK{ idx } = tmp_vector;
-    B_k( idx ) = B_k( idx ) ./ MAX_row_value;
-end
+% for idx = 1: 1: N_e
+%     tmp_vector = sparseK{ idx };
+%     num = uint64(size(tmp_vector, 2)) / 2;
+%     MAX_row_value = max( abs( tmp_vector( num + 1: 2 * num ) ) );
+%     tmp_vector( num + 1: 2 * num ) = tmp_vector( num + 1: 2 * num ) ./ MAX_row_value;
+%     sparseK{ idx } = tmp_vector;
+%     B_k( idx ) = B_k( idx ) ./ MAX_row_value;
+% end
 
 % === % =========================== % === %
 % === % LU preconditioner and GMRES % === %
 % === % =========================== % === %
 
-% tol = 1e-6;
-% ext_itr_num = 10;
-% int_itr_num = 50;
+tol = 1e-6;
+ext_itr_num = 10;
+int_itr_num = 50;
 
 bar_x_my_gmres = zeros(size(B_k));
-nrmlM_K      = mySparse2MatlabSparse( sparseK, N_e, N_e, 'Row' );
+% nrmlM_K      = mySparse2MatlabSparse( sparseK, N_e, N_e, 'Row' );
+tic; 
+disp('Computational time for solving Ax = b: ')
 bar_x_my_gmres = nrmlM_K\B_k;
+toc;
 % tic;
 % disp('The gmres solutin of Ax = B: ');
 % bar_x_my_gmres = gmres( nrmlM_K, B_k, int_itr_num, tol, ext_itr_num );
 % toc;
 
-% save('Case0524_noPre_NBC.mat', 'bar_x_my_gmres', 'B_k');
+% save('Case0528_preBC_Case4.mat', 'bar_x_my_gmres', 'B_k');
 
 AFigsScript;
 
-tic;
-disp('Calculation time of iLU: ')
-[ L_K, U_K ] = ilu( nrmlM_K, struct('type', 'ilutp', 'droptol', 1e-3) );
-toc;
+% tic;
+% disp('Calculation time of iLU: ')
+% [ L_K, U_K ] = ilu( nrmlM_K, struct('type', 'ilutp', 'droptol', 1e-2) );
+% toc;
 
 % % % Need to check whether [ 3, 1, 0.3 ] & [ 3, 1, -0.3 ] are stored in the same cell(idx).
 % % xy_grid_table format: [ x_coordonate, y_coordonate, difference ]

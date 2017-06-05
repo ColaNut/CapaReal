@@ -2,12 +2,12 @@ A = bar_x_my_gmres;
 bar_x_my_gmres_TMP = zeros(x_idx_max * y_idx_max * z_idx_max, 1);
 
 if flag_XZ == 1
-    for CrossN = 2: 1: y_idx_max - 1% y_meshint64( w_y / (2 * dy) + 1 );
-    for dirFlag = 2: 1: 2
+    % for CrossN = 2: 1: y_idx_max - 1% y_meshint64( w_y / (2 * dy) + 1 );
+    for dirFlag = 1: 1: 3
     H_XZ = zeros(x_idx_max, z_idx_max, 6, 8, 3); 
     % CrossN = int64( w_y / dy );
     % CrossN = shIdx;
-    % CrossN = int64( w_y / (2 * dy) + 1 );
+    CrossN = int64( w_y / (2 * dy) + 1 );
     n = CrossN;
     for idx = 1: 1: x_idx_max * z_idx_max
         [ m, ell ] = getML(idx, x_idx_max);
@@ -89,9 +89,9 @@ if flag_XZ == 1
 
     % plot H distribution in the XZ plane
     % figure(dirFlag);
-    figure(CrossN);
+    figure(dirFlag);
     % set(gcf,'position',get(0,'screensize'));
-    % set(figure(dirFlag),'name', strcat(Fname, num2str(dirFlag)),'numbertitle','off')
+    set(figure(dirFlag),'name', strcat(Fname, num2str(dirFlag)),'numbertitle','off')
     clf;
     switch dirFlag
         case 1
@@ -100,6 +100,16 @@ if flag_XZ == 1
             % myRange = [ - 450, 450 ];
         case 3
             % myRange = [ - 300, 300 ];
+        otherwise
+            ;
+    end
+    switch dirFlag
+        case 1
+            myRange = [ - 900, 900 ];
+        case 2
+            myRange = [ - 4500, 4500 ];
+        case 3
+            myRange = [ - 1100, 1100 ];
         otherwise
             ;
     end
@@ -127,7 +137,7 @@ if flag_XZ == 1
     end
     toc;
 
-    % caxis(myRange);
+    caxis(myRange);
     colorbar
     switch dirFlag
         % case 1
@@ -154,7 +164,7 @@ if flag_XZ == 1
     plotMQS( Paras_Mag );
     plotGridLineXZ( shiftedCoordinateXYZ, CrossN );
     % saveas(figure(dirFlag), fullfile(fname, strcat('H_XZ', num2str(dirFlag))), 'fig');
-    % saveas(figure(dirFlag), fullfile(fname, strcat('H_XZ', num2str(dirFlag))), 'jpg');
+    saveas(figure(dirFlag), fullfile(fname, strcat('H_XZ', num2str(dirFlag))), 'jpg');
     % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
     % save( strcat( fname, '\', CaseDate, 'TmprtrFigXZ.mat') );
     % save('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0108\Case0108TmprtrFigXZ.mat');
@@ -174,20 +184,17 @@ if flag_XZ == 1
     % v = squeeze( H_XZ(2: 2 + 2 * x_shift, 2: 2 + 2 * z_shift, 1, 1, 3) );
     % quiver(X_qui, Y_qui, u', v');
     end
-    end
+    % end
 end
 
 if flag_XY == 1
-    for dirFlag = 2: 1: 2
-    CrossEll = 6;
-    % CrossEll = int64( w_z / (2 * dz) + 1 );
+    for dirFlag = 1: 1: 3
+    % CrossEll = 6;
+    CrossEll = int64( w_z / (2 * dz) + 1 );
     H_XY = zeros(x_idx_max, y_idx_max, 6, 8, 3); 
     ell = CrossEll;
     for idx = 1: 1: x_idx_max * y_idx_max
         [ m, n ] = getML(idx, x_idx_max);
-        if m == 5 && n == 7
-            ;
-        end
         if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1 
             H_XY(m, n, :, :, :) = getH(m, n, ell, x_idx_max, y_idx_max, ...
                                         x_max_vertex, y_max_vertex, z_max_vertex, shiftedCoordinateXYZ, ...
@@ -308,9 +315,6 @@ if flag_XY == 1
 
     for idx = 1: 1: x_idx_max * y_idx_max
         [ m, n ] = getML(idx, x_idx_max);
-        if m == 5 && n == 7
-            ;
-        end
         for f_idx = 1: 1: 6
             for n_idx = 1: 1: 8
                 SARseg(m, n, f_idx, n_idx) = squeeze( H_XY(m, n, f_idx, n_idx, dirFlag) );
@@ -341,9 +345,9 @@ if flag_XY == 1
     toc;
 
     % plot electrode SAR
-    figure(dirFlag + 20);
+    figure(dirFlag + 5);
     % set(gcf,'position',get(0,'screensize'));
-    set(figure(dirFlag + 20),'name', strcat(Fname, num2str(dirFlag)),'numbertitle','off')
+    set(figure(dirFlag + 5),'name', strcat(Fname, num2str(dirFlag)),'numbertitle','off')
     clf;
     switch dirFlag
         case 1
@@ -352,6 +356,16 @@ if flag_XY == 1
             % myRange = [ - 300, 300 ];
         case 3
             % myRange = [ - 150, 150 ];
+        otherwise
+            ;
+    end
+    switch dirFlag
+        case 1
+            myRange = [ - 1500, 1500 ];
+        case 2
+            myRange = [ - 2500, 2500 ];
+        case 3
+            myRange = [ - 400, 400 ];
         otherwise
             ;
     end
@@ -404,7 +418,7 @@ if flag_XY == 1
             PntMidPnts9Crdnt = squeeze( MidPnts9Crdnt(m, n, :, :) );
             PntMidPnts9Crdnt(:, 3) = [];
             plotSAR_Intrplt( squeeze( SARseg( m, n, :, :) ), squeeze( TtrVol( m, n, :, : ) ), ...
-                                    PntMidPnts9Crdnt, Intrplt9Pnts, 'XY', 0 );
+                                    PntMidPnts9Crdnt, Intrplt9Pnts, 'XY', 1 );
         end
 
     end
@@ -412,7 +426,7 @@ if flag_XY == 1
 
     % caxis(log10(myRange));
     colorbar
-    % caxis(myRange);
+    caxis(myRange);
     switch dirFlag
         case 1
             % set(colorbar, 'YTick', [-350: 50: 350]);
@@ -437,7 +451,7 @@ if flag_XY == 1
     % plotXY( paras2dXY, dx, dy );
     plotGridLineXY( shiftedCoordinateXYZ, CrossEll );
     % saveas(figure(dirFlag + 5), fullfile(fname, strcat('H_XY', num2str(dirFlag))), 'fig');
-    % saveas(figure(dirFlag + 5), fullfile(fname, strcat('H_XY', num2str(dirFlag))), 'jpg');
+    saveas(figure(dirFlag + 5), fullfile(fname, strcat('H_XY', num2str(dirFlag))), 'jpg');
     % save( strcat( fname, '\', CaseDate, 'TmprtrFigXY.mat') );
 
     % figure(8);
@@ -627,6 +641,16 @@ if flag_YZ == 1
         otherwise
             ;
     end
+    switch dirFlag
+        case 1
+            myRange = [ - 2000, 2000 ];
+        case 2
+            myRange = [ - 2500, 2500 ];
+        case 3
+            myRange = [ - 1500, 1500 ];
+        otherwise
+            ;
+    end
     % myRange = [ 1e1, 1e4 ];
     % caxis(myRange);
     % cbar = colorbar('peer', gca, 'Yscale', 'log');
@@ -682,7 +706,7 @@ if flag_YZ == 1
     end
     toc;
 
-    % caxis(myRange);
+    caxis(myRange);
     colorbar;
     % caxis(log10(myRange));
     switch dirFlag
@@ -710,7 +734,7 @@ if flag_YZ == 1
     axis( [ - 100 * w_y / 2 + 0.5, 100 * w_y / 2 - 0.5, - 100 * w_z / 2 + 0.5, 100 * w_z / 2 - 0.5 ]);
     view(2);
     % saveas(figure(dirFlag + 10), fullfile(fname, strcat('H_YZ', num2str(dirFlag))), 'fig');
-    % saveas(figure(dirFlag + 10), fullfile(fname, strcat('H_YZ', num2str(dirFlag))), 'jpg');
+    saveas(figure(dirFlag + 10), fullfile(fname, strcat('H_YZ', num2str(dirFlag))), 'jpg');
     % save( strcat( fname, '\', CaseDate, 'TmprtrFigYZ.mat') );
 
     % figure(13);

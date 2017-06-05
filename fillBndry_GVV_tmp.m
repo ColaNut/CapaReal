@@ -129,7 +129,7 @@ function sparseGVV = fillBndry_GVV_tmp( m_v, n_v, ell_v, flag, GVV_SideFlag, Ver
         TetCount(3, 6) = TetCount(3, 6) / 2;
     end
 
-    TetCount = TetCount * UnitTetVol;
+    TetCount = TetCount * UnitTetVol / 20;
 
     sparseGVV(28: 36) = TetCount(1, :)';
     sparseGVV(37: 45) = TetCount(2, :)';

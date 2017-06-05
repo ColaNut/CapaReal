@@ -4,7 +4,7 @@ function vIdx = get_vIdx( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_ver
         % volume
         vIdx = int64( ( ell_v - 1 ) * x_max_vertex * y_max_vertex + ( n_v - 1 ) * x_max_vertex + m_v );
     else
-        vIdx = int64( x_max_vertex * y_max_vertex * z_max_vertex / 2 + x_max_vertex * y_max_vertex / 2 + x_max_vertex / 2 );
+        vIdx = int64( x_max_vertex * y_max_vertex * z_max_vertex / 2 );
     end
 
 end

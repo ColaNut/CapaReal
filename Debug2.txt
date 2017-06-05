@@ -1,0 +1,26 @@
+1. check the MiddleVertex in KEV and KVE --done
+2. Check the result of M_3 -> check the E2V transform
+Type4. 
+-1 done;
+-2 -3 -4 -5 -6 -7
+Type1
+Type2
+Type3
+2. Think of the border(boundary conditions funciton, including fillLine1.m, etc. ).
+Revise get_vIdx.m - done
+Update all the m file 
+Check get27Pnts_Kev.m
+Go to Kev directly to check the real value
+Go to Gvv directly to check the real value -done
+Check Gvv, (Kev, K_1, Kve) for the feeding index.
+Check Gvv for the missed middle point filled-in. - done
+Check the Index in 
+
+3. The hat_n direction in WmJ.m -done
+
+4. Try the matrices multiplication for the 1-st edge on. 
+
+4. Debug for the Grid shift table.
+
+
+5. Test for GVV with Tol = 0.1.

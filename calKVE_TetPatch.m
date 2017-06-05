@@ -33,6 +33,7 @@ switch unrelatedVertex
         error('check');
 end
 
+% omega on volume of surface
 switch VolSurfText
     case 'Volume'
         LambdaMask = ones(1, 4);

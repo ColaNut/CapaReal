@@ -12,16 +12,16 @@ if A_flag == 1
     % load( strcat('e:\Kevin\CapaReal\Case0220_1cmFat', '\', CaseName, '.mat') );
 
     flag_XZ = 0;
-    flag_XY = 1;
-    flag_YZ = 0;
+    flag_XY = 0;
+    flag_YZ = 1;
     
-    Fname = 'K1_myNBCext';
-    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0525MQSDirection';
+    Fname = 'M3_preBC_Case1_TEST';
+    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0530MQSDirection';
     % CaseName = '0321';
     % fname = 'e:\Kevin\CapaReal\Case0220_1cmFat';
     % CaseDate = 'Case0220_1cmFat';
-    ADstrbtn_Directed;
-    % ADstrbtn;
+    % ADstrbtn_Directed;
+    ADstrbtn;
     % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'fig');
     % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
     % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'fig');

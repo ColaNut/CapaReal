@@ -149,24 +149,24 @@
 %     B(idx) = B(idx) ./ MAX_row_value;
 % end
 
-load('tmpp.mat');
+% load('tmpp.mat');
 
-Tol = 0.2: 0.1: 1.0;
+Tol = 0.2: 0.1: 0.5;
 r_SAI = zeros(length(Tol), 1);
 
-% for idx = 1: 1: length(Tol)
-%     % sparse approximate inverse 
-%     % G_vv = diag(repmat(1, 1, 1000));
-%     A_SAI = zeros(size(A));
-%     A_Inv = zeros(size(A));
+for idx = 1: 1: length(Tol)
+    % sparse approximate inverse 
+    % G_vv = diag(repmat(1, 1, 1000));
+    A_SAI = zeros(size(A));
+    A_Inv = zeros(size(A));
 
-%     tic;
-%     disp('calculation of SAI of A');
-%     A_SAI = getSAI(A, Tol(idx));
-%     toc;
-%     % calculate the residual: 
-%     r_SAI(idx) = norm(A * ( A_SAI * B ) - B) / norm(B);
-% end
+    tic;
+    disp('calculation of SAI of A');
+    A_SAI = getSAI(A, Tol(idx));
+    toc;
+    % calculate the residual: 
+    r_SAI(idx) = norm(A * ( A_SAI * B ) - B) / norm(B);
+end
 
 % dim = size(A, 1);
 % sparseA = cell(1, dim);

@@ -2,6 +2,7 @@ A = bar_x_my_gmres;
 bar_x_my_gmres_TMP = zeros(x_idx_max * y_idx_max * z_idx_max, 1);
 
 if flag_XZ == 1
+    % for CrossN = 2: 1: 12
     H_XZ = zeros(x_idx_max, z_idx_max, 6, 8, 3); 
     % CrossN = int64( w_y / dy );
     % CrossN = shIdx;
@@ -86,16 +87,16 @@ if flag_XZ == 1
 
     % plot H distribution in the XZ plane
     figure(2);
-    set(figure(2),'name', Fname,'numbertitle','off')
+    % set(figure(n),'name', Fname,'numbertitle','off')
     clf;
-    myRange = [ 1e1, 1e4 ];
-    caxis(myRange);
-    cbar = colorbar('peer', gca, 'Yscale', 'log');
-    set(gca, 'Visible', 'off')
-    log_axes = axes('Position', get(gca, 'Position'));
-    ylabel(cbar, '$H$ (A/m)', 'Interpreter','LaTex', 'FontSize', 20);
-    set(cbar, 'FontSize', 18 );
-    hold on;
+    % myRange = [ 1e1, 1e4 ];
+    % caxis(myRange);
+    % cbar = colorbar('peer', gca, 'Yscale', 'log');
+    % set(gca, 'Visible', 'off')
+    % log_axes = axes('Position', get(gca, 'Position'));
+    % ylabel(cbar, '$H$ (A/m)', 'Interpreter','LaTex', 'FontSize', 20);
+    % set(cbar, 'FontSize', 18 );
+    % hold on;
 
     disp('Time to plot SAR');
     tic;
@@ -112,41 +113,42 @@ if flag_XZ == 1
     end
     toc;
 
-    caxis(log10(myRange));
-    colormap jet;
-    % colorbar
+    % caxis(log10(myRange));
+    % colormap jet;
+    colorbar
     axis equal;
     axis( [ - 100 * w_x / 2 + 0.5, 100 * w_x / 2 - 0.5, - 100 * w_z / 2 + 0.5, 100 * w_z / 2 - 0.5 ]);
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
-    set(log_axes,'fontsize',20);
-    set(log_axes,'LineWidth',2.0);
+    % set(log_axes,'fontsize',20);
+    % set(log_axes,'LineWidth',2.0);
     zlabel('$H$ (A/m)','Interpreter','LaTex', 'FontSize', 20);
     box on;
     view(2);
     hold on;
     plotMQS( Paras_Mag );
     plotGridLineXZ( shiftedCoordinateXYZ, CrossN );
-    saveas(figure(2), fullfile(fname, 'H_XZ'), 'fig');
-    saveas(figure(2), fullfile(fname, 'H_XZ'), 'jpg');
+    % saveas(figure(2), fullfile(fname, 'H_XZ'), 'fig');
+    % saveas(figure(2), fullfile(fname, 'H_XZ'), 'jpg');
     % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
     % save( strcat( fname, '\', CaseDate, 'TmprtrFigXZ.mat') );
     % save('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0108\Case0108TmprtrFigXZ.mat');
 
-    figure(3);
-    x_shift = ( x_idx_max - 1 ) / 2 - 1;
-    z_shift = ( z_idx_max - 1 ) / 2 - 1;
+    % figure(3);
+    % x_shift = ( x_idx_max - 1 ) / 2 - 1;
+    % z_shift = ( z_idx_max - 1 ) / 2 - 1;
 
-    [ X_qui, Y_qui ] = meshgrid(- x_shift: 1: x_shift, - z_shift: 1: z_shift);
+    % [ X_qui, Y_qui ] = meshgrid(- x_shift: 1: x_shift, - z_shift: 1: z_shift);
 
-    u = zeros(2 * x_shift + 1, 2 * z_shift + 1);
-    w = zeros(2 * x_shift + 1, 2 * z_shift + 1);
-    v = zeros(2 * x_shift + 1, 2 * z_shift + 1);
+    % u = zeros(2 * x_shift + 1, 2 * z_shift + 1);
+    % w = zeros(2 * x_shift + 1, 2 * z_shift + 1);
+    % v = zeros(2 * x_shift + 1, 2 * z_shift + 1);
 
-    u = squeeze( H_XZ(2: 2 + 2 * x_shift, 2: 2 + 2 * z_shift, 1, 1, 1) );
-    w = squeeze( H_XZ(2: 2 + 2 * x_shift, 2: 2 + 2 * z_shift, 1, 1, 2) );
-    v = squeeze( H_XZ(2: 2 + 2 * x_shift, 2: 2 + 2 * z_shift, 1, 1, 3) );
-    quiver(X_qui, Y_qui, u', v');
+    % u = squeeze( H_XZ(2: 2 + 2 * x_shift, 2: 2 + 2 * z_shift, 1, 1, 1) );
+    % w = squeeze( H_XZ(2: 2 + 2 * x_shift, 2: 2 + 2 * z_shift, 1, 1, 2) );
+    % v = squeeze( H_XZ(2: 2 + 2 * x_shift, 2: 2 + 2 * z_shift, 1, 1, 3) );
+    % quiver(X_qui, Y_qui, u', v');
+% end
 end
 
 if flag_XY == 1
@@ -314,13 +316,13 @@ if flag_XY == 1
     figure(7);
     set(figure(7),'name', Fname,'numbertitle','off')
     clf;
-    myRange = [ 1e1, 1e4 ];
-    caxis(myRange);
-    cbar = colorbar('peer', gca, 'Yscale', 'log');
+    % myRange = [ 1e1, 1e4 ];
+    % caxis(myRange);
+    % cbar = colorbar('peer', gca, 'Yscale', 'log');
     set(gca, 'Visible', 'off')
-    log_axes = axes('Position', get(gca, 'Position'));
-    ylabel(cbar, '$H$ (A/m)', 'Interpreter','LaTex', 'FontSize', 20);
-    set(cbar, 'FontSize', 18 );
+    % log_axes = axes('Position', get(gca, 'Position'));
+    % ylabel(cbar, '$H$ (A/m)', 'Interpreter','LaTex', 'FontSize', 20);
+    % set(cbar, 'FontSize', 18 );
     hold on;
     % disp('Time to plot SAR');
     % tic;
@@ -370,15 +372,15 @@ if flag_XY == 1
     end
     toc;
 
-    caxis(log10(myRange));
+    % caxis(log10(myRange));
     colormap jet;
-    % colorbar
+    colorbar
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$y$ (cm)','Interpreter','LaTex', 'FontSize', 20);
     axis equal;
     zlabel('$H$ (A/m)','Interpreter','LaTex', 'FontSize', 18);
-    set(log_axes,'fontsize',20);
-    set(log_axes,'LineWidth',2.0);
+    % set(log_axes,'fontsize',20);
+    % set(log_axes,'LineWidth',2.0);
     box on;
     view(2);
     axis( [ - 100 * w_x / 2 + 0.5, 100 * w_x / 2 - 0.5, - 100 * w_y / 2 + 0.5, 100 * w_y / 2 - 0.5 ]);
@@ -389,20 +391,20 @@ if flag_XY == 1
     saveas(figure(7), fullfile(fname, 'H_XY'), 'jpg');
     % save( strcat( fname, '\', CaseDate, 'TmprtrFigXY.mat') );
 
-    figure(8);
-    x_shift = ( x_idx_max - 1 ) / 2 - 1;
-    y_shift = ( y_idx_max - 1 ) / 2 - 1;
+    % figure(8);
+    % x_shift = ( x_idx_max - 1 ) / 2 - 1;
+    % y_shift = ( y_idx_max - 1 ) / 2 - 1;
 
-    [ X_qui, Y_qui ] = meshgrid(- x_shift: 1: x_shift, - y_shift: 1: y_shift);
+    % [ X_qui, Y_qui ] = meshgrid(- x_shift: 1: x_shift, - y_shift: 1: y_shift);
 
-    u = zeros(2 * x_shift + 1, 2 * y_shift + 1);
-    w = zeros(2 * x_shift + 1, 2 * y_shift + 1);
-    v = zeros(2 * x_shift + 1, 2 * y_shift + 1);
+    % u = zeros(2 * x_shift + 1, 2 * y_shift + 1);
+    % w = zeros(2 * x_shift + 1, 2 * y_shift + 1);
+    % v = zeros(2 * x_shift + 1, 2 * y_shift + 1);
 
-    u = squeeze( H_XY(2: 2 + 2 * x_shift, 2: 2 + 2 * y_shift, 1, 1, 1) );
-    w = squeeze( H_XY(2: 2 + 2 * x_shift, 2: 2 + 2 * y_shift, 1, 1, 2) );
-    v = squeeze( H_XY(2: 2 + 2 * x_shift, 2: 2 + 2 * y_shift, 1, 1, 3) );
-    quiver(X_qui, Y_qui, u', w');
+    % u = squeeze( H_XY(2: 2 + 2 * x_shift, 2: 2 + 2 * y_shift, 1, 1, 1) );
+    % w = squeeze( H_XY(2: 2 + 2 * x_shift, 2: 2 + 2 * y_shift, 1, 1, 2) );
+    % v = squeeze( H_XY(2: 2 + 2 * x_shift, 2: 2 + 2 * y_shift, 1, 1, 3) );
+    % quiver(X_qui, Y_qui, u', w');
 end
 
 if flag_YZ == 1
@@ -562,15 +564,15 @@ if flag_YZ == 1
 
     % plot SAR
     figure(12);
-    set(figure(12),'name', Fname,'numbertitle','off')
-    clf;
-    myRange = [ 1e1, 1e4 ];
-    caxis(myRange);
-    cbar = colorbar('peer', gca, 'Yscale', 'log');
-    set(gca, 'Visible', 'off')
-    log_axes = axes('Position', get(gca, 'Position'));
-    ylabel(cbar, '$H$ (A/m)', 'Interpreter','LaTex', 'FontSize', 20);
-    set(cbar, 'FontSize', 25);
+    % set(figure(12),'name', Fname,'numbertitle','off')
+    % clf;
+    % myRange = [ 1e1, 1e4 ];
+    % caxis(myRange);
+    % cbar = colorbar('peer', gca, 'Yscale', 'log');
+    % set(gca, 'Visible', 'off')
+    % log_axes = axes('Position', get(gca, 'Position'));
+    % ylabel(cbar, '$H$ (A/m)', 'Interpreter','LaTex', 'FontSize', 20);
+    % set(cbar, 'FontSize', 25);
     hold on;
     % disp('Time to plot SAR');
     % tic;
@@ -619,11 +621,11 @@ if flag_YZ == 1
     end
     toc;
 
-    caxis(log10(myRange));
+    % caxis(log10(myRange));
     colormap jet;
-    % colorbar;
-    set(log_axes,'fontsize',25);
-    set(log_axes,'LineWidth',2.0);
+    colorbar;
+    % set(log_axes,'fontsize',25);
+    % set(log_axes,'LineWidth',2.0);
     box on;
     xlabel('$y$ (cm)', 'Interpreter','LaTex', 'FontSize', 25);
     ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 25);
@@ -635,22 +637,22 @@ if flag_YZ == 1
     % axis( [ - 15, 15, - 15, 15 ]);
     axis( [ - 100 * w_y / 2 + 0.5, 100 * w_y / 2 - 0.5, - 100 * w_z / 2 + 0.5, 100 * w_z / 2 - 0.5 ]);
     view(2);
-    saveas(figure(12), fullfile(fname, 'H_YZ'), 'fig');
-    saveas(figure(12), fullfile(fname, 'H_YZ'), 'jpg');
+    % saveas(figure(12), fullfile(fname, 'H_YZ'), 'fig');
+    % saveas(figure(12), fullfile(fname, 'H_YZ'), 'jpg');
     % save( strcat( fname, '\', CaseDate, 'TmprtrFigYZ.mat') );
 
-    figure(13);
-    y_shift = ( y_idx_max - 1 ) / 2 - 1;
-    z_shift = ( z_idx_max - 1 ) / 2 - 1;
+    % figure(13);
+    % y_shift = ( y_idx_max - 1 ) / 2 - 1;
+    % z_shift = ( z_idx_max - 1 ) / 2 - 1;
 
-    [ X_qui, Y_qui ] = meshgrid(- y_shift: 1: y_shift, - z_shift: 1: z_shift);
+    % [ X_qui, Y_qui ] = meshgrid(- y_shift: 1: y_shift, - z_shift: 1: z_shift);
 
-    u = zeros(2 * y_shift + 1, 2 * z_shift + 1);
-    w = zeros(2 * y_shift + 1, 2 * z_shift + 1);
-    v = zeros(2 * y_shift + 1, 2 * z_shift + 1);
+    % u = zeros(2 * y_shift + 1, 2 * z_shift + 1);
+    % w = zeros(2 * y_shift + 1, 2 * z_shift + 1);
+    % v = zeros(2 * y_shift + 1, 2 * z_shift + 1);
 
-    u = squeeze( H_YZ(2: 2 + 2 * y_shift, 2: 2 + 2 * z_shift, 1, 1, 1) );
-    w = squeeze( H_YZ(2: 2 + 2 * y_shift, 2: 2 + 2 * z_shift, 1, 1, 2) );
-    v = squeeze( H_YZ(2: 2 + 2 * y_shift, 2: 2 + 2 * z_shift, 1, 1, 3) );
-    quiver(X_qui, Y_qui, w', v');
+    % u = squeeze( H_YZ(2: 2 + 2 * y_shift, 2: 2 + 2 * z_shift, 1, 1, 1) );
+    % w = squeeze( H_YZ(2: 2 + 2 * y_shift, 2: 2 + 2 * z_shift, 1, 1, 2) );
+    % v = squeeze( H_YZ(2: 2 + 2 * y_shift, 2: 2 + 2 * z_shift, 1, 1, 3) );
+    % quiver(X_qui, Y_qui, w', v');
 end

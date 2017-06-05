@@ -1,0 +1,48 @@
+The calculation time of SAI: 
+Starting parallel pool (parpool) using the 'local' profile ...
+connected to 4 workers.
+Elapsed time is 4431.900415 seconds.
+For Tol =0.1, the 2-condition number is21.4979
+The calculation time of 2-condition number of AM: 
+Elapsed time is 763.186426 seconds.
+and the Frobenius norm is19.5419
+The calculation time of Frobenius norm of AM - I: 
+Elapsed time is 0.072050 seconds.
+The calculation time of SAI: 
+Elapsed time is 1134.899647 seconds.
+For Tol =0.2, the 2-condition number is33.1362
+The calculation time of 2-condition number of AM: 
+Elapsed time is 739.005573 seconds.
+and the Frobenius norm is28.2704
+The calculation time of Frobenius norm of AM - I: 
+Elapsed time is 0.025713 seconds.
+The calculation time of SAI: 
+Elapsed time is 333.376156 seconds.
+For Tol =0.3, the 2-condition number is44.1933
+The calculation time of 2-condition number of AM: 
+Elapsed time is 737.118305 seconds.
+and the Frobenius norm is43.8767
+The calculation time of Frobenius norm of AM - I: 
+Elapsed time is 0.026242 seconds.
+The calculation time of SAI: 
+Elapsed time is 178.329394 seconds.
+For Tol =0.4, the 2-condition number is37.0581
+The calculation time of 2-condition number of AM: 
+Elapsed time is 736.683502 seconds.
+and the Frobenius norm is53.5319
+The calculation time of Frobenius norm of AM - I: 
+Elapsed time is 0.013275 seconds.
+The calculation time of SAI: 
+Elapsed time is 71.435794 seconds.
+For Tol =0.5, the 2-condition number is33.1014
+The calculation time of 2-condition number of AM: 
+Elapsed time is 741.494607 seconds.
+and the Frobenius norm is60.0796
+The calculation time of Frobenius norm of AM - I: 
+Elapsed time is 0.010887 seconds.
+The calculation time of SAI: 
+Elapsed time is 50.362974 seconds.
+For Tol =0.6, the 2-condition number is29.3028
+The calculation time of 2-condition number of AM: 
+Elapsed time is 738.840513 seconds.
+and the Frobenius norm is62.7991

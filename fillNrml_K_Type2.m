@@ -187,12 +187,12 @@ function varargout = fillNrml_K_Type2( m_v, n_v, ell_v, flag, Vertex_Crdnt, x_ma
     % FaceCrdnt  = zeros( 1, 9, 3 );
     % FaceCrdnt = p4FaceMidLyr( PntsCrdnt );
     [ K1_row_1(26: 50), KEV_row_1(11: 20), KVE_col_1(11: 20) ] = calK_Type2( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 4, :) ), PntSegMed(1, :), mu_r, epsilon_r, corner_flag, '1' );
-    % B_k( K1_row_1(25) ) = calBk_Type2( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 4, :) ), ...
-    %                                 Side_Cflags, Pnts_Cflags(2, 4), J_0, '1' );
-    if edgeTable( K1_row_1(25) )
-        [ K1_row_1(:, 26: 50), B_k( K1_row_1(25) ) ] = CurrentType2_Prm( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 4, :) ), ...
-                                    Side_Cflags, Pnts_Cflags(2, 4), PntSegMed(1, :), J_0, mu_r, '1' );
-    end
+    B_k( K1_row_1(25) ) = calBk_Type2( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 4, :) ), ...
+                                    Side_Cflags, Pnts_Cflags(2, 4), J_0, '1' );
+    % if edgeTable( K1_row_1(25) )
+    %     [ K1_row_1(:, 26: 50), B_k( K1_row_1(25) ) ] = CurrentType2_Prm( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 4, :) ), ...
+    %                                 Side_Cflags, Pnts_Cflags(2, 4), PntSegMed(1, :), J_0, mu_r, '1' );
+    % end
     % 2-nd edge
     K1_row_2(1)    = vIdx2eIdx(PntsIdx_prm(2, 6), 4, x_max_vertex, y_max_vertex, z_max_vertex);
     K1_row_2(2)    = vIdx2eIdx(PntsIdx_prm(3, 6), 7, x_max_vertex, y_max_vertex, z_max_vertex);
@@ -236,12 +236,12 @@ function varargout = fillNrml_K_Type2( m_v, n_v, ell_v, flag, Vertex_Crdnt, x_ma
         [ K_row_2(:, 14: 26), B_k_row2 ] = CurrentType2( FaceCrdnt, squeeze( PntsCrdnt(2, 5, :) ), ...
                                     Side_Cflags, Pnts_Cflags(2, 5), tmpSegMed, J_0, mu_r, '2', quadrantNum, tiltType );
     end
-    % B_k( K1_row_2(13) ) = calBk_Type2( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 5, :) ), ...
-    %                                 Side_Cflags, Pnts_Cflags(2, 5), J_0, '2' );
-    if edgeTable( K1_row_2(13) )
-        [ K1_row_2(:, 14: 26), B_k( K1_row_2(13) ) ] = CurrentType2_Prm( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 5, :) ), ...
-                                Side_Cflags, Pnts_Cflags(2, 5), tmpSegMed, J_0, mu_r, '2' );
-    end
+    B_k( K1_row_2(13) ) = calBk_Type2( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 5, :) ), ...
+                                    Side_Cflags, Pnts_Cflags(2, 5), J_0, '2' );
+    % if edgeTable( K1_row_2(13) )
+    %     [ K1_row_2(:, 14: 26), B_k( K1_row_2(13) ) ] = CurrentType2_Prm( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 5, :) ), ...
+    %                             Side_Cflags, Pnts_Cflags(2, 5), tmpSegMed, J_0, mu_r, '2' );
+    % end
 
     % 3-rd edge
     K1_row_3(1)    = vIdx2eIdx(PntsIdx_prm(2, 5), 6, x_max_vertex, y_max_vertex, z_max_vertex);
@@ -282,12 +282,12 @@ function varargout = fillNrml_K_Type2( m_v, n_v, ell_v, flag, Vertex_Crdnt, x_ma
     tmpSegMed = zeros(1, 4, 'uint8');
     tmpSegMed = [ PntSegMed(1, 7), PntSegMed(2, 6), PntSegMed(2, 7), PntSegMed(1, 6) ];
     [ K1_row_3(14: 26), KEV_row_3(7: 12), KVE_col_3(7: 12) ] = calK_Type2( FaceCrdnt, squeeze( PntsCrdnt(2, 5, :) ), tmpSegMed, mu_r, epsilon_r, corner_flag, '3' );
-    % B_k( K1_row_3(13) ) = calBk_Type2( FaceCrdnt, squeeze( PntsCrdnt(2, 5, :) ), ...
-    %                                 Side_Cflags, Pnts_Cflags(2, 5), J_0, '3' );
-    if edgeTable( K1_row_3(13) )
-        [ K1_row_3(:, 14: 26), B_k( K1_row_3(13) ) ] = CurrentType2_Prm( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 5, :) ), ...
-                                    Side_Cflags, Pnts_Cflags(2, 5), tmpSegMed, J_0, mu_r, '3' );
-    end
+    B_k( K1_row_3(13) ) = calBk_Type2( FaceCrdnt, squeeze( PntsCrdnt(2, 5, :) ), ...
+                                    Side_Cflags, Pnts_Cflags(2, 5), J_0, '3' );
+    % if edgeTable( K1_row_3(13) )
+    %     [ K1_row_3(:, 14: 26), B_k( K1_row_3(13) ) ] = CurrentType2_Prm( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 5, :) ), ...
+    %                                 Side_Cflags, Pnts_Cflags(2, 5), tmpSegMed, J_0, mu_r, '3' );
+    % end
     % 4-th edge
     K1_row_4(1)    = vIdx2eIdx(PntsIdx_prm(2, 5), 2, x_max_vertex, y_max_vertex, z_max_vertex);
     K1_row_4(2)    = vIdx2eIdx(PntsIdx_prm(3, 5), 5, x_max_vertex, y_max_vertex, z_max_vertex);
@@ -335,12 +335,12 @@ function varargout = fillNrml_K_Type2( m_v, n_v, ell_v, flag, Vertex_Crdnt, x_ma
             end
         end
     end
-    % B_k( K1_row_4(13) ) = calBk_Type2( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 4, :) ), ...
-    %                                 Side_Cflags, Pnts_Cflags(2, 4), J_0, '4' );
-    if edgeTable( K1_row_4(13) )
-        [ K1_row_4(:, 14: 26), B_k( K1_row_4(13) ) ] = CurrentType2_Prm( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 4, :) ), ...
-                                    Side_Cflags, Pnts_Cflags(2, 4), tmpSegMed, J_0, mu_r, '4' );
-    end
+    B_k( K1_row_4(13) ) = calBk_Type2( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 4, :) ), ...
+                                    Side_Cflags, Pnts_Cflags(2, 4), J_0, '4' );
+    % if edgeTable( K1_row_4(13) )
+    %     [ K1_row_4(:, 14: 26), B_k( K1_row_4(13) ) ] = CurrentType2_Prm( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 4, :) ), ...
+    %                                 Side_Cflags, Pnts_Cflags(2, 4), tmpSegMed, J_0, mu_r, '4' );
+    % end
     % 5-th edge
     K1_row_5(1)    = vIdx2eIdx(PntsIdx_prm(2, 5), 2, x_max_vertex, y_max_vertex, z_max_vertex);
     K1_row_5(2)    = vIdx2eIdx(PntsIdx_prm(2, 6), 4, x_max_vertex, y_max_vertex, z_max_vertex);
@@ -399,12 +399,12 @@ function varargout = fillNrml_K_Type2( m_v, n_v, ell_v, flag, Vertex_Crdnt, x_ma
             end
         end
     end
-    % B_k( K1_row_5(13) ) = calBk_Type2( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(1, 2, :) ), ...
-    %                                 Side_Cflags, Pnts_Cflags(1, 2), J_0, '5' );
-    if edgeTable( K1_row_5(13) )
-        [ K1_row_5(:, 14: 26), B_k( K1_row_5(13) ) ] = CurrentType2_Prm( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(1, 2, :) ), ...
-                                    Side_Cflags, Pnts_Cflags(1, 2), tmpSegMed, J_0, mu_r, '5' );
-    end
+    B_k( K1_row_5(13) ) = calBk_Type2( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(1, 2, :) ), ...
+                                    Side_Cflags, Pnts_Cflags(1, 2), J_0, '5' );
+    % if edgeTable( K1_row_5(13) )
+    %     [ K1_row_5(:, 14: 26), B_k( K1_row_5(13) ) ] = CurrentType2_Prm( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(1, 2, :) ), ...
+    %                                 Side_Cflags, Pnts_Cflags(1, 2), tmpSegMed, J_0, mu_r, '5' );
+    % end
     % 6-th edge
     K1_row_6(1)    = vIdx2eIdx(PntsIdx_prm(1, 5), 1, x_max_vertex, y_max_vertex, z_max_vertex);
     K1_row_6(2)    = vIdx2eIdx(PntsIdx_prm(1, 8), 4, x_max_vertex, y_max_vertex, z_max_vertex);
@@ -443,12 +443,12 @@ function varargout = fillNrml_K_Type2( m_v, n_v, ell_v, flag, Vertex_Crdnt, x_ma
     Side_Cflags(5) = Pnts_Cflags(1, 8);
     tmpSegMed = [ auxiSegMed(3, 4), PntSegMed(1, 7), PntSegMed(1, 6), auxiSegMed(3, 5) ];
     [ K1_row_6(14: 26), KEV_row_6(7: 12), KVE_col_6(7: 12) ] = calK_Type2( FaceCrdnt, squeeze( PntsCrdnt(2, 4, :) ), tmpSegMed, mu_r, epsilon_r, corner_flag, '6' );
-    % B_k( K1_row_6(13) ) = calBk_Type2( FaceCrdnt, squeeze( PntsCrdnt(2, 4, :) ), ...
-    %                                 Side_Cflags, Pnts_Cflags(2, 4), J_0, '6' );
-    if edgeTable( K1_row_6(13) )
-        [ K1_row_6(:, 14: 26), B_k( K1_row_6(13) ) ] = CurrentType2_Prm( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 4, :) ), ...
-                                    Side_Cflags, Pnts_Cflags(2, 4), tmpSegMed, J_0, mu_r, '6' );
-    end
+    B_k( K1_row_6(13) ) = calBk_Type2( FaceCrdnt, squeeze( PntsCrdnt(2, 4, :) ), ...
+                                    Side_Cflags, Pnts_Cflags(2, 4), J_0, '6' );
+    % if edgeTable( K1_row_6(13) )
+    %     [ K1_row_6(:, 14: 26), B_k( K1_row_6(13) ) ] = CurrentType2_Prm( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 4, :) ), ...
+    %                                 Side_Cflags, Pnts_Cflags(2, 4), tmpSegMed, J_0, mu_r, '6' );
+    % end
     % 7-th edge
     K1_row_7(1)    = vIdx2eIdx(PntsIdx_prm(1, 5), 2, x_max_vertex, y_max_vertex, z_max_vertex);
     K1_row_7(2)    = vIdx2eIdx(PntsIdx_prm(2, 5), 3, x_max_vertex, y_max_vertex, z_max_vertex);
@@ -492,12 +492,12 @@ function varargout = fillNrml_K_Type2( m_v, n_v, ell_v, flag, Vertex_Crdnt, x_ma
             end
         end
     end
-    % B_k( K1_row_7(19) ) = calBk_Type2( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 4, :) ), ...
-    %                                 Side_Cflags, Pnts_Cflags(2, 4), J_0, '7' );
-    if edgeTable( K1_row_7(19) )
-        [ K1_row_7(:, 20: 38), B_k( K1_row_7(19) ) ] = CurrentType2_Prm( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 4, :) ), ...
-                                    Side_Cflags, Pnts_Cflags(2, 4), tmpSegMed, J_0, mu_r, '7' );
-    end
+    B_k( K1_row_7(19) ) = calBk_Type2( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 4, :) ), ...
+                                    Side_Cflags, Pnts_Cflags(2, 4), J_0, '7' );
+    % if edgeTable( K1_row_7(19) )
+    %     [ K1_row_7(:, 20: 38), B_k( K1_row_7(19) ) ] = CurrentType2_Prm( squeeze( FaceCrdnt ), squeeze( PntsCrdnt(2, 4, :) ), ...
+    %                                 Side_Cflags, Pnts_Cflags(2, 4), tmpSegMed, J_0, mu_r, '7' );
+    % end
 
     if nVarargs == 4
         if strcmp(tiltType, 'Vertical') && ( quadrantNum == 1 || quadrantNum == 4 )

@@ -16,6 +16,7 @@ switch SideIdx
         [ FourTet_e(3, :), FourTet_v(3, :)] = get6E4V( SideCrdnt(3, :), SideCrdnt(1, :), CntrlCrdnt', SideCrdnt(2, :), 2, 'inn', mu_r( FaceSegMed(3) ), epsilon_r( FaceSegMed(3) ) );
         [ FourTet_e(4, :), FourTet_v(4, :)] = get6E4V( SideCrdnt(3, :), SideCrdnt(1, :), SideCrdnt(4, :), CntrlCrdnt', 3, 'inn', mu_r( FaceSegMed(4) ), epsilon_r( FaceSegMed(4) ) );
 
+        % trim
         if corner_flag(1, 1)
             vec = [1, 2];
             FourTet_e(vec, :) = 0;
@@ -60,6 +61,7 @@ switch SideIdx
 
         FourTet_v = - FourTet_v ./ repmat( mu_r( FaceSegMed' ) .* epsilon_r( FaceSegMed' ).^2, 1, 4 );
 
+        % no volume for KVE
         % on Gamma surface
         if corner_flag(1, 1)
             hat_n = [0, 0, 1];
@@ -82,6 +84,7 @@ switch SideIdx
             FourTet_v(3, :) = FourTet_v(3, :) + calKVE_TetPatch( SideCrdnt(3, :), SideCrdnt(1, :), CntrlCrdnt', SideCrdnt(2, :), 2, 'inn', mu_r( FaceSegMed(3) ), epsilon_r( FaceSegMed(3) ), 4, hat_n, 'Surface' );
         end
 
+        % trim
         if corner_flag(1, 1)
             vec = [1, 2];
             FourTet_e(vec, :) = 0;
@@ -121,6 +124,7 @@ switch SideIdx
         [ FourTet_e(3, :), FourTet_v(3, :)] = get6E4V( SideCrdnt(2, :), SideCrdnt(3, :), SideCrdnt(1, :), CntrlCrdnt', 5, 'ext', mu_r( FaceSegMed(3) ), epsilon_r( FaceSegMed(3) ) );
         [ FourTet_e(4, :), FourTet_v(4, :)] = get6E4V( SideCrdnt(3, :), SideCrdnt(1, :), CntrlCrdnt', SideCrdnt(4, :), 2, 'inn', mu_r( FaceSegMed(4) ), epsilon_r( FaceSegMed(4) ) );
 
+        % trim
         if corner_flag(1, 1)
             vec = [1: 2];
             FourTet_e(vec, :) = 0;
@@ -165,6 +169,7 @@ switch SideIdx
 
         FourTet_v = - FourTet_v ./ repmat( mu_r( FaceSegMed' ) .* epsilon_r( FaceSegMed' ).^2, 1, 4 );
 
+        % no volume for KVE
         % on Gamma surface
         if corner_flag(1, 1)
             hat_n = [0, 0, 1];
@@ -187,6 +192,7 @@ switch SideIdx
             FourTet_v(4, :) = FourTet_v(4, :) + calKVE_TetPatch( SideCrdnt(3, :), SideCrdnt(1, :), CntrlCrdnt', SideCrdnt(4, :), 2, 'inn', mu_r( FaceSegMed(4) ), epsilon_r( FaceSegMed(4) ), 4, hat_n, 'Surface' );
         end
 
+        % trim
         if corner_flag(1, 1)
             vec = [1: 2];
             FourTet_e(vec, :) = 0;
@@ -230,6 +236,7 @@ switch SideIdx
         [ EightTet_e(7, :), EightTet_v(7, :)] = get6E4V( SideCrdnt(3, :), SideCrdnt(5, :), CntrlCrdnt', SideCrdnt(2, :), 4, 'ext', mu_r( FaceSegMed(7) ), epsilon_r( FaceSegMed(7) ) );
         [ EightTet_e(8, :), EightTet_v(8, :)] = get6E4V( SideCrdnt(6, :), SideCrdnt(3, :), SideCrdnt(5, :), CntrlCrdnt', 6, 'ext', mu_r( FaceSegMed(8) ), epsilon_r( FaceSegMed(8) ) );
 
+        % trim
         if corner_flag(1, 5)
             vec = [1: 4];
             EightTet_e(vec, :) = 0;
@@ -327,6 +334,7 @@ switch SideIdx
             EightTet_v(4, :) = EightTet_v(4, :) + calKVE_TetPatch( SideCrdnt(5, :), CntrlCrdnt', SideCrdnt(7, :), SideCrdnt(4, :), 1, 'inn', mu_r( FaceSegMed(4) ), epsilon_r( FaceSegMed(4) ), 3, hat_n, 'Surface' );
         end
         
+        % trim
         if corner_flag(1, 5)
             vec = [1: 4];
             EightTet_e(vec, :) = 0;
@@ -372,6 +380,7 @@ switch SideIdx
         [ FourTet_e(3, :), FourTet_v(3, :)] = get6E4V( SideCrdnt(3, :), SideCrdnt(1, :), SideCrdnt(2, :), CntrlCrdnt', 3, 'ext', mu_r( FaceSegMed(3) ), epsilon_r( FaceSegMed(3) ) );
         [ FourTet_e(4, :), FourTet_v(4, :)] = get6E4V( SideCrdnt(3, :), SideCrdnt(1, :), SideCrdnt(4, :), CntrlCrdnt', 3, 'inn', mu_r( FaceSegMed(4) ), epsilon_r( FaceSegMed(4) ) );
 
+        % trim
         if corner_flag(1, 1)
             vec = [1: 2];
             FourTet_e(vec, :) = 0;
@@ -406,6 +415,7 @@ switch SideIdx
 
         FourTet_v = - FourTet_v ./ repmat( mu_r( FaceSegMed' ) .* epsilon_r( FaceSegMed' ).^2, 1, 4 );
 
+        % volume for KVE
         if corner_flag(1, 5)
             hat_n = [0, 1, 0];
             FourTet_v(1, :) = FourTet_v(1, :) + calKVE_TetPatch( SideCrdnt(5, :), SideCrdnt(3, :), SideCrdnt(4, :), CntrlCrdnt', 5, 'inn', mu_r( FaceSegMed(1) ), epsilon_r( FaceSegMed(1) ), 4, hat_n, 'Volume' );
@@ -429,6 +439,7 @@ switch SideIdx
             FourTet_v(2, :) = FourTet_v(2, :) + calKVE_TetPatch( SideCrdnt(5, :), SideCrdnt(3, :), SideCrdnt(2, :), CntrlCrdnt', 5, 'ext', mu_r( FaceSegMed(2) ), epsilon_r( FaceSegMed(2) ), 1, hat_n, 'Surface' );
         end
 
+        % trim
         if corner_flag(1, 1)
             vec = [1: 2];
             FourTet_e(vec, :) = 0;
@@ -458,6 +469,7 @@ switch SideIdx
         [ FourTet_e(3, :), FourTet_v(3, :)] = get6E4V( SideCrdnt(2, :), CntrlCrdnt', SideCrdnt(3, :), SideCrdnt(1, :), 4, 'ext', mu_r( FaceSegMed(3) ), epsilon_r( FaceSegMed(3) ) );
         [ FourTet_e(4, :), FourTet_v(4, :)] = get6E4V( CntrlCrdnt', SideCrdnt(3, :), SideCrdnt(4, :), SideCrdnt(1, :), 1, 'inn', mu_r( FaceSegMed(4) ), epsilon_r( FaceSegMed(4) ) );
 
+        % trim
         if corner_flag(1, 4)
             vec = [1: 2];
             FourTet_e(vec, :) = 0;
@@ -492,6 +504,7 @@ switch SideIdx
 
         FourTet_v = - FourTet_v ./ repmat( mu_r( FaceSegMed' ) .* epsilon_r( FaceSegMed' ).^2, 1, 4 );
 
+        % volume for KVE
         if corner_flag(1, 6)
             hat_n = [0, - 1, 0];
             FourTet_v(1, :) = FourTet_v(1, :) + calKVE_TetPatch( SideCrdnt(5, :), CntrlCrdnt', SideCrdnt(3, :), SideCrdnt(4, :), 4, 'inn', mu_r( FaceSegMed(1) ), epsilon_r( FaceSegMed(1) ), 2, hat_n, 'Volume' );
@@ -515,6 +528,7 @@ switch SideIdx
             FourTet_v(4, :) = FourTet_v(4, :) + calKVE_TetPatch( CntrlCrdnt', SideCrdnt(3, :), SideCrdnt(4, :), SideCrdnt(1, :), 1, 'inn', mu_r( FaceSegMed(4) ), epsilon_r( FaceSegMed(4) ), 4, hat_n, 'Surface' );
         end
 
+        % trim
         if corner_flag(1, 4)
             vec = [1: 2];
             FourTet_e(vec, :) = 0;
@@ -544,6 +558,7 @@ switch SideIdx
         [ FourTet_e(3, :), FourTet_v(3, :)] = get6E4V( CntrlCrdnt', SideCrdnt(3, :), SideCrdnt(2, :), SideCrdnt(1, :), 1, 'ext', mu_r( FaceSegMed(3) ), epsilon_r( FaceSegMed(3) ) );
         [ FourTet_e(4, :), FourTet_v(4, :)] = get6E4V( SideCrdnt(4, :), CntrlCrdnt', SideCrdnt(3, :), SideCrdnt(1, :), 4, 'inn', mu_r( FaceSegMed(4) ), epsilon_r( FaceSegMed(4) ) );
 
+        % trim
         if corner_flag(1, 5)
             vec = [1: 2];
             FourTet_e(vec, :) = 0;
@@ -578,6 +593,7 @@ switch SideIdx
 
         FourTet_v = - FourTet_v ./ repmat( mu_r( FaceSegMed' ) .* epsilon_r( FaceSegMed' ).^2, 1, 4 );
 
+        % volume for KVE
         if corner_flag(1, 1)
             hat_n = [0, 0, 1];
             FourTet_v(1, :) = FourTet_v(1, :) + calKVE_TetPatch( SideCrdnt(4, :), CntrlCrdnt', SideCrdnt(5, :), SideCrdnt(3, :), 5, 'inn', mu_r( FaceSegMed(1) ), epsilon_r( FaceSegMed(1) ), 2, hat_n, 'Volume' );
@@ -601,6 +617,7 @@ switch SideIdx
             FourTet_v(2, :) = FourTet_v(2, :) + calKVE_TetPatch( CntrlCrdnt', SideCrdnt(5, :), SideCrdnt(3, :), SideCrdnt(2, :), 2, 'inn', mu_r( FaceSegMed(2) ), epsilon_r( FaceSegMed(2) ), 2, hat_n, 'Surface' );
         end
 
+        % trim
         if corner_flag(1, 5)
             vec = [1: 2];
             FourTet_e(vec, :) = 0;
@@ -667,6 +684,7 @@ switch SideIdx
 
         SixTet_v = - SixTet_v ./ repmat( mu_r( FaceSegMed' ) .* epsilon_r( FaceSegMed' ).^2, 1, 4 );
 
+        % volume
         if corner_flag(1, 1)
             hat_n = [0, 0, 1];
             SixTet_v(1, :) = SixTet_v(1, :) + calKVE_TetPatch( SideCrdnt(7, :), CntrlCrdnt', SideCrdnt(4, :), SideCrdnt(3, :), 5, 'ext', mu_r( FaceSegMed(1) ), epsilon_r( FaceSegMed(1) ), 2, hat_n, 'Volume' );
@@ -682,7 +700,6 @@ switch SideIdx
             SixTet_v(5, :) = SixTet_v(5, :) + calKVE_TetPatch( CntrlCrdnt', SideCrdnt(1, :), SideCrdnt(3, :), SideCrdnt(2, :), 2, 'ext', mu_r( FaceSegMed(5) ), epsilon_r( FaceSegMed(5) ), 1, hat_n, 'Volume' );
             SixTet_v(6, :) = SixTet_v(6, :) + calKVE_TetPatch( CntrlCrdnt', SideCrdnt(4, :), SideCrdnt(1, :), SideCrdnt(3, :), 3, 'inn', mu_r( FaceSegMed(6) ), epsilon_r( FaceSegMed(6) ), 1, hat_n, 'Volume' );
         end
-
         if corner_flag(1, 4)
             hat_n = [1, 0, 0];
             SixTet_v(1, :) = SixTet_v(1, :) + calKVE_TetPatch( SideCrdnt(7, :), CntrlCrdnt', SideCrdnt(4, :), SideCrdnt(3, :), 5, 'ext', mu_r( FaceSegMed(1) ), epsilon_r( FaceSegMed(1) ), 4, hat_n, 'Volume' );
