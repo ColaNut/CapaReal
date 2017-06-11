@@ -2,11 +2,8 @@ A = bar_x_my_gmres;
 bar_x_my_gmres_TMP = zeros(x_idx_max * y_idx_max * z_idx_max, 1);
 
 if flag_XZ == 1
-    % for CrossN = 2: 1: y_idx_max - 1% y_meshint64( w_y / (2 * dy) + 1 );
     for dirFlag = 1: 1: 3
     H_XZ = zeros(x_idx_max, z_idx_max, 6, 8, 3); 
-    % CrossN = int64( w_y / dy );
-    % CrossN = shIdx;
     CrossN = int64( w_y / (2 * dy) + 1 );
     n = CrossN;
     for idx = 1: 1: x_idx_max * z_idx_max
@@ -103,16 +100,16 @@ if flag_XZ == 1
         otherwise
             ;
     end
-    switch dirFlag
-        case 1
-            myRange = [ - 900, 900 ];
-        case 2
-            myRange = [ - 4500, 4500 ];
-        case 3
-            myRange = [ - 1100, 1100 ];
-        otherwise
-            ;
-    end
+    % switch dirFlag
+    %     case 1
+    %         myRange = [ - 900, 900 ];
+    %     case 2
+    %         myRange = [ - 4500, 4500 ];
+    %     case 3
+    %         myRange = [ - 1100, 1100 ];
+    %     otherwise
+    %         ;
+    % end
     % myRange = [ 1e1, 1e4 ];
     % caxis(myRange);
     % cbar = colorbar('peer', gca, 'Yscale', 'log');
@@ -137,7 +134,7 @@ if flag_XZ == 1
     end
     toc;
 
-    caxis(myRange);
+    % caxis(myRange);
     colorbar
     switch dirFlag
         % case 1
@@ -359,16 +356,16 @@ if flag_XY == 1
         otherwise
             ;
     end
-    switch dirFlag
-        case 1
-            myRange = [ - 1500, 1500 ];
-        case 2
-            myRange = [ - 2500, 2500 ];
-        case 3
-            myRange = [ - 400, 400 ];
-        otherwise
-            ;
-    end
+    % switch dirFlag
+    %     case 1
+    %         myRange = [ - 1500, 1500 ];
+    %     case 2
+    %         myRange = [ - 2500, 2500 ];
+    %     case 3
+    %         myRange = [ - 400, 400 ];
+    %     otherwise
+    %         ;
+    % end
     % caxis(myRange);
     % cbar = colorbar('peer', gca, 'Yscale', 'log');
     % set(gca, 'Visible', 'off')
@@ -426,7 +423,7 @@ if flag_XY == 1
 
     % caxis(log10(myRange));
     colorbar
-    caxis(myRange);
+    % caxis(myRange);
     switch dirFlag
         case 1
             % set(colorbar, 'YTick', [-350: 50: 350]);
@@ -641,16 +638,16 @@ if flag_YZ == 1
         otherwise
             ;
     end
-    switch dirFlag
-        case 1
-            myRange = [ - 2000, 2000 ];
-        case 2
-            myRange = [ - 2500, 2500 ];
-        case 3
-            myRange = [ - 1500, 1500 ];
-        otherwise
-            ;
-    end
+    % switch dirFlag
+    %     case 1
+    %         myRange = [ - 2000, 2000 ];
+    %     case 2
+    %         myRange = [ - 2500, 2500 ];
+    %     case 3
+    %         myRange = [ - 1500, 1500 ];
+    %     otherwise
+    %         ;
+    % end
     % myRange = [ 1e1, 1e4 ];
     % caxis(myRange);
     % cbar = colorbar('peer', gca, 'Yscale', 'log');
@@ -706,7 +703,7 @@ if flag_YZ == 1
     end
     toc;
 
-    caxis(myRange);
+    % caxis(myRange);
     colorbar;
     % caxis(log10(myRange));
     switch dirFlag

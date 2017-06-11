@@ -3,6 +3,8 @@ bar_x_my_gmres_TMP = zeros(x_idx_max * y_idx_max * z_idx_max, 1);
 
 if flag_XZ == 1
     H_XZ = zeros(x_idx_max, z_idx_max, 6, 8, 3); 
+    % CrossN = int64( w_y / dy );
+    % CrossN = shIdx;
     CrossN = int64( w_y / (2 * dy) + 1 );
     n = CrossN;
     for idx = 1: 1: x_idx_max * z_idx_max
@@ -11,8 +13,10 @@ if flag_XZ == 1
             m_v = 2 * m - 1;
             n_v = 2 * n - 1;
             ell_v = 2 * ell - 1;
-            H_XZ(m, ell, :, :, :) = getH_2( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, ...
-                                        Vertex_Crdnt, A, G_27rows, mu_r, squeeze(SegMed(m, n, ell, :, :)) );
+            Pnts_vIdx     = zeros( 3, 9 );
+            Pnts_vIdx = get27Pnts_KEV( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
+            Pnts_vIdx_t = Pnts_vIdx';
+            H_XZ(m, ell, :, :, :) = getH_2( m_v, n_v, ell_v, Vertex_Crdnt, A, G_27rows );
         end
     end
 

@@ -1,3 +1,20 @@
+下午 08:04 2017/6/8
+Start from revising ADstrbtn_Directed.m, line 84 (from ExecIntrplt dominant to another version) --done
+The hat_x in XZ plane is not actually zero, but summing to be zero: might resulted from: Wrong H calculation?
+The wrong magnitude might resulted from (1) the above mention reason or the (2) implementation of B_k.
+Test for longer w_y.
+
+Check the mathematical theory in B_k.
+
+下午 05:19 2017/6/8
+Start from calH_2, line 5(functions in obtaining H)
+
+下午 05:06 2017/6/7
+Start from fillK, line 81 (the determination of MedValue).
+
+下午 09:09 2017/6/5
+Start from the fillK, line 44 (the output format of fillK)
+
 1. check the MiddleVertex in KEV and KVE --done
 2. Check the result of M_3 -> check the E2V transform
 Type4. 
