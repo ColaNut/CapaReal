@@ -1,5 +1,5 @@
 function [ K1_6, Kev_4, Kve_4, B_k_Pnt ] = fillK( vIdx1, vIdx2, vIdx3, vIdx4, v1Table, v2Table, v3Table, v4Table, v1_flag, v2_flag, v3_flag, v4_flag, ...
-                            eIdx, K1_6, Kev_4, Kve_4, B_k_Pnt, J_0, MedVal, epsilon_r, mu_r, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt )
+                            eIdx, K1_6, Kev_4, Kve_4, B_k_Pnt, J_0, MedVal, epsilon_r, mu_r, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt, varargin )
     % v to P
     vIdxSet = [vIdx1, vIdx2, vIdx3, vIdx4];
     % the following find should appreas once in each entry
@@ -39,10 +39,25 @@ function [ K1_6, Kev_4, Kve_4, B_k_Pnt ] = fillK( vIdx1, vIdx2, vIdx3, vIdx4, v1
     m_v   = zeros(1, 4);
     n_v   = zeros(1, 4);
     ell_v = zeros(1, 4);
-    [ m_v(1), n_v(1), ell_v(1) ] = getMNL(P1, x_max_vertex, y_max_vertex, z_max_vertex);
-    [ m_v(2), n_v(2), ell_v(2) ] = getMNL(P2, x_max_vertex, y_max_vertex, z_max_vertex);
-    [ m_v(3), n_v(3), ell_v(3) ] = getMNL(P3, x_max_vertex, y_max_vertex, z_max_vertex);
-    [ m_v(4), n_v(4), ell_v(4) ] = getMNL(P4, x_max_vertex, y_max_vertex, z_max_vertex);
+    
+    nVarargs = length(varargin);
+    if nVarargs == 1
+        RegText = varargin{1};
+        if strcmp(RegText, 'Regular')
+            [ m_v(1), n_v(1), ell_v(1) ] = getMNL(r2v(P1), x_max_vertex, y_max_vertex, z_max_vertex);
+            [ m_v(2), n_v(2), ell_v(2) ] = getMNL(r2v(P2), x_max_vertex, y_max_vertex, z_max_vertex);
+            [ m_v(3), n_v(3), ell_v(3) ] = getMNL(r2v(P3), x_max_vertex, y_max_vertex, z_max_vertex);
+            [ m_v(4), n_v(4), ell_v(4) ] = getMNL(r2v(P4), x_max_vertex, y_max_vertex, z_max_vertex);
+        else
+            error('check');
+        end
+    else
+        [ m_v(1), n_v(1), ell_v(1) ] = getMNL(P1, x_max_vertex, y_max_vertex, z_max_vertex);
+        [ m_v(2), n_v(2), ell_v(2) ] = getMNL(P2, x_max_vertex, y_max_vertex, z_max_vertex);
+        [ m_v(3), n_v(3), ell_v(3) ] = getMNL(P3, x_max_vertex, y_max_vertex, z_max_vertex);
+        [ m_v(4), n_v(4), ell_v(4) ] = getMNL(P4, x_max_vertex, y_max_vertex, z_max_vertex);
+    end
+    
     P1_Crdt = zeros(1, 3);
     P2_Crdt = zeros(1, 3);
     P3_Crdt = zeros(1, 3);

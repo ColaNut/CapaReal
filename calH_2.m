@@ -1,4 +1,4 @@
-function OneSideH_XZ = calH_2( vIdx1, vIdx2, vIdx3, vIdx4, G1, G234, A, Vertex_Crdnt, mu_r, medVal, x_max_vertex, y_max_vertex, z_max_vertex )
+function OneSideH_XZ = calH_2( vIdx1, vIdx2, vIdx3, vIdx4, G1, G234, A, Vertex_Crdnt, mu_r, medVal, x_max_vertex, y_max_vertex, z_max_vertex, varargin )
 
     % most of the code are duplicated from fillK
     OneSideH_XZ = zeros(3, 1);
@@ -49,6 +49,24 @@ function OneSideH_XZ = calH_2( vIdx1, vIdx2, vIdx3, vIdx4, G1, G234, A, Vertex_C
     P2_Crdt = zeros(1, 3);
     P3_Crdt = zeros(1, 3);
     P4_Crdt = zeros(1, 3);
+
+    nVarargs = length(varargin);
+    if nVarargs == 1
+        RegText = varargin{1};
+        if strcmp(RegText, 'Regular')
+            [ m_v(1), n_v(1), ell_v(1) ] = getMNL(r2v(P1), x_max_vertex, y_max_vertex, z_max_vertex);
+            [ m_v(2), n_v(2), ell_v(2) ] = getMNL(r2v(P2), x_max_vertex, y_max_vertex, z_max_vertex);
+            [ m_v(3), n_v(3), ell_v(3) ] = getMNL(r2v(P3), x_max_vertex, y_max_vertex, z_max_vertex);
+            [ m_v(4), n_v(4), ell_v(4) ] = getMNL(r2v(P4), x_max_vertex, y_max_vertex, z_max_vertex);
+        else
+            error('check');
+        end
+    else
+        [ m_v(1), n_v(1), ell_v(1) ] = getMNL(P1, x_max_vertex, y_max_vertex, z_max_vertex);
+        [ m_v(2), n_v(2), ell_v(2) ] = getMNL(P2, x_max_vertex, y_max_vertex, z_max_vertex);
+        [ m_v(3), n_v(3), ell_v(3) ] = getMNL(P3, x_max_vertex, y_max_vertex, z_max_vertex);
+        [ m_v(4), n_v(4), ell_v(4) ] = getMNL(P4, x_max_vertex, y_max_vertex, z_max_vertex);
+    end
     P1_Crdt = squeeze( Vertex_Crdnt(m_v(1), n_v(1), ell_v(1), :) );
     P2_Crdt = squeeze( Vertex_Crdnt(m_v(2), n_v(2), ell_v(2), :) );
     P3_Crdt = squeeze( Vertex_Crdnt(m_v(3), n_v(3), ell_v(3), :) );

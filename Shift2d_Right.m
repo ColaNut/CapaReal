@@ -4,7 +4,7 @@
 
 clc; clear;
 digits;
-disp('K, case 1, Regular Tet');
+disp('K, case 1, Right Tetrahdra');
 
 Mu_0          = 4 * pi * 10^(-7);
 Epsilon_0     = 10^(-9) / (36 * pi);
@@ -21,20 +21,18 @@ mu_db_prime   = [ 0,    0 ]';
 % mu_db_prime   = [ 0,    0.62 ]';
 mu_r          = mu_prime - i * mu_db_prime;
 
+% There 'must' be a grid point at the origin.
 loadParas_Mag;
 % paras = [ w_x, w_y, w_z, h_x, h_y, h_z, ell_z, r_c, dx, dy, dz ];
+
 x_idx_max = w_x / dx + 1;
 y_idx_max = w_y / dy + 1;
 z_idx_max = w_z / dz + 1;
-x_idx_max_prm = x_idx_max - 1;
-y_idx_max_prm = y_idx_max - 1;
-z_idx_max_prm = z_idx_max - 1;
-x_max_vertex = 2 * ( x_idx_max - 1 ) + 1;
-y_max_vertex = 2 * ( y_idx_max - 1 ) + 1;
-z_max_vertex = 2 * ( z_idx_max - 1 ) + 1;
 
 GridShiftTableXZ = cell( y_idx_max, 1);
 % GridShiftTableXZ: store [ 1, distance ], [ 3, distance ] and [ 2, distance ] for $x$-, $y$- and $z$ shift.
+% Need to check whether [ 3, 1, 0.3 ] & [ 3, 1, -0.3 ] are stored in the same cell(idx).
+% xy_grid_table format: [ x_coordonate, y_coordonate, difference ]
 mediumTable = ones( x_idx_max, y_idx_max, z_idx_max, 'uint8');
 % medium1            : 1 
 % magnetic particle  : 2
@@ -64,63 +62,110 @@ end
 
 shiftedCoordinateXYZ = constructCoordinateXYZ( GridShiftTable, [ w_y, w_x, w_z ], dx, dy, dz );
 
-% temporarily apply the shifted-grid; Need to implemet the un-shifted version.
+% unvalid SegMed is set to 0
+SegMed = ones( x_idx_max, y_idx_max, z_idx_max, 6, 8, 'uint8');
+for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+    [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
+    if mediumTable(m, n, ell) == uint8(2)
+        SegMed(m, n, ell, :, :) = uint8(2);
+
+        x_idx_left = int64(- h_x / (2 * dx) + w_x / (2 * dx) + 1);
+        x_idx_rght = int64(  h_x / (2 * dx) + w_x / (2 * dx) + 1);
+
+        y_idx_near = int64(- h_y / (2 * dy) + w_y / (2 * dy) + 1);
+        y_idx_far  = int64(  h_y / (2 * dy) + w_y / (2 * dy) + 1);
+
+        z_idx_down = int64(- h_z / (2 * dz) + w_z / (2 * dz) + 1);
+        z_idx_up   = int64(  h_z / (2 * dz) + w_z / (2 * dz) + 1);
+
+        if ell == z_idx_up
+            SegMed(m, n, ell, :, :) = trimUp( squeeze( SegMed(m, n, ell, :, :) ), 1 );
+        end
+        if ell == z_idx_down
+            SegMed(m, n, ell, :, :) = trimDown( squeeze( SegMed(m, n, ell, :, :) ), 1 );
+        end
+        if m   == x_idx_left
+            SegMed(m, n, ell, :, :) = trimLeft( squeeze( SegMed(m, n, ell, :, :) ), 1 );
+        end
+        if m   == x_idx_rght
+            SegMed(m, n, ell, :, :) = trimRight( squeeze( SegMed(m, n, ell, :, :) ), 1 );
+        end
+        if n   == y_idx_far
+            SegMed(m, n, ell, :, :) = trimFar( squeeze( SegMed(m, n, ell, :, :) ), 1 );
+        end
+        if n   == y_idx_near
+            SegMed(m, n, ell, :, :) = trimNear( squeeze( SegMed(m, n, ell, :, :) ), 1 );
+        end
+    end
+end
+
+x_max_vertex = 2 * ( x_idx_max - 1 ) + 1;
+y_max_vertex = 2 * ( y_idx_max - 1 ) + 1;
+z_max_vertex = 2 * ( z_idx_max - 1 ) + 1;
+N_v = x_max_vertex * y_max_vertex * z_max_vertex;
+N_e = 7 * (x_max_vertex - 1) * (y_max_vertex - 1) * (z_max_vertex - 1) ...
+    + 3 * ( (x_max_vertex - 1) * (y_max_vertex - 1) + (y_max_vertex - 1) * (z_max_vertex - 1) + (x_max_vertex - 1) * (z_max_vertex - 1) ) ...
+    + (x_max_vertex - 1) + (y_max_vertex - 1) + (z_max_vertex - 1);
+
 Vertex_Crdnt = zeros( x_max_vertex, y_max_vertex, z_max_vertex, 3 );
 tic;
 disp('Calculation of vertex coordinate');
 Vertex_Crdnt = buildCoordinateXYZ_Vertex( shiftedCoordinateXYZ );
 toc;
 
-N_v = x_max_vertex * y_max_vertex * z_max_vertex;
-N_v_r = 4 * x_idx_max_prm * y_idx_max_prm * z_idx_max_prm ...
-    + 2 * (x_idx_max_prm * y_idx_max_prm + y_idx_max_prm * z_idx_max_prm + x_idx_max_prm * z_idx_max_prm) ...
-    + x_idx_max_prm + y_idx_max_prm + z_idx_max_prm + 1;
-N_e_r = 28 * x_idx_max_prm * y_idx_max_prm * z_idx_max_prm ...
-    + 6 * (x_idx_max_prm * y_idx_max_prm + y_idx_max_prm * z_idx_max_prm + x_idx_max_prm * z_idx_max_prm) ...
-    + x_idx_max_prm + y_idx_max_prm + z_idx_max_prm;
-
-% N_v = x_max_vertex * y_max_vertex * z_max_vertex;
-% N_e = 7 * (x_max_vertex - 1) * (y_max_vertex - 1) * (z_max_vertex - 1) ...
-%     + 3 * ( (x_max_vertex - 1) * (y_max_vertex - 1) + (y_max_vertex - 1) * (z_max_vertex - 1) + (x_max_vertex - 1) * (z_max_vertex - 1) ) ...
-%     + (x_max_vertex - 1) + (y_max_vertex - 1) + (z_max_vertex - 1);
-
 % === % ======================== % === %
 % === % MedTetTable Construction % === %
 % === % ======================== % === % 
 
+% trim for SegMed: unvalid set to 0
+for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+    [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
+    if ell == z_idx_max
+        SegMed(m, n, ell, :, :) = trimUp( squeeze( SegMed(m, n, ell, :, :) ), 0 );
+    end
+    if ell == 1
+        SegMed(m, n, ell, :, :) = trimDown( squeeze( SegMed(m, n, ell, :, :) ), 0 );
+    end
+    if m   == 1
+        SegMed(m, n, ell, :, :) = trimLeft( squeeze( SegMed(m, n, ell, :, :) ), 0 );
+    end
+    if m   == x_idx_max
+        SegMed(m, n, ell, :, :) = trimRight( squeeze( SegMed(m, n, ell, :, :) ), 0 );
+    end
+    if n   == y_idx_max
+        SegMed(m, n, ell, :, :) = trimFar( squeeze( SegMed(m, n, ell, :, :) ), 0 );
+    end
+    if n   == 1
+        SegMed(m, n, ell, :, :) = trimNear( squeeze( SegMed(m, n, ell, :, :) ), 0 );
+    end
+end
+
 tic;
 disp('Time for constructing the MedTetTable');
-SegMedReg = ones(x_idx_max_prm, y_idx_max_prm, z_idx_max_prm, 24);
-MedTetTable = sparse(0, N_v_r);
+MedTetTable = sparse(0, N_v);
 for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
     m_v = 2 * m - 1;
     n_v = 2 * n - 1;
     ell_v = 2 * ell - 1;
-    corner_flag = getCornerFlag(m, n, ell, x_idx_max, y_idx_max, z_idx_max);
-    if ~my_F(corner_flag(2, :), 1)
-        PntMedTetTable = sparse(24, N_v);
-        % implement the getPntMedTetTable_Reg.m function: manually input for a cube.
-        PntMedTetTable = getPntMedTetTable_Reg( squeeze(SegMedReg(m - 1, n - 1, ell - 1, :)), N_v_r, m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
-        MedTetTable = vertcat(MedTetTable, PntMedTetTable);
-    end
+
+    PntMedTetTable = sparse(48, N_v);
+    PntMedTetTable = getPntMedTetTable( squeeze( SegMed(m, n, ell, :, :) )', N_v, m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
+    validTet = find( squeeze( SegMed(m, n, ell, :, :) )' );
+    MedTetTable = vertcat(MedTetTable, PntMedTetTable(validTet, :));
 end
 toc;
 
-TetNum = x_idx_max_prm * y_idx_max_prm * z_idx_max_prm * 24;
-if size(MedTetTable, 1) ~= TetNum
+validNum = 48 * x_idx_max * y_idx_max * z_idx_max - 24 * (x_idx_max * y_idx_max + y_idx_max * z_idx_max + x_idx_max * z_idx_max) * 2 ...
+                + 12 * (x_idx_max + y_idx_max + z_idx_max) * 4 - 48;
+
+if size(MedTetTable, 1) ~= validNum
     error('check the construction');
 end
 
-% validNum = 48 * x_idx_max * y_idx_max * z_idx_max - 24 * (x_idx_max * y_idx_max + y_idx_max * z_idx_max + x_idx_max * z_idx_max) * 2 ...
-%                 + 12 * (x_idx_max + y_idx_max + z_idx_max) * 4 - 48;
-% if size(MedTetTable, 1) ~= validNum
-%     error('check the construction');
-% end
-
-% === % ==================== % === %
-% === % Filling of EdgeTable % === %
-% === % ==================== % === %
+% % === % ==================== % === %
+% % === % Filling of EdgeTable % === %
+% % === % ==================== % === %
 
 % thin current sheet: need to trim the near end and the far end
 SheetPntsTable = zeros( x_max_vertex, y_max_vertex, z_max_vertex, 'uint8');
@@ -138,9 +183,16 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
     end
 end
 
-% === % =============================== % === %
-% === % Constructing The Directed Graph % === %
-% === % =============================== % === %
+B_k       = zeros(N_e, 1);
+edgeTable = false(size(B_k));
+M_K1  = sparse(N_e, N_e);
+M_KEV = sparse(N_e, N_v);
+M_KVE = sparse(N_v, N_e);
+% edgeScript;
+
+% % === % =============================== % === %
+% % === % Constructing The Directed Graph % === %
+% % === % =============================== % === %
 
 starts = [];
 ends = [];
@@ -148,19 +200,16 @@ vals = [];
 borderFlag = false(1, 6);
 disp('Constructing the directed graph');
 % the validity of the input must be gurantee !!!
-for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
-    [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
-    m_v = 2 * m - 1;
-    n_v = 2 * n - 1;
-    ell_v = 2 * ell - 1;
+for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
+    [ m_v, n_v, ell_v ] = getMNL(vIdx, x_max_vertex, y_max_vertex, z_max_vertex);
     flag = getMNL_flag(m_v, n_v, ell_v);
-    corner_flag = getCornerFlag(m, n, ell, x_idx_max, y_idx_max, z_idx_max);
+    corner_flag = getCornerFlag(m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex);
     % borderFlag = getBorderFlag(m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex)
-    if ~my_F(corner_flag(2, :), 1)
-        [ starts, ends, vals ] = fillGraph_Reg( m_v, n_v, ell_v, starts, ends, vals, x_max_vertex, y_max_vertex, z_max_vertex, corner_flag );
+    if strcmp(flag, '000') && ~mod(ell_v, 2)
+        [ starts, ends, vals ] = fillGraph( m_v, n_v, ell_v, starts, ends, vals, x_max_vertex, y_max_vertex, z_max_vertex, corner_flag );
     end
 end
-G = sparse(starts, ends, vals, N_v_r, N_v_r);
+G = sparse(starts, ends, vals, N_v, N_v);
 toc;
 [ P1, P2 ] = find(G);
 l_G = length(find(G));
@@ -168,20 +217,15 @@ l_G = length(find(G));
 % undirected graph
 uG = G + G';
 
-B_k   = zeros(N_e_r, 1);
-M_K1  = sparse(N_e_r, N_e_r);
-M_KEV = sparse(N_e_r, N_v_r);
-M_KVE = sparse(N_v_r, N_e_r);
-
-TEX = 'Regular';
+B_k = false(N_e, 1);
+M_K1 = sparse(N_e, N_e);
+M_KEV = sparse(N_e, N_v);
+M_KVE = sparse(N_v, N_e);
 edgeChecker = false(l_G, 1);
 tic; 
 disp('The filling time of K_1, K_EV, K_VE and B: ');
 for lGidx = 1: 1: l_G
     eIdx = full( G(P1(lGidx), P2(lGidx)) );
-    if eIdx == 22469
-        ;
-    end
     Candi = [];
     % get candidate points
     P1_cand = uG(P1(lGidx), :);
@@ -194,9 +238,9 @@ for lGidx = 1: 1: l_G
         end
     end
     % get adjacent tetrahdron
-    K1_6 = sparse(1, N_e_r); 
-    Kev_4 = sparse(1, N_v_r);
-    Kve_4 = sparse(N_v_r, 1);
+    K1_6 = sparse(1, N_e); 
+    Kev_4 = sparse(1, N_v);
+    Kve_4 = sparse(N_v, 1);
     B_k_Pnt = 0;
     for TetFinder = 1: 1: length(Candi) - 1
         for itr = TetFinder + 1: length(Candi)
@@ -208,20 +252,15 @@ for lGidx = 1: 1: l_G
                     error('check te construction of MedTetTable');
                 end
                 MedVal = MedTetTable( tetRow, v1234(1) );
-                % P1 pointed to P2 may be used as a self-checker
                 [ K1_6, Kev_4, Kve_4, B_k_Pnt ] = fillK( P1(lGidx), P2(lGidx), Candi(itr), Candi(TetFinder), ...
                     G( P1(lGidx), : ), G( P2(lGidx), : ), G( Candi(itr), : ), G( Candi(TetFinder), : ), ...
-                    SheetPntsTable( r2v( P1(lGidx) ) ), SheetPntsTable( r2v( P2(lGidx) ) ), SheetPntsTable( r2v( Candi(itr) ) ), SheetPntsTable( r2v( Candi(TetFinder) ) ), ...
-                    lGidx, K1_6, Kev_4, Kve_4, B_k_Pnt, J_0, MedVal, epsilon_r, mu_r, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt, 'Regular' );
+                    SheetPntsTable( P1(lGidx) ), SheetPntsTable( P2(lGidx) ), SheetPntsTable( Candi(itr) ), SheetPntsTable( Candi(TetFinder) ), ...
+                    lGidx, K1_6, Kev_4, Kve_4, B_k_Pnt, J_0, MedVal, epsilon_r, mu_r, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt );
             end
         end
     end
     if isempty(K1_6)
         disp('K1: empty');
-        if strcmp(TEX, 'Regular')
-            [ m_v, n_v, ell_v, edgeNum ] = eIdx2rIdx(eIdx, x_idx_max, y_idx_max, z_idx_max);
-            [ m_v, n_v, ell_v, edgeNum ]
-        end
         [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
         [ m_v, n_v, ell_v, edgeNum ]
         break
@@ -259,35 +298,33 @@ for lGidx = 1: 1: l_G
 end
 toc;
 
-% === % ========================== % === %
-% === % GVV matrix and its inverse % === %
-% === % ========================== % === %
+% === % ========== % === %
+% === % GVV matrix % === %
+% === % ========== % === %
 
-% start from here: debug for GVV
-M_sparseGVV = sparse(N_v_r, N_v_r);
+sparseGVV = cell(1, N_v);
 disp('The filling time of G_VV: ');
 tic;
-for rIdx = 1: 1: N_v_r
-    GVV_row = sparse(1, N_v_r);
-    CandiTet = find( MedTetTable(:, rIdx));
-    for itr = 1: 1: length(CandiTet)
-        % v is un-ordered vertices; while p is ordered vertices.
-        v1234 = find( MedTetTable( CandiTet(itr), : ) );
-        if length(v1234) ~= 4
-            error('check');
-        end
-        p1234 = horzcat( v1234(find(v1234 == rIdx)), v1234(find(v1234 ~= rIdx)));
-        GVV_row(p1234) = GVV_row(p1234) + fillGVV(p1234, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt);
+for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
+    [ m_v, n_v, ell_v ] = getMNL(vIdx, x_max_vertex, y_max_vertex, z_max_vertex);
+    flag = getMNL_flag(m_v, n_v, ell_v);
+    GVV_SideFlag = false(1, 6);
+    GVV_SideFlag = getGVV_SideFlag(m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex);
+    SegMedIn = FetchSegMed( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
+    if isempty( find( GVV_SideFlag ) )
+        sparseGVV{ vIdx } = fillNrml_S( m_v, n_v, ell_v, flag, Vertex_Crdnt, x_max_vertex, y_max_vertex, ...
+                                            z_max_vertex, SegMedIn, epsilon_r, Omega_0, 'GVV' );
+    else
+        sparseGVV{ vIdx } = fillBndry_GVV_tmp( m_v, n_v, ell_v, flag, GVV_SideFlag, Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex );
     end
-    M_sparseGVV(rIdx, :) = M_sparseGVV(rIdx, :) + GVV_row;
 end
 toc;
 
-% % check empty rows in M_sparseGVV
-sparseGVV = cell(1, N_v);
-sparseGVV = Msparse2msparse(M_sparseGVV, 'Col');
+% === % =================== % === %
+% === % Calculation of SPAI % === %
+% === % =================== % === %
 
-TEX = 'Regular';
+TEX = 'Right';
 CaseTEX = 'Case1';
 GVV_test; % a script
 Tol = 0.2;
@@ -302,7 +339,7 @@ tic;
 M_three = M_KEV * M_sparseGVV_inv_spai * M_KVE;
 toc;
 
-M_K = sparse(N_e_r, N_e_r);
+M_K = sparse(N_e, N_e);
 M_K = M_K1 - M_three;
 
 % === % ============================ % === %
@@ -311,7 +348,7 @@ M_K = M_K1 - M_three;
 
 tic;
 disp('Time for normalization');
-sptmp = spdiags( 1 ./ max(abs(M_K),[], 2), 0, N_e_r, N_e_r );
+sptmp = spdiags( 1 ./ max(abs(M_K),[], 2), 0, N_e, N_e );
 nrmlM_K = sptmp * M_K;
 B_k = sptmp * B_k;
 toc;
@@ -334,11 +371,11 @@ toc;
 % bar_x_my_gmres = gmres( nrmlM_K, B_k, int_itr_num, tol, ext_itr_num );
 % toc;
 
-% save('Case0528_preBC_Case4.mat', 'bar_x_my_gmres', 'B_k');
+% % save('Case0528_preBC_Case4.mat', 'bar_x_my_gmres', 'B_k');
 
 AFigsScript;
 
-% tic;
-% disp('Calculation time of iLU: ')
-% [ L_K, U_K ] = ilu( nrmlM_K, struct('type', 'ilutp', 'droptol', 1e-2) );
-% toc;
+% % tic;
+% % disp('Calculation time of iLU: ')
+% % [ L_K, U_K ] = ilu( nrmlM_K, struct('type', 'ilutp', 'droptol', 1e-2) );
+% % toc;

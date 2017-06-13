@@ -24,7 +24,7 @@ function [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vert
         vIdx_prm = ceil(eIdx / 7);
         edgeNum = (eIdx + 7) - 7 * vIdx_prm;
 
-        [ m_v_prm, n_v_prm, ell_v_prm ] = getMNL(vIdx_prm, x_max_vertex - 1, y_max_vertex - 1, z_max_vertex - 1);
+        [ m_v_prm, n_v_prm, ell_v_prm ] = getMNL(vIdx_prm, x_max_vertex_prm, y_max_vertex_prm, z_max_vertex_prm);
         m_v   = m_v_prm + 1;
         n_v   = n_v_prm + 1;
         ell_v = ell_v_prm + 1;
@@ -45,7 +45,7 @@ function [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vert
                 error('check');
         end
 
-        [ m_v_prm, ell_v_prm ] = getML( tmpIdx_prm, x_max_vertex );
+        [ m_v_prm, ell_v_prm ] = getML( tmpIdx_prm, x_max_vertex_prm );
         m_v   = m_v_prm + 1;
         n_v   = 1;
         ell_v = ell_v_prm + 1;
@@ -65,7 +65,7 @@ function [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vert
                 error('check');
         end
 
-        [ n_v_prm, ell_v_prm ] = getML( tmpIdx_prm, y_max_vertex );
+        [ n_v_prm, ell_v_prm ] = getML( tmpIdx_prm, y_max_vertex_prm );
         m_v   = 1;
         n_v   = n_v_prm + 1;
         ell_v = ell_v_prm + 1;
@@ -85,7 +85,7 @@ function [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vert
                 error('check');
         end
 
-        [ m_v_prm, n_v_prm ] = getML( tmpIdx_prm, x_max_vertex );
+        [ m_v_prm, n_v_prm ] = getML( tmpIdx_prm, x_max_vertex_prm );
         m_v   = m_v_prm + 1;
         n_v   = n_v_prm + 1;
         ell_v = 1;

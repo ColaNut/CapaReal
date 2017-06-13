@@ -1,7 +1,62 @@
+下午 03:23 2017/6/13
+Rerun the original case.
+Get the GVV_inv for case 1 in (a) right tetrahedra and (b) regular ttrahedra. -- running.
+plot YZ and XY
+Comparison between shapes of tetrahedra.
+Implement the hat_n term in KVE.
+
+上午 11:50 2017/6/13
+Plotting function: 
+ADstrbtn_Directed_H_Reg, line19 (The order of G_13Idx);
+getH_2_Reg.m: Line5(Rest 7 Tettrahedra).
+
+下午 11:02 2017/6/12
+Msparse2msparse_col version.
+Shift2d, line 282: debug for GVV-- done.
+ploting funciton -- only XZ.
+Implement the hat_n term in KVE.
+
+下午 10:23 2017/6/12
+Does Ext and Inn has anything to do with S_1 ?
+Only K1 will not work: something wrong on the boundary or for the governing equaiton representation.
+check if eIdx2vIdx is wrong? in around line 68.
+
+下午 12:27 2017/6/12
+Put a checker of "four trur flag" in getWmJ.
+To-do function: 
+getPntMedTetTable_Reg-- done.
+
+上午 12:40 2017/6/12
+Implementing the regular tetrahedron version.
+
+上午 12:39 2017/6/12
+Fix bugs in getSheetPnts Table.
+
+下午 12:04 2017/6/11
+For debugging 1: 
+Implement the Graph for FCC(面心立方).
+check for 體心立方 & 六角
+Function: 
+fillGraph_Reg.m  -- done.
+fillK_Reg.m -- done.
+GVV filled in -- done.
+plotting function 
+
+Plotting: 
+For odd n, four tetrahedra are incorporated -- this one is adopted.
+For even n, eight tetrahedra are incorporated.
+
+For debugging 2: 
+Implement the hat_n term in KVE.
+Broader the w_y -- done
+
+--
+
 下午 08:04 2017/6/8
 Start from revising ADstrbtn_Directed.m, line 84 (from ExecIntrplt dominant to another version) --done
-The hat_x in XZ plane is not actually zero, but summing to be zero: might resulted from: Wrong H calculation?
-The wrong magnitude might resulted from (1) the above mention reason or the (2) implementation of B_k.
+The hat_x in XZ plane is not actually zero, but summing to be zero: might resulted from: Wrong H calculation? -- The two method give the same plot.
+The wrong magnitude might resulted from (1) the above mention reason or the (2) implementation of B_k -- B_l seem to be Ok and the plotting is Ok.
+The scalar in calculating K1?
 Test for longer w_y.
 
 Check the mathematical theory in B_k.

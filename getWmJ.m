@@ -68,7 +68,6 @@ if P1_flag && P2_flag && P3_flag
                     % - x_3 * y_2 - x_1 * y_3 - x_2 * y_1 ) / 2;
         projArea = abs( P1_Crdt(1) * P2_Crdt(2) + P3_Crdt(1) * P1_Crdt(2) + P2_Crdt(1) * P3_Crdt(2) ...
                     - P3_Crdt(1) * P2_Crdt(2) - P1_Crdt(1) * P3_Crdt(2) - P2_Crdt(1) * P1_Crdt(2) ) / 2;
-        % triArea = norm( calTriVec( P1_Crdt, P2_Crdt, P3_Crdt ) );
         % equations for the surface: A_1 x + A_2 y + A_3 z + A = 0
         % A   = - det( [ P1_Crdt(1), P1_Crdt(2), P1_Crdt(3); P2_Crdt(1), P2_Crdt(2), P2_Crdt(3); P3_Crdt(1), P3_Crdt(2), P3_Crdt(3) ] );
         A_1 =   det( [ P1_Crdt(2), P1_Crdt(3),   1; P2_Crdt(2), P2_Crdt(3),   1; P3_Crdt(2), P3_Crdt(3),   1 ] );
@@ -86,7 +85,6 @@ elseif  P1_flag && P2_flag && P4_flag
                     % - x_4 * y_2 - x_1 * y_4 - x_2 * y_1 ) / 2;
         projArea = abs( P1_Crdt(1) * P2_Crdt(2) + P4_Crdt(1) * P1_Crdt(2) + P2_Crdt(1) * P4_Crdt(2) ...
                     - P4_Crdt(1) * P2_Crdt(2) - P1_Crdt(1) * P4_Crdt(2) - P2_Crdt(1) * P1_Crdt(2) ) / 2;
-        % triArea = norm( calTriVec( P1_Crdt, P2_Crdt, P4_Crdt ) );
         % A   = - det( [ P1_Crdt(1), P1_Crdt(2), P1_Crdt(3); P2_Crdt(1), P2_Crdt(2), P2_Crdt(3); P4_Crdt(1), P4_Crdt(2), P4_Crdt(3) ] );
         A_1 =   det( [ P1_Crdt(2), P1_Crdt(3),   1; P2_Crdt(2), P2_Crdt(3),   1; P4_Crdt(2), P4_Crdt(3),   1 ] );
         A_2 = - det( [ P1_Crdt(1), P1_Crdt(3),   1; P2_Crdt(1), P2_Crdt(3),   1; P4_Crdt(1), P4_Crdt(3),   1 ] );
@@ -120,7 +118,6 @@ elseif  P2_flag && P3_flag && P4_flag
                     % - x_4 * y_3 - x_2 * y_4 - x_3 * y_2 ) / 2;
         projArea = abs( P2_Crdt(1) * P3_Crdt(2) + P4_Crdt(1) * P2_Crdt(2) + P3_Crdt(1) * P4_Crdt(2) ...
                     - P4_Crdt(1) * P3_Crdt(2) - P2_Crdt(1) * P4_Crdt(2) - P3_Crdt(1) * P2_Crdt(2) ) / 2;
-        % triArea = norm( calTriVec( P2_Crdt, P3_Crdt, P4_Crdt ) );
         % A   = - det( [ P2_Crdt(1), P2_Crdt(2), P2_Crdt(3); P3_Crdt(1), P3_Crdt(2), P3_Crdt(3); P4_Crdt(1), P4_Crdt(2), P4_Crdt(3) ] );
         A_1 =   det( [ P2_Crdt(2), P2_Crdt(3),   1; P3_Crdt(2), P3_Crdt(3),   1; P4_Crdt(2), P4_Crdt(3),   1 ] );
         A_2 = - det( [ P2_Crdt(1), P2_Crdt(3),   1; P3_Crdt(1), P3_Crdt(3),   1; P4_Crdt(1), P4_Crdt(3),   1 ] );
@@ -164,13 +161,13 @@ if CoeffFlag
         otherwise
             error('check the CoeffFlag');
     end
-    % if ( TestVec(1) * hat_n(1) + TestVec(2) * hat_n(3) ) < 0 % dot operator < 0
-    %     insideFlag = true;
-    % end
+    if ( TestVec(1) * hat_n(1) + TestVec(2) * hat_n(3) ) < 0 % dot operator < 0
+        insideFlag = true;
+    end
 end
 
-% if insideFlag
-%     BkTet = 2 * BkTet;
-% end
+if ~insideFlag
+    BkTet = 0;
+end
 
 end

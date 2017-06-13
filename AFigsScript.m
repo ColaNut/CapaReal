@@ -16,11 +16,16 @@ if A_flag == 1
     flag_YZ = 0;
     
     Fname = 'K_preBC_0608';
-    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0608MQSDirection';
+    % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0608MQSDirection';
+    fname = 'D:\Kevin\CapaReal\0613Reg';
     % CaseName = '0321';
     % fname = 'e:\Kevin\CapaReal\Case0220_1cmFat';
     % CaseDate = 'Case0220_1cmFat';
-    ADstrbtn_Directed_H;
+    if strcmp(TEX, 'Regular')
+        ADstrbtn_Directed_H_Reg;
+    else
+        ADstrbtn_Directed_H;
+    end
     % ADstrbtn;
     % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'fig');
     % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
