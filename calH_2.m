@@ -38,18 +38,6 @@ function OneSideH_XZ = calH_2( vIdx1, vIdx2, vIdx3, vIdx4, G1, G234, A, Vertex_C
     P4_table = G4Row( vIdxSet_permute(4), : );
 
     % get the corresponding P1_Crdt, P2_Crdt, P3_Crdt and P4_Crdt
-    m_v   = zeros(1, 4);
-    n_v   = zeros(1, 4);
-    ell_v = zeros(1, 4);
-    [ m_v(1), n_v(1), ell_v(1) ] = getMNL(P1, x_max_vertex, y_max_vertex, z_max_vertex);
-    [ m_v(2), n_v(2), ell_v(2) ] = getMNL(P2, x_max_vertex, y_max_vertex, z_max_vertex);
-    [ m_v(3), n_v(3), ell_v(3) ] = getMNL(P3, x_max_vertex, y_max_vertex, z_max_vertex);
-    [ m_v(4), n_v(4), ell_v(4) ] = getMNL(P4, x_max_vertex, y_max_vertex, z_max_vertex);
-    P1_Crdt = zeros(1, 3);
-    P2_Crdt = zeros(1, 3);
-    P3_Crdt = zeros(1, 3);
-    P4_Crdt = zeros(1, 3);
-
     nVarargs = length(varargin);
     if nVarargs == 1
         RegText = varargin{1};

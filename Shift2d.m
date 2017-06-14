@@ -168,177 +168,177 @@ l_G = length(find(G));
 % undirected graph
 uG = G + G';
 
-B_k   = zeros(N_e_r, 1);
-M_K1  = sparse(N_e_r, N_e_r);
-M_KEV = sparse(N_e_r, N_v_r);
-M_KVE = sparse(N_v_r, N_e_r);
+% B_k   = zeros(N_e_r, 1);
+% M_K1  = sparse(N_e_r, N_e_r);
+% M_KEV = sparse(N_e_r, N_v_r);
+% M_KVE = sparse(N_v_r, N_e_r);
 
-TEX = 'Regular';
-edgeChecker = false(l_G, 1);
-tic; 
-disp('The filling time of K_1, K_EV, K_VE and B: ');
-for lGidx = 1: 1: l_G
-    eIdx = full( G(P1(lGidx), P2(lGidx)) );
-    if eIdx == 22469
-        ;
-    end
-    Candi = [];
-    % get candidate points
-    P1_cand = uG(P1(lGidx), :);
-    P2_cand = uG(P2(lGidx), :);
-    P1_nz = find(P1_cand);
-    P2_nz = find(P2_cand);
-    for CandiFinder = 1: 1: length(P1_nz)
-        if find(P2_nz == P1_nz(CandiFinder))
-            Candi = horzcat(Candi, P1_nz(CandiFinder));
-        end
-    end
-    % get adjacent tetrahdron
-    K1_6 = sparse(1, N_e_r); 
-    Kev_4 = sparse(1, N_v_r);
-    Kve_4 = sparse(N_v_r, 1);
-    B_k_Pnt = 0;
-    for TetFinder = 1: 1: length(Candi) - 1
-        for itr = TetFinder + 1: length(Candi)
-            if uG( Candi(TetFinder), Candi(itr) )
-                % linked to become a tetrahedron
-                v1234 = [ P1(lGidx), P2(lGidx), Candi(itr), Candi(TetFinder) ];
-                tetRow = find( sum( logical(MedTetTable(:, v1234)), 2 ) == 4 );
-                if length(tetRow) ~= 1
-                    error('check te construction of MedTetTable');
-                end
-                MedVal = MedTetTable( tetRow, v1234(1) );
-                % P1 pointed to P2 may be used as a self-checker
-                [ K1_6, Kev_4, Kve_4, B_k_Pnt ] = fillK( P1(lGidx), P2(lGidx), Candi(itr), Candi(TetFinder), ...
-                    G( P1(lGidx), : ), G( P2(lGidx), : ), G( Candi(itr), : ), G( Candi(TetFinder), : ), ...
-                    SheetPntsTable( r2v( P1(lGidx) ) ), SheetPntsTable( r2v( P2(lGidx) ) ), SheetPntsTable( r2v( Candi(itr) ) ), SheetPntsTable( r2v( Candi(TetFinder) ) ), ...
-                    lGidx, K1_6, Kev_4, Kve_4, B_k_Pnt, J_0, MedVal, epsilon_r, mu_r, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt, 'Regular' );
-            end
-        end
-    end
-    if isempty(K1_6)
-        disp('K1: empty');
-        if strcmp(TEX, 'Regular')
-            [ m_v, n_v, ell_v, edgeNum ] = eIdx2rIdx(eIdx, x_idx_max, y_idx_max, z_idx_max);
-            [ m_v, n_v, ell_v, edgeNum ]
-        end
-        [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
-        [ m_v, n_v, ell_v, edgeNum ]
-        break
-    end
-    if isnan(K1_6) | isinf(K1_6)
-        disp('K1: NaN or Inf');
-        [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
-        [ m_v, n_v, ell_v, edgeNum ]
-        break
-    end
-    if isempty(Kev_4)
-        disp('Kev: empty');
-        [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
-        [ m_v, n_v, ell_v, edgeNum ]
-        break
-    end
-    if isnan(Kev_4) | isinf(Kev_4)
-        disp('Kev: NaN or Inf');
-        [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
-        [ m_v, n_v, ell_v, edgeNum ]
-        break
-    end
-    if edgeChecker(eIdx) == true
-        lGidx
-        [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
-        [ m_v, n_v, ell_v, edgeNum ]
-        error('check')
-    end
+% TEX = 'Regular';
+% edgeChecker = false(l_G, 1);
+% tic; 
+% disp('The filling time of K_1, K_EV, K_VE and B: ');
+% for lGidx = 1: 1: l_G
+%     eIdx = full( G(P1(lGidx), P2(lGidx)) );
+%     if eIdx == 22469
+%         ;
+%     end
+%     Candi = [];
+%     % get candidate points
+%     P1_cand = uG(P1(lGidx), :);
+%     P2_cand = uG(P2(lGidx), :);
+%     P1_nz = find(P1_cand);
+%     P2_nz = find(P2_cand);
+%     for CandiFinder = 1: 1: length(P1_nz)
+%         if find(P2_nz == P1_nz(CandiFinder))
+%             Candi = horzcat(Candi, P1_nz(CandiFinder));
+%         end
+%     end
+%     % get adjacent tetrahdron
+%     K1_6 = sparse(1, N_e_r); 
+%     Kev_4 = sparse(1, N_v_r);
+%     Kve_4 = sparse(N_v_r, 1);
+%     B_k_Pnt = 0;
+%     for TetFinder = 1: 1: length(Candi) - 1
+%         for itr = TetFinder + 1: length(Candi)
+%             if uG( Candi(TetFinder), Candi(itr) )
+%                 % linked to become a tetrahedron
+%                 v1234 = [ P1(lGidx), P2(lGidx), Candi(itr), Candi(TetFinder) ];
+%                 tetRow = find( sum( logical(MedTetTable(:, v1234)), 2 ) == 4 );
+%                 if length(tetRow) ~= 1
+%                     error('check te construction of MedTetTable');
+%                 end
+%                 MedVal = MedTetTable( tetRow, v1234(1) );
+%                 % P1 pointed to P2 may be used as a self-checker
+%                 [ K1_6, Kev_4, Kve_4, B_k_Pnt ] = fillK( P1(lGidx), P2(lGidx), Candi(itr), Candi(TetFinder), ...
+%                     G( P1(lGidx), : ), G( P2(lGidx), : ), G( Candi(itr), : ), G( Candi(TetFinder), : ), ...
+%                     SheetPntsTable( r2v( P1(lGidx) ) ), SheetPntsTable( r2v( P2(lGidx) ) ), SheetPntsTable( r2v( Candi(itr) ) ), SheetPntsTable( r2v( Candi(TetFinder) ) ), ...
+%                     lGidx, K1_6, Kev_4, Kve_4, B_k_Pnt, J_0, MedVal, epsilon_r, mu_r, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt, 'Regular' );
+%             end
+%         end
+%     end
+%     if isempty(K1_6)
+%         disp('K1: empty');
+%         if strcmp(TEX, 'Regular')
+%             [ m_v, n_v, ell_v, edgeNum ] = eIdx2rIdx(eIdx, x_idx_max, y_idx_max, z_idx_max);
+%             [ m_v, n_v, ell_v, edgeNum ]
+%         end
+%         [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
+%         [ m_v, n_v, ell_v, edgeNum ]
+%         break
+%     end
+%     if isnan(K1_6) | isinf(K1_6)
+%         disp('K1: NaN or Inf');
+%         [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
+%         [ m_v, n_v, ell_v, edgeNum ]
+%         break
+%     end
+%     if isempty(Kev_4)
+%         disp('Kev: empty');
+%         [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
+%         [ m_v, n_v, ell_v, edgeNum ]
+%         break
+%     end
+%     if isnan(Kev_4) | isinf(Kev_4)
+%         disp('Kev: NaN or Inf');
+%         [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
+%         [ m_v, n_v, ell_v, edgeNum ]
+%         break
+%     end
+%     if edgeChecker(eIdx) == true
+%         lGidx
+%         [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
+%         [ m_v, n_v, ell_v, edgeNum ]
+%         error('check')
+%     end
 
-    edgeChecker(eIdx) = true;
-    M_K1(eIdx, :)  = M_K1(eIdx, :)  + K1_6;
-    M_KEV(eIdx, :) = M_KEV(eIdx, :) + Kev_4;
-    M_KVE(:, eIdx) = M_KVE(:, eIdx) + Kve_4;
-    B_k(eIdx) = B_k(eIdx) + B_k_Pnt;
-end
-toc;
-
-% === % ========================== % === %
-% === % GVV matrix and its inverse % === %
-% === % ========================== % === %
-
-% start from here: debug for GVV
-M_sparseGVV = sparse(N_v_r, N_v_r);
-disp('The filling time of G_VV: ');
-tic;
-for rIdx = 1: 1: N_v_r
-    GVV_row = sparse(1, N_v_r);
-    CandiTet = find( MedTetTable(:, rIdx));
-    for itr = 1: 1: length(CandiTet)
-        % v is un-ordered vertices; while p is ordered vertices.
-        v1234 = find( MedTetTable( CandiTet(itr), : ) );
-        if length(v1234) ~= 4
-            error('check');
-        end
-        p1234 = horzcat( v1234(find(v1234 == rIdx)), v1234(find(v1234 ~= rIdx)));
-        GVV_row(p1234) = GVV_row(p1234) + fillGVV(p1234, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt);
-    end
-    M_sparseGVV(rIdx, :) = M_sparseGVV(rIdx, :) + GVV_row;
-end
-toc;
-
-% % check empty rows in M_sparseGVV
-sparseGVV = cell(1, N_v);
-sparseGVV = Msparse2msparse(M_sparseGVV, 'Col');
-
-TEX = 'Regular';
-CaseTEX = 'Case1';
-GVV_test; % a script
-Tol = 0.2;
-load( strcat('SAI_Tol', num2str(Tol), '_', TEX, '_', CaseTEX, '.mat'), 'M_sparseGVV_inv_spai');
-
-% === % ========================= % === %
-% === % Matrices product to get K % === %
-% === % ========================= % === %
-
-disp('The calculation time of matrix product: ');
-tic;
-M_three = M_KEV * M_sparseGVV_inv_spai * M_KVE;
-toc;
-
-M_K = sparse(N_e_r, N_e_r);
-M_K = M_K1 - M_three;
-
-% === % ============================ % === %
-% === % Sparse Normalization Process % === %
-% === % ============================ % === %
-
-tic;
-disp('Time for normalization');
-sptmp = spdiags( 1 ./ max(abs(M_K),[], 2), 0, N_e_r, N_e_r );
-nrmlM_K = sptmp * M_K;
-B_k = sptmp * B_k;
-toc;
-
-% === % ============================================================ % === %
-% === % Direct solver and iteratve solver (iLU-preconditioned GMRES) % === %
-% === % ============================================================ % === %
-
-tol = 1e-6;
-ext_itr_num = 10;
-int_itr_num = 50;
-
-bar_x_my_gmres = zeros(size(B_k));
-tic; 
-disp('Computational time for solving Ax = b: ')
-bar_x_my_gmres = nrmlM_K\B_k;
-toc;
-% tic;
-% disp('The gmres solutin of Ax = B: ');
-% bar_x_my_gmres = gmres( nrmlM_K, B_k, int_itr_num, tol, ext_itr_num );
+%     edgeChecker(eIdx) = true;
+%     M_K1(eIdx, :)  = M_K1(eIdx, :)  + K1_6;
+%     M_KEV(eIdx, :) = M_KEV(eIdx, :) + Kev_4;
+%     M_KVE(:, eIdx) = M_KVE(:, eIdx) + Kve_4;
+%     B_k(eIdx) = B_k(eIdx) + B_k_Pnt;
+% end
 % toc;
 
-% save('Case0528_preBC_Case4.mat', 'bar_x_my_gmres', 'B_k');
+% % === % ========================== % === %
+% % === % GVV matrix and its inverse % === %
+% % === % ========================== % === %
 
-AFigsScript;
+% % start from here: debug for GVV
+% M_sparseGVV = sparse(N_v_r, N_v_r);
+% disp('The filling time of G_VV: ');
+% tic;
+% for rIdx = 1: 1: N_v_r
+%     GVV_row = sparse(1, N_v_r);
+%     CandiTet = find( MedTetTable(:, rIdx));
+%     for itr = 1: 1: length(CandiTet)
+%         % v is un-ordered vertices; while p is ordered vertices.
+%         v1234 = find( MedTetTable( CandiTet(itr), : ) );
+%         if length(v1234) ~= 4
+%             error('check');
+%         end
+%         p1234 = horzcat( v1234(find(v1234 == rIdx)), v1234(find(v1234 ~= rIdx)));
+%         GVV_row(p1234) = GVV_row(p1234) + fillGVV(p1234, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt);
+%     end
+%     M_sparseGVV(rIdx, :) = M_sparseGVV(rIdx, :) + GVV_row;
+% end
+% toc;
+
+% % % check empty rows in M_sparseGVV
+% sparseGVV = cell(1, N_v);
+% sparseGVV = Msparse2msparse(M_sparseGVV, 'Col');
+
+% TEX = 'Regular';
+% CaseTEX = 'Case1';
+% GVV_test; % a script
+% Tol = 0.2;
+% load( strcat('SAI_Tol', num2str(Tol), '_', TEX, '_', CaseTEX, '.mat'), 'M_sparseGVV_inv_spai');
+
+% % === % ========================= % === %
+% % === % Matrices product to get K % === %
+% % === % ========================= % === %
+
+% disp('The calculation time of matrix product: ');
+% tic;
+% M_three = M_KEV * M_sparseGVV_inv_spai * M_KVE;
+% toc;
+
+% M_K = sparse(N_e_r, N_e_r);
+% M_K = M_K1 - M_three;
+
+% % === % ============================ % === %
+% % === % Sparse Normalization Process % === %
+% % === % ============================ % === %
 
 % tic;
-% disp('Calculation time of iLU: ')
-% [ L_K, U_K ] = ilu( nrmlM_K, struct('type', 'ilutp', 'droptol', 1e-2) );
+% disp('Time for normalization');
+% sptmp = spdiags( 1 ./ max(abs(M_K),[], 2), 0, N_e_r, N_e_r );
+% nrmlM_K = sptmp * M_K;
+% B_k = sptmp * B_k;
 % toc;
+
+% % === % ============================================================ % === %
+% % === % Direct solver and iteratve solver (iLU-preconditioned GMRES) % === %
+% % === % ============================================================ % === %
+
+% tol = 1e-6;
+% ext_itr_num = 10;
+% int_itr_num = 50;
+
+% bar_x_my_gmres = zeros(size(B_k));
+% tic; 
+% disp('Computational time for solving Ax = b: ')
+% bar_x_my_gmres = nrmlM_K\B_k;
+% toc;
+% % tic;
+% % disp('The gmres solutin of Ax = B: ');
+% % bar_x_my_gmres = gmres( nrmlM_K, B_k, int_itr_num, tol, ext_itr_num );
+% % toc;
+
+% % save('Case0528_preBC_Case4.mat', 'bar_x_my_gmres', 'B_k');
+
+% AFigsScript;
+
+% % tic;
+% % disp('Calculation time of iLU: ')
+% % [ L_K, U_K ] = ilu( nrmlM_K, struct('type', 'ilutp', 'droptol', 1e-2) );
+% % toc;

@@ -12,12 +12,12 @@ if A_flag == 1
     % load( strcat('e:\Kevin\CapaReal\Case0220_1cmFat', '\', CaseName, '.mat') );
 
     flag_XZ = 1;
-    flag_XY = 0;
-    flag_YZ = 0;
+    flag_XY = 1;
+    flag_YZ = 1;
     
     Fname = 'K_preBC_0608';
-    % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0608MQSDirection';
-    fname = 'D:\Kevin\CapaReal\0613Reg';
+    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0614MQSDirection';
+    % fname = 'D:\Kevin\CapaReal\0613Reg';
     % CaseName = '0321';
     % fname = 'e:\Kevin\CapaReal\Case0220_1cmFat';
     % CaseDate = 'Case0220_1cmFat';

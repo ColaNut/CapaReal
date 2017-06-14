@@ -21,12 +21,12 @@ if flag_XZ == 1
                 G_13Idx = [ v2r(PntsIdx(1, 2)), v2r(PntsIdx(1, 4)), v2r(PntsIdx(1, 6)), v2r(PntsIdx(1, 8)), ...
                             v2r(PntsIdx(2, 1)), v2r(PntsIdx(2, 3)), v2r(PntsIdx(2, 5)), v2r(PntsIdx(2, 7)), v2r(PntsIdx(2, 9)), ...
                             v2r(PntsIdx(3, 2)), v2r(PntsIdx(3, 4)), v2r(PntsIdx(3, 6)), v2r(PntsIdx(3, 8)) ]';
-                G_13rows = sparse(13, N_v);
+                G_13rows = sparse(13, N_v_r);
                 G_13rows = G(G_13Idx, :);
                 % use all 1 segmed as input
                 % implement the funciton
                 H_XZ(m - 1, ell - 1, :, :) = getH_2_Reg( G_13Idx, Vertex_Crdnt, A, G_13rows, mu_r, ...
-                                x_max_vertex, y_max_vertex, z_max_vertex );
+                                x_max_vertex, y_max_vertex, z_max_vertex, 'XZ' );
             end
         end
 
@@ -81,7 +81,6 @@ if flag_XZ == 1
                 % simply average the two tetrahedra
                 [ bypasser, V27Crdnt ] = get27Pnts( m_v - 1, n_v, ell_v - 1, x_max_vertex, y_max_vertex, Vertex_Crdnt );
                 MidPnts9Crdnt = getMidPnts9CrdntXZ( V27Crdnt );
-                % implement the
                 plotPntH_Reg( squeeze(H_XZ(m - 1, ell - 1, :, dirFlag)), MidPnts9Crdnt, 'XZ' );
             end
         end
@@ -122,14 +121,25 @@ end
 if flag_XY == 1
     for dirFlag = 1: 1: 3
         CrossEll = int64( w_z / (2 * dz) + 1 );
-        H_XY = zeros(x_idx_max, y_idx_max, 6, 8, 3); 
+        H_XY = zeros(x_idx_max_prm, y_idx_max_prm, 8, 3); 
         ell = CrossEll;
         for idx = 1: 1: x_idx_max * y_idx_max
             [ m, n ] = getML(idx, x_idx_max);
             if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1 
-                H_XY(m, n, :, :, :) = getH(m, n, ell, x_idx_max, y_idx_max, ...
-                                            x_max_vertex, y_max_vertex, z_max_vertex, shiftedCoordinateXYZ, ...
-                                                A, mu_r, squeeze( SegMed( m, n, ell, :, : ) ) );
+                m_v = 2 * m - 1;
+                n_v = 2 * n - 1;
+                ell_v = 2 * ell - 1;
+                PntsIdx = zeros( 3, 9 ); 
+                PntsIdx = get27Pnts_KEV( m_v - 1, n_v - 1, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
+                G_13Idx = zeros(13, 1);
+                G_13Idx = [ v2r(PntsIdx(1, 2)), v2r(PntsIdx(1, 4)), v2r(PntsIdx(1, 6)), v2r(PntsIdx(1, 8)), ...
+                            v2r(PntsIdx(2, 1)), v2r(PntsIdx(2, 3)), v2r(PntsIdx(2, 5)), v2r(PntsIdx(2, 7)), v2r(PntsIdx(2, 9)), ...
+                            v2r(PntsIdx(3, 2)), v2r(PntsIdx(3, 4)), v2r(PntsIdx(3, 6)), v2r(PntsIdx(3, 8)) ]';
+                G_13rows = sparse(13, N_v_r);
+                G_13rows = G(G_13Idx, :);
+                % implement the getH_2_Reg for cross section XY
+                H_XY(m - 1, n - 1, :, :) = getH_2_Reg( G_13Idx, Vertex_Crdnt, A, G_13rows, mu_r, ...
+                                x_max_vertex, y_max_vertex, z_max_vertex, 'XY' );
             end
         end
 
@@ -194,9 +204,10 @@ if flag_XY == 1
                 ell_v = 2 * ell - 1;
                 bypasser = zeros(3, 9);
                 V27Crdnt = zeros(3, 9, 3);
-                [ bypasser, V27Crdnt ] = get27Pnts( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, Vertex_Crdnt );
+                [ bypasser, V27Crdnt ] = get27Pnts( m_v - 1, n_v - 1, ell_v, x_max_vertex, y_max_vertex, Vertex_Crdnt );
                 MidPnts9Crdnt = getMidPnts9CrdntXY( V27Crdnt );
-                plotPntH( squeeze(H_XY(m, n, :, :, dirFlag)), MidPnts9Crdnt, 'XY' );
+                % implement the plotting in XY
+                plotPntH_Reg( squeeze(H_XY(m - 1, n - 1, :, dirFlag)), MidPnts9Crdnt, 'XY' );
             end
         end
         toc;
@@ -223,7 +234,7 @@ if flag_XY == 1
         % set(log_axes,'LineWidth',2.0);
         box on;
         view(2);
-        axis( [ - 100 * w_x / 2 + 0.5, 100 * w_x / 2 - 0.5, - 100 * w_y / 2 + 0.5, 100 * w_y / 2 - 0.5 ]);
+        axis( [ - 100 * w_x / 2 + 1, 100 * w_x / 2 - 1, - 100 * w_y / 2 + 1, 100 * w_y / 2 - 1 ]);
         % maskXY(paras2dXY(4), air_z, dx);
         % plotXY( paras2dXY, dx, dy );
         plotGridLineXY( shiftedCoordinateXYZ, CrossEll );
@@ -235,17 +246,26 @@ end
 if flag_YZ == 1
     for dirFlag = 1: 1: 3
         CrossM = int64( w_x / (2 * dx) + 1 );
-        H_YZ = zeros(y_idx_max, z_idx_max, 6, 8, 3); 
+        H_YZ = zeros(y_idx_max_prm, z_idx_max_prm, 8, 3); 
         m = CrossM;
         for idx = 1: 1: y_idx_max * z_idx_max
             [ n, ell ] = getML(idx, y_idx_max);
-            if n == 7 && ell == 5
-                ;
-            end
             if n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1
-                H_YZ(n, ell, :, :, :) = getH(m, n, ell, x_idx_max, y_idx_max, ...
-                                            x_max_vertex, y_max_vertex, z_max_vertex, shiftedCoordinateXYZ, ...
-                                                A, mu_r, squeeze( SegMed( m, n, ell, :, : ) ) );
+                m_v = 2 * m - 1;
+                n_v = 2 * n - 1;
+                ell_v = 2 * ell - 1;
+                PntsIdx = zeros( 3, 9 ); 
+                PntsIdx = get27Pnts_KEV( m_v, n_v - 1, ell_v - 1, x_max_vertex, y_max_vertex, z_max_vertex );
+                % implement the order of G_13Idx
+                G_13Idx = zeros(13, 1);
+                G_13Idx = [ v2r(PntsIdx(1, 2)), v2r(PntsIdx(1, 4)), v2r(PntsIdx(1, 6)), v2r(PntsIdx(1, 8)), ...
+                            v2r(PntsIdx(2, 1)), v2r(PntsIdx(2, 3)), v2r(PntsIdx(2, 5)), v2r(PntsIdx(2, 7)), v2r(PntsIdx(2, 9)), ...
+                            v2r(PntsIdx(3, 2)), v2r(PntsIdx(3, 4)), v2r(PntsIdx(3, 6)), v2r(PntsIdx(3, 8)) ]';
+                G_13rows = sparse(13, N_v_r);
+                G_13rows = G(G_13Idx, :);
+                % implement getH_2_Reg in YZ
+                H_YZ(n - 1, ell - 1, :, :) = getH_2_Reg( G_13Idx, Vertex_Crdnt, A, G_13rows, mu_r, ...
+                                x_max_vertex, y_max_vertex, z_max_vertex, 'YZ' );
             end
         end
 
@@ -278,10 +298,10 @@ if flag_YZ == 1
         % ylabel(cbar, '$H$ (A/m)', 'Interpreter','LaTex', 'FontSize', 20);
         % set(cbar, 'FontSize', 25);
         hold on;
-        
+
         disp('Time to plot SAR');
         tic;
-        for idx = 1: 1: x_idx_max * y_idx_max
+        for idx = 1: 1: y_idx_max * z_idx_max
             [ n, ell ] = getML(idx, y_idx_max);
             if n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1
                 m_v = 2 * m - 1;
@@ -289,9 +309,10 @@ if flag_YZ == 1
                 ell_v = 2 * ell - 1;
                 bypasser = zeros(3, 9);
                 V27Crdnt = zeros(3, 9, 3);
-                [ bypasser, V27Crdnt ] = get27Pnts( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, Vertex_Crdnt );
+                [ bypasser, V27Crdnt ] = get27Pnts( m_v, n_v - 1, ell_v - 1, x_max_vertex, y_max_vertex, Vertex_Crdnt );
                 MidPnts9Crdnt = getMidPnts9CrdntYZ( V27Crdnt );
-                plotPntH( squeeze(H_YZ(n, ell, :, :, dirFlag)), MidPnts9Crdnt, 'YZ' );
+                % implement plotPntH_Reg in YZ
+                plotPntH_Reg( squeeze(H_YZ(n - 1, ell - 1, :, dirFlag)), MidPnts9Crdnt, 'YZ' );
             end
         end
         toc;
@@ -321,7 +342,7 @@ if flag_YZ == 1
         plotGridLineYZ( shiftedCoordinateXYZ, CrossM );
         axis equal;
         % axis( [ - 15, 15, - 15, 15 ]);
-        axis( [ - 100 * w_y / 2 + 0.5, 100 * w_y / 2 - 0.5, - 100 * w_z / 2 + 0.5, 100 * w_z / 2 - 0.5 ]);
+        axis( [ - 100 * w_y / 2 + 1, 100 * w_y / 2 - 1, - 100 * w_z / 2 + 1, 100 * w_z / 2 - 1 ]);
         view(2);
         saveas(figure(dirFlag + 10), fullfile(fname, strcat('H_YZ', num2str(dirFlag))), 'jpg');
         % save( strcat( fname, '\', CaseDate, 'TmprtrFigYZ.mat') );
