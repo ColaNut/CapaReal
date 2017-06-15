@@ -1,3 +1,10 @@
+¤U¤È 05:21 2017/6/14
+Check eIdx2vIdx.m -- done.
+Bugs in the transition of Code version -- done.
+Regular tetrahedra in the XZ plane.
+Hat_n term and omega^2 term.
+Regular tetrahedra for MQS.
+
 ¤U¤È 03:23 2017/6/13
 Rerun the original case.
 Get the GVV_inv for case 1 in (a) right tetrahedra and (b) regular ttrahedra. -- running.

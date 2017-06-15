@@ -217,7 +217,7 @@ l_G = length(find(G));
 % undirected graph
 uG = G + G';
 
-B_k = false(N_e, 1);
+B_k = zeros(N_e, 1);
 M_K1 = sparse(N_e, N_e);
 M_KEV = sparse(N_e, N_v);
 M_KVE = sparse(N_v, N_e);
@@ -326,7 +326,7 @@ toc;
 
 TEX = 'Right';
 CaseTEX = 'Case1';
-GVV_test; % a script
+% GVV_test; % a script
 Tol = 0.2;
 load( strcat('SAI_Tol', num2str(Tol), '_', TEX, '_', CaseTEX, '.mat'), 'M_sparseGVV_inv_spai');
 
@@ -350,7 +350,7 @@ tic;
 disp('Time for normalization');
 sptmp = spdiags( 1 ./ max(abs(M_K),[], 2), 0, N_e, N_e );
 nrmlM_K = sptmp * M_K;
-B_k = sptmp * B_k;
+nrmlB_k = sptmp * B_k;
 toc;
 
 % === % ============================================================ % === %
@@ -361,10 +361,10 @@ tol = 1e-6;
 ext_itr_num = 10;
 int_itr_num = 50;
 
-bar_x_my_gmres = zeros(size(B_k));
+bar_x_my_gmres = zeros(size(nrmlB_k));
 tic; 
 disp('Computational time for solving Ax = b: ')
-bar_x_my_gmres = nrmlM_K\B_k;
+bar_x_my_gmres = nrmlM_K\nrmlB_k;
 toc;
 % tic;
 % disp('The gmres solutin of Ax = B: ');
