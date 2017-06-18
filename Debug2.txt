@@ -3,7 +3,7 @@ Check eIdx2vIdx.m -- done.
 Bugs in the transition of Code version -- done.
 Regular tetrahedra in the XZ plane.
 Hat_n term and omega^2 term.
-Regular tetrahedra for MQS.
+Regular tetrahedra for EQS.
 
 ¤U¤È 03:23 2017/6/13
 Rerun the original case.

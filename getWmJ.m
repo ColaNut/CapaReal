@@ -57,7 +57,7 @@ end
 
 CoeffFlag = 0;
 % Existence of mainedge on current surface
-if P1_flag && P2_flag && P3_flag
+if P1_flag == 1 && P2_flag == 1 && P3_flag == 1
     if mainEdge == 1 || mainEdge == 2 || mainEdge == 4 
         CoeffFlag = 123;
         x = sum( [P1_Crdt(1), P2_Crdt(1), P3_Crdt(1)] ) / 3;
@@ -74,7 +74,7 @@ if P1_flag && P2_flag && P3_flag
         A_2 = - det( [ P1_Crdt(1), P1_Crdt(3),   1; P2_Crdt(1), P2_Crdt(3),   1; P3_Crdt(1), P3_Crdt(3),   1 ] );
         A_3 =   det( [ P1_Crdt(1), P1_Crdt(2),   1; P2_Crdt(1), P2_Crdt(2),   1; P3_Crdt(1), P3_Crdt(2),   1 ] );
     end
-elseif  P1_flag && P2_flag && P4_flag
+elseif  P1_flag == 1 && P2_flag == 1 && P4_flag == 1
     if mainEdge == 1 || mainEdge == 3 || mainEdge == 5 
         CoeffFlag = 124;
         x = sum( [P1_Crdt(1), P2_Crdt(1), P4_Crdt(1)] ) / 3;
@@ -90,7 +90,7 @@ elseif  P1_flag && P2_flag && P4_flag
         A_2 = - det( [ P1_Crdt(1), P1_Crdt(3),   1; P2_Crdt(1), P2_Crdt(3),   1; P4_Crdt(1), P4_Crdt(3),   1 ] );
         A_3 =   det( [ P1_Crdt(1), P1_Crdt(2),   1; P2_Crdt(1), P2_Crdt(2),   1; P4_Crdt(1), P4_Crdt(2),   1 ] );
     end
-elseif  P1_flag && P3_flag && P4_flag
+elseif  P1_flag == 1 && P3_flag == 1 && P4_flag == 1
     if mainEdge == 2 || mainEdge == 3 || mainEdge == 6 
         CoeffFlag = 134;
         x = sum( [P1_Crdt(1), P3_Crdt(1), P4_Crdt(1)] ) / 3;
@@ -107,7 +107,7 @@ elseif  P1_flag && P3_flag && P4_flag
         A_2 = - det( [ P1_Crdt(1), P1_Crdt(3),   1; P3_Crdt(1), P3_Crdt(3),   1; P4_Crdt(1), P4_Crdt(3),   1 ] );
         A_3 =   det( [ P1_Crdt(1), P1_Crdt(2),   1; P3_Crdt(1), P3_Crdt(2),   1; P4_Crdt(1), P4_Crdt(2),   1 ] );
     end
-elseif  P2_flag && P3_flag && P4_flag
+elseif  P2_flag == 1 && P3_flag == 1 && P4_flag == 1
     if mainEdge == 4 || mainEdge == 5 || mainEdge == 6 
         CoeffFlag = 234;
         x = sum( [P2_Crdt(1), P3_Crdt(1), P4_Crdt(1)] ) / 3;
@@ -123,6 +123,11 @@ elseif  P2_flag && P3_flag && P4_flag
         A_2 = - det( [ P2_Crdt(1), P2_Crdt(3),   1; P3_Crdt(1), P3_Crdt(3),   1; P4_Crdt(1), P4_Crdt(3),   1 ] );
         A_3 =   det( [ P2_Crdt(1), P2_Crdt(2),   1; P3_Crdt(1), P3_Crdt(2),   1; P4_Crdt(1), P4_Crdt(2),   1 ] );
     end
+end
+
+if P1_flag == 1 && P2_flag == 1 && P3_flag == 1 && P4_flag == 1
+    [P1_Crdt'; P2_Crdt'; P3_Crdt'; P4_Crdt']
+    error('check');;
 end
 
 TtrVol = calTtrVol( P1_Crdt, P2_Crdt, P3_Crdt, P4_Crdt );

@@ -84,7 +84,7 @@ function [ starts, ends, vals ] = fillGraph_Reg( m_v, n_v, ell_v, starts, ends, 
                 vIdxprm2eIdx_Reg( PntsIdx_prm(2, 5), 26, x_idx_max, y_idx_max, z_idx_max );
                 vIdxprm2eIdx_Reg( PntsIdx_prm(2, 5), 27, x_idx_max, y_idx_max, z_idx_max ) ] );
     dirPair = vertcat(dirPair, ...
-              [ v2r(PntsIdx(2, 2)), v2r(PntsIdx(2, 8)) ] );  % one center transverse horizental line
+              [ v2r(PntsIdx(2, 4)), v2r(PntsIdx(2, 6)) ] );  % one center transverse horizental line
     Pntvals = vertcat(Pntvals, ... 
               [ vIdxprm2eIdx_Reg( PntsIdx_prm(2, 5), 28, x_idx_max, y_idx_max, z_idx_max ) ] );
 

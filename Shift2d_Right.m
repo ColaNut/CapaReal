@@ -169,6 +169,7 @@ end
 
 % thin current sheet: need to trim the near end and the far end
 SheetPntsTable = zeros( x_max_vertex, y_max_vertex, z_max_vertex, 'uint8');
+% sheetPoints is set to be 1
 n_far  =   ell_y / (2 * dy) + ( y_idx_max + 1 ) / 2;
 n_near = - ell_y / (2 * dy) + ( y_idx_max + 1 ) / 2;
 for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
@@ -182,6 +183,14 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
                 SheetPntsTable(m_v - 1: m_v + 1, n_v - 1: n_v + 1, ell_v - 1: ell_v + 1) );
     end
 end
+% BndryPoints is set to be 2
+for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
+    [ m_v, n_v, ell_v ] = getMNL(vIdx, x_max_vertex, y_max_vertex, z_max_vertex);
+    borderFlag = getBorderFlag(m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex);
+    if my_F(borderFlag, 1)
+        SheetPntsTable(m_v, n_v, ell_v) = 2;
+    end
+end
 
 B_k       = zeros(N_e, 1);
 edgeTable = false(size(B_k));
@@ -190,9 +199,9 @@ M_KEV = sparse(N_e, N_v);
 M_KVE = sparse(N_v, N_e);
 % edgeScript;
 
-% % === % =============================== % === %
-% % === % Constructing The Directed Graph % === %
-% % === % =============================== % === %
+% === % =============================== % === %
+% === % Constructing The Directed Graph % === %
+% === % =============================== % === %
 
 starts = [];
 ends = [];
@@ -219,6 +228,7 @@ uG = G + G';
 
 B_k = zeros(N_e, 1);
 M_K1 = sparse(N_e, N_e);
+M_K2 = sparse(N_e, N_e);
 M_KEV = sparse(N_e, N_v);
 M_KVE = sparse(N_v, N_e);
 edgeChecker = false(l_G, 1);
@@ -239,6 +249,7 @@ for lGidx = 1: 1: l_G
     end
     % get adjacent tetrahdron
     K1_6 = sparse(1, N_e); 
+    K2_6 = sparse(1, N_e); 
     Kev_4 = sparse(1, N_v);
     Kve_4 = sparse(N_v, 1);
     B_k_Pnt = 0;
@@ -252,27 +263,21 @@ for lGidx = 1: 1: l_G
                     error('check te construction of MedTetTable');
                 end
                 MedVal = MedTetTable( tetRow, v1234(1) );
-                [ K1_6, Kev_4, Kve_4, B_k_Pnt ] = fillK( P1(lGidx), P2(lGidx), Candi(itr), Candi(TetFinder), ...
+                [ K1_6, K2_6, Kev_4, Kve_4, B_k_Pnt ] = fillK( P1(lGidx), P2(lGidx), Candi(itr), Candi(TetFinder), ...
                     G( P1(lGidx), : ), G( P2(lGidx), : ), G( Candi(itr), : ), G( Candi(TetFinder), : ), ...
                     SheetPntsTable( P1(lGidx) ), SheetPntsTable( P2(lGidx) ), SheetPntsTable( Candi(itr) ), SheetPntsTable( Candi(TetFinder) ), ...
-                    lGidx, K1_6, Kev_4, Kve_4, B_k_Pnt, J_0, MedVal, epsilon_r, mu_r, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt );
+                    lGidx, K1_6, K2_6, Kev_4, Kve_4, B_k_Pnt, J_0, MedVal, epsilon_r, mu_r, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt );
             end
         end
     end
-    if isempty(K1_6)
-        disp('K1: empty');
+    if isempty(K1_6) || isempty(K2_6) || isempty(Kev_4)
+        disp('K1, K2 or KEV: empty');
         [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
         [ m_v, n_v, ell_v, edgeNum ]
         break
     end
-    if isnan(K1_6) | isinf(K1_6)
-        disp('K1: NaN or Inf');
-        [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
-        [ m_v, n_v, ell_v, edgeNum ]
-        break
-    end
-    if isempty(Kev_4)
-        disp('Kev: empty');
+    if isnan(K1_6) | isinf(K1_6) | isnan(K2_6) | isinf(K2_6)
+        disp('K1 or K2: NaN or Inf');
         [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
         [ m_v, n_v, ell_v, edgeNum ]
         break
@@ -291,10 +296,11 @@ for lGidx = 1: 1: l_G
     end
 
     edgeChecker(eIdx) = true;
-    M_K1(eIdx, :)  = M_K1(eIdx, :)  + K1_6;
-    M_KEV(eIdx, :) = M_KEV(eIdx, :) + Kev_4;
-    M_KVE(:, eIdx) = M_KVE(:, eIdx) + Kve_4;
-    B_k(eIdx) = B_k(eIdx) + B_k_Pnt;
+    M_K1(eIdx, :)  = K1_6;
+    M_K2(eIdx, :)  = K2_6;
+    M_KEV(eIdx, :) = Kev_4;
+    M_KVE(:, eIdx) = Kve_4;
+    B_k(eIdx) = B_k_Pnt;
 end
 toc;
 
@@ -334,13 +340,8 @@ load( strcat('SAI_Tol', num2str(Tol), '_', TEX, '_', CaseTEX, '.mat'), 'M_sparse
 % === % Matrices product to get K % === %
 % === % ========================= % === %
 
-disp('The calculation time of matrix product: ');
-tic;
-M_three = M_KEV * M_sparseGVV_inv_spai * M_KVE;
-toc;
-
 M_K = sparse(N_e, N_e);
-M_K = M_K1 - M_three;
+M_K = M_K1 - Mu_0 * Omega_0^2 * M_K2 - M_KEV * M_sparseGVV_inv_spai * M_KVE;
 
 % === % ============================ % === %
 % === % Sparse Normalization Process % === %

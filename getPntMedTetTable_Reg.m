@@ -23,10 +23,10 @@ function PntMedTetTable = getPntMedTetTable_Reg( SegMedReg, N_v_r, m_v, n_v, ell
     nzCols(11, :) = [ v2r(PntsIdx(3, 1)), v2r(PntsIdx(1, 1)), v2r(PntsIdx(2, 2)), v2r(PntsIdx(2, 4)) ];
     nzCols(12, :) = [ v2r(PntsIdx(3, 3)), v2r(PntsIdx(1, 3)), v2r(PntsIdx(2, 6)), v2r(PntsIdx(2, 2)) ];
 
-    nzCols(13, :) = [ v2r(PntsIdx(2, 8)), v2r(PntsIdx(2, 2)), v2r(PntsIdx(2, 6)), v2r(PntsIdx(3, 5)) ];
-    nzCols(14, :) = [ v2r(PntsIdx(2, 8)), v2r(PntsIdx(2, 2)), v2r(PntsIdx(2, 4)), v2r(PntsIdx(3, 5)) ];
-    nzCols(15, :) = [ v2r(PntsIdx(2, 8)), v2r(PntsIdx(2, 2)), v2r(PntsIdx(2, 4)), v2r(PntsIdx(1, 5)) ];
-    nzCols(16, :) = [ v2r(PntsIdx(2, 8)), v2r(PntsIdx(2, 2)), v2r(PntsIdx(2, 6)), v2r(PntsIdx(1, 5)) ];
+    nzCols(13, :) = [ v2r(PntsIdx(2, 8)), v2r(PntsIdx(2, 4)), v2r(PntsIdx(2, 6)), v2r(PntsIdx(3, 5)) ];
+    nzCols(14, :) = [ v2r(PntsIdx(2, 2)), v2r(PntsIdx(2, 4)), v2r(PntsIdx(2, 6)), v2r(PntsIdx(3, 5)) ];
+    nzCols(15, :) = [ v2r(PntsIdx(2, 2)), v2r(PntsIdx(2, 4)), v2r(PntsIdx(2, 6)), v2r(PntsIdx(1, 5)) ];
+    nzCols(16, :) = [ v2r(PntsIdx(2, 8)), v2r(PntsIdx(2, 4)), v2r(PntsIdx(2, 6)), v2r(PntsIdx(1, 5)) ];
 
     nzCols(17, :) = [ v2r(PntsIdx(3, 9)), v2r(PntsIdx(3, 5)), v2r(PntsIdx(2, 6)), v2r(PntsIdx(2, 8)) ];
     nzCols(18, :) = [ v2r(PntsIdx(3, 7)), v2r(PntsIdx(3, 5)), v2r(PntsIdx(2, 8)), v2r(PntsIdx(2, 4)) ];
