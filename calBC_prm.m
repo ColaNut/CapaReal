@@ -66,7 +66,7 @@ switch mainEdge
 end
 
 % Existence of mainedge on current surface
-if P1_flag && P2_flag && P3_flag
+if P1_flag == 1 && P2_flag == 1 && P3_flag == 1
     if mainEdge == 1 || mainEdge == 2 || mainEdge == 4 
         x = sum( [P1_Crdt(1), P2_Crdt(1), P3_Crdt(1)] ) / 3;
         z = sum( [P1_Crdt(3), P2_Crdt(3), P3_Crdt(3)] ) / 3;
@@ -82,7 +82,7 @@ if P1_flag && P2_flag && P3_flag
         A_2 = - det( [ P1_Crdt(1), P1_Crdt(3),   1; P2_Crdt(1), P2_Crdt(3),   1; P3_Crdt(1), P3_Crdt(3),   1 ] );
         A_3 =   det( [ P1_Crdt(1), P1_Crdt(2),   1; P2_Crdt(1), P2_Crdt(2),   1; P3_Crdt(1), P3_Crdt(2),   1 ] );
     end
-elseif  P1_flag && P2_flag && P4_flag
+elseif  P1_flag == 1 && P2_flag == 1 && P4_flag == 1
     if mainEdge == 1 || mainEdge == 3 || mainEdge == 5 
         x = sum( [P1_Crdt(1), P2_Crdt(1), P4_Crdt(1)] ) / 3;
         z = sum( [P1_Crdt(3), P2_Crdt(3), P4_Crdt(3)] ) / 3;
@@ -97,7 +97,7 @@ elseif  P1_flag && P2_flag && P4_flag
         A_2 = - det( [ P1_Crdt(1), P1_Crdt(3),   1; P2_Crdt(1), P2_Crdt(3),   1; P4_Crdt(1), P4_Crdt(3),   1 ] );
         A_3 =   det( [ P1_Crdt(1), P1_Crdt(2),   1; P2_Crdt(1), P2_Crdt(2),   1; P4_Crdt(1), P4_Crdt(2),   1 ] );
     end
-elseif  P1_flag && P3_flag && P4_flag
+elseif  P1_flag == 1 && P3_flag == 1 && P4_flag == 1
     if mainEdge == 2 || mainEdge == 3 || mainEdge == 6 
         x = sum( [P1_Crdt(1), P3_Crdt(1), P4_Crdt(1)] ) / 3;
         z = sum( [P1_Crdt(3), P3_Crdt(3), P4_Crdt(3)] ) / 3;
@@ -112,7 +112,7 @@ elseif  P1_flag && P3_flag && P4_flag
         A_2 = - det( [ P1_Crdt(1), P1_Crdt(3),   1; P3_Crdt(1), P3_Crdt(3),   1; P4_Crdt(1), P4_Crdt(3),   1 ] );
         A_3 =   det( [ P1_Crdt(1), P1_Crdt(2),   1; P3_Crdt(1), P3_Crdt(2),   1; P4_Crdt(1), P4_Crdt(2),   1 ] );
     end
-elseif  P2_flag && P3_flag && P4_flag
+elseif  P2_flag == 1 && P3_flag == 1 && P4_flag == 1
     if mainEdge == 4 || mainEdge == 5 || mainEdge == 6 
         x = sum( [P2_Crdt(1), P3_Crdt(1), P4_Crdt(1)] ) / 3;
         z = sum( [P2_Crdt(3), P3_Crdt(3), P4_Crdt(3)] ) / 3;
@@ -127,6 +127,8 @@ elseif  P2_flag && P3_flag && P4_flag
         A_2 = - det( [ P2_Crdt(1), P2_Crdt(3),   1; P3_Crdt(1), P3_Crdt(3),   1; P4_Crdt(1), P4_Crdt(3),   1 ] );
         A_3 =   det( [ P2_Crdt(1), P2_Crdt(2),   1; P3_Crdt(1), P3_Crdt(2),   1; P4_Crdt(1), P4_Crdt(2),   1 ] );
     end
+else
+    return;
 end
 
 TtrVol = calTtrVol( P1_Crdt, P2_Crdt, P3_Crdt, P4_Crdt );
@@ -167,7 +169,7 @@ end
 % MIN_IDX = 0;
 % [ tmpMIN, MIN_IDX ] = min(tmpArry);
 % Existence of mainedge on current surface
-if P1_flag && P2_flag && P3_flag
+if P1_flag == 1 && P2_flag == 1 && P3_flag == 1
     if mainEdge == 1 || mainEdge == 2 || mainEdge == 4 
         CoeffFlag = 123;
         x = sum( [P1_Crdt(1), P2_Crdt(1), P3_Crdt(1)] ) / 3;
@@ -175,7 +177,7 @@ if P1_flag && P2_flag && P3_flag
         hat_n = cross( P1_Crdt - P2_Crdt, P1_Crdt - P3_Crdt );
         Coeff(:, 1: 3) = calH( P1_Crdt, P2_Crdt, P3_Crdt, P4_Crdt, InnExtText, zeros(6, 1), mu_r, 'A_unknown' );
     end
-elseif  P1_flag && P2_flag && P4_flag
+elseif  P1_flag == 1 && P2_flag == 1 && P4_flag == 1
     if mainEdge == 1 || mainEdge == 3 || mainEdge == 5 
         CoeffFlag = 124;
         x = sum( [P1_Crdt(1), P2_Crdt(1), P4_Crdt(1)] ) / 3;
@@ -183,7 +185,7 @@ elseif  P1_flag && P2_flag && P4_flag
         hat_n = cross( P1_Crdt - P2_Crdt, P1_Crdt - P4_Crdt );
         Coeff(:, 1: 3) = calH( P1_Crdt, P2_Crdt, P3_Crdt, P4_Crdt, InnExtText, zeros(6, 1), mu_r, 'A_unknown' );
     end
-elseif  P1_flag && P3_flag && P4_flag
+elseif  P1_flag == 1 && P3_flag == 1 && P4_flag == 1
     if mainEdge == 2 || mainEdge == 3 || mainEdge == 6 
         CoeffFlag = 134;
         x = sum( [P1_Crdt(1), P3_Crdt(1), P4_Crdt(1)] ) / 3;
@@ -191,7 +193,7 @@ elseif  P1_flag && P3_flag && P4_flag
         hat_n = cross( P1_Crdt - P3_Crdt, P1_Crdt - P4_Crdt );
         Coeff(:, 1: 3) = calH( P1_Crdt, P2_Crdt, P3_Crdt, P4_Crdt, InnExtText, zeros(6, 1), mu_r, 'A_unknown' );
     end
-elseif  P2_flag && P3_flag && P4_flag
+elseif  P2_flag == 1 && P3_flag == 1 && P4_flag == 1
     if mainEdge == 4 || mainEdge == 5 || mainEdge == 6 
         CoeffFlag = 234;
         x = sum( [P2_Crdt(1), P3_Crdt(1), P4_Crdt(1)] ) / 3;
@@ -231,7 +233,7 @@ if CoeffFlag
     end
 end
 
-if ~insideFlag
+if insideFlag
     Tet7(7) = BkTet;
 else
     Tet7(7) = 0;

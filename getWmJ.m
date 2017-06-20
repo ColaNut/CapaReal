@@ -1,5 +1,5 @@
-function BkTet = getWmJ( P1_Crdt, P2_Crdt, P3_Crdt, P4_Crdt, ...
-                            P1_flag, P2_flag, P3_flag, P4_flag, mainEdge, InnExtText, J_0 )
+function [ BkTet, cFlag ] = getWmJ( P1_Crdt, P2_Crdt, P3_Crdt, P4_Crdt, ...
+                            P1_flag, P2_flag, P3_flag, P4_flag, mainEdge, InnExtText, J_0, cFlag )
 
 BkTet = 0;
 projArea = 0;
@@ -60,6 +60,7 @@ CoeffFlag = 0;
 if P1_flag == 1 && P2_flag == 1 && P3_flag == 1
     if mainEdge == 1 || mainEdge == 2 || mainEdge == 4 
         CoeffFlag = 123;
+        cFlag = true;
         x = sum( [P1_Crdt(1), P2_Crdt(1), P3_Crdt(1)] ) / 3;
         z = sum( [P1_Crdt(3), P2_Crdt(3), P3_Crdt(3)] ) / 3;
         hat_n = cross( P1_Crdt - P2_Crdt, P1_Crdt - P3_Crdt );
@@ -77,6 +78,7 @@ if P1_flag == 1 && P2_flag == 1 && P3_flag == 1
 elseif  P1_flag == 1 && P2_flag == 1 && P4_flag == 1
     if mainEdge == 1 || mainEdge == 3 || mainEdge == 5 
         CoeffFlag = 124;
+        cFlag = true;
         x = sum( [P1_Crdt(1), P2_Crdt(1), P4_Crdt(1)] ) / 3;
         z = sum( [P1_Crdt(3), P2_Crdt(3), P4_Crdt(3)] ) / 3;
         hat_n = cross( P1_Crdt - P2_Crdt, P1_Crdt - P4_Crdt );
@@ -93,6 +95,7 @@ elseif  P1_flag == 1 && P2_flag == 1 && P4_flag == 1
 elseif  P1_flag == 1 && P3_flag == 1 && P4_flag == 1
     if mainEdge == 2 || mainEdge == 3 || mainEdge == 6 
         CoeffFlag = 134;
+        cFlag = true;
         x = sum( [P1_Crdt(1), P3_Crdt(1), P4_Crdt(1)] ) / 3;
         z = sum( [P1_Crdt(3), P3_Crdt(3), P4_Crdt(3)] ) / 3;
         hat_n = cross( P1_Crdt - P3_Crdt, P1_Crdt - P4_Crdt );
@@ -110,6 +113,7 @@ elseif  P1_flag == 1 && P3_flag == 1 && P4_flag == 1
 elseif  P2_flag == 1 && P3_flag == 1 && P4_flag == 1
     if mainEdge == 4 || mainEdge == 5 || mainEdge == 6 
         CoeffFlag = 234;
+        cFlag = true;
         x = sum( [P2_Crdt(1), P3_Crdt(1), P4_Crdt(1)] ) / 3;
         z = sum( [P2_Crdt(3), P3_Crdt(3), P4_Crdt(3)] ) / 3;
         hat_n = cross( P2_Crdt - P3_Crdt, P2_Crdt - P4_Crdt );

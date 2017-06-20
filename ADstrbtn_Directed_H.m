@@ -106,7 +106,7 @@ if flag_XZ == 1
         hold on;
         plotMQS( Paras_Mag );
         plotGridLineXZ( shiftedCoordinateXYZ, CrossN );
-        % saveas(figure(dirFlag), fullfile(fname, strcat('H_XZ', num2str(dirFlag))), 'jpg');
+        saveas(figure(dirFlag), fullfile(fname, strcat('H_XZ', num2str(dirFlag))), 'jpg');
         % save( strcat( fname, '\', CaseDate, 'TmprtrFigXZ.mat') );
         % save('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0108\Case0108TmprtrFigXZ.mat');
     end
