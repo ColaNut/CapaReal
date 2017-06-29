@@ -6,21 +6,22 @@ if flag_XZ == 1
         H_XZ = zeros(x_idx_max, z_idx_max, 6, 8, 3); 
         CrossN = int64( w_y / (2 * dy) + 1 );
         n = CrossN;
-        for idx = 1: 1: x_idx_max * z_idx_max
-            [ m, ell ] = getML(idx, x_idx_max);
-            if m >= 2 && m <= x_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1
-                m_v = 2 * m - 1;
-                n_v = 2 * n - 1;
-                ell_v = 2 * ell - 1;
-                % get 27 Pnts
-                PntsIdx = zeros( 3, 9 ); 
-                PntsIdx = get27Pnts_KEV( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
-                PntsIdx_t = PntsIdx';
-                G_27rows = sparse(27, N_v);
-                G_27rows = G(PntsIdx_t(:), :);
-                H_XZ(m, ell, :, :, :) = getH_2( PntsIdx, Vertex_Crdnt, A, G_27rows, mu_r, squeeze(SegMed(m, n, ell, :, :)), x_max_vertex, y_max_vertex, z_max_vertex );
-            end
-        end
+        H_XZ = squeeze(SigmaE(:, n, :, :, :, :));
+        % for idx = 1: 1: x_idx_max * z_idx_max
+        %     [ m, ell ] = getML(idx, x_idx_max);
+        %     if m >= 2 && m <= x_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1
+        %         m_v = 2 * m - 1;
+        %         n_v = 2 * n - 1;
+        %         ell_v = 2 * ell - 1;
+        %         % get 27 Pnts
+        %         PntsIdx = zeros( 3, 9 ); 
+        %         PntsIdx = get27Pnts_KEV( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
+        %         PntsIdx_t = PntsIdx';
+        %         G_27rows = sparse(27, N_v);
+        %         G_27rows = G(PntsIdx_t(:), :);
+        %         H_XZ(m, ell, :, :, :) = getH_2( PntsIdx, Vertex_Crdnt, A, G_27rows, mu_r, squeeze(SegMed(m, n, ell, :, :)), x_max_vertex, y_max_vertex, z_max_vertex );
+        %     end
+        % end
 
         XZCrdnt = zeros( x_idx_max, z_idx_max, 3);
         x_mesh      = zeros( z_idx_max, x_idx_max );
@@ -105,9 +106,8 @@ if flag_XZ == 1
         view(2);
         hold on;
         % plotMQS( Paras_Mag );
-        plotMap( paras2dXZ, dx, dz );
         plotGridLineXZ( shiftedCoordinateXYZ, CrossN );
-        saveas(figure(dirFlag), fullfile(fname, strcat('H_XZ', num2str(dirFlag))), 'jpg');
+        % saveas(figure(dirFlag), fullfile(fname, strcat('H_XZ', num2str(dirFlag))), 'jpg');
         % save( strcat( fname, '\', CaseDate, 'TmprtrFigXZ.mat') );
         % save('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0108\Case0108TmprtrFigXZ.mat');
     end
@@ -221,7 +221,7 @@ if flag_XY == 1
         % maskXY(paras2dXY(4), air_z, dx);
         % plotXY( paras2dXY, dx, dy );
         plotGridLineXY( shiftedCoordinateXYZ, CrossEll );
-        saveas(figure(dirFlag + 5), fullfile(fname, strcat('H_XY', num2str(dirFlag))), 'jpg');
+        % saveas(figure(dirFlag + 5), fullfile(fname, strcat('H_XY', num2str(dirFlag))), 'jpg');
         % save( strcat( fname, '\', CaseDate, 'TmprtrFigXY.mat') );
     end
 end
@@ -317,7 +317,7 @@ if flag_YZ == 1
         % axis( [ - 15, 15, - 15, 15 ]);
         axis( [ - 100 * w_y / 2 + 0.5, 100 * w_y / 2 - 0.5, - 100 * w_z / 2 + 0.5, 100 * w_z / 2 - 0.5 ]);
         view(2);
-        saveas(figure(dirFlag + 10), fullfile(fname, strcat('H_YZ', num2str(dirFlag))), 'jpg');
+        % saveas(figure(dirFlag + 10), fullfile(fname, strcat('H_YZ', num2str(dirFlag))), 'jpg');
         % save( strcat( fname, '\', CaseDate, 'TmprtrFigYZ.mat') );
     end
 end

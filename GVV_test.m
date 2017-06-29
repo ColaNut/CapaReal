@@ -26,6 +26,6 @@ n_s = 27;
     disp( strcat( 'and the Frobenius norm is ', num2str(f_norm) ) );
     disp('The calculation time of Frobenius norm of AM - I: ');
     toc;
-    % save( strcat('SAI_Tol', num2str(Tol), TEX, '.mat'), 'M_sparseGVV_inv_spai');
-    save( strcat('SAI_Tol', num2str(Tol), '_', TEX, '_', CaseTEX, '.mat'), 'M_sparseGVV_inv_spai', 'column_res', 'cond2', 'f_norm' );
+    save( strcat('SAI_Tol', num2str(Tol), TEX, '.mat'), 'M_sparseGVV_inv_spai', 'column_res', 'f_norm' );
+    % save( strcat('SAI_Tol', num2str(Tol), '_', TEX, '_', CaseTEX, '.mat'), 'M_sparseGVV_inv_spai', 'column_res', 'cond2', 'f_norm' );
 % end

@@ -27,11 +27,21 @@ tumor_y     = paras(21);
 tumor_z     = paras(22);
 tumor_r     = paras(23);
 
-l_lung_a_prime = l_lung_a * sqrt( 1 - ( y / l_lung_b )^2 );
-l_lung_c_prime = l_lung_c * sqrt( 1 - ( y / l_lung_b )^2 );
+if l_lung_b == 0
+    l_lung_a_prime = 0;
+    l_lung_c_prime = 0;
+else
+    l_lung_a_prime = l_lung_a * sqrt( 1 - ( y / l_lung_b )^2 );
+    l_lung_c_prime = l_lung_c * sqrt( 1 - ( y / l_lung_b )^2 );
+end
 
-r_lung_a_prime = r_lung_a * sqrt( 1 - ( y / r_lung_b )^2 );
-r_lung_c_prime = r_lung_c * sqrt( 1 - ( y / r_lung_b )^2 );
+if r_lung_b == 0
+    r_lung_a_prime = 0;
+    r_lung_c_prime = 0;
+else
+    r_lung_a_prime = r_lung_a * sqrt( 1 - ( y / r_lung_b )^2 );
+    r_lung_c_prime = r_lung_c * sqrt( 1 - ( y / r_lung_b )^2 );
+end
 
 tumor_r_prime = sqrt( tumor_r^2 - ( y - tumor_y )^2 );
 

@@ -2,6 +2,12 @@ function [ E_field ] = calE( Crdnt1, Crdnt2, Crdnt3, Crdnt4, Phi1, Phi2, Phi3, P
 
 coeffVec = zeros(4, 1);
 
+% choose two out of four to be [ 0, 0, 0 ]; 
+if length( find( [ isequal(Crdnt1, [0, 0, 0]'), isequal(Crdnt2, [0, 0, 0]'), isequal(Crdnt3, [0, 0, 0]'), isequal(Crdnt4, [0, 0, 0]') ] ) ) >= 2
+    E_field = [ 0, 0, 0 ];
+    return;
+end
+
 A = [ 1, Crdnt1'; 
       1, Crdnt2';
       1, Crdnt3';
