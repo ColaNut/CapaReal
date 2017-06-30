@@ -39,3 +39,5 @@ The cal48TtrVol.m was cal8TtrVol.m not used.
        Check the squeeze function
 
 05/10: Modify to a smaller model.
+
+06/30: calH_2 is now calE^(1)

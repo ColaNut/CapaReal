@@ -1,11 +1,10 @@
 function [ sparseS_1, B_phi ] = PutOnTopElctrd_TestCase( sparseS_1, B_phi, V_0, mediumTableXZ, tumor_x, tumor_y, dx, dy, dz, ...
-                                        air_x, air_z, h_torso, x_max_vertex, y_max_vertex )
+                                        air_x, air_z, h_torso, x_max_vertex, y_max_vertex, top_x0, top_dx, top_dy )
 
-x_0 = - 1 / 100;
+x_0 = top_x0;
 y_0 = tumor_y;
-z_0 = 12 / 100;
-h_x_half = 1 / 100;
-h_y_half = 4 / 100;
+h_x_half = top_dx;
+h_y_half = top_dy;
 
 % sweep over x_table
 for x = x_0 - h_x_half: dx: x_0 + h_x_half

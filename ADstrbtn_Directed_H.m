@@ -18,6 +18,7 @@ if flag_XZ == 1
                 PntsIdx_t = PntsIdx';
                 G_27rows = sparse(27, N_v);
                 G_27rows = G(PntsIdx_t(:), :);
+                % the getH_2 is now modified to getE^{(1)}.
                 H_XZ(m, ell, :, :, :) = getH_2( PntsIdx, Vertex_Crdnt, A, G_27rows, mu_r, squeeze(SegMed(m, n, ell, :, :)), x_max_vertex, y_max_vertex, z_max_vertex );
             end
         end
@@ -75,7 +76,7 @@ if flag_XZ == 1
                 V27Crdnt = zeros(3, 9, 3);
                 [ bypasser, V27Crdnt ] = get27Pnts( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, Vertex_Crdnt );
                 MidPnts9Crdnt = getMidPnts9CrdntXZ( V27Crdnt );
-                plotPntH( real(squeeze(H_XZ(m, ell, :, :, dirFlag))), MidPnts9Crdnt, 'XZ' );
+                plotPntH( abs(squeeze(H_XZ(m, ell, :, :, dirFlag))), MidPnts9Crdnt, 'XZ' );
             end
         end
         toc;
@@ -105,7 +106,7 @@ if flag_XZ == 1
         view(2);
         hold on;
         % plotMQS( Paras_Mag );
-        plotMap( paras2dXZ, dx, dz );
+        plotMap( paras2dXZ, dx, dz, top_x0, top_dx, down_dx );
         plotGridLineXZ( shiftedCoordinateXYZ, CrossN );
         saveas(figure(dirFlag), fullfile(fname, strcat('H_XZ', num2str(dirFlag))), 'jpg');
         % save( strcat( fname, '\', CaseDate, 'TmprtrFigXZ.mat') );
@@ -121,9 +122,19 @@ if flag_XY == 1
         for idx = 1: 1: x_idx_max * y_idx_max
             [ m, n ] = getML(idx, x_idx_max);
             if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1 
-                H_XY(m, n, :, :, :) = getH(m, n, ell, x_idx_max, y_idx_max, ...
-                                            x_max_vertex, y_max_vertex, z_max_vertex, shiftedCoordinateXYZ, ...
-                                                A, mu_r, squeeze( SegMed( m, n, ell, :, : ) ) );
+                m_v = 2 * m - 1;
+                n_v = 2 * n - 1;
+                ell_v = 2 * ell - 1;
+                PntsIdx = zeros( 3, 9 ); 
+                PntsIdx = get27Pnts_KEV( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
+                PntsIdx_t = PntsIdx';
+                G_27rows = sparse(27, N_v);
+                G_27rows = G(PntsIdx_t(:), :);
+                % the getH_2 is now modified to getE^{(1)}.
+                H_XY(m, n, :, :, :) = getH_2( PntsIdx, Vertex_Crdnt, A, G_27rows, mu_r, squeeze(SegMed(m, n, ell, :, :)), x_max_vertex, y_max_vertex, z_max_vertex );
+                % H_XY(m, n, :, :, :) = getH(m, n, ell, x_idx_max, y_idx_max, ...
+                %                             x_max_vertex, y_max_vertex, z_max_vertex, shiftedCoordinateXYZ, ...
+                %                                 A, mu_r, squeeze( SegMed( m, n, ell, :, : ) ) );
             end
         end
 
@@ -190,7 +201,7 @@ if flag_XY == 1
                 V27Crdnt = zeros(3, 9, 3);
                 [ bypasser, V27Crdnt ] = get27Pnts( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, Vertex_Crdnt );
                 MidPnts9Crdnt = getMidPnts9CrdntXY( V27Crdnt );
-                plotPntH( real(squeeze(H_XY(m, n, :, :, dirFlag))), MidPnts9Crdnt, 'XY' );
+                plotPntH( abs(squeeze(H_XY(m, n, :, :, dirFlag))), MidPnts9Crdnt, 'XY' );
             end
         end
         toc;
@@ -233,13 +244,21 @@ if flag_YZ == 1
         m = CrossM;
         for idx = 1: 1: y_idx_max * z_idx_max
             [ n, ell ] = getML(idx, y_idx_max);
-            if n == 7 && ell == 5
-                ;
-            end
             if n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1
-                H_YZ(n, ell, :, :, :) = getH(m, n, ell, x_idx_max, y_idx_max, ...
-                                            x_max_vertex, y_max_vertex, z_max_vertex, shiftedCoordinateXYZ, ...
-                                                A, mu_r, squeeze( SegMed( m, n, ell, :, : ) ) );
+                m_v = 2 * m - 1;
+                n_v = 2 * n - 1;
+                ell_v = 2 * ell - 1;
+                % get 27 Pnts
+                PntsIdx = zeros( 3, 9 ); 
+                PntsIdx = get27Pnts_KEV( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
+                PntsIdx_t = PntsIdx';
+                G_27rows = sparse(27, N_v);
+                G_27rows = G(PntsIdx_t(:), :);
+                % the getH_2 is now modified to getE^{(1)}.
+                H_YZ(n, ell, :, :, :) = getH_2( PntsIdx, Vertex_Crdnt, A, G_27rows, mu_r, squeeze(SegMed(m, n, ell, :, :)), x_max_vertex, y_max_vertex, z_max_vertex );
+                % H_YZ(n, ell, :, :, :) = getH(m, n, ell, x_idx_max, y_idx_max, ...
+                %                             x_max_vertex, y_max_vertex, z_max_vertex, shiftedCoordinateXYZ, ...
+                %                                 A, mu_r, squeeze( SegMed( m, n, ell, :, : ) ) );
             end
         end
 
@@ -285,7 +304,7 @@ if flag_YZ == 1
                 V27Crdnt = zeros(3, 9, 3);
                 [ bypasser, V27Crdnt ] = get27Pnts( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, Vertex_Crdnt );
                 MidPnts9Crdnt = getMidPnts9CrdntYZ( V27Crdnt );
-                plotPntH( real(squeeze(H_YZ(n, ell, :, :, dirFlag))), MidPnts9Crdnt, 'YZ' );
+                plotPntH( abs(squeeze(H_YZ(n, ell, :, :, dirFlag))), MidPnts9Crdnt, 'YZ' );
             end
         end
         toc;

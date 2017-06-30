@@ -1,11 +1,10 @@
 function sparseS_1 = PutOnDwnElctrd_TestCase( sparseS_1, mediumTableXZ, tumor_x, tumor_y, ...
-                                    dx, dy, dz, air_x, air_z, h_torso, x_max_vertex, y_max_vertex );
+                            dx, dy, dz, air_x, air_z, h_torso, x_max_vertex, y_max_vertex, down_x0, down_dx, down_dy )
 
-x_0 = - 1 / 100;
+x_0 = down_x0;
 y_0 = tumor_y;
-z_0 = 12 / 100;
-h_x_half = 1 / 100;
-h_y_half = 4 / 100;
+h_x_half = down_dx;
+h_y_half = down_dy;
 
 % sweep over x_table
 for x = x_0 - h_x_half: dx: x_0 + h_x_half

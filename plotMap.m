@@ -1,4 +1,4 @@
-function plotMap( paras, dx, dz )
+function plotMap( paras, dx, dz, varargin )
 
 % m -> cm
 air_x = paras(1) * 100;
@@ -42,10 +42,18 @@ end
 t = linspace( 0, 2 * pi, 400 );
 X = bolus_a * cos(t);
 Z = bolus_b * sin(t);
-ElectrodeX = tumor_x;
 % The below parameters need to be synchronize with UpElecrode and DwnELectrode
-h_x_halfUp = 6;
-h_x_halfDwn = 10;
+
+nVarargs = length(varargin);
+if nVarargs == 3
+    ElectrodeX    = 100 * varargin{1};
+    h_x_halfUp    = 100 * varargin{2};
+    h_x_halfDwn   = 100 * varargin{3};
+else
+    ElectrodeX = tumor_x;
+    h_x_halfUp = 6;
+    h_x_halfDwn = 10;
+end
 UpIdx = find( Z > 0 & X >= ElectrodeX - h_x_halfUp & X <= ElectrodeX + h_x_halfUp );
 DwnIdx = find( Z < 0 & X >= ElectrodeX - h_x_halfDwn & X <= ElectrodeX + h_x_halfDwn );
 plot(X(UpIdx), Z(UpIdx), 'Color', [0, 0, 0], 'LineWidth', 4.5);

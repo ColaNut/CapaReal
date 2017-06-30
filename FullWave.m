@@ -9,7 +9,7 @@
 % === % ========================================= % === %
 clc; clear;
 digits;
-disp('Full Wave: smaller case, without bone');
+disp('Full Wave: smaller case, without bone, test for mod_K1 solution');
 
 Mu_0          = 4 * pi * 10^(-7);
 Epsilon_0     = 10^(-9) / (36 * pi);
@@ -33,6 +33,14 @@ loadParas;
 %         l_lung_x, l_lung_z, l_lung_a, l_lung_b, l_lung_c, ...
 %         r_lung_x, r_lung_z, r_lung_a, r_lung_b, l_lung_c, ...
 %         tumor_x, tumor_y, tumor_z, tumor_r ];
+
+% the top and bottom electrodes' size
+top_x0  = - 1 / 100;
+top_dx  = 1 / 100;
+top_dy  = 4 / 100;
+down_x0  = - 1 / 100;
+down_dx = 1 / 100;
+down_dy = 4 / 100;
 
 Ribs = zeros(7, 9);
 SSBone = zeros(1, 8);
@@ -323,9 +331,9 @@ toc;
 % put on electrodes
 y_mid = ( h_torso / ( 2 * dy ) ) + 1;
 [ sparseS, B_phi ] = PutOnTopElctrd_TestCase( sparseS, B_phi, V_0, squeeze(mediumTable(:, y_mid, :)), tumor_x, tumor_y, ...
-                                    dx, dy, dz, air_x, air_z, h_torso, x_max_vertex, y_max_vertex );
+                        dx, dy, dz, air_x, air_z, h_torso, x_max_vertex, y_max_vertex, top_x0, top_dx, top_dy );
 sparseS = PutOnDwnElctrd_TestCase( sparseS, squeeze(mediumTable(:, y_mid, :)), tumor_x, tumor_y, ...
-                                    dx, dy, dz, air_x, air_z, h_torso, x_max_vertex, y_max_vertex );
+                        dx, dy, dz, air_x, air_z, h_torso, x_max_vertex, y_max_vertex, down_x0, down_dx, down_dy );
 
 % Normalize each rows
 for idx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
@@ -381,7 +389,7 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
     PntsIdx = get27Pnts_KEV( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt );
     Phi27 = bar_x_my_gmresPhi(PntsIdx);
 
-    SigmaE(m, n, ell, :, :, :) = getSigmaE( Phi27, PntsCrdnt, squeeze( SegMed(m, n, ell, :, :) ), sigma );
+    SigmaE(m, n, ell, :, :, :) = getSigmaE( Phi27, PntsCrdnt, squeeze( SegMed(m, n, ell, :, :) ), sigma, j * Omega_0 * Epsilon_0 * epsilon_r_pre );
 end
 toc;
 
