@@ -197,7 +197,6 @@ edgeTable = false(size(B_k));
 M_K1  = sparse(N_e, N_e);
 M_KEV = sparse(N_e, N_v);
 M_KVE = sparse(N_v, N_e);
-% edgeScript;
 
 % === % =============================== % === %
 % === % Constructing The Directed Graph % === %
@@ -273,38 +272,6 @@ for lGidx = 1: 1: l_G
             end
         end
     end
-    % % boundary condition on current sheet
-    % if cFlag
-    %     B_k_Pntprev = B_k_Pnt;
-    %     cFlagChecker(eIdx) = true;
-    %     % initialized to be zero
-    %     K1_6 = sparse(1, N_e); 
-    %     K2_6 = sparse(1, N_e); 
-    %     Kev_4 = sparse(1, N_v);
-    %     Kve_4 = sparse(N_v, 1);
-    %     B_k_Pnt = 0;
-    %     for TetFinder = 1: 1: length(Candi) - 1
-    %         for itr = TetFinder + 1: length(Candi)
-    %             if uG( Candi(TetFinder), Candi(itr) )
-    %                 % linked to become a tetrahedron
-    %                 v1234 = [ P1(lGidx), P2(lGidx), Candi(itr), Candi(TetFinder) ];
-    %                 tetRow = find( sum( logical(MedTetTable(:, v1234)), 2 ) == 4 );
-    %                 if length(tetRow) ~= 1
-    %                     error('check te construction of MedTetTable');
-    %                 end
-    %                 MedVal = MedTetTable( tetRow, v1234(1) );
-    %                 [ K1_6, K2_6, Kev_4, Kve_4, B_k_Pnt, cFlag ] = fillK( P1(lGidx), P2(lGidx), Candi(itr), Candi(TetFinder), ...
-    %                     G( P1(lGidx), : ), G( P2(lGidx), : ), G( Candi(itr), : ), G( Candi(TetFinder), : ), ...
-    %                     SheetPntsTable( P1(lGidx) ), SheetPntsTable( P2(lGidx) ), SheetPntsTable( Candi(itr) ), SheetPntsTable( Candi(TetFinder) ), ...
-    %                     lGidx, K1_6, K2_6, Kev_4, Kve_4, B_k_Pnt, cFlag, J_0, MedVal, epsilon_r, mu_r, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt, 'Right', 'OnCurrent' );
-    %             end
-    %         end
-    %     end
-    %     if B_k_Pntprev ~= B_k_Pnt
-    %         disp('check the calBC Prm');
-    %         [ lGidx, eIdx ]
-    %     end
-    % end
 
     if isempty(K1_6) % || isempty(K2_6) || isempty(Kev_4)
         disp('K1, K2 or KEV: empty');
@@ -365,9 +332,9 @@ toc;
 
 TEX = 'Right';
 CaseTEX = 'Case1';
-% GVV_test; % a script
 Tol = 0.2;
-load( strcat('SAI_Tol', num2str(Tol), '_', TEX, '_', CaseTEX, '.mat'), 'M_sparseGVV_inv_spai');
+GVV_test; % a script
+% load( strcat('SAI_Tol', num2str(Tol), '_', TEX, '_', CaseTEX, '.mat'), 'M_sparseGVV_inv_spai');
 
 % === % ========================= % === %
 % === % Matrices product to get K % === %

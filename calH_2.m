@@ -109,36 +109,36 @@ end
     % end
 
     % original H_XZ
-    % OneSideH_XZ = ( tmp_curl_W' * A(six_eIdx) ) / ( 3 * TtrVol * mu_r(medVal) );
+    OneSideH_XZ = ( tmp_curl_W' * A(six_eIdx) ) / ( 3 * TtrVol * mu_r(medVal) );
 
 
-    % test for E field
-    switch InnExtText
-        case 'inn'
-            nabla(1, :) = calTriVec( P2_Crdt, P3_Crdt, P4_Crdt );
-            nabla(2, :) = calTriVec( P3_Crdt, P1_Crdt, P4_Crdt );
-            nabla(3, :) = calTriVec( P4_Crdt, P1_Crdt, P2_Crdt );
-            nabla(4, :) = calTriVec( P2_Crdt, P1_Crdt, P3_Crdt );
-        case 'ext'
-            nabla(1, :) = calTriVec( P2_Crdt, P4_Crdt, P3_Crdt );
-            nabla(2, :) = calTriVec( P4_Crdt, P1_Crdt, P3_Crdt );
-            nabla(3, :) = calTriVec( P4_Crdt, P2_Crdt, P1_Crdt );
-            nabla(4, :) = calTriVec( P3_Crdt, P1_Crdt, P2_Crdt );
-        otherwise
-            error('check');
-    end
+    % % test for E field
+    % switch InnExtText
+    %     case 'inn'
+    %         nabla(1, :) = calTriVec( P2_Crdt, P3_Crdt, P4_Crdt );
+    %         nabla(2, :) = calTriVec( P3_Crdt, P1_Crdt, P4_Crdt );
+    %         nabla(3, :) = calTriVec( P4_Crdt, P1_Crdt, P2_Crdt );
+    %         nabla(4, :) = calTriVec( P2_Crdt, P1_Crdt, P3_Crdt );
+    %     case 'ext'
+    %         nabla(1, :) = calTriVec( P2_Crdt, P4_Crdt, P3_Crdt );
+    %         nabla(2, :) = calTriVec( P4_Crdt, P1_Crdt, P3_Crdt );
+    %         nabla(3, :) = calTriVec( P4_Crdt, P2_Crdt, P1_Crdt );
+    %         nabla(4, :) = calTriVec( P3_Crdt, P1_Crdt, P2_Crdt );
+    %     otherwise
+    %         error('check');
+    % end
 
-    GradDiff = zeros(6, 3);
-    GradDiff(1, :) = nabla(2, :) - nabla(1, :);
-    GradDiff(2, :) = nabla(3, :) - nabla(1, :);
-    GradDiff(3, :) = nabla(4, :) - nabla(1, :);
-    GradDiff(4, :) = nabla(3, :) - nabla(2, :);
-    GradDiff(5, :) = nabla(4, :) - nabla(2, :);
-    GradDiff(6, :) = nabla(4, :) - nabla(3, :);
+    % GradDiff = zeros(6, 3);
+    % GradDiff(1, :) = nabla(2, :) - nabla(1, :);
+    % GradDiff(2, :) = nabla(3, :) - nabla(1, :);
+    % GradDiff(3, :) = nabla(4, :) - nabla(1, :);
+    % GradDiff(4, :) = nabla(3, :) - nabla(2, :);
+    % GradDiff(5, :) = nabla(4, :) - nabla(2, :);
+    % GradDiff(6, :) = nabla(4, :) - nabla(3, :);
 
-    % OneSideH_XZ = zeros(3, 1);
-    Mu_0          = 4 * pi * 10^(-7);
-    % the 1 / 2 is contributed by lambda in the middle point.
-    OneSideH_XZ = Mu_0 * ( tmp_curl_W' * A(six_eIdx) ) / ( 3 * TtrVol * 2 );
+    % % OneSideH_XZ = zeros(3, 1);
+    % Mu_0          = 4 * pi * 10^(-7);
+    % % the 1 / 2 is contributed by lambda in the middle point.
+    % OneSideH_XZ = Mu_0 * ( tmp_curl_W' * A(six_eIdx) ) / ( 3 * TtrVol * 2 );
 
 end

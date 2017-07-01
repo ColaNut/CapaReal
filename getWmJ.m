@@ -141,7 +141,7 @@ if projArea < 0
 end
 
 if TtrVol ~= 0
-    BkTet = dot( GradDiff, J ) * sqrt( 1 + (A_1 / A_3)^2 + (A_2 / A_3)^2 ) * 2 * projArea / (9 * TtrVol);
+    BkTet = dot( GradDiff, J ) * sqrt( 1 + (A_1 / A_3)^2 + (A_2 / A_3)^2 ) * projArea / (9 * TtrVol);
 else
     BkTet = 0;
 end
