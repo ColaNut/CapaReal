@@ -369,14 +369,15 @@ toc;
 bar_x_my_gmresPhi = zeros(size(B_phi));
 bar_x_my_gmresPhi = bar_x_my_gmres;
 
-% === === === === === === === === % ========== % === === === === === === === === %
-% === === === === === === === === % K part (1) % === === === === === === === === %
-% === === === === === === === === % ========== % === === === === === === === === %
+% % === === === === === === === === % ========== % === === === === === === === === %
+% % === === === === === === === === % K part (1) % === === === === === === === === %
+% % === === === === === === === === % ========== % === === === === === === === === %
+
 
 Vrtx_bndry = zeros( x_max_vertex, y_max_vertex, z_max_vertex, 'uint8');
 %  2: computational domain boundary
-% 13: bolus-muscle boundary
-% implement the bolus-muscle boundary for vertex-version mediumtable
+n_far  = y_idx_max - 1;
+n_near = 2;
 for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
     [ m_v, n_v, ell_v ] = getMNL(vIdx, x_max_vertex, y_max_vertex, z_max_vertex);
     borderFlag = getBorderFlag(m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex);
@@ -385,9 +386,27 @@ for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
     end
 end
 
+Bls_bndry = zeros( x_max_vertex, y_max_vertex, z_max_vertex );
+% 13: bolus-muscle boundary
+BM_bndryNum = 13;
+for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+    [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
+    if n >= n_near && n <= n_far && mediumTable(m, n, ell) == BM_bndryNum
+        m_v = 2 * m - 1;
+        n_v = 2 * n - 1;
+        ell_v = 2 * ell - 1;
+        Bls_bndry(m_v - 1: m_v + 1, n_v - 1: n_v + 1, ell_v - 1: ell_v + 1) ...
+            = getSheetPnts(m, n, ell, x_idx_max, y_idx_max, shiftedCoordinateXYZ, mediumTable, ...
+                Bls_bndry(m_v - 1: m_v + 1, n_v - 1: n_v + 1, ell_v - 1: ell_v + 1), BM_bndryNum );
+    end
+end
+Bls_bndry(:, 1, :) = Bls_bndry(:, 2, :);
+Bls_bndry(:, end, :) = Bls_bndry(:, end - 1, :);
+
 % check if tetRow is valid in the filling of Bk ?
 % the following code may be incorporated into getPntMedTetTable
 SigmaE = zeros(x_idx_max, y_idx_max, z_idx_max, 6, 8, 3);
+Q_s    = zeros(x_idx_max, y_idx_max, z_idx_max, 6, 8);
 tic;
 for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
@@ -402,7 +421,7 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
     PntsIdx = get27Pnts_KEV( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt );
     Phi27 = bar_x_my_gmresPhi(PntsIdx);
 
-    SigmaE(m, n, ell, :, :, :) = getSigmaE( Phi27, PntsCrdnt, squeeze( SegMed(m, n, ell, :, :) ), sigma, j * Omega_0 * Epsilon_0 * epsilon_r_pre );
+    [ SigmaE(m, n, ell, :, :, :), Q_s(m, n, ell, :, :) ] = getSigmaE( Phi27, PntsCrdnt, squeeze( SegMed(m, n, ell, :, :) ), sigma, j * Omega_0 * Epsilon_0 * epsilon_r_pre );
 end
 toc;
 
@@ -439,6 +458,7 @@ end
 tic;
 disp('Assigning each tetrahdron with a conducting current');
 J_xyz = zeros(0, 3);
+Q_s_Vector  = zeros(0, 1);
 MedTetTable = sparse(0, N_v);
 for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
@@ -448,6 +468,7 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
 
     PntJ_xyz       = sparse(48, 3);
     PntMedTetTable = sparse(48, N_v);
+    PntQ_s         = sparse(48, 1);
     % rearrange (6, 8, 3) to (48, 3);
     tmp = zeros(8, 6);
     tmp = squeeze( SigmaE(m, n, ell, :, :, 1) )';
@@ -456,13 +477,17 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
     PntJ_xyz(:, 2) = tmp(:);
     tmp = squeeze( SigmaE(m, n, ell, :, :, 3) )';
     PntJ_xyz(:, 3) = tmp(:);
+    % to-do
+    tmp = squeeze(Q_s(m, n, ell, :, :))';
+    PntQ_s = tmp(:);
     PntMedTetTable = getPntMedTetTable( squeeze( SegMed(m, n, ell, :, :) )', N_v, m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
     validTet = find( squeeze( SegMed(m, n, ell, :, :) )' ~= byndCD );
 
     % set a inf and nan checker for PntTetTable_Ix, PntTetTable_Iy and PntTetTable_Iz
-
+    % start from here: the temperature is getting lower, and the Q_s and J_xyz is in the order 0.35 and 0.002, respectively.
     J_xyz       = vertcat(J_xyz, PntJ_xyz(validTet, :));
     MedTetTable = vertcat(MedTetTable, PntMedTetTable(validTet, :));
+    Q_s_Vector  = vertcat(Q_s_Vector, PntQ_s(validTet));
 end
 toc;
 
@@ -477,7 +502,7 @@ end
 % === === === === === === === === % Temperature part % === === === === === === === === %
 % === === === === === === === === % ================ % === === === === === === === === %
 
-dt = 15; % 15 seconds
+dt = 5; % 15 seconds
 timeNum_all = 60; % 1 minutes
 % timeNum_all = 50 * 60; % 50 minutes
 loadThermalParas;
@@ -485,41 +510,45 @@ loadThermalParas;
 M_U   = sparse(N_v, N_v);
 M_V   = sparse(N_v, N_v);
 bar_d = zeros(N_v, 1);
-disp('The filling time of G_U, G_V, b_m(t + \Delta t) and b_m(t): ');
+disp('The filling time of M_U, M_V and d_m: ');
 tic;
 for vIdx = 1: 1: N_v
-    % implement checkBioValid.m
-    if checkBioValid(vIdx)
-        U_row = sparse(N_v, 1);
-        V_row = sparse(N_v, 1);
-        Pnt_d = 0;
-        CandiTet = find( MedTetTable(:, vIdx));
-        for itr = 1: 1: length(CandiTet)
-            % v is un-ordered vertices; while p is ordered vertices.
-            % fix the problem in the determination of v1234 here .
-            v1234 = find( MedTetTable( CandiTet(itr), : ) );
-            if length(v1234) ~= 4
+    bioValid = false;
+    U_row = sparse(1, N_v);
+    V_row = sparse(1, N_v);
+    Pnt_d = 0;
+    CandiTet = find( MedTetTable(:, vIdx));
+    for itr = 1: 1: length(CandiTet)
+        % v is un-ordered vertices; while p is ordered vertices.
+        % fix the problem in the determination of v1234 here .
+        v1234 = find( MedTetTable( CandiTet(itr), : ) );
+        if length(v1234) ~= 4
+            error('check');
+        end
+        MedVal = MedTetTable( CandiTet(itr), v1234(1) );
+        % this judgement below is based on the current test case
+        if MedVal == 3
+            bioValid = true;
+            if MedTetTable( CandiTet(itr), v1234(1) ) ~= MedTetTable( CandiTet(itr), v1234(2) )
                 error('check');
             end
-            MedVal = MedTetTable( CandiTet(itr), v1234(1) );
-            % check the MedVal to ensure all the vertex is inside the bioRegion
-            % if MedVal > 10 ?
-            if valid_Med_val
-                if MedTetTable( CandiTet(itr), v1234(1) ) ~= MedTetTable( CandiTet(itr), v1234(2) )
-                    error('check');
-                end
-                p1234 = horzcat( v1234(find(v1234 == vIdx)), v1234(find(v1234 ~= vIdx)));
-                tmp4Val = fillGVV(p1234, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt);
-                U_row(p1234) = U_row(p1234) + (1 / dt) * rho(MedVal) * cap(MedVal) * tmp4Val;
-                V_row(p1234) = V_row(p1234) + ( (1 / dt) * rho(MedVal) * cap(MedVal) - xi(MedVal) * rho(MedVal) * rho_b * cap_b )* tmp4Val;
-                % implement fillV_rest and get_d
-                V_row(p1234) = V_row(p1234) + fillV_rest( p1234, Vrtx_bndry(p1234) );
-                Pnt_d = Pnt_d + get_d(p1234);
-            end
+            % check the validity of Q_s_Vector input.
+            p1234 = horzcat( v1234(find(v1234 == vIdx)), v1234(find(v1234 ~= vIdx)));
+            [ U_row, V_row, Pnt_d ] = fillUVd( p1234, Bls_bndry, U_row, V_row, Pnt_d, ...
+                        dt, Q_s_Vector(CandiTet(itr)), rho(MedVal), xi(MedVal), zeta(MedVal), cap(MedVal), rho_b, cap_b, alpha, T_blood, T_bolus, ...
+                        x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt, BM_bndryNum );
         end
-        M_U(vIdx, :) = M_U(vIdx, :) + U_row;
-        M_V(vIdx, :) = M_V(vIdx, :) + V_row;
+    end
+
+    if bioValid
+        M_U(vIdx, :) = U_row;
+        M_V(vIdx, :) = V_row;
         bar_d(vIdx) = Pnt_d;
+    else
+        U_row(vIdx) = 1;
+        V_row(vIdx) = 1;
+        M_U(vIdx, :) = U_row;
+        M_V(vIdx, :) = V_row;
     end
 end
 toc;
@@ -528,26 +557,55 @@ toc;
 % === % Initialization of Temperature % === %
 % === % ============================= % === %
 
+tic;
+disp('Initialization of Temperature');
 % from 0 to timeNum_all / dt
-bar_b = zeros(N_v * N_v, timeNum_all / dt + 1)
-% update in the order T_air, T_bolus and T_0.
-% The bolus-muscle bondary has temperarily of muscle, while that on the air-bolus boundary has temperature of bolus.
+Ini_bar_b = zeros(N_v, 1);
+% Ini_bar_b = T_air * ones(N_v, 1);
+% The bolus-muscle bondary has temperature of muscle, while that on the air-bolus boundary has temperature of bolus.
+TetNum = size(MedTetTable, 1);
+% get rid of redundancy
+
+% % updating the bolus
+% for tIdx = 1: 1: TetNum
+%     v1234 = find( MedTetTable(tIdx, :) )';
+%     MedVal = MedTetTable( tIdx, v1234(1) );
+%     if MedVal == 2
+%         Ini_bar_b(v1234) = T_bolus;
+%     end
+% end
+% % updating the muscle
+% for tIdx = 1: 1: TetNum
+%     v1234 = find( MedTetTable(tIdx, :) )';
+%     MedVal = MedTetTable( tIdx, v1234(1) );
+%     if MedVal == 3
+%         Ini_bar_b(v1234) = T_0;
+%     end
+% end
+
+bar_b = repmat(Ini_bar_b, 1, timeNum_all / dt + 1);
+toc;
 
 % === % ========================== % === %
 % === % Calculation of Temperature % === %
 % === % ========================== % === %
 
-% the isomorphism bweteen vIdx and bIdx (biovalidIdx)
-
 % implement the updating function 
 tic;
-for idx = 2: 1: size(bar_b, 3) + 1
+for idx = 2: 1: size(bar_b, 2) + 1
     bar_b(:, idx) = M_U\(M_V * bar_b(:, idx - 1) + bar_d);
 end
 toc;
 
-% plot the temerature (vIdx point of view)
-% apply the old way first; then modify the plotting of Phi accordingly.
+% === % ==================== % === %
+% === % Temperature Plotting % === %
+% === % ==================== % === %
+
+T_flagXZ = 1;
+T_flagXY = 1;
+T_flagYZ = 1;
+
+T_plot;
 
 return;
 

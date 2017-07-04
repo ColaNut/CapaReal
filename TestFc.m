@@ -1,76 +1,106 @@
-% === % ========== % === %
-% === % GVV matrix % === %
-% === % ========== % === %
+dt = 5; % 15 seconds
+timeNum_all = 60; % 1 minutes
+% timeNum_all = 50 * 60; % 50 minutes
+loadThermalParas;
 
-sparseGVV = cell(1, N_v);
-disp('The filling time of G_VV: ');
+M_U   = sparse(N_v, N_v);
+M_V   = sparse(N_v, N_v);
+bar_d = zeros(N_v, 1);
+disp('The filling time of M_U, M_V and d_m: ');
 tic;
-for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
-    [ m_v, n_v, ell_v ] = getMNL(vIdx, x_max_vertex, y_max_vertex, z_max_vertex);
-    flag = getMNL_flag(m_v, n_v, ell_v);
-    GVV_SideFlag = false(1, 6);
-    GVV_SideFlag = getGVV_SideFlag(m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex);
-    SegMedIn = FetchSegMed( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
-    if isempty( find( GVV_SideFlag ) )
-        sparseGVV{ vIdx } = fillNrml_S( m_v, n_v, ell_v, flag, Vertex_Crdnt, x_max_vertex, y_max_vertex, ...
-                                            z_max_vertex, SegMedIn, epsilon_r, Omega_0, 'GVV' );
+for vIdx = 1: 1: N_v
+    bioValid = false;
+    U_row = sparse(1, N_v);
+    V_row = sparse(1, N_v);
+    Pnt_d = 0;
+    CandiTet = find( MedTetTable(:, vIdx));
+    for itr = 1: 1: length(CandiTet)
+        % v is un-ordered vertices; while p is ordered vertices.
+        % fix the problem in the determination of v1234 here .
+        v1234 = find( MedTetTable( CandiTet(itr), : ) );
+        if length(v1234) ~= 4
+            error('check');
+        end
+        MedVal = MedTetTable( CandiTet(itr), v1234(1) );
+        % this judgement below is based on the current test case
+        if MedVal == 3
+            bioValid = true;
+            if MedTetTable( CandiTet(itr), v1234(1) ) ~= MedTetTable( CandiTet(itr), v1234(2) )
+                error('check');
+            end
+            % check the validity of Q_s_Vector input.
+            p1234 = horzcat( v1234(find(v1234 == vIdx)), v1234(find(v1234 ~= vIdx)));
+            [ U_row, V_row, Pnt_d ] = fillUVd( p1234, Bls_bndry, U_row, V_row, Pnt_d, ...
+                        dt, Q_s_Vector(CandiTet(itr)), rho(MedVal), xi(MedVal), zeta(MedVal), cap(MedVal), rho_b, cap_b, alpha, T_blood, T_bolus, ...
+                        x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt, BM_bndryNum );
+        end
+    end
+
+    if bioValid
+        M_U(vIdx, :) = U_row;
+        M_V(vIdx, :) = V_row;
+        bar_d(vIdx) = Pnt_d;
     else
-        sparseGVV{ vIdx } = fillBndry_GVV_tmp( m_v, n_v, ell_v, flag, GVV_SideFlag, Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex );
+        U_row(vIdx) = 1;
+        V_row(vIdx) = 1;
+        M_U(vIdx, :) = U_row;
+        M_V(vIdx, :) = V_row;
     end
 end
 toc;
 
-% === % =================== % === %
-% === % Calculation of SPAI % === %
-% === % =================== % === %
-
-TEX = 'Right';
-CaseTEX = 'Case1';
-Tol = 0.2;
-GVV_test; % a script
-% load( strcat('SAI_Tol', num2str(Tol), '_', TEX, '_', CaseTEX, '.mat'), 'M_sparseGVV_inv_spai');
-
-% === % ========================= % === %
-% === % Matrices product to get K % === %
-% === % ========================= % === %
-
-M_K = sparse(N_e, N_e);
-M_K = M_K1 - Mu_0 * Omega_0^2 * M_K2 - M_KEV * M_sparseGVV_inv_spai * M_KVE;
-
-% === % ============================ % === %
-% === % Sparse Normalization Process % === %
-% === % ============================ % === %
+% === % ============================= % === %
+% === % Initialization of Temperature % === %
+% === % ============================= % === %
 
 tic;
-disp('Time for normalization');
-sptmp = spdiags( 1 ./ max(abs(M_K),[], 2), 0, N_e, N_e );
-nrmlM_K = sptmp * M_K;
-nrmlB_k = sptmp * B_k;
+disp('Initialization of Temperature');
+% from 0 to timeNum_all / dt
+Ini_bar_b = zeros(N_v, 1);
+% Ini_bar_b = T_air * ones(N_v, 1);
+% The bolus-muscle bondary has temperature of muscle, while that on the air-bolus boundary has temperature of bolus.
+TetNum = size(MedTetTable, 1);
+% get rid of redundancy
+
+% % updating the bolus
+% for tIdx = 1: 1: TetNum
+%     v1234 = find( MedTetTable(tIdx, :) )';
+%     MedVal = MedTetTable( tIdx, v1234(1) );
+%     if MedVal == 2
+%         Ini_bar_b(v1234) = T_bolus;
+%     end
+% end
+% % updating the muscle
+% for tIdx = 1: 1: TetNum
+%     v1234 = find( MedTetTable(tIdx, :) )';
+%     MedVal = MedTetTable( tIdx, v1234(1) );
+%     if MedVal == 3
+%         Ini_bar_b(v1234) = T_0;
+%     end
+% end
+
+bar_b = repmat(Ini_bar_b, 1, timeNum_all / dt + 1);
 toc;
 
-% === % ============================================================ % === %
-% === % Direct solver and iteratve solver (iLU-preconditioned GMRES) % === %
-% === % ============================================================ % === %
+% === % ========================== % === %
+% === % Calculation of Temperature % === %
+% === % ========================== % === %
 
-tol = 1e-6;
-ext_itr_num = 10;
-int_itr_num = 50;
-
-bar_x_my_gmres = zeros(size(nrmlB_k));
-tic; 
-disp('Computational time for solving Ax = b: ')
-bar_x_my_gmres = nrmlM_K\nrmlB_k;
+% implement the updating function 
+tic;
+for idx = 2: 1: size(bar_b, 2) + 1
+    bar_b(:, idx) = M_U\(M_V * bar_b(:, idx - 1) + bar_d);
+end
 toc;
-% tic;
-% disp('The gmres solutin of Ax = B: ');
-% bar_x_my_gmres = gmres( nrmlM_K, B_k, int_itr_num, tol, ext_itr_num );
-% toc;
 
-% % save('Case0528_preBC_Case4.mat', 'bar_x_my_gmres', 'B_k');
+% === % ==================== % === %
+% === % Temperature Plotting % === %
+% === % ==================== % === %
 
-AFigsScript;
+T_flagXZ = 1;
+T_flagXY = 1;
+T_flagYZ = 1;
 
-% % tic;
-% % disp('Calculation time of iLU: ')
-% % [ L_K, U_K ] = ilu( nrmlM_K, struct('type', 'ilutp', 'droptol', 1e-2) );
-% % toc;
+T_plot;
+
+return;

@@ -111,7 +111,6 @@ end
     % original H_XZ
     OneSideH_XZ = ( tmp_curl_W' * A(six_eIdx) ) / ( 3 * TtrVol * mu_r(medVal) );
 
-
     % % test for E field
     % switch InnExtText
     %     case 'inn'
