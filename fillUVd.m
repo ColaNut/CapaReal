@@ -30,13 +30,13 @@ function [ U_row, V_row, Pnt_d ] = fillUVd( p1234, Vrtx_bndry, U_row, V_row, Pnt
     W_ration = [2, 1, 1, 1];
     lamdaM_lmdaN_V = repmat(TtrVol, 1, 4) .*  W_ration / 20;
 
-    U_row(p1234) = U_row(p1234) + (1 / dt) * rho * cap * lamdaM_lmdaN_V;
+    U_row(p1234) = U_row(p1234) + ( (1 / dt) * rho * cap + 0.5 * xi * rho * rho_b * cap_b ) * lamdaM_lmdaN_V;
 
     % === % ====================== % === %
     % === % Filling of V and Pnt_d % === %
     % === % ====================== % === %
 
-    V_row(p1234) = V_row(p1234) + ( (1 / dt) * rho * cap - xi * rho * rho_b * cap_b ) * lamdaM_lmdaN_V;
+    V_row(p1234) = V_row(p1234) + ( (1 / dt) * rho * cap - 0.5 * xi * rho * rho_b * cap_b ) * lamdaM_lmdaN_V;
     
     P1_flag = Vrtx_bndry( m_v(1), n_v(1), ell_v(1) );
     P2_flag = Vrtx_bndry( m_v(2), n_v(2), ell_v(2) );
@@ -94,7 +94,8 @@ function [ U_row, V_row, Pnt_d ] = fillUVd( p1234, Vrtx_bndry, U_row, V_row, Pnt
         maskWeight = [2, 1, 1, 1];
         maskWeight(unRelatedNode) = 0;
         lamdaM_lmdaN_S1 = maskWeight * alpha * sqrt( 1 + (A_1 / A_3)^2 + (A_2 / A_3)^2 ) * projArea / 12;
-        V_row(p1234) = V_row(p1234) - lamdaM_lmdaN_S1;
+        U_row(p1234) = U_row(p1234) + 0.5 * lamdaM_lmdaN_S1;
+        V_row(p1234) = V_row(p1234) - 0.5 * lamdaM_lmdaN_S1;
         Pnt_d = Pnt_d + alpha * T_bolus * sqrt( 1 + (A_1 / A_3)^2 + (A_2 / A_3)^2 ) * projArea / 3;
     end
 
@@ -128,7 +129,8 @@ function [ U_row, V_row, Pnt_d ] = fillUVd( p1234, Vrtx_bndry, U_row, V_row, Pnt
     end
 
     nabla_lamdaM_cdot_nabla_lamdaN = zeta * dot( repmat(nabla(1, :), 4, 1), nabla, 2 )' / ( 9 * TtrVol );
-    V_row(p1234) = V_row(p1234) - nabla_lamdaM_cdot_nabla_lamdaN;
+    U_row(p1234) = U_row(p1234) + 0.5 * nabla_lamdaM_cdot_nabla_lamdaN;
+    V_row(p1234) = V_row(p1234) - 0.5 * nabla_lamdaM_cdot_nabla_lamdaN;
 
     Pnt_d = Pnt_d + Q_s * TtrVol / 4;
     % Pnt_d = Pnt_d + ( Q_s + xi * rho * rho_b * cap_b * T_blood ) * TtrVol / 4;
