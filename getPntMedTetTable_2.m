@@ -1,6 +1,6 @@
-function [ PntMedTetTable, nzCols ] = getPntMedTetTable( PntSegMed_t, N_v, m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex )
+function PntMedTetTableCell = getPntMedTetTable_2( PntSegMed_t, N_v, m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex )
     
-    PntMedTetTable = sparse(48, N_v);
+    PntMedTetTableCell = cell(48, 1);
     % PntSegMed_t = PntSegMed';
     % get 27 Pnts index
     PntsIdx     = zeros( 3, 9 ); 
@@ -31,7 +31,8 @@ function [ PntMedTetTable, nzCols ] = getPntMedTetTable( PntSegMed_t, N_v, m_v, 
     nzCols(41: 48, :) = get32Idx(face9Pnts, Cpnts);
 
     for idx = 1: 1: 48
-        PntMedTetTable(idx, nzCols(idx, :)) = repmat(PntSegMed_t(idx), 1, 4);
+        PntMedTetTableCell{idx} = [ nzCols(idx, :), double(repmat(PntSegMed_t(idx), 1, 4)) ];
+        % PntMedTetTable(idx, nzCols(idx, :)) = repmat(PntSegMed_t(idx), 1, 4);
     end
 
 end

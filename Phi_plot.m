@@ -1,11 +1,15 @@
-T_end = bar_b(:, end);
+Phi_flagXZ = 1;
+Phi_flagXY = 1;
+Phi_flagYZ = 1;
+% load the mat file.
+% load('EQS_Phi.mat');
 
 % % updating the bolus
 % for tIdx = 1: 1: TetNum
 %     v1234 = find( MedTetTable(tIdx, :) )';
 %     MedVal = MedTetTable( tIdx, v1234(1) );
 %     if MedVal == 2
-%         T_end(v1234) = T_bolus;
+%         bar_x_my_gmresPhi(v1234) = T_bolus;
 %     end
 % end
 % % updating the muscle
@@ -13,25 +17,25 @@ T_end = bar_b(:, end);
 %     v1234 = find( MedTetTable(tIdx, :) )';
 %     MedVal = MedTetTable( tIdx, v1234(1) );
 %     if MedVal == 3
-%         T_end(v1234) = T_0;
+%         bar_x_my_gmresPhi(v1234) = T_0;
 %     end
 % end
 
-if T_flagXZ == 1
+if Phi_flagXZ == 1
     figure(4);
     clf;
     n_v_mid_plot = ( y_max_vertex + 1 ) / 2;
-    T_xz = zeros(x_max_vertex, z_max_vertex);
+    Phi_xz = zeros(x_max_vertex, z_max_vertex);
     for vIdx = 1: 1: N_v
         [ m_v, n_v, ell_v ] = getMNL(vIdx, x_max_vertex, y_max_vertex, z_max_vertex);
         if n_v == n_v_mid_plot
-            T_xz(m_v, ell_v) = T_end(vIdx);
+            Phi_xz(m_v, ell_v) = bar_x_my_gmresPhi(vIdx);
         end
     end
 
     % x_mesh = squeeze(Vertex_Crdnt( :, n_v_mid_plot, :, 1))';
     % z_mesh = squeeze(Vertex_Crdnt( :, n_v_mid_plot, :, 3))';
-    % pcolor(x_mesh * 100, z_mesh * 100, abs( T_xz' ));
+    % pcolor(x_mesh * 100, z_mesh * 100, abs( Phi_xz' ));
 
     tic;
     for vIdx = 1: 1: N_v
@@ -88,16 +92,8 @@ if T_flagXZ == 1
                     if n_v(1) == n_v_mid_plot && n_v(2) == n_v_mid_plot && n_v(3) == n_v_mid_plot && n_v(4) == n_v_mid_plot
                         error('check');
                     end
-                    if valid
-                        if MedVal == 3
-                            col = [ T_xz( m_v(f(1)), ell_v(f(1)) ); T_xz( m_v(f(2)), ell_v(f(2)) ); T_xz( m_v(f(3)), ell_v(f(3)) ) ];
-                        elseif MedVal == 2
-                            col = repmat(T_bolus, 3, 1);
-                        elseif MedVal == 1
-                            col = repmat(T_air, 3, 1);
-                        end
-                        patch('Faces', [1, 2, 3], 'Vertices', v, 'FaceVertexCData', col, 'FaceColor', 'interp');
-                    end
+                    col = [ Phi_xz( m_v(f(1)), ell_v(f(1)) ); Phi_xz( m_v(f(2)), ell_v(f(2)) ); Phi_xz( m_v(f(3)), ell_v(f(3)) ) ];
+                    patch('Faces', [1, 2, 3], 'Vertices', v, 'FaceVertexCData', col, 'FaceColor', 'interp');
                 % end
             end
         end
@@ -118,15 +114,15 @@ if T_flagXZ == 1
     saveas(figure(4), 'TestTmprtrXZ.jpg');
 end
 
-if T_flagXY == 1
+if Phi_flagXY == 1
     figure(5);
     clf;
     ell_v_mid_plot = ( z_max_vertex + 1 ) / 2;
-    T_xy = zeros(x_max_vertex, y_max_vertex);
+    Phi_xy = zeros(x_max_vertex, y_max_vertex);
     for vIdx = 1: 1: N_v
         [ m_v, n_v, ell_v ] = getMNL(vIdx, x_max_vertex, y_max_vertex, z_max_vertex);
         if ell_v == ell_v_mid_plot
-            T_xy(m_v, n_v) = T_end(vIdx);
+            Phi_xy(m_v, n_v) = bar_x_my_gmresPhi(vIdx);
         end
     end
 
@@ -185,16 +181,8 @@ if T_flagXY == 1
                     if ell_v(1) == ell_v_mid_plot && ell_v(2) == ell_v_mid_plot && ell_v(3) == ell_v_mid_plot && ell_v(4) == ell_v_mid_plot
                         error('check');
                     end
-                    if valid
-                        if MedVal == 3
-                            col = [ T_xy( m_v(f(1)), n_v(f(1)) ); T_xy( m_v(f(2)), n_v(f(2)) ); T_xy( m_v(f(3)), n_v(f(3)) ) ];
-                        elseif MedVal == 2
-                            col = repmat(T_bolus, 3, 1);
-                        elseif MedVal == 1
-                            col = repmat(T_air, 3, 1);
-                        end
-                        patch('Faces', [1, 2, 3], 'Vertices', v, 'FaceVertexCData', col, 'FaceColor', 'interp');
-                    end
+                    col = [ Phi_xy( m_v(f(1)), n_v(f(1)) ); Phi_xy( m_v(f(2)), n_v(f(2)) ); Phi_xy( m_v(f(3)), n_v(f(3)) ) ];
+                    patch('Faces', [1, 2, 3], 'Vertices', v, 'FaceVertexCData', col, 'FaceColor', 'interp');
                 % end
             end
         end
@@ -216,15 +204,15 @@ if T_flagXY == 1
     saveas(figure(5), 'TestTmprtrXY.jpg');
 end
 
-if T_flagYZ == 1
+if Phi_flagYZ == 1
     figure(6);
     clf;
     m_v_mid_plot = ( x_max_vertex + 1 ) / 2;
-    T_yz = zeros(y_max_vertex, z_max_vertex);
+    Phi_yz = zeros(y_max_vertex, z_max_vertex);
     for vIdx = 1: 1: N_v
         [ m_v, n_v, ell_v ] = getMNL(vIdx, x_max_vertex, y_max_vertex, z_max_vertex);
         if m_v == m_v_mid_plot
-            T_yz(n_v, ell_v) = T_end(vIdx);
+            Phi_yz(n_v, ell_v) = bar_x_my_gmresPhi(vIdx);
         end
     end
 
@@ -283,16 +271,8 @@ if T_flagYZ == 1
                     if m_v(1) == m_v_mid_plot && m_v(2) == m_v_mid_plot && m_v(3) == m_v_mid_plot && m_v(4) == m_v_mid_plot
                         error('check');
                     end
-                    if valid
-                        if MedVal == 3
-                            col = [ T_yz( n_v(f(1)), ell_v(f(1)) ); T_yz( n_v(f(2)), ell_v(f(2)) ); T_yz( n_v(f(3)), ell_v(f(3)) ) ];
-                        elseif MedVal == 2
-                            col = repmat(T_bolus, 3, 1);
-                        elseif MedVal == 1
-                            col = repmat(T_air, 3, 1);
-                        end
-                        patch('Faces', [1, 2, 3], 'Vertices', v, 'FaceVertexCData', col, 'FaceColor', 'interp');
-                    end
+                    col = [ Phi_yz( n_v(f(1)), ell_v(f(1)) ); Phi_yz( n_v(f(2)), ell_v(f(2)) ); Phi_yz( n_v(f(3)), ell_v(f(3)) ) ];
+                    patch('Faces', [1, 2, 3], 'Vertices', v, 'FaceVertexCData', col, 'FaceColor', 'interp');
                 % end
             end
         end

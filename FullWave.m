@@ -9,12 +9,12 @@
 % === % ========================================= % === %
 clc; clear;
 digits;
-disp('Full Wave: smaller case, without bone, test for mod_K1 solution');
+disp('Full Wave: EQS');
 
 Mu_0          = 4 * pi * 10^(-7);
 Epsilon_0     = 10^(-9) / (36 * pi);
 Omega_0       = 2 * pi * 8 * 10^6; % 2 * pi * 8 MHz
-V_0           = 89; 
+V_0           = 86.26; 
 
 % parameters
 % rho           = [ 1,  1020,  1020,  1050, 1040 ]';
@@ -73,31 +73,31 @@ for y = - h_torso / 2: dy: h_torso / 2
     %     r_lung_x, r_lung_z, r_lung_a_prime, r_lung_c_prime, ...
     %     tumor_x, tumor_z, tumor_r_prime ];
     y_idx = y / dy + h_torso / (2 * dy) + 1;
-    mediumTable(:, int64(y_idx), :) = getRoughMed_Test( mediumTable(:, int64(y_idx), :), paras2dXZ, dx, dz );
+    mediumTable(:, int64(y_idx), :) = getRoughMed( mediumTable(:, int64(y_idx), :), paras2dXZ, dx, dz, 'no_fat' );
     [ GridShiftTableXZ{ int64(y_idx) }, mediumTable(:, int64(y_idx), :) ] = constructCoordinateXZ_all( paras2dXZ, dx, dz, mediumTable(:, int64(y_idx), :) );
 end
 
-% % 1 to 7, corresponding to 1-st to 7-th rib.
-% RibValid = 0; 
-% SSBoneValid = false;
+% 1 to 7, corresponding to 1-st to 7-th rib.
+RibValid = 0; 
+SSBoneValid = false;
 BoneMediumTable = ones( x_idx_max, y_idx_max, z_idx_max, 'uint8');
 % BoneGridShiftTableXZ = cell( h_torso / dy + 1, 1);
 
-% for y = - h_torso / 2: dy: h_torso / 2
-%     [ RibValid, SSBoneValid ] = Bone2d(y, Ribs, SSBone, dy, h_torso);
-%     y_idx = y / dy + h_torso / (2 * dy) + 1;
-%     [ GridShiftTableXZ{ int64(y_idx) }, BoneMediumTable(:, int64(y_idx), :) ] ...
-%         = UpdateBoneMed( y, mediumTable(:, int64(y_idx), :), Ribs, SSBone, RibValid, SSBoneValid, ...
-%                             dx, dz, air_x, air_z, x_idx_max, z_idx_max, GridShiftTableXZ{ int64(y_idx) } );
-% end
+for y = - h_torso / 2: dy: h_torso / 2
+    [ RibValid, SSBoneValid ] = Bone2d(y, Ribs, SSBone, dy, h_torso);
+    y_idx = y / dy + h_torso / (2 * dy) + 1;
+    [ GridShiftTableXZ{ int64(y_idx) }, BoneMediumTable(:, int64(y_idx), :) ] ...
+        = UpdateBoneMed( y, mediumTable(:, int64(y_idx), :), Ribs, SSBone, RibValid, SSBoneValid, ...
+                            dx, dz, air_x, air_z, x_idx_max, z_idx_max, GridShiftTableXZ{ int64(y_idx) } );
+end
 
 % need to recover after resumming the original case.
-% for x = - air_x / 2: dx: air_x / 2
-%     paras2dYZ = genParas2dYZ( x, paras, dy, dz );
-%     y_grid_table = fillGridTableY_all( paras2dYZ, dy, dz );
-%     x_idx = x / dx + air_x / (2 * dx) + 1;
-%     [ GridShiftTableXZ, mediumTable ] = constructGridShiftTableXYZ( GridShiftTableXZ, int64(x_idx), y_grid_table, h_torso, air_z, dy, dz, mediumTable, paras2dYZ );
-% end
+for x = - air_x / 2: dx: air_x / 2
+    paras2dYZ = genParas2dYZ( x, paras, dy, dz );
+    y_grid_table = fillGridTableY_all( paras2dYZ, dy, dz );
+    x_idx = x / dx + air_x / (2 * dx) + 1;
+    [ GridShiftTableXZ, mediumTable ] = constructGridShiftTableXYZ( GridShiftTableXZ, int64(x_idx), y_grid_table, h_torso, air_z, dy, dz, mediumTable, paras2dYZ );
+end
 
 % re-organize the GridShiftTable
 GridShiftTable = cell( air_x / dx + 1, h_torso / dy + 1, air_z / dz + 1 );
@@ -196,67 +196,70 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
 end
 toc;
 
-% for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
-%     % idx = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
-%     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
-%     p0 = idx;
+% warning messages occurr in the above determination of SegMed; ammended by the below SegMed determination process
 
-%     if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
-%         if mediumTable(p0) == 11 % air-bolus boundary pnt
-%             % check the validity of the LHS accepance.
-%             % update the bolus
-%             SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
-%                                             squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 2, 'inner' );
+for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+    % idx = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
+    [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
+    p0 = idx;
 
-%             [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
-%                 shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
-%                 epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
+    if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
+        if mediumTable(p0) == 11 % air-bolus boundary pnt
+            % check the validity of the LHS accepance.
+            % update the bolus
+            SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
+                                            squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 2, 'inner' );
 
-%         elseif mediumTable(p0) == 13 % bolus-muscle pnt
-%             % update the bolus
-%             SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
-%                                             squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 2, 'outer' );
-%             % update the fat tissue
-%             SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
-%                                             squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 7, 'inner' );
+            [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
+                shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
+                epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
 
-%             if BoneMediumTable(p0) == 1 % normal bondary point
-%                 [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
-%                     shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
-%                     epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
-%             elseif BoneMediumTable(p0) == 16  % rib boundary point
-%                 [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrRibPt_A( m, n, ell, ...
-%                     shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
-%                         MskMedTab, BoneMediumTable, epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
-%             else
-%                 error('check');
-%             end
-%         elseif mediumTable(p0) == 12 % fat-muscle
-%             % update the fat tissue
-%             SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
-%                                             squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 7, 'outer' );
-%             if MskMedTab(p0) ~= 0
-%                 error('check');
-%             end
-%             if BoneMediumTable(p0) == 1 % normal bondary point
-%                 [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
-%                     shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
-%                     epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
-%             elseif BoneMediumTable(p0) == 16  % rib boundary point
-%                 [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrRibPt_A( m, n, ell, ...
-%                     shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
-%                         MskMedTab, BoneMediumTable, epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
-%             else
-%                 error('check');
-%             end
+        elseif mediumTable(p0) == 13 % bolus-muscle pnt
+            % update the bolus
+            SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
+                                            squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 2, 'outer' );
+            % update the fat tissue
+            SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
+                                            squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 7, 'inner' );
 
-%         end
-%     end
-% end
+            if BoneMediumTable(p0) == 1 % normal bondary point
+                [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
+                    shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
+                    epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
+            elseif BoneMediumTable(p0) == 16  % rib boundary point
+                [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrRibPt_A( m, n, ell, ...
+                    shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
+                        MskMedTab, BoneMediumTable, epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
+            else
+                error('check');
+            end
+        % if fat is incorporated, the following code is needed.
+        % elseif mediumTable(p0) == 12 % fat-muscle
+        %     % update the fat tissue
+        %     SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
+        %                                     squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 7, 'outer' );
+        %     if MskMedTab(p0) ~= 0
+        %         error('check');
+        %     end
+        %     if BoneMediumTable(p0) == 1 % normal bondary point
+        %         [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
+        %             shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
+        %             epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
+        %     elseif BoneMediumTable(p0) == 16  % rib boundary point
+        %         [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrRibPt_A( m, n, ell, ...
+        %             shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
+        %                 MskMedTab, BoneMediumTable, epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
+        %     else
+        %         error('check');
+        %     end
 
-% === % =========================================== % === %
-% === % Refine the SegMed on the computation domain % === %
-% === % =========================================== % === % 
+        end
+    end
+end
+
+% === % ========================================= % === %
+% === % Fill the SegMed on the computation domain % === %
+% === % ========================================= % === % 
 
 % x- and z-direction.
 for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
@@ -331,10 +334,10 @@ toc;
 
 % put on electrodes
 y_mid = ( h_torso / ( 2 * dy ) ) + 1;
-[ sparseS, B_phi ] = PutOnTopElctrd_TestCase( sparseS, B_phi, V_0, squeeze(mediumTable(:, y_mid, :)), tumor_x, tumor_y, ...
-                        dx, dy, dz, air_x, air_z, h_torso, x_max_vertex, y_max_vertex, top_x0, top_dx, top_dy );
-sparseS = PutOnDwnElctrd_TestCase( sparseS, squeeze(mediumTable(:, y_mid, :)), tumor_x, tumor_y, ...
-                        dx, dy, dz, air_x, air_z, h_torso, x_max_vertex, y_max_vertex, down_x0, down_dx, down_dy );
+[ sparseS, B_phi ] = PutOnTopElctrd( sparseS, B_phi, V_0, squeeze(mediumTable(:, y_mid, :)), tumor_x, tumor_y, ...
+                        dx, dy, dz, air_x, air_z, h_torso, x_max_vertex, y_max_vertex );
+sparseS = PutOnDwnElctrd( sparseS, squeeze(mediumTable(:, y_mid, :)), tumor_x, tumor_y, ...
+                        dx, dy, dz, air_x, air_z, h_torso, x_max_vertex, y_max_vertex );
 
 % Normalize each rows
 for idx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
@@ -362,17 +365,17 @@ disp('Calculation time of iLU: ')
 toc;
 tic;
 disp('The gmres solutin of M_S x = B_phi: ');
-bar_x_my_gmres = gmres( M_S, B_phi, int_itr_num, tol, ext_itr_num, L_S, U_S );
+bar_x_my_gmresPhi = gmres( M_S, B_phi, int_itr_num, tol, ext_itr_num, L_S, U_S );
 % bar_x_my_gmres = my_gmres( sparseS, B_phi, int_itr_num, tol, ext_itr_num );
 toc;
 
-bar_x_my_gmresPhi = zeros(size(B_phi));
-bar_x_my_gmresPhi = bar_x_my_gmres;
+save('EQS_Phi.mat');
+
+return;
 
 % % === === === === === === === === % ========== % === === === === === === === === %
 % % === === === === === === === === % K part (1) % === === === === === === === === %
 % % === === === === === === === === % ========== % === === === === === === === === %
-
 
 Vrtx_bndry = zeros( x_max_vertex, y_max_vertex, z_max_vertex, 'uint8');
 %  2: computational domain boundary
@@ -408,6 +411,7 @@ Bls_bndry(:, end, :) = Bls_bndry(:, end - 1, :);
 SigmaE = zeros(x_idx_max, y_idx_max, z_idx_max, 6, 8, 3);
 Q_s    = zeros(x_idx_max, y_idx_max, z_idx_max, 6, 8);
 tic;
+disp('calclation time of SigmeE and Q_s');
 for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
     m_v = 2 * m - 1;
@@ -457,18 +461,19 @@ end
 
 tic;
 disp('Assigning each tetrahdron with a conducting current');
-J_xyz = zeros(0, 3);
-Q_s_Vector  = zeros(0, 1);
-MedTetTable = sparse(0, N_v);
+J_xyz            = zeros(0, 3);
+Q_s_Vector       = zeros(0, 1);
+MedTetTableCell  = cell(0, 1);
+% rearrange SigmaE and Q_s; construct the MedTetTableCell
 for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
     m_v = 2 * m - 1;
     n_v = 2 * n - 1;
     ell_v = 2 * ell - 1;
 
-    PntJ_xyz       = sparse(48, 3);
-    PntMedTetTable = sparse(48, N_v);
-    PntQ_s         = sparse(48, 1);
+    PntJ_xyz        = zeros(48, 3);
+    PntMedTetTableCell  = cell(48, 1);
+    PntQ_s          = zeros(48, 1);
     % rearrange (6, 8, 3) to (48, 3);
     tmp = zeros(8, 6);
     tmp = squeeze( SigmaE(m, n, ell, :, :, 1) )';
@@ -480,35 +485,41 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
     % to-do
     tmp = squeeze(Q_s(m, n, ell, :, :))';
     PntQ_s = tmp(:);
-    PntMedTetTable = getPntMedTetTable( squeeze( SegMed(m, n, ell, :, :) )', N_v, m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
+    PntMedTetTableCell = getPntMedTetTable_2( squeeze( SegMed(m, n, ell, :, :) )', N_v, m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
     validTet = find( squeeze( SegMed(m, n, ell, :, :) )' ~= byndCD );
 
     % set a inf and nan checker for PntTetTable_Ix, PntTetTable_Iy and PntTetTable_Iz
     % start from here: the temperature is getting lower, and the Q_s and J_xyz is in the order 0.35 and 0.002, respectively.
-    J_xyz       = vertcat(J_xyz, PntJ_xyz(validTet, :));
-    MedTetTable = vertcat(MedTetTable, PntMedTetTable(validTet, :));
-    Q_s_Vector  = vertcat(Q_s_Vector, PntQ_s(validTet));
+    J_xyz        = vertcat(J_xyz, PntJ_xyz(validTet, :));
+    MedTetTableCell  = vertcat(MedTetTableCell, PntMedTetTableCell(validTet));
+    Q_s_Vector   = vertcat(Q_s_Vector, PntQ_s(validTet));
 end
 toc;
 
 validNum = 48 * x_idx_max * y_idx_max * z_idx_max - 24 * (x_idx_max * y_idx_max + y_idx_max * z_idx_max + x_idx_max * z_idx_max) * 2 ...
                 + 12 * (x_idx_max + y_idx_max + z_idx_max) * 4 - 48;
 
-if size(MedTetTable, 1) ~= validNum
+if size(MedTetTableCell, 1) ~= validNum
     error('check the construction');
 end
+
+MedTetTable = sparse(validNum, N_v);
+tic;
+disp('Transfroming MedTetTable from my_sparse to Matlab sparse matrix')
+MedTetTable = mySparse2MatlabSparse( MedTetTableCell, validNum, N_v, 'Row' );
+toc;
 
 % === === === === === === === === % ================ % === === === === === === === === %
 % === === === === === === === === % Temperature part % === === === === === === === === %
 % === === === === === === === === % ================ % === === === === === === === === %
 
-dt = 5; % 15 seconds
+dt = 20; % 20 seconds
 timeNum_all = 60; % 1 minutes
 % timeNum_all = 50 * 60; % 50 minutes
 loadThermalParas;
 
-M_U   = sparse(N_v, N_v);
-M_V   = sparse(N_v, N_v);
+M_U   = cell(N_v, 1);
+M_V   = cell(N_v, 1);
 bar_d = zeros(N_v, 1);
 disp('The filling time of M_U, M_V and d_m: ');
 tic;
@@ -521,13 +532,15 @@ for vIdx = 1: 1: N_v
     for itr = 1: 1: length(CandiTet)
         % v is un-ordered vertices; while p is ordered vertices.
         % fix the problem in the determination of v1234 here .
-        v1234 = find( MedTetTable( CandiTet(itr), : ) );
+        TetRow = MedTetTableCell{ CandiTet(itr) };
+        v1234 = TetRow(1: 4);
         if length(v1234) ~= 4
             error('check');
         end
-        MedVal = MedTetTable( CandiTet(itr), v1234(1) );
+        MedVal = TetRow(1: 4);
+        % MedVal = MedTetTable( CandiTet(itr), v1234(1) );
         % this judgement below is based on the current test case
-        if MedVal == 3
+        if MedVal >= 3 && MedVal <= 9
             bioValid = true;
             if MedTetTable( CandiTet(itr), v1234(1) ) ~= MedTetTable( CandiTet(itr), v1234(2) )
                 error('check');
@@ -541,16 +554,22 @@ for vIdx = 1: 1: N_v
     end
 
     if bioValid
-        M_U(vIdx, :) = U_row;
-        M_V(vIdx, :) = V_row;
+        M_U{vIdx} = Mrow2myRow(U_row);
+        M_V{vIdx} = Mrow2myRow(V_row);
         bar_d(vIdx) = Pnt_d;
     else
-        U_row(vIdx) = 1;
-        V_row(vIdx) = 1;
-        M_U(vIdx, :) = U_row;
-        M_V(vIdx, :) = V_row;
+        M_U{vIdx} = [vIdx, 1];
+        M_V{vIdx} = [vIdx, 1];
     end
 end
+toc;
+
+M_U   = sparse(N_v, N_v);
+M_V   = sparse(N_v, N_v);
+tic;
+disp('Transfroming M_U and M_V from my_sparse to Matlab sparse matrix')
+M_U = mySparse2MatlabSparse( m_U, N_v, N_v, 'Row' );
+M_V = mySparse2MatlabSparse( m_V, N_v, N_v, 'Row' );
 toc;
 
 % === % ============================= % === %
@@ -592,7 +611,7 @@ toc;
 
 % implement the updating function 
 tic;
-for idx = 2: 1: size(bar_b, 2) + 1
+for idx = 2: 1: size(bar_b, 2)
     bar_b(:, idx) = M_U\(M_V * bar_b(:, idx - 1) + bar_d);
 end
 toc;
@@ -668,8 +687,8 @@ for lGidx = 1: 1: l_G
     eIdx = full( G(P1(lGidx), P2(lGidx)) );
     Candi = [];
     % get candidate points
-    P1_cand = uG(P1(lGidx), :);
-    P2_cand = uG(P2(lGidx), :);
+    P1_cand = uG(:, P1(lGidx));
+    P2_cand = uG(:, P2(lGidx));
     P1_nz = find(P1_cand);
     P2_nz = find(P2_cand);
     for CandiFinder = 1: 1: length(P1_nz)
@@ -790,18 +809,22 @@ toc;
 % === % ============================================================ % === %
 
 tol = 1e-6;
-ext_itr_num = 10;
-int_itr_num = 50;
+ext_itr_num = 5;
+int_itr_num = 20;
 
 bar_x_my_gmres = zeros(size(nrmlB_k));
-tic; 
-disp('Computational time for solving Ax = b: ')
-bar_x_my_gmres = nrmlM_K\nrmlB_k;
+tic;
+disp('Calculation time of iLU: ')
+[ L_K, U_K ] = ilu( nrmlM_K, struct('type', 'ilutp', 'droptol', 1e-2) );
 toc;
-% tic;
-% disp('The gmres solutin of Ax = B: ');
-% bar_x_my_gmres = gmres( nrmlM_K, nrmlB_k, int_itr_num, tol, ext_itr_num );
+% tic; 
+% disp('Computational time for solving Ax = b: ')
+% bar_x_my_gmres = nrmlM_K\nrmlB_k;
 % toc;
+tic;
+disp('The gmres solutin of Ax = B: ');
+bar_x_my_gmres = gmres( nrmlM_K, nrmlB_k, int_itr_num, tol, ext_itr_num, L_K, U_K );
+toc;
 
 w_y = h_torso;
 w_x = air_x;

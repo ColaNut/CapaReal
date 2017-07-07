@@ -1,7 +1,7 @@
-function [ U_row, V_row, Pnt_d ] = fillUVd( p1234, Vrtx_bndry, U_row, V_row, Pnt_d, ...
-                                                dt, Q_s, rho, xi, zeta, cap, rho_b, cap_b, alpha, T_blood, T_bolus, ...
-                                                x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt, ...
-                                                BM_bndryNum )
+function Pnt_d = filld( p1234, Vrtx_bndry, Pnt_d, ...
+                            dt, Q_s, rho, xi, zeta, cap, rho_b, cap_b, alpha, T_blood, T_bolus, ...
+                            x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt, ...
+                            BM_bndryNum )
 
     % === % ============ % === %
     % === % Filling of U % === %
@@ -27,24 +27,11 @@ function [ U_row, V_row, Pnt_d ] = fillUVd( p1234, Vrtx_bndry, U_row, V_row, Pnt
     P4_Crdt = squeeze( Vertex_Crdnt(m_v(4), n_v(4), ell_v(4), :) )';
 
     TtrVol = calTtrVol( P1_Crdt, P2_Crdt, P3_Crdt, P4_Crdt );
-    W_ration = [2, 1, 1, 1];
-    lamdaM_lmdaN_V = repmat(TtrVol, 1, 4) .*  W_ration / 20;
-
-    U_row(p1234) = U_row(p1234) + ( (1 / dt) * rho * cap + 0.5 * xi * rho * rho_b * cap_b ) * lamdaM_lmdaN_V;
-
-    % === % ====================== % === %
-    % === % Filling of V and Pnt_d % === %
-    % === % ====================== % === %
-
-    V_row(p1234) = V_row(p1234) + ( (1 / dt) * rho * cap - 0.5 * xi * rho * rho_b * cap_b ) * lamdaM_lmdaN_V;
     
     P1_flag = Vrtx_bndry( m_v(1), n_v(1), ell_v(1) );
     P2_flag = Vrtx_bndry( m_v(2), n_v(2), ell_v(2) );
     P3_flag = Vrtx_bndry( m_v(3), n_v(3), ell_v(3) );
     P4_flag = Vrtx_bndry( m_v(4), n_v(4), ell_v(4) );
-
-    % calculation of lamdaM_lmdaN_over_S1
-    lamdaM_lmdaN_S1 = zeros(1, 4);
 
     unRelatedNode = 0;
     % Existence of mainedge on current surface

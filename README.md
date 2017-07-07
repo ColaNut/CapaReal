@@ -42,3 +42,5 @@ The cal48TtrVol.m was cal8TtrVol.m not used.
 
 06/30: calH_2 is now calE^(1); 
 Similar calculation are related in getWmJ.m, get6E4V_omega.m, calKVE_TetPatch_Right.m, getBk.m.
+
+07/07: plotPntH.m is now log10(.)

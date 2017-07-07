@@ -29,7 +29,7 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
     n_v = 2 * n - 1;
     ell_v = 2 * ell - 1;
     p0_v = ( ell_v - 1 ) * x_max_vertex * y_max_vertex + ( n_v - 1 ) * x_max_vertex + m_v;
-    bar_x_my_gmres_mod(idx) = bar_x_my_gmres(p0_v);
+    bar_x_my_gmres_mod(idx) = bar_x_my_gmresPhi(p0_v);
 end
 
 if flag_XZ == 1
@@ -234,8 +234,8 @@ if flag_XZ == 1
     plotRibXZ(Ribs, SSBone, dx, dz);
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
     % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'fig');
-    % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
-    save( strcat( fname, '\', CaseDate, 'TmprtrFigXZ.mat') );
+    saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
+    % save( strcat( fname, '\', CaseDate, 'TmprtrFigXZ.mat') );
     % save('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0108\Case0108TmprtrFigXZ.mat');
 end
 
@@ -328,7 +328,7 @@ if flag_XY == 1
     plotXY( paras2dXY, dx, dy );
     % plotGridLineXY( shiftedCoordinateXYZ, tumor_ell );
     % saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'fig');
-    % saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'jpg');
+    saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'jpg');
 
     % calculate the E field
     SARseg = zeros( x_idx_max, y_idx_max, 6, 8 );
@@ -451,8 +451,8 @@ if flag_XY == 1
     plotXY( paras2dXY, dx, dy );
     % plotGridLineXY( shiftedCoordinateXYZ, tumor_ell );
     % saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'fig');
-    % saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'jpg');
-    save( strcat( fname, '\', CaseDate, 'TmprtrFigXY.mat') );
+    saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'jpg');
+    % save( strcat( fname, '\', CaseDate, 'TmprtrFigXY.mat') );
 end
 
 if flag_YZ == 1
@@ -546,7 +546,7 @@ if flag_YZ == 1
     box on;
     view(2);
     % saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'fig');
-    % saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'jpg');
+    saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'jpg');
 
     % calculate the E field
     SARseg = zeros( y_idx_max, z_idx_max, 6, 8 );
@@ -670,6 +670,6 @@ if flag_YZ == 1
     % axis( [ - 100 * h_torso / 2, 100 * h_torso / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);
     view(2);
     % saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'fig');
-    % saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'jpg');
-    save( strcat( fname, '\', CaseDate, 'TmprtrFigYZ.mat') ); 
+    saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'jpg');
+    % save( strcat( fname, '\', CaseDate, 'TmprtrFigYZ.mat') ); 
 end

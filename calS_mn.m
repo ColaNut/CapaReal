@@ -40,15 +40,15 @@ function face10Value = calS_mn( SideCrdnt, CntrlCrdnt, FaceSegMed, epsilon_r, ty
     Tet32ValueS2(7, :) = ( epsilon_r( FaceSegMed(7) )^2 * TtrVol(7) / ( 20 *( 3 * 10^8 )^2) ) * modOnes;
     Tet32ValueS2(8, :) = ( epsilon_r( FaceSegMed(8) )^2 * TtrVol(8) / ( 20 *( 3 * 10^8 )^2) ) * modOnes;
 
-    face10Value(1)  = ( Tet32ValueS1(5, 3) + Tet32ValueS1(6, 4) ) - omega^2 * ( Tet32ValueS2(5, 3) + Tet32ValueS2(6, 4) );
-    face10Value(2)  = ( Tet32ValueS1(6, 3) + Tet32ValueS1(7, 4) ) - omega^2 * ( Tet32ValueS2(6, 3) + Tet32ValueS2(7, 4) );
-    face10Value(3)  = ( Tet32ValueS1(7, 3) + Tet32ValueS1(8, 4) ) - omega^2 * ( Tet32ValueS2(7, 3) + Tet32ValueS2(8, 4) );
-    face10Value(4)  = ( Tet32ValueS1(4, 3) + Tet32ValueS1(5, 4) ) - omega^2 * ( Tet32ValueS2(4, 3) + Tet32ValueS2(5, 4) );
-    face10Value(5)  = sum(Tet32ValueS1(:, 2))                     - omega^2 * sum(Tet32ValueS2(:, 2));
-    face10Value(6)  = ( Tet32ValueS1(8, 3) + Tet32ValueS1(1, 4) ) - omega^2 * ( Tet32ValueS2(8, 3) + Tet32ValueS2(1, 4) );
-    face10Value(7)  = ( Tet32ValueS1(3, 3) + Tet32ValueS1(4, 4) ) - omega^2 * ( Tet32ValueS2(3, 3) + Tet32ValueS2(4, 4) );
-    face10Value(8)  = ( Tet32ValueS1(2, 3) + Tet32ValueS1(3, 4) ) - omega^2 * ( Tet32ValueS2(2, 3) + Tet32ValueS2(3, 4) );
-    face10Value(9)  = ( Tet32ValueS1(1, 3) + Tet32ValueS1(2, 4) ) - omega^2 * ( Tet32ValueS2(1, 3) + Tet32ValueS2(2, 4) );
-    face10Value(10) = sum(Tet32ValueS1(:, 1))                     - omega^2 * sum(Tet32ValueS2(:, 1));
+    face10Value(1)  = ( Tet32ValueS1(5, 3) + Tet32ValueS1(6, 4) ); %- omega^2 * ( Tet32ValueS2(5, 3) + Tet32ValueS2(6, 4) );
+    face10Value(2)  = ( Tet32ValueS1(6, 3) + Tet32ValueS1(7, 4) ); %- omega^2 * ( Tet32ValueS2(6, 3) + Tet32ValueS2(7, 4) );
+    face10Value(3)  = ( Tet32ValueS1(7, 3) + Tet32ValueS1(8, 4) ); %- omega^2 * ( Tet32ValueS2(7, 3) + Tet32ValueS2(8, 4) );
+    face10Value(4)  = ( Tet32ValueS1(4, 3) + Tet32ValueS1(5, 4) ); %- omega^2 * ( Tet32ValueS2(4, 3) + Tet32ValueS2(5, 4) );
+    face10Value(5)  = sum(Tet32ValueS1(:, 2))                    ; %- omega^2 * sum(Tet32ValueS2(:, 2));
+    face10Value(6)  = ( Tet32ValueS1(8, 3) + Tet32ValueS1(1, 4) ); %- omega^2 * ( Tet32ValueS2(8, 3) + Tet32ValueS2(1, 4) );
+    face10Value(7)  = ( Tet32ValueS1(3, 3) + Tet32ValueS1(4, 4) ); %- omega^2 * ( Tet32ValueS2(3, 3) + Tet32ValueS2(4, 4) );
+    face10Value(8)  = ( Tet32ValueS1(2, 3) + Tet32ValueS1(3, 4) ); %- omega^2 * ( Tet32ValueS2(2, 3) + Tet32ValueS2(3, 4) );
+    face10Value(9)  = ( Tet32ValueS1(1, 3) + Tet32ValueS1(2, 4) ); %- omega^2 * ( Tet32ValueS2(1, 3) + Tet32ValueS2(2, 4) );
+    face10Value(10) = sum(Tet32ValueS1(:, 1))                    ; %- omega^2 * sum(Tet32ValueS2(:, 1));
 
 end

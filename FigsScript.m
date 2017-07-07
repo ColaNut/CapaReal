@@ -10,13 +10,13 @@ if PhiSAR_flag == 1
     % load( strcat('e:\Kevin\CapaReal\Case0220_1cmFat', '\', CaseName, '.mat') );
     % load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0503_PHI_enhance\0502_PHI.mat');
     flag_XZ = 1;
-    flag_XY = 1;
-    flag_YZ = 1;
+    flag_XY = 0;
+    flag_YZ = 0;
 
-    % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0503_PHI_enhance';
-    % CaseName = '0321';
+    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0706EQS_FullWave';
     % % fname = 'e:\Kevin\CapaReal\Case0220_1cmFat';
-    CaseDate = 'Case0622_PHI_enhancex';
+    % CaseDate = 'Case0622_PHI_enhancex';
+    CaseName = 'Power300';
     PhiDstrbtn;
     % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'fig');
     % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
@@ -74,3 +74,11 @@ if Tmprtr_flag == 1
     % saveas(figure(23), fullfile(fname, strcat(CaseName, 'TmprtrYZ')), 'fig');
     % saveas(figure(23), fullfile(fname, strcat(CaseName, 'TmprtrYZ')), 'jpg');
 end
+
+
+% figure(7); 
+% clf;
+% set(gca,'fontsize',18);
+% set(gca,'LineWidth',2.0);
+% tmpIdx = ( 11 - 1 ) * x_max_vertex * y_max_vertex + ( ( y_max_vertex + 1 ) / 2 - 1 ) * x_max_vertex + 9;
+% plot(0: dt / 60: timeNum_all / 60, bar_b(tmpIdx, :), 'k', 'LineWidth', 2.5);

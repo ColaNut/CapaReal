@@ -1,4 +1,4 @@
-function [ mediumTableXZ ] = getRoughMed( mediumTableXZ, paras2dXZ, dx, dz )
+function [ mediumTableXZ ] = getRoughMed( mediumTableXZ, paras2dXZ, dx, dz, varargin )
 
 % paras2dXZ = [ air_x, air_z, bolus_a, bolus_c, fat_a, fat_c, muscle_a, muscle_c, ...
 %     l_lung_x, l_lung_z, l_lung_a_prime, l_lung_c_prime, ...
@@ -38,8 +38,21 @@ tumor_z = paras2dXZ(18);
 tumor_r = paras2dXZ(19);
 
 mediumTableXZ = medFill( mediumTableXZ, 0, 0, bolus_a, bolus_c, dx, dz, 2, air_x, air_z );
-mediumTableXZ = medFill( mediumTableXZ, 0, 0, muscle_a, muscle_c, dx, dz, 7, air_x, air_z );
-mediumTableXZ = medFill( mediumTableXZ, 0, 0, fat_a, fat_c, dx, dz, 3, air_x, air_z );
+
+nVarargs = length(varargin);
+if nVarargs == 1
+    fatFlag = varargin{1};
+    if strcmp(fatFlag, 'no_fat')
+        mediumTableXZ = medFill( mediumTableXZ, 0, 0, muscle_a, muscle_c, dx, dz, 3, air_x, air_z );
+        % mediumTableXZ = medFill( mediumTableXZ, 0, 0, fat_a, fat_c, dx, dz, 3, air_x, air_z );
+    else
+        error('check the input text');
+    end
+else
+    mediumTableXZ = medFill( mediumTableXZ, 0, 0, muscle_a, muscle_c, dx, dz, 7, air_x, air_z );
+    mediumTableXZ = medFill( mediumTableXZ, 0, 0, fat_a, fat_c, dx, dz, 3, air_x, air_z );
+end
+
 if isreal(l_lung_c)
     mediumTableXZ = medFill( mediumTableXZ, l_lung_x, l_lung_z, l_lung_a, l_lung_c, dx, dz, 4, air_x, air_z );
 end
