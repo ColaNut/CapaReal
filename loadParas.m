@@ -138,13 +138,40 @@
 % dy = 1 / 100;
 % dz = 1 / 100;
 
-% CASE in the submitted papers.
-% Testing case: 3 cm bolus, re-estimate the parameters.
+% % Testing case: 3 cm bolus, re-estimate the parameters.
+% h_torso = 36 / 100;
+% air_x = 50 / 100; % width: 50 cm
+% air_z = 40 / 100; % height: 40 cm
+% bolus_a = 36 / 200;
+% bolus_c = 28 / 200;
+% skin_a = 0 / 200; % fat
+% skin_c = 0 / 200; 
+% muscle_a = 30 / 200;
+% muscle_c = 22 / 200;
+% l_lung_x = - 6 / 100;
+% l_lung_z = 0 / 100; 
+% l_lung_a = 8 / 200;
+% l_lung_b = 22 / 200;
+% l_lung_c = 16 / 200;
+% r_lung_x = 5 / 100;
+% r_lung_z = 0 / 100;
+% r_lung_a = 10 / 200;
+% r_lung_b = 22 / 200;
+% r_lung_c = 16 / 200;
+% tumor_x = l_lung_x;
+% tumor_y = - 4 / 100;
+% tumor_z = 4 / 100;
+% tumor_r = 4 / 200;
+% dx = 1 / 100;
+% dy = 1 / 100;
+% dz = 1 / 100;
+
+% CASE in the submitted papers: 2 cm bolus
 h_torso = 36 / 100;
 air_x = 50 / 100; % width: 50 cm
 air_z = 40 / 100; % height: 40 cm
-bolus_a = 36 / 200;
-bolus_c = 28 / 200;
+bolus_a = 34 / 200;
+bolus_c = 26 / 200;
 skin_a = 0 / 200; % fat
 skin_c = 0 / 200; 
 muscle_a = 30 / 200;

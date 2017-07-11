@@ -196,6 +196,9 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
 end
 toc;
 
+UpElecTb = false( x_idx_max, y_idx_max, z_idx_max );
+[ sparseA, B, UpElecTb ] = UpElectrode( sparseA, B, Xtable, Ztable, paras, V_0, x_idx_max, y_idx_max, dx, dy, dz, z_idx_max );
+
 % warning messages occurr in the above determination of SegMed; ammended by the below SegMed determination process
 
 for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
@@ -304,8 +307,7 @@ B_phi = zeros(N_v, 1);
 sparseS = cell( N_v, 1 );
 tic;
 disp('The filling time of S phi = b_phi: ');
-for idx = 1: 1: N_v
-% for idx = x_max_vertex * y_max_vertex * 65: 1: x_max_vertex * y_max_vertex * 66
+parfor idx = 1: 1: N_v
     [ m, n, ell ] = getMNL(idx, x_max_vertex, y_max_vertex, z_max_vertex);
     if m >= 2  && m <= x_max_vertex - 1 && n >= 2 && n <= y_max_vertex - 1 && ell >= 2 && ell <= z_max_vertex - 1 
         flag = getMNL_flag(m, n, ell);
@@ -513,20 +515,20 @@ toc;
 % === === === === === === === === % Temperature part % === === === === === === === === %
 % === === === === === === === === % ================ % === === === === === === === === %
 
-dt = 20; % 20 seconds
+dt = 15; % 20 seconds
 timeNum_all = 60; % 1 minutes
 % timeNum_all = 50 * 60; % 50 minutes
 loadThermalParas;
 
-M_U   = cell(N_v, 1);
-M_V   = cell(N_v, 1);
+m_U   = cell(N_v, 1);
+m_V   = cell(N_v, 1);
 bar_d = zeros(N_v, 1);
-disp('The filling time of M_U, M_V and d_m: ');
+disp('The filling time of m_U, m_V and d_m: ');
 tic;
-for vIdx = 1: 1: N_v
+parfor vIdx = 1: 1: N_v
     bioValid = false;
-    U_row = sparse(1, N_v);
-    V_row = sparse(1, N_v);
+    U_row = zeros(1, N_v);
+    V_row = zeros(1, N_v);
     Pnt_d = 0;
     CandiTet = find( MedTetTable(:, vIdx));
     for itr = 1: 1: length(CandiTet)
@@ -537,7 +539,7 @@ for vIdx = 1: 1: N_v
         if length(v1234) ~= 4
             error('check');
         end
-        MedVal = TetRow(1: 4);
+        MedVal = TetRow(5);
         % MedVal = MedTetTable( CandiTet(itr), v1234(1) );
         % this judgement below is based on the current test case
         if MedVal >= 3 && MedVal <= 9
@@ -548,18 +550,18 @@ for vIdx = 1: 1: N_v
             % check the validity of Q_s_Vector input.
             p1234 = horzcat( v1234(find(v1234 == vIdx)), v1234(find(v1234 ~= vIdx)));
             [ U_row, V_row, Pnt_d ] = fillUVd( p1234, Bls_bndry, U_row, V_row, Pnt_d, ...
-                        dt, Q_s_Vector(CandiTet(itr)), rho(MedVal), xi(MedVal), zeta(MedVal), cap(MedVal), rho_b, cap_b, alpha, T_blood, T_bolus, ...
+                        dt, Q_s_Vector(CandiTet(itr)) + Q_met(MedVal), rho(MedVal), xi(MedVal), zeta(MedVal), cap(MedVal), rho_b, cap_b, alpha, T_blood, T_bolus, ...
                         x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt, BM_bndryNum );
         end
     end
 
     if bioValid
-        M_U{vIdx} = Mrow2myRow(U_row);
-        M_V{vIdx} = Mrow2myRow(V_row);
+        m_U{vIdx} = Mrow2myRow(U_row);
+        m_V{vIdx} = Mrow2myRow(V_row);
         bar_d(vIdx) = Pnt_d;
     else
-        M_U{vIdx} = [vIdx, 1];
-        M_V{vIdx} = [vIdx, 1];
+        m_U{vIdx} = [vIdx, 1];
+        m_V{vIdx} = [vIdx, 1];
     end
 end
 toc;
@@ -660,9 +662,9 @@ for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
         [ starts, ends, vals ] = fillGraph( m_v, n_v, ell_v, starts, ends, vals, x_max_vertex, y_max_vertex, z_max_vertex, corner_flag );
     end
 end
-G = sparse(starts, ends, vals, N_v, N_v);
+G = sparse(ends, starts, vals, N_v, N_v);
 toc;
-[ P1, P2 ] = find(G);
+[ P2, P1 ] = find(G);
 l_G = length(find(G));
 
 % undirected graph
@@ -673,10 +675,10 @@ uG = G + G';
 % === % =================================== % === %
 
 B_k = zeros(N_e, 1);
-M_K1 = sparse(N_e, N_e);
-M_K2 = sparse(N_e, N_e);
-M_KEV = sparse(N_e, N_v);
-M_KVE = sparse(N_v, N_e);
+m_K1 = cell(N_e, 1);
+m_K2 = cell(N_e, 1);
+m_KEV = cell(N_e, 1);
+m_KVE = cell(1, N_e);
 edgeChecker = false(l_G, 1);
 cFlagChecker = false(l_G, 1);
 BioFlag = true(N_v, 1);
@@ -684,7 +686,7 @@ BioFlag = true(N_v, 1);
 tic; 
 disp('The filling time of K_1, K_EV, K_VE and B: ');
 for lGidx = 1: 1: l_G
-    eIdx = full( G(P1(lGidx), P2(lGidx)) );
+    eIdx = full( G(P2(lGidx), P1(lGidx)) );
     Candi = [];
     % get candidate points
     P1_cand = uG(:, P1(lGidx));
@@ -697,10 +699,10 @@ for lGidx = 1: 1: l_G
         end
     end
     % get adjacent tetrahdron
-    K1_6 = sparse(1, N_e); 
-    K2_6 = sparse(1, N_e); 
-    Kev_4 = sparse(1, N_v);
-    Kve_4 = sparse(N_v, 1);
+    K1_6 = zeros(1, N_e); 
+    K2_6 = zeros(1, N_e); 
+    Kev_4 = zeros(1, N_v);
+    Kve_4 = zeros(N_v, 1);
     B_k_Pnt = 0;
     cFlag = false;
     for TetFinder = 1: 1: length(Candi) - 1
@@ -715,7 +717,7 @@ for lGidx = 1: 1: l_G
                 MedVal = MedTetTable( tetRow, v1234(1) );
                 % use tetRow to check the accordance of SigmaE and J_xyz
                 [ K1_6, K2_6, Kev_4, Kve_4, B_k_Pnt ] = fillK_FW( P1(lGidx), P2(lGidx), Candi(itr), Candi(TetFinder), ...
-                    G( P1(lGidx), : ), G( P2(lGidx), : ), G( Candi(itr), : ), G( Candi(TetFinder), : ), ...
+                    G( :, P1(lGidx) ), G( :, P2(lGidx) ), G( :, Candi(itr) ), G( :, Candi(TetFinder) ), ...
                     Vrtx_bndry( P1(lGidx) ), Vrtx_bndry( P2(lGidx) ), Vrtx_bndry( Candi(itr) ), Vrtx_bndry( Candi(TetFinder) ), ...
                     K1_6, K2_6, Kev_4, Kve_4, B_k_Pnt, J_xyz(tetRow, :), MedVal, epsilon_r, mu_r, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt );
             end
@@ -745,12 +747,25 @@ for lGidx = 1: 1: l_G
     end
 
     edgeChecker(eIdx) = true;
-    M_K1(eIdx, :)  = K1_6;
-    M_K2(eIdx, :)  = K2_6;
-    M_KEV(eIdx, :) = Kev_4;
-    M_KVE(:, eIdx) = Kve_4;
+    
+    m_K1{eIdx} = Mrow2myRow(K1_6);
+    m_K2{eIdx}  = Mrow2myRow(K2_6);
+    m_KEV{eIdx} = Mrow2myRow(Kev_4);
+    m_KVE{eIdx} = Mrow2myRow(Kve_4')';
     B_k(eIdx) = B_k_Pnt;
 end
+toc;
+
+M_K1 = sparse(N_e, N_e);
+M_K2 = sparse(N_e, N_e);
+M_KEV = sparse(N_e, N_v);
+M_KVE = sparse(N_v, N_e);
+tic;
+disp('Transfroming M_K1, M_K2, M_KEV and M_KVE')
+M_K1 = mySparse2MatlabSparse( m_K1, N_e, N_e, 'Row' );
+M_K2 = mySparse2MatlabSparse( m_K2, N_e, N_e, 'Row' );
+M_KEV = mySparse2MatlabSparse( m_KEV, N_e, N_v, 'Row' );
+M_KVE = mySparse2MatlabSparse( m_KVE, N_v, N_e, 'Col' );
 toc;
 
 % === % ========== % === %

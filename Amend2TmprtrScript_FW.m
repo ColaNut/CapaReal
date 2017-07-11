@@ -19,70 +19,79 @@
 % PowerScript;
 % save( strcat(fname, '\', CaseName, '.mat') );
 
-clc; clear;
-fname = 'd:\Kevin\CapaReal\0710';
-CaseName = 'Power250';
-load( strcat(fname, '\', CaseName, '.mat') );
-dt = 15;
-Duration1 = 5 * 60;
-trans1 = Duration1 / dt;
-Duration2 = 30 * 60;
-trans2 = trans1 + Duration2 / dt;
-Duration3 = 20 * 60;
-trans3 = trans2 + Duration3 / dt;
-timeNum_all = Duration1 + Duration2 + Duration3;
-bar_b = zeros(N_v, (Duration1 + Duration2 + Duration3) / dt + 1);
+% copy the Power250, Power280, and Power300 to d:\Kevin\CapaReal\0710 in Linken1112
+
+% clc; clear;
+% fname = 'd:\Kevin\CapaReal\0710';
+% CaseName = 'Power250';
+% load( strcat(fname, '\', CaseName, '.mat') );
+% dt = 15;
+% Duration1 = 5 * 60;
+% trans1 = Duration1 / dt;
+% Duration2 = 30 * 60;
+% trans2 = trans1 + Duration2 / dt;
+% Duration3 = 20 * 60;
+% trans3 = trans2 + Duration3 / dt;
+% timeNum_all = Duration1 + Duration2 + Duration3;
+% bar_b = zeros(N_v, (Duration1 + Duration2 + Duration3) / dt + 1);
 
 % === === === === === === === % =================== % === === === === === === === %
 % === === === === === === === % Getting M_U and M_V % === === === === === === === %
 % === === === === === === === % =================== % === === === === === === === %
 
-m_U   = cell(N_v, 1);
-m_V   = cell(N_v, 1);
-disp('The filling time of m_U and m_V: ');
-tic;
-parfor vIdx = 1: 1: N_v
-    bioValid = false;
-    U_row = zeros(1, N_v);
-    V_row = zeros(1, N_v);
-    Pnt_d = 0;
-    CandiTet = find( MedTetTable(:, vIdx));
-    for itr = 1: 1: length(CandiTet)
-        % v is un-ordered vertices; while p is ordered vertices.
-        % fix the problem in the determination of v1234 here .
-        TetRow = MedTetTableCell{ CandiTet(itr) };
-        v1234 = TetRow(1: 4);
-        if length(v1234) ~= 4
-            error('check');
-        end
-        MedVal = TetRow(5);
-        % MedVal = MedTetTable( CandiTet(itr), v1234(1) );
-        % this judgement below is based on the current test case
-        if MedVal >= 3 && MedVal <= 9
-            bioValid = true;
-            if MedTetTable( CandiTet(itr), v1234(1) ) ~= MedTetTable( CandiTet(itr), v1234(2) )
-                error('check');
-            end
-            % check the validity of Q_s_Vector input.
-            p1234 = horzcat( v1234(find(v1234 == vIdx)), v1234(find(v1234 ~= vIdx)));
-            [ U_row, V_row ] = fillUVd( p1234, Bls_bndry, U_row, V_row, Pnt_d, ...
-                        dt, Q_s_Vector(CandiTet(itr)) + Q_met(MedVal), rho(MedVal), xi(MedVal), zeta(MedVal), cap(MedVal), rho_b, cap_b, alpha, T_blood, T_bolus, ...
-                        x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt, BM_bndryNum );
-        end
-    end
+% m_U   = cell(N_v, 1);
+% m_V   = cell(N_v, 1);
+% disp('The filling time of m_U and m_V: ');
+% tic;
+% parfor vIdx = 1: 1: N_v
+%     bioValid = false;
+%     U_row = zeros(1, N_v);
+%     V_row = zeros(1, N_v);
+%     Pnt_d = 0;
+%     CandiTet = find( MedTetTable(:, vIdx));
+%     for itr = 1: 1: length(CandiTet)
+%         % v is un-ordered vertices; while p is ordered vertices.
+%         % fix the problem in the determination of v1234 here .
+%         TetRow = MedTetTableCell{ CandiTet(itr) };
+%         v1234 = TetRow(1: 4);
+%         if length(v1234) ~= 4
+%             error('check');
+%         end
+%         MedVal = TetRow(5);
+%         % MedVal = MedTetTable( CandiTet(itr), v1234(1) );
+%         % this judgement below is based on the current test case
+%         if MedVal >= 3 && MedVal <= 9
+%             bioValid = true;
+%             if MedTetTable( CandiTet(itr), v1234(1) ) ~= MedTetTable( CandiTet(itr), v1234(2) )
+%                 error('check');
+%             end
+%             % check the validity of Q_s_Vector input.
+%             p1234 = horzcat( v1234(find(v1234 == vIdx)), v1234(find(v1234 ~= vIdx)));
+%             [ U_row, V_row ] = fillUVd( p1234, Bls_bndry, U_row, V_row, Pnt_d, ...
+%                         dt, Q_s_Vector(CandiTet(itr)) + Q_met(MedVal), rho(MedVal), xi(MedVal), zeta(MedVal), cap(MedVal), rho_b, cap_b, alpha, T_blood, T_bolus, ...
+%                         x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt, BM_bndryNum );
+%         end
+%     end
 
-    if bioValid
-        m_U{vIdx} = Mrow2myRow(U_row);
-        m_V{vIdx} = Mrow2myRow(V_row);
-        bar_d(vIdx) = Pnt_d;
-    else
-        m_U{vIdx} = [vIdx, 1];
-        m_V{vIdx} = [vIdx, 1];
-    end
+%     if bioValid
+%         m_U{vIdx} = Mrow2myRow(U_row);
+%         m_V{vIdx} = Mrow2myRow(V_row);
+%         bar_d(vIdx) = Pnt_d;
+%     else
+%         m_U{vIdx} = [vIdx, 1];
+%         m_V{vIdx} = [vIdx, 1];
+%     end
+% end
+% toc;
+
+% load('m_U_m_V.mat', 'm_U', 'm_V');
+tic;
+disp('Transfroming m_U and m_V from sparse to full version');
+for vIdx = 1: 1: N_v
+    % m_U{vIdx} = full( m_U{vIdx} );
+    m_V{vIdx} = full( m_V{vIdx} );
 end
 toc;
-
-save('m_U_m_V.mat', 'm_U', 'm_V');
 
 M_U   = sparse(N_v, N_v);
 M_V   = sparse(N_v, N_v);

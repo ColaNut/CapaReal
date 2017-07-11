@@ -5,9 +5,9 @@ function OneSideH_XZ = calH_2( vIdx1, vIdx2, vIdx3, vIdx4, G1, G234, A, Vertex_C
 
     % determine P1, P2, P3 and P4 
     v1Table = G1;
-    v2Table = G234(1, :);
-    v3Table = G234(2, :);
-    v4Table = G234(3, :);
+    v2Table = G234(:, 1);
+    v3Table = G234(:, 2);
+    v4Table = G234(:, 3);
 
     vIdxSet = [vIdx1, vIdx2, vIdx3, vIdx4];
     % the following find should appreas once in each entry
@@ -31,11 +31,11 @@ function OneSideH_XZ = calH_2( vIdx1, vIdx2, vIdx3, vIdx4, G1, G234, A, Vertex_C
     P3 = vIdxSet( vIdxSet_permute(3) );
     P4 = vIdxSet( vIdxSet_permute(4) );
 
-    G4Row = vertcat(v1Table, v2Table, v3Table, v4Table);
-    P1_table = G4Row( vIdxSet_permute(1), : );
-    P2_table = G4Row( vIdxSet_permute(2), : );
-    P3_table = G4Row( vIdxSet_permute(3), : );
-    P4_table = G4Row( vIdxSet_permute(4), : );
+    G4Col = horzcat(v1Table, v2Table, v3Table, v4Table);
+    P1_table = G4Col( :, vIdxSet_permute(1) );
+    P2_table = G4Col( :, vIdxSet_permute(2) );
+    P3_table = G4Col( :, vIdxSet_permute(3) );
+    P4_table = G4Col( :, vIdxSet_permute(4) );
 
     % get the corresponding P1_Crdt, P2_Crdt, P3_Crdt and P4_Crdt
     nVarargs = length(varargin);
@@ -108,36 +108,36 @@ end
         % OneSideH_XZ = ( tmp_curl_W' * A(six_eIdx) ) / ( 3 * TtrVol * mu_r(medVal) );
     % end
 
-    % original H_XZ
-    OneSideH_XZ = ( tmp_curl_W' * A(six_eIdx) ) / ( 3 * TtrVol * mu_r(medVal) );
+    % % original H_XZ
+    % OneSideH_XZ = ( tmp_curl_W' * A(six_eIdx) ) / ( 3 * TtrVol * mu_r(medVal) );
 
-    % % test for E field
-    % switch InnExtText
-    %     case 'inn'
-    %         nabla(1, :) = calTriVec( P2_Crdt, P3_Crdt, P4_Crdt );
-    %         nabla(2, :) = calTriVec( P3_Crdt, P1_Crdt, P4_Crdt );
-    %         nabla(3, :) = calTriVec( P4_Crdt, P1_Crdt, P2_Crdt );
-    %         nabla(4, :) = calTriVec( P2_Crdt, P1_Crdt, P3_Crdt );
-    %     case 'ext'
-    %         nabla(1, :) = calTriVec( P2_Crdt, P4_Crdt, P3_Crdt );
-    %         nabla(2, :) = calTriVec( P4_Crdt, P1_Crdt, P3_Crdt );
-    %         nabla(3, :) = calTriVec( P4_Crdt, P2_Crdt, P1_Crdt );
-    %         nabla(4, :) = calTriVec( P3_Crdt, P1_Crdt, P2_Crdt );
-    %     otherwise
-    %         error('check');
-    % end
+    % test for E field
+    switch InnExtText
+        case 'inn'
+            nabla(1, :) = calTriVec( P2_Crdt, P3_Crdt, P4_Crdt );
+            nabla(2, :) = calTriVec( P3_Crdt, P1_Crdt, P4_Crdt );
+            nabla(3, :) = calTriVec( P4_Crdt, P1_Crdt, P2_Crdt );
+            nabla(4, :) = calTriVec( P2_Crdt, P1_Crdt, P3_Crdt );
+        case 'ext'
+            nabla(1, :) = calTriVec( P2_Crdt, P4_Crdt, P3_Crdt );
+            nabla(2, :) = calTriVec( P4_Crdt, P1_Crdt, P3_Crdt );
+            nabla(3, :) = calTriVec( P4_Crdt, P2_Crdt, P1_Crdt );
+            nabla(4, :) = calTriVec( P3_Crdt, P1_Crdt, P2_Crdt );
+        otherwise
+            error('check');
+    end
 
-    % GradDiff = zeros(6, 3);
-    % GradDiff(1, :) = nabla(2, :) - nabla(1, :);
-    % GradDiff(2, :) = nabla(3, :) - nabla(1, :);
-    % GradDiff(3, :) = nabla(4, :) - nabla(1, :);
-    % GradDiff(4, :) = nabla(3, :) - nabla(2, :);
-    % GradDiff(5, :) = nabla(4, :) - nabla(2, :);
-    % GradDiff(6, :) = nabla(4, :) - nabla(3, :);
+    GradDiff = zeros(6, 3);
+    GradDiff(1, :) = nabla(2, :) - nabla(1, :);
+    GradDiff(2, :) = nabla(3, :) - nabla(1, :);
+    GradDiff(3, :) = nabla(4, :) - nabla(1, :);
+    GradDiff(4, :) = nabla(3, :) - nabla(2, :);
+    GradDiff(5, :) = nabla(4, :) - nabla(2, :);
+    GradDiff(6, :) = nabla(4, :) - nabla(3, :);
 
-    % % OneSideH_XZ = zeros(3, 1);
+    % OneSideH_XZ = zeros(3, 1);
     % Mu_0          = 4 * pi * 10^(-7);
-    % % the 1 / 2 is contributed by lambda in the middle point.
-    % OneSideH_XZ = Mu_0 * ( tmp_curl_W' * A(six_eIdx) ) / ( 3 * TtrVol * 2 );
+    % the 1 / 2 is contributed by lambda in the middle point.
+    OneSideH_XZ = ( GradDiff' * A(six_eIdx) ) / ( 3 * TtrVol * 2 );
 
 end

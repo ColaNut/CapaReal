@@ -7,8 +7,6 @@ function Pnt_d = filld( p1234, Vrtx_bndry, Pnt_d, ...
     % === % Filling of U % === %
     % === % ============ % === %
 
-    % calculation of lamdaM_lmdaN_V
-    lamdaM_lmdaN_V = zeros(1, 4);
     % get the vol
     m_v   = zeros(1, 4);
     n_v   = zeros(1, 4);
@@ -78,46 +76,8 @@ function Pnt_d = filld( p1234, Vrtx_bndry, Pnt_d, ...
     end
 
     if unRelatedNode ~= 0
-        maskWeight = [2, 1, 1, 1];
-        maskWeight(unRelatedNode) = 0;
-        lamdaM_lmdaN_S1 = maskWeight * alpha * sqrt( 1 + (A_1 / A_3)^2 + (A_2 / A_3)^2 ) * projArea / 12;
-        U_row(p1234) = U_row(p1234) + 0.5 * lamdaM_lmdaN_S1;
-        V_row(p1234) = V_row(p1234) - 0.5 * lamdaM_lmdaN_S1;
         Pnt_d = Pnt_d + alpha * ( T_bolus - T_blood ) * sqrt( 1 + (A_1 / A_3)^2 + (A_2 / A_3)^2 ) * projArea / 3;
     end
-
-    % calculation of nabla_lamdaM_cdot_nabla_lamdaN
-    nabla_lamdaM_cdot_nabla_lamdaN = zeros(1, 4);
-
-    % determine the InnExtText 
-    InnExtText = '';
-    if dot( cross( P3_Crdt - P2_Crdt, P4_Crdt - P2_Crdt ), P1_Crdt - (P2_Crdt + P3_Crdt + P4_Crdt) / 3 ) > 0
-        InnExtText = 'inn';
-    elseif dot( cross( P3_Crdt - P2_Crdt, P4_Crdt - P2_Crdt ), P1_Crdt - (P2_Crdt + P3_Crdt + P4_Crdt) / 3 ) < 0
-        InnExtText = 'ext';
-    else
-        error('Check the P1, P2, P3 and P4 Crdnt');
-    end
-
-    nabla = zeros(4, 3);
-    switch InnExtText
-        case 'inn'
-            nabla(1, :) = calTriVec( P2_Crdt, P3_Crdt, P4_Crdt );
-            nabla(2, :) = calTriVec( P3_Crdt, P1_Crdt, P4_Crdt );
-            nabla(3, :) = calTriVec( P4_Crdt, P1_Crdt, P2_Crdt );
-            nabla(4, :) = calTriVec( P2_Crdt, P1_Crdt, P3_Crdt );
-        case 'ext'
-            nabla(1, :) = calTriVec( P2_Crdt, P4_Crdt, P3_Crdt );
-            nabla(2, :) = calTriVec( P4_Crdt, P1_Crdt, P3_Crdt );
-            nabla(3, :) = calTriVec( P4_Crdt, P2_Crdt, P1_Crdt );
-            nabla(4, :) = calTriVec( P3_Crdt, P1_Crdt, P2_Crdt );
-        otherwise
-            error('check');
-    end
-
-    nabla_lamdaM_cdot_nabla_lamdaN = zeta * dot( repmat(nabla(1, :), 4, 1), nabla, 2 )' / ( 9 * TtrVol );
-    U_row(p1234) = U_row(p1234) + 0.5 * nabla_lamdaM_cdot_nabla_lamdaN;
-    V_row(p1234) = V_row(p1234) - 0.5 * nabla_lamdaM_cdot_nabla_lamdaN;
 
     Pnt_d = Pnt_d + Q_s * TtrVol / 4;
     % Pnt_d = Pnt_d + ( Q_s + xi * rho * rho_b * cap_b * T_blood ) * TtrVol / 4;

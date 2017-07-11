@@ -16,7 +16,7 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
     n_v = 2 * n - 1;
     ell_v = 2 * ell - 1;
     p0_v = ( ell_v - 1 ) * x_max_vertex * y_max_vertex + ( n_v - 1 ) * x_max_vertex + m_v;
-    bar_x_my_gmres_mod(idx) = bar_x_my_gmres(p0_v);
+    bar_x_my_gmres_mod(idx) = bar_x_my_gmresPhi(p0_v);
 end
 
 Phi = zeros( x_idx_max, y_idx_max, z_idx_max );
@@ -115,4 +115,4 @@ Current = sigma(2) * Current
 
 W = V_0 * conj(Current) / 2
 
-save( strcat(fname, '\', CaseName, 'currentEst.mat'), 'Current', 'W' );
+% save( strcat(fname, '\', CaseName, 'currentEst.mat'), 'Current', 'W' );

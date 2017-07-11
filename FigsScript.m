@@ -10,10 +10,10 @@ if PhiSAR_flag == 1
     % load( strcat('e:\Kevin\CapaReal\Case0220_1cmFat', '\', CaseName, '.mat') );
     % load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0503_PHI_enhance\0502_PHI.mat');
     flag_XZ = 1;
-    flag_XY = 0;
-    flag_YZ = 0;
+    flag_XY = 1;
+    flag_YZ = 1;
 
-    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0706EQS_FullWave';
+    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0708EQS_FullWave';
     % % fname = 'e:\Kevin\CapaReal\Case0220_1cmFat';
     % CaseDate = 'Case0622_PHI_enhancex';
     CaseName = 'Power300';

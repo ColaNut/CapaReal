@@ -353,14 +353,14 @@
 % % === % ============== % === %
 
 % tol = 1e-6;
-% ext_itr_num = 10;
-% int_itr_num = 50;
+% ext_itr_num = 5;
+% int_itr_num = 20;
 
 % bar_x_my_gmres = zeros(size(B_phi));
 % M_S = mySparse2MatlabSparse( sparseS, N_v, N_v, 'Row' );
 % tic;
 % disp('Calculation time of iLU: ')
-% [ L_S, U_S ] = ilu( M_S, struct('type', 'ilutp', 'droptol', 1e-3) );
+% [ L_S, U_S ] = ilu( M_S, struct('type', 'ilutp', 'droptol', 1e-2) );
 % toc;
 % tic;
 % disp('The gmres solutin of M_S x = B_phi: ');
@@ -368,146 +368,145 @@
 % % bar_x_my_gmres = my_gmres( sparseS, B_phi, int_itr_num, tol, ext_itr_num );
 % toc;
 
-load( strcat(fname, '\', CaseName, '.mat') );
+% return;
 
-% % === === === === === === === === % ========== % === === === === === === === === %
-% % === === === === === === === === % K part (1) % === === === === === === === === %
-% % === === === === === === === === % ========== % === === === === === === === === %
+% % % === === === === === === === === % ========== % === === === === === === === === %
+% % % === === === === === === === === % K part (1) % === === === === === === === === %
+% % % === === === === === === === === % ========== % === === === === === === === === %
 
-Vrtx_bndry = zeros( x_max_vertex, y_max_vertex, z_max_vertex, 'uint8');
-%  2: computational domain boundary
-n_far  = y_idx_max - 1;
-n_near = 2;
-for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
-    [ m_v, n_v, ell_v ] = getMNL(vIdx, x_max_vertex, y_max_vertex, z_max_vertex);
-    borderFlag = getBorderFlag(m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex);
-    if my_F(borderFlag, 1)
-        Vrtx_bndry(m_v, n_v, ell_v) = 2;
-    end
-end
+% Vrtx_bndry = zeros( x_max_vertex, y_max_vertex, z_max_vertex, 'uint8');
+% %  2: computational domain boundary
+% n_far  = y_idx_max - 1;
+% n_near = 2;
+% for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
+%     [ m_v, n_v, ell_v ] = getMNL(vIdx, x_max_vertex, y_max_vertex, z_max_vertex);
+%     borderFlag = getBorderFlag(m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex);
+%     if my_F(borderFlag, 1)
+%         Vrtx_bndry(m_v, n_v, ell_v) = 2;
+%     end
+% end
 
-Bls_bndry = zeros( x_max_vertex, y_max_vertex, z_max_vertex );
-% 13: bolus-muscle boundary
-BM_bndryNum = 13;
-for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
-    [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
-    if n >= n_near && n <= n_far && mediumTable(m, n, ell) == BM_bndryNum
-        m_v = 2 * m - 1;
-        n_v = 2 * n - 1;
-        ell_v = 2 * ell - 1;
-        Bls_bndry(m_v - 1: m_v + 1, n_v - 1: n_v + 1, ell_v - 1: ell_v + 1) ...
-            = getSheetPnts(m, n, ell, x_idx_max, y_idx_max, shiftedCoordinateXYZ, mediumTable, ...
-                Bls_bndry(m_v - 1: m_v + 1, n_v - 1: n_v + 1, ell_v - 1: ell_v + 1), BM_bndryNum );
-    end
-end
-Bls_bndry(:, 1, :) = Bls_bndry(:, 2, :);
-Bls_bndry(:, end, :) = Bls_bndry(:, end - 1, :);
+% Bls_bndry = zeros( x_max_vertex, y_max_vertex, z_max_vertex );
+% % 13: bolus-muscle boundary
+% BM_bndryNum = 13;
+% for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+%     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
+%     if n >= n_near && n <= n_far && mediumTable(m, n, ell) == BM_bndryNum
+%         m_v = 2 * m - 1;
+%         n_v = 2 * n - 1;
+%         ell_v = 2 * ell - 1;
+%         Bls_bndry(m_v - 1: m_v + 1, n_v - 1: n_v + 1, ell_v - 1: ell_v + 1) ...
+%             = getSheetPnts(m, n, ell, x_idx_max, y_idx_max, shiftedCoordinateXYZ, mediumTable, ...
+%                 Bls_bndry(m_v - 1: m_v + 1, n_v - 1: n_v + 1, ell_v - 1: ell_v + 1), BM_bndryNum );
+%     end
+% end
+% Bls_bndry(:, 1, :) = Bls_bndry(:, 2, :);
+% Bls_bndry(:, end, :) = Bls_bndry(:, end - 1, :);
 
-% check if tetRow is valid in the filling of Bk ?
-% the following code may be incorporated into getPntMedTetTable
-SigmaE = zeros(x_idx_max, y_idx_max, z_idx_max, 6, 8, 3);
-Q_s    = zeros(x_idx_max, y_idx_max, z_idx_max, 6, 8);
-tic;
-disp('calclation time of SigmeE and Q_s');
-for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
-    [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
-    m_v = 2 * m - 1;
-    n_v = 2 * n - 1;
-    ell_v = 2 * ell - 1;
-    Phi27 = zeros(3, 9);
-    PntsIdx      = zeros( 3, 9 );
-    PntsCrdnt    = zeros( 3, 9, 3 );
-    % PntsIdx in get27Pnts_prm act as an tmp acceptor; updated to real PntsIdx in get27Pnts_KEV
-    [ PntsIdx, PntsCrdnt ] = get27Pnts_prm( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt );
-    PntsIdx = get27Pnts_KEV( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt );
-    Phi27 = bar_x_my_gmresPhi(PntsIdx);
+% % check if tetRow is valid in the filling of Bk ?
+% % the following code may be incorporated into getPntMedTetTable
+% SigmaE = zeros(x_idx_max, y_idx_max, z_idx_max, 6, 8, 3);
+% Q_s    = zeros(x_idx_max, y_idx_max, z_idx_max, 6, 8);
+% tic;
+% disp('calclation time of SigmeE and Q_s');
+% for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+%     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
+%     m_v = 2 * m - 1;
+%     n_v = 2 * n - 1;
+%     ell_v = 2 * ell - 1;
+%     Phi27 = zeros(3, 9);
+%     PntsIdx      = zeros( 3, 9 );
+%     PntsCrdnt    = zeros( 3, 9, 3 );
+%     % PntsIdx in get27Pnts_prm act as an tmp acceptor; updated to real PntsIdx in get27Pnts_KEV
+%     [ PntsIdx, PntsCrdnt ] = get27Pnts_prm( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt );
+%     PntsIdx = get27Pnts_KEV( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt );
+%     Phi27 = bar_x_my_gmresPhi(PntsIdx);
 
-    [ SigmaE(m, n, ell, :, :, :), Q_s(m, n, ell, :, :) ] = getSigmaE( Phi27, PntsCrdnt, squeeze( SegMed(m, n, ell, :, :) ), sigma, j * Omega_0 * Epsilon_0 * epsilon_r_pre );
-end
-toc;
+%     [ SigmaE(m, n, ell, :, :, :), Q_s(m, n, ell, :, :) ] = getSigmaE( Phi27, PntsCrdnt, squeeze( SegMed(m, n, ell, :, :) ), sigma, j * Omega_0 * Epsilon_0 * epsilon_r_pre );
+% end
+% toc;
 
-% === % ==================================== % === %
-% === % Trimming: Invalid set to 30 (byndCD) % === %
-% === % ==================================== % === % 
+% % === % ==================================== % === %
+% % === % Trimming: Invalid set to 30 (byndCD) % === %
+% % === % ==================================== % === % 
 
-for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
-    [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
-    if ell == z_idx_max
-        SegMed(m, n, ell, :, :) = trimUp( squeeze( SegMed(m, n, ell, :, :) ), byndCD );
-    end
-    if ell == 1
-        SegMed(m, n, ell, :, :) = trimDown( squeeze( SegMed(m, n, ell, :, :) ), byndCD );
-    end
-    if m   == 1
-        SegMed(m, n, ell, :, :) = trimLeft( squeeze( SegMed(m, n, ell, :, :) ), byndCD );
-    end
-    if m   == x_idx_max
-        SegMed(m, n, ell, :, :) = trimRight( squeeze( SegMed(m, n, ell, :, :) ), byndCD );
-    end
-    if n   == y_idx_max
-        SegMed(m, n, ell, :, :) = trimFar( squeeze( SegMed(m, n, ell, :, :) ), byndCD );
-    end
-    if n   == 1
-        SegMed(m, n, ell, :, :) = trimNear( squeeze( SegMed(m, n, ell, :, :) ), byndCD );
-    end
-end
+% for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+%     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
+%     if ell == z_idx_max
+%         SegMed(m, n, ell, :, :) = trimUp( squeeze( SegMed(m, n, ell, :, :) ), byndCD );
+%     end
+%     if ell == 1
+%         SegMed(m, n, ell, :, :) = trimDown( squeeze( SegMed(m, n, ell, :, :) ), byndCD );
+%     end
+%     if m   == 1
+%         SegMed(m, n, ell, :, :) = trimLeft( squeeze( SegMed(m, n, ell, :, :) ), byndCD );
+%     end
+%     if m   == x_idx_max
+%         SegMed(m, n, ell, :, :) = trimRight( squeeze( SegMed(m, n, ell, :, :) ), byndCD );
+%     end
+%     if n   == y_idx_max
+%         SegMed(m, n, ell, :, :) = trimFar( squeeze( SegMed(m, n, ell, :, :) ), byndCD );
+%     end
+%     if n   == 1
+%         SegMed(m, n, ell, :, :) = trimNear( squeeze( SegMed(m, n, ell, :, :) ), byndCD );
+%     end
+% end
 
-% === % ========================================================== % === %
-% === % Conducting Current Assignment and MedTetTable Construction % === %
-% === % ========================================================== % === % 
+% % === % ========================================================== % === %
+% % === % Conducting Current Assignment and MedTetTable Construction % === %
+% % === % ========================================================== % === % 
 
-tic;
-disp('Assigning each tetrahdron with a conducting current');
-J_xyz            = zeros(0, 3);
-Q_s_Vector       = zeros(0, 1);
-MedTetTableCell  = cell(0, 1);
-% rearrange SigmaE and Q_s; construct the MedTetTableCell
-for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
-    [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
-    m_v = 2 * m - 1;
-    n_v = 2 * n - 1;
-    ell_v = 2 * ell - 1;
+% tic;
+% disp('Assigning each tetrahdron with a conducting current');
+% J_xyz            = zeros(0, 3);
+% Q_s_Vector       = zeros(0, 1);
+% % rearrange SigmaE and Q_s; construct the MedTetTableCell
+% for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+%     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
+%     m_v = 2 * m - 1;
+%     n_v = 2 * n - 1;
+%     ell_v = 2 * ell - 1;
 
-    PntQ_s          = zeros(48, 1);
-    % rearrange (6, 8, 3) to (48, 3);
-    tmp = zeros(8, 6);
-    tmp = squeeze(Q_s(m, n, ell, :, :))';
-    PntQ_s = tmp(:);
-    validTet = find( squeeze( SegMed(m, n, ell, :, :) )' ~= byndCD );
-    % set a inf and nan checker for PntTetTable_Ix, PntTetTable_Iy and PntTetTable_Iz
-    % start from here: the temperature is getting lower, and the Q_s and J_xyz is in the order 0.35 and 0.002, respectively.
-    Q_s_Vector   = vertcat(Q_s_Vector, PntQ_s(validTet));
+%     PntQ_s          = zeros(48, 1);
+%     % rearrange (6, 8, 3) to (48, 3);
+%     tmp = zeros(8, 6);
+%     tmp = squeeze(Q_s(m, n, ell, :, :))';
+%     PntQ_s = tmp(:);
+%     validTet = find( squeeze( SegMed(m, n, ell, :, :) )' ~= byndCD );
+%     % set a inf and nan checker for PntTetTable_Ix, PntTetTable_Iy and PntTetTable_Iz
+%     % start from here: the temperature is getting lower, and the Q_s and J_xyz is in the order 0.35 and 0.002, respectively.
+%     Q_s_Vector   = vertcat(Q_s_Vector, PntQ_s(validTet));
 
-    if V_0 == 86.26
-        PntJ_xyz        = zeros(48, 3);
-        tmp = zeros(8, 6);
-        tmp = squeeze( SigmaE(m, n, ell, :, :, 1) )';
-        PntJ_xyz(:, 1) = tmp(:);
-        tmp = squeeze( SigmaE(m, n, ell, :, :, 2) )';
-        PntJ_xyz(:, 2) = tmp(:);
-        tmp = squeeze( SigmaE(m, n, ell, :, :, 3) )';
-        PntJ_xyz(:, 3) = tmp(:);
-        J_xyz        = vertcat(J_xyz, PntJ_xyz(validTet, :));
-    end
-end
-toc;
+%     if V_0 == 86.26
+%         PntJ_xyz        = zeros(48, 3);
+%         tmp = zeros(8, 6);
+%         tmp = squeeze( SigmaE(m, n, ell, :, :, 1) )';
+%         PntJ_xyz(:, 1) = tmp(:);
+%         tmp = squeeze( SigmaE(m, n, ell, :, :, 2) )';
+%         PntJ_xyz(:, 2) = tmp(:);
+%         tmp = squeeze( SigmaE(m, n, ell, :, :, 3) )';
+%         PntJ_xyz(:, 3) = tmp(:);
+%         J_xyz        = vertcat(J_xyz, PntJ_xyz(validTet, :));
+%     end
+% end
+% toc;
 
-validNum = 48 * x_idx_max * y_idx_max * z_idx_max - 24 * (x_idx_max * y_idx_max + y_idx_max * z_idx_max + x_idx_max * z_idx_max) * 2 ...
-                + 12 * (x_idx_max + y_idx_max + z_idx_max) * 4 - 48;
+% validNum = 48 * x_idx_max * y_idx_max * z_idx_max - 24 * (x_idx_max * y_idx_max + y_idx_max * z_idx_max + x_idx_max * z_idx_max) * 2 ...
+%                 + 12 * (x_idx_max + y_idx_max + z_idx_max) * 4 - 48;
 
-if size(Q_s_Vector, 1) ~= validNum
-    error('check the construction');
-end
+% if size(Q_s_Vector, 1) ~= validNum
+%     error('check the construction');
+% end
 
-load('0710_2cmBolus_MedTetTableCell.mat');
+% load('0707v1.mat', 'MedTetTableCell');
 
-MedTetTable = sparse(validNum, N_v);
-tic;
-disp('Transfroming MedTetTable from my_sparse to Matlab sparse matrix')
-MedTetTable = mySparse2MatlabSparse( MedTetTableCell, validNum, N_v, 'Row' );
-toc;
+% MedTetTable = sparse(validNum, N_v);
+% tic;
+% disp('Transfroming MedTetTable from my_sparse to Matlab sparse matrix')
+% MedTetTable = mySparse2MatlabSparse( MedTetTableCell, validNum, N_v, 'Row' );
+% toc;
 
-dt = 15; % 15 seconds
+dt = 20; % 20 seconds
 % timeNum_all = 60; % 1 minutes
 % timeNum_all = 50 * 60; % 50 minutes
 loadThermalParas;
@@ -530,6 +529,8 @@ parfor vIdx = 1: 1: N_v
         % MedVal = MedTetTable( CandiTet(itr), v1234(1) );
         % this judgement below is based on the current test case
         if MedVal >= 3 && MedVal <= 9
+            %               %  air,  bolus, muscle, lung, tumor, bone, fat
+            % Q_met          = [ 0,      0,   4200, 1700,  8000,  0,   5 ]';
             if MedTetTable( CandiTet(itr), v1234(1) ) ~= MedTetTable( CandiTet(itr), v1234(2) )
                 error('check');
             end
