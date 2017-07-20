@@ -1,24 +1,30 @@
-% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0711K1\E1_XZ.mat');
-% % H_XZ = zeros(x_idx_max, z_idx_max, 6, 8, 3); 
-% E_oneXZ = H_XZ;
-% tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1;
+clc; clear;
+fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0715';
+CaseName = 'Power300';
+load( strcat(fname, '\BasicParameters.mat') );
+load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0715\0715K1.mat', 'H_XZ');
+% H_XZ = zeros(x_idx_max, z_idx_max, 6, 8, 3); 
+E_oneXZ = H_XZ;
+tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1;
 
-% E_oneXZabs = zeros(x_idx_max, z_idx_max, 6, 8);
-% for m_idx = 1: 1: x_idx_max
-%     for n_idx = 1: 1: z_idx_max
-%         for f_idx = 1: 1: 6
-%             for t_idx = 1: 1: 8
-%                 E_oneXZabs(m_idx, n_idx, f_idx, t_idx) = norm( squeeze(E_oneXZ(m_idx, n_idx, f_idx, t_idx, :)) );
-%             end
-%         end
-%     end
-% end
+E_oneXZabs = zeros(x_idx_max, z_idx_max, 6, 8);
+for m_idx = 1: 1: x_idx_max
+    for n_idx = 1: 1: z_idx_max
+        for f_idx = 1: 1: 6
+            for t_idx = 1: 1: 8
+                E_oneXZabs(m_idx, n_idx, f_idx, t_idx) = norm( squeeze(E_oneXZ(m_idx, n_idx, f_idx, t_idx, :)) );
+            end
+        end
+    end
+end
 
-figure(9);
+figure(8);
 clf;
 % plot SAR XZ
 myRange = [ 1e-1, 1e4 ];
 caxis(myRange);
+axis equal;
+axis( [ - 20, 20, - 15, 15 ] );
 cbar = colorbar('peer', gca, 'Yscale', 'log');
 set(gca, 'Visible', 'off')
 log_axes = axes('Position', get(gca, 'Position'));
@@ -61,7 +67,7 @@ paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
 plotMap( paras2dXZ, dx, dz );
 plotRibXZ(Ribs, SSBone, dx, dz);
 % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-saveas(figure(9), 'E_1_XZ_EQS.jpg');
+saveas(figure(8), fullfile(fname, strcat(CaseName, 'E_1_XZ_EQS')), 'jpg');
 % saveas(figure(9), 'E_XZ_FullWave.jpg');
 % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
 

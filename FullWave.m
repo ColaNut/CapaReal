@@ -3,6 +3,7 @@
 % === === === === === === === === ===  % ====== % === === === === === === === === === %
 
 % the testing function include: getRoughMed_Test, PutOnTopElctrd_TestCase and PutOnDwnElctrd_TestCase.
+% the calculation of fillUVd, fillK_FW, 
 
 % === % ========================================= % === %
 % === % Construction of coordinate and grid shift % === %
@@ -19,7 +20,7 @@ V_0           = 86.26;
 % parameters
 % rho           = [ 1,  1020,  1020,  1050, 1040 ]';
               % [ air, bolus, muscle, lung,  tumor,  bone,   fat ]';
-rho           = [   1,  1020,   1020, 242.6,  1040,  1790,   900 ]';
+rho           = [   1,  1020,   1020, 242.6,  697,  1790,   900 ]';
 % epsilon_r_pre = [ 1, 113.0,   184, 264.9,  402,    7.3]';
 % sigma         = [ 0,  0.61, 0.685,  0.42, 0.68, 0.028 ]';
 epsilon_r_pre = [   1, 113.0,    113, 264.9,   402,   7.3,    20 ]';
@@ -336,10 +337,38 @@ toc;
 
 % put on electrodes
 y_mid = ( h_torso / ( 2 * dy ) ) + 1;
-[ sparseS, B_phi ] = PutOnTopElctrd( sparseS, B_phi, V_0, squeeze(mediumTable(:, y_mid, :)), tumor_x, tumor_y, ...
-                        dx, dy, dz, air_x, air_z, h_torso, x_max_vertex, y_max_vertex );
+BndryTable = zeros( x_max_vertex, y_max_vertex, z_max_vertex );
+% 19: position of top-electrode
+TpElctrdPos = 19;
+[ sparseS, B_phi, BndryTable ] = PutOnTopElctrd( sparseS, B_phi, V_0, squeeze(mediumTable(:, y_mid, :)), tumor_x, tumor_y, ...
+                        dx, dy, dz, air_x, air_z, h_torso, x_max_vertex, y_max_vertex, z_max_vertex, BndryTable, TpElctrdPos );
 sparseS = PutOnDwnElctrd( sparseS, squeeze(mediumTable(:, y_mid, :)), tumor_x, tumor_y, ...
                         dx, dy, dz, air_x, air_z, h_torso, x_max_vertex, y_max_vertex );
+
+% % extend the BndryTable
+% tumor_m   = tumor_x / dx + air_x / (2 * dx) + 1;
+% tumor_n   = tumor_y / dy + h_torso / (2 * dy) + 1;
+% tumor_ell = tumor_z / dz + air_z / (2 * dz) + 1;
+% tumor_m_v    = 2 * tumor_m - 1;
+% tumor_n_v    = 2 * tumor_n - 1;
+% tumor_ell_v  = 2 * tumor_ell - 1;
+
+% % implement FirstIdx and LastIdx
+% TumorXZ = squeeze(BndryTable(:, tumor_n_v, :));
+% [ m_1, ell_1 ] = getML(find(TumorXZ, 1), x_max_vertex);
+% [ m_end, ell_end ] = getML(find(TumorXZ, 1, 'last'), x_max_vertex);
+% BndryTable(m_1 - 1, tumor_n_v, ell_1 - 1) = TpElctrdPos;
+% BndryTable(m_end + 1, tumor_n_v, ell_end) = TpElctrdPos;
+
+% % implement First_ElectrodeYIdx and Last_ElectrodeYIdx
+% [ n_1, ell_tmp1 ] = getML( find( squeeze(BndryTable(tumor_m_v, :, :)), 1 ), y_max_vertex );
+% [ n_end, ell_tmp2 ] = getML( find( squeeze(BndryTable(tumor_m_v, :, :)), 1, 'last' ), y_max_vertex );
+% if ell_tmp1 ~= ell_tmp2
+%     error('check the input index of getML');
+% end
+% for y_idx = n_1 - 1: 1: n_end + 1
+%     BndryTable(:, y_idx, :) = BndryTable(:, tumor_n_v, :);
+% end
 
 % Normalize each rows
 for idx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
@@ -391,7 +420,6 @@ for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
     end
 end
 
-Bls_bndry = zeros( x_max_vertex, y_max_vertex, z_max_vertex );
 % 13: bolus-muscle boundary
 BM_bndryNum = 13;
 for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
@@ -400,13 +428,13 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
         m_v = 2 * m - 1;
         n_v = 2 * n - 1;
         ell_v = 2 * ell - 1;
-        Bls_bndry(m_v - 1: m_v + 1, n_v - 1: n_v + 1, ell_v - 1: ell_v + 1) ...
+        BndryTable(m_v - 1: m_v + 1, n_v - 1: n_v + 1, ell_v - 1: ell_v + 1) ...
             = getSheetPnts(m, n, ell, x_idx_max, y_idx_max, shiftedCoordinateXYZ, mediumTable, ...
-                Bls_bndry(m_v - 1: m_v + 1, n_v - 1: n_v + 1, ell_v - 1: ell_v + 1), BM_bndryNum );
+                BndryTable(m_v - 1: m_v + 1, n_v - 1: n_v + 1, ell_v - 1: ell_v + 1), BM_bndryNum );
     end
 end
-Bls_bndry(:, 1, :) = Bls_bndry(:, 2, :);
-Bls_bndry(:, end, :) = Bls_bndry(:, end - 1, :);
+BndryTable(:, 1, :) = BndryTable(:, 2, :);
+BndryTable(:, end, :) = BndryTable(:, end - 1, :);
 
 % check if tetRow is valid in the filling of Bk ?
 % the following code may be incorporated into getPntMedTetTable
@@ -549,7 +577,7 @@ parfor vIdx = 1: 1: N_v
             end
             % check the validity of Q_s_Vector input.
             p1234 = horzcat( v1234(find(v1234 == vIdx)), v1234(find(v1234 ~= vIdx)));
-            [ U_row, V_row, Pnt_d ] = fillUVd( p1234, Bls_bndry, U_row, V_row, Pnt_d, ...
+            [ U_row, V_row, Pnt_d ] = fillUVd( p1234, BndryTable, U_row, V_row, Pnt_d, ...
                         dt, Q_s_Vector(CandiTet(itr)) + Q_met(MedVal), rho(MedVal), xi(MedVal), zeta(MedVal), cap(MedVal), rho_b, cap_b, alpha, T_blood, T_bolus, ...
                         x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt, BM_bndryNum );
         end

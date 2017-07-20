@@ -1,10 +1,22 @@
+clc; clear;
+fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0715';
+EQS_Flag = 0;
+FullWave_Flag = 1;
+if EQS_Flag
+    CaseName = 'Power300';
+elseif FullWave_Flag
+    CaseName = '0715FullWavePhi';
+end
+load( strcat(fname, '\', CaseName, '.mat'), 'bar_x_my_gmresPhi' );
+load( strcat(fname, '\BasicParameters.mat') );
+
 E_zeroXZ = zeros(x_idx_max, z_idx_max, 6, 8, 3);
 tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1;
 % tumor_n    = int64( h_torso / (2 * dy) + 1 );
 tic;
 for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
-    if n == tumor_n
+    if n == tumor_n && m >= 2 && m <= x_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1
         m_v = 2 * m - 1;
         n_v = 2 * n - 1;
         ell_v = 2 * ell - 1;
@@ -15,7 +27,6 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
         [ PntsIdx, PntsCrdnt ] = get27Pnts_prm( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt );
         PntsIdx = get27Pnts_KEV( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt );
         Phi27 = bar_x_my_gmresPhi(PntsIdx);
-
         E_zeroXZ(m, ell, :, :, :) = getSigmaE( Phi27, PntsCrdnt, squeeze( SegMed(m, n, ell, :, :) ), ones(size(sigma)), zeros(size(sigma)) );
     end
 end
@@ -42,8 +53,11 @@ caxis(myRange);
 cbar = colorbar('peer', gca, 'Yscale', 'log');
 set(gca, 'Visible', 'off')
 log_axes = axes('Position', get(gca, 'Position'));
-ylabel(cbar, '$\Vert \bar{E} \ \Vert$ (V/m)', 'Interpreter','LaTex', 'FontSize', 20);
-% ylabel(cbar, '$\Vert \bar{E}^{(0)} \ \Vert$ (V/m)', 'Interpreter','LaTex', 'FontSize', 20);
+if EQS_Flag
+    ylabel(cbar, '$\Vert \bar{E}^{(0)} \ \Vert$ (V/m)', 'Interpreter','LaTex', 'FontSize', 20);
+elseif FullWave_Flag
+    ylabel(cbar, '$\Vert \bar{E} \ \Vert$ (V/m)', 'Interpreter','LaTex', 'FontSize', 20);
+end
 set(cbar, 'FontSize', 18 );
 
 disp('Time to plot SAR');
@@ -81,7 +95,10 @@ paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
 plotMap( paras2dXZ, dx, dz );
 plotRibXZ(Ribs, SSBone, dx, dz);
 % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-% saveas(figure(9), 'E_0_XZ_EQS.jpg');
-saveas(figure(9), 'E_XZ_FullWave.jpg');
-% saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
+% if EQS_Flag
+%     saveas(figure(9), fullfile(fname, strcat(CaseName, 'E_0_XZ_EQS')), 'jpg');
+% elseif FullWave_Flag
+%     saveas(figure(9), fullfile(fname, 'Power300E_XZ_EQS'), 'jpg');
+% end
+% saveas(figure(9), 'E_XZ_FullWave.jpg');
 

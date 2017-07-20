@@ -1,28 +1,36 @@
-% clc; clear; 
-% fname = 'd:\Kevin\CapaReal\0710';
-% CaseName = 'Power250';
-% V_0 = 78.75;
-% PowerScript;
-% save( strcat(fname, '\', CaseName, '.mat') );
-
-% clc; clear;
-% fname = 'd:\Kevin\CapaReal\0710';
-% CaseName = 'Power280';
-% V_0 = 83.34;
-% PowerScript;
-% save( strcat(fname, '\', CaseName, '.mat') );
-
-% clc; clear;
-% fname = 'd:\Kevin\CapaReal\0710';
-% CaseName = 'Power300';
-% V_0 = 86.26;
-% PowerScript;
-% save( strcat(fname, '\', CaseName, '.mat') );
+clc; clear; 
+fname = 'd:\Kevin\CapaReal\0715';
+CaseName = 'Power250';
+V_0 = 74.18;
+PowerScript;
+save( strcat(fname, '\', CaseName, '.mat') );
+CurrentEst_2;
+save( strcat(fname, '\', CaseName, 'currentEst.mat'), 'Current', 'W' );
 
 clc; clear;
-fname = 'd:\Kevin\CapaReal\0710';
+fname = 'd:\Kevin\CapaReal\0715';
+CaseName = 'Power280';
+V_0 = 78.50;
+PowerScript;
+save( strcat(fname, '\', CaseName, '.mat') );
+CurrentEst_2;
+save( strcat(fname, '\', CaseName, 'currentEst.mat'), 'Current', 'W' );
+
+clc; clear;
+fname = 'd:\Kevin\CapaReal\0715';
+CaseName = 'Power300';
+V_0 = 81.25;
+PowerScript;
+save( strcat(fname, '\', CaseName, '.mat') );
+CurrentEst_2;
+save( strcat(fname, '\', CaseName, 'currentEst.mat'), 'Current', 'W' );
+
+clc; clear;
+tmprtrName = '0715Test';
+fname = 'd:\Kevin\CapaReal\0715';
 CaseName = 'Power250';
 load( strcat(fname, '\', CaseName, '.mat') );
+loadThermalParas;
 dt = 15;
 Duration1 = 5 * 60;
 trans1 = Duration1 / dt;
@@ -74,7 +82,6 @@ parfor vIdx = 1: 1: N_v
     if bioValid
         m_U{vIdx} = Mrow2myRow(U_row);
         m_V{vIdx} = Mrow2myRow(V_row);
-        bar_d(vIdx) = Pnt_d;
     else
         m_U{vIdx} = [vIdx, 1];
         m_V{vIdx} = [vIdx, 1];
@@ -82,7 +89,7 @@ parfor vIdx = 1: 1: N_v
 end
 toc;
 
-save('m_U_m_V.mat', 'm_U', 'm_V');
+save( strcat(fname, '\m_U_m_V_', tmprtrName, '.mat'), 'm_U', 'm_V' );
 
 M_U   = sparse(N_v, N_v);
 M_V   = sparse(N_v, N_v);
@@ -96,31 +103,41 @@ toc;
 % === === === === === === === % Ending of M_U and M_V % === === === === === === === %
 % === === === === === === === % ===================== % === === === === === === === %
 
+tol = 1e-6;
+ext_itr_num = 5;
+int_itr_num = 20;
+gmres_flag = zeros(1, (Duration1 + Duration2 + Duration3) / dt + 1);
+relres = zeros(1, (Duration1 + Duration2 + Duration3) / dt + 1);
+
 tic;
 for idx = 2: 1: trans1
-    bar_b(:, idx) = M_U\(M_V * bar_b(:, idx - 1) + bar_d);
+    [ bar_b(:, idx), gmres_flag(idx), relres(idx) ] = gmres( M_U, (M_V * bar_b(:, idx - 1) + bar_d), int_itr_num, tol, ext_itr_num );
 end
 toc;
 
 pre_bar_d = bar_d;
 CaseName = 'Power280';
-load( strcat(fname, '\', CaseName, '.mat') );
-bar_b(:, trans1 + 1) = M_U\(M_V * bar_b(:, trans1) + (pre_bar_d + bar_d) / 2);
+load( strcat(fname, '\', CaseName, '.mat'), 'bar_d' );
+[ bar_b(:, trans1 + 1), gmres_flag(trans1 + 1), relres(trans1 + 1) ] ...
+    = gmres( M_U, (M_V * bar_b(:, trans1) + (pre_bar_d + bar_d) / 2), int_itr_num, tol, ext_itr_num );
 tic;
 for idx = trans1 + 2: 1: trans2
-    bar_b(:, idx) = M_U\(M_V * bar_b(:, idx - 1) + bar_d);
+    [ bar_b(:, idx), gmres_flag(idx), relres(idx) ] = gmres( M_U, (M_V * bar_b(:, idx - 1) + bar_d), int_itr_num, tol, ext_itr_num );
 end
 toc;
 
 pre_bar_d = bar_d;
 CaseName = 'Power300';
-load( strcat(fname, '\', CaseName, '.mat') );
-bar_b(:, trans2 + 1) = M_U\(M_V * bar_b(:, trans2) + (pre_bar_d + bar_d) / 2);
+load( strcat(fname, '\', CaseName, '.mat'), 'bar_d' );
+[ bar_b(:, trans2 + 1), gmres_flag(trans2 + 1), relres(trans2 + 1) ] ...
+    = gmres( M_U, (M_V * bar_b(:, trans2) + (pre_bar_d + bar_d) / 2), int_itr_num, tol, ext_itr_num );
 tic;
 for idx = trans2 + 2: 1: trans3 + 1
-    bar_b(:, idx) = M_U\(M_V * bar_b(:, idx - 1) + bar_d);
+    [ bar_b(:, idx), gmres_flag(idx), relres(idx) ] = gmres( M_U, (M_V * bar_b(:, idx - 1) + bar_d), int_itr_num, tol, ext_itr_num );
 end
 toc;
+
+save( strcat(fname, '\Tmprtr2cm', tmprtrName, '.mat') );
 
 T_flagXZ = 1;
 T_flagXY = 1;
@@ -128,7 +145,7 @@ T_flagYZ = 1;
 
 T_plot;
 
-return;
+% return;
 % dt = 15;
 % timeNum_1   = 4 * 5;
 % timeNum_2   = 4 * 30;
@@ -136,7 +153,7 @@ return;
 % timeNum_all = timeNum_1 + timeNum_2 + timeNum_3;
 
 % % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0322';
-% fname = 'd:\Kevin\CapaReal\0710';
+% fname = 'd:\Kevin\CapaReal\0715';
 
 % % S = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]';
 % % for idx = 1: 1: length(S)
@@ -185,6 +202,6 @@ return;
 %     TmprtrDis;
 
 %     % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0322';
-%     fname = 'd:\Kevin\CapaReal\0710';
+%     fname = 'd:\Kevin\CapaReal\0715';
 %     save( strcat(fname, '\Case0322.mat') );
 % % end

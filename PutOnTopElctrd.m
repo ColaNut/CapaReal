@@ -1,5 +1,5 @@
-function [ sparseS_1, B_phi ] = PutOnTopElctrd( sparseS_1, B_phi, V_0, mediumTableXZ, tumor_x, tumor_y, dx, dy, dz, ...
-                                        air_x, air_z, h_torso, x_max_vertex, y_max_vertex )
+function [ sparseS_1, B_phi, BndryTable ] = PutOnTopElctrd( sparseS_1, B_phi, V_0, mediumTableXZ, tumor_x, tumor_y, dx, dy, dz, ...
+                                        air_x, air_z, h_torso, x_max_vertex, y_max_vertex, z_max_vertex, BndryTable, TpElctrdPos )
 
 x_0 = tumor_x;
 y_0 = tumor_y;
@@ -14,16 +14,18 @@ for x = x_0 - h_x_half: dx: x_0 + h_x_half
         n = int64(y / dy + h_torso / (2 * dy) + 1);
         ell = find(mediumTableXZ(m, :) == 11, 1, 'last');
         
-        m_vertex = 2 * m - 1;
-        n_vertex = 2 * n - 1;
-        ell_vertex = 2 * ell - 1;
-        p0      = ( ell_vertex - 1 ) * x_max_vertex * y_max_vertex + ( n_vertex - 1 ) * x_max_vertex + m_vertex;
-        p0_back = ( ell_vertex - 1 ) * x_max_vertex * y_max_vertex + ( n_vertex     ) * x_max_vertex + m_vertex;
+        m_v = 2 * m - 1;
+        n_v = 2 * n - 1;
+        ell_v = 2 * ell - 1;
+        p0      = ( ell_v - 1 ) * x_max_vertex * y_max_vertex + ( n_v - 1 ) * x_max_vertex + m_v;
+        p0_back = ( ell_v - 1 ) * x_max_vertex * y_max_vertex + ( n_v     ) * x_max_vertex + m_v;
 
         S_row = zeros(1, 2);
         S_row(1) = p0;
         S_row(2) = 1;
         sparseS_1{ p0 } = S_row;
+        [ m_v_tmp, n_v_tmp, ell_v_tmp ] = getMNL(S_row(1), x_max_vertex, y_max_vertex, z_max_vertex);
+        BndryTable(m_v_tmp, n_v_tmp, ell_v_tmp) = TpElctrdPos;
         B_phi( p0 ) = V_0;
 
         if n ~= int64((y_0 + h_y_half) / dy + h_torso / (2 * dy) + 1);
@@ -31,6 +33,8 @@ for x = x_0 - h_x_half: dx: x_0 + h_x_half
             S_row(1) = p0_back;
             S_row(2) = 1;
             sparseS_1{ p0_back } = S_row;
+            [ m_v_tmp, n_v_tmp, ell_v_tmp ] = getMNL(S_row(1), x_max_vertex, y_max_vertex, z_max_vertex);
+            BndryTable(m_v_tmp, n_v_tmp, ell_v_tmp) = TpElctrdPos;
             B_phi( p0_back ) = V_0;
         end
 
@@ -42,16 +46,16 @@ for x = x_0 - h_x_half: dx: x_0 + h_x_half
         switch flag
             case 1
                 % right
-                p_adjacent = ( ell_vertex - 1 ) * x_max_vertex * y_max_vertex + ( n_vertex - 1 ) * x_max_vertex + m_vertex + 1;
-                p_adj_back = ( ell_vertex - 1 ) * x_max_vertex * y_max_vertex + ( n_vertex     ) * x_max_vertex + m_vertex + 1;
+                p_adjacent = ( ell_v - 1 ) * x_max_vertex * y_max_vertex + ( n_v - 1 ) * x_max_vertex + m_v + 1;
+                p_adj_back = ( ell_v - 1 ) * x_max_vertex * y_max_vertex + ( n_v     ) * x_max_vertex + m_v + 1;
             case 2
                 % up-right
-                p_adjacent = ( ell_vertex     ) * x_max_vertex * y_max_vertex + ( n_vertex - 1 ) * x_max_vertex + m_vertex + 1;
-                p_adj_back = ( ell_vertex     ) * x_max_vertex * y_max_vertex + ( n_vertex     ) * x_max_vertex + m_vertex + 1;
+                p_adjacent = ( ell_v     ) * x_max_vertex * y_max_vertex + ( n_v - 1 ) * x_max_vertex + m_v + 1;
+                p_adj_back = ( ell_v     ) * x_max_vertex * y_max_vertex + ( n_v     ) * x_max_vertex + m_v + 1;
             case 3
                 % up
-                p_adjacent = ( ell_vertex     ) * x_max_vertex * y_max_vertex + ( n_vertex - 1 ) * x_max_vertex + m_vertex    ;
-                p_adj_back = ( ell_vertex     ) * x_max_vertex * y_max_vertex + ( n_vertex     ) * x_max_vertex + m_vertex    ;
+                p_adjacent = ( ell_v     ) * x_max_vertex * y_max_vertex + ( n_v - 1 ) * x_max_vertex + m_v    ;
+                p_adj_back = ( ell_v     ) * x_max_vertex * y_max_vertex + ( n_v     ) * x_max_vertex + m_v    ;
             otherwise
                 error('check');
         end
@@ -61,6 +65,8 @@ for x = x_0 - h_x_half: dx: x_0 + h_x_half
             S_row_adj(1) = p_adjacent;
             S_row_adj(2) = 1;
             sparseS_1{ p_adjacent } = S_row_adj;
+            [ m_v_tmp, n_v_tmp, ell_v_tmp ] = getMNL(S_row_adj(1), x_max_vertex, y_max_vertex, z_max_vertex);
+            BndryTable(m_v_tmp, n_v_tmp, ell_v_tmp) = TpElctrdPos;
             B_phi( p_adjacent ) = V_0;
 
             if n ~= int64((y_0 + h_y_half) / dy + h_torso / (2 * dy) + 1);
@@ -68,6 +74,8 @@ for x = x_0 - h_x_half: dx: x_0 + h_x_half
                 S_row_adj(1) = p_adj_back;
                 S_row_adj(2) = 1;
                 sparseS_1{ p_adj_back } = S_row_adj;
+                [ m_v_tmp, n_v_tmp, ell_v_tmp ] = getMNL(S_row_adj(1), x_max_vertex, y_max_vertex, z_max_vertex);
+                BndryTable(m_v_tmp, n_v_tmp, ell_v_tmp) = TpElctrdPos;
                 B_phi( p_adj_back ) = V_0;
             end
         end
@@ -87,16 +95,18 @@ for z = 0: dz: air_z / 2
     if x_2 >= x_0 - h_x_half - dx / 2 
         for y = y_0 - h_y_half: dy: y_0 + h_y_half
             n = int64(y / dy + h_torso / (2 * dy) + 1);
-            m_vertex = 2 * m_2 - 1;
-            n_vertex = 2 * n - 1;
-            ell_vertex = 2 * ell - 1;
-            p0      = ( ell_vertex - 1 ) * x_max_vertex * y_max_vertex + ( n_vertex - 1 ) * x_max_vertex + m_vertex;
-            p0_back = ( ell_vertex - 1 ) * x_max_vertex * y_max_vertex + ( n_vertex     ) * x_max_vertex + m_vertex;
+            m_v = 2 * m_2 - 1;
+            n_v = 2 * n - 1;
+            ell_v = 2 * ell - 1;
+            p0      = ( ell_v - 1 ) * x_max_vertex * y_max_vertex + ( n_v - 1 ) * x_max_vertex + m_v;
+            p0_back = ( ell_v - 1 ) * x_max_vertex * y_max_vertex + ( n_v     ) * x_max_vertex + m_v;
 
             S_row = zeros(1, 2);
             S_row(1) = p0;
             S_row(2) = 1;
             sparseS_1{ p0 } = S_row;
+            [ m_v_tmp, n_v_tmp, ell_v_tmp ] = getMNL(S_row(1), x_max_vertex, y_max_vertex, z_max_vertex);
+            BndryTable(m_v_tmp, n_v_tmp, ell_v_tmp) = TpElctrdPos;
             B_phi( p0 ) = V_0;
 
             if n ~= int64((y_0 + h_y_half) / dy + h_torso / (2 * dy) + 1);
@@ -104,6 +114,8 @@ for z = 0: dz: air_z / 2
                 S_row(1) = p0_back;
                 S_row(2) = 1;
                 sparseS_1{ p0_back } = S_row;
+                [ m_v_tmp, n_v_tmp, ell_v_tmp ] = getMNL(S_row(1), x_max_vertex, y_max_vertex, z_max_vertex);
+                BndryTable(m_v_tmp, n_v_tmp, ell_v_tmp) = TpElctrdPos;
                 B_phi( p0_back ) = V_0;
             end
 
@@ -115,16 +127,16 @@ for z = 0: dz: air_z / 2
             switch flag
                 case 1
                     % right
-                    p_adjacent = ( ell_vertex - 1 ) * x_max_vertex * y_max_vertex + ( n_vertex - 1 ) * x_max_vertex + m_vertex + 1;
-                    p_adj_back = ( ell_vertex - 1 ) * x_max_vertex * y_max_vertex + ( n_vertex     ) * x_max_vertex + m_vertex + 1;
+                    p_adjacent = ( ell_v - 1 ) * x_max_vertex * y_max_vertex + ( n_v - 1 ) * x_max_vertex + m_v + 1;
+                    p_adj_back = ( ell_v - 1 ) * x_max_vertex * y_max_vertex + ( n_v     ) * x_max_vertex + m_v + 1;
                 case 2
                     % up-right
-                    p_adjacent = ( ell_vertex     ) * x_max_vertex * y_max_vertex + ( n_vertex - 1 ) * x_max_vertex + m_vertex + 1;
-                    p_adj_back = ( ell_vertex     ) * x_max_vertex * y_max_vertex + ( n_vertex     ) * x_max_vertex + m_vertex + 1;
+                    p_adjacent = ( ell_v     ) * x_max_vertex * y_max_vertex + ( n_v - 1 ) * x_max_vertex + m_v + 1;
+                    p_adj_back = ( ell_v     ) * x_max_vertex * y_max_vertex + ( n_v     ) * x_max_vertex + m_v + 1;
                 case 3
                     % up
-                    p_adjacent = ( ell_vertex     ) * x_max_vertex * y_max_vertex + ( n_vertex - 1 ) * x_max_vertex + m_vertex    ;
-                    p_adj_back = ( ell_vertex     ) * x_max_vertex * y_max_vertex + ( n_vertex     ) * x_max_vertex + m_vertex    ;
+                    p_adjacent = ( ell_v     ) * x_max_vertex * y_max_vertex + ( n_v - 1 ) * x_max_vertex + m_v    ;
+                    p_adj_back = ( ell_v     ) * x_max_vertex * y_max_vertex + ( n_v     ) * x_max_vertex + m_v    ;
                 otherwise
                     error('check');
             end
@@ -133,6 +145,8 @@ for z = 0: dz: air_z / 2
             S_row_adj(1) = p_adjacent;
             S_row_adj(2) = 1;
             sparseS_1{ p_adjacent } = S_row_adj;
+            [ m_v_tmp, n_v_tmp, ell_v_tmp ] = getMNL(S_row_adj(1), x_max_vertex, y_max_vertex, z_max_vertex);
+            BndryTable(m_v_tmp, n_v_tmp, ell_v_tmp) = TpElctrdPos;
             B_phi( p_adjacent ) = V_0;
 
             if n ~= int64((y_0 + h_y_half) / dy + h_torso / (2 * dy) + 1);
@@ -140,6 +154,8 @@ for z = 0: dz: air_z / 2
                 S_row_adj(1) = p_adj_back;
                 S_row_adj(2) = 1;
                 sparseS_1{ p_adj_back } = S_row_adj;
+                [ m_v_tmp, n_v_tmp, ell_v_tmp ] = getMNL(S_row_adj(1), x_max_vertex, y_max_vertex, z_max_vertex);
+                BndryTable(m_v_tmp, n_v_tmp, ell_v_tmp) = TpElctrdPos;
                 B_phi( p_adj_back ) = V_0;
             end
         end
@@ -148,16 +164,18 @@ for z = 0: dz: air_z / 2
     if x_1 <= x_0 + h_x_half + dx / 2 
         for y = y_0 - h_y_half: dy: y_0 + h_y_half
             n = int64(y / dy + h_torso / (2 * dy) + 1);
-            m_vertex = 2 * m_1 - 1;
-            n_vertex = 2 * n - 1;
-            ell_vertex = 2 * ell - 1;
-            p0      = ( ell_vertex - 1 ) * x_max_vertex * y_max_vertex + ( n_vertex - 1 ) * x_max_vertex + m_vertex;
-            p0_back = ( ell_vertex - 1 ) * x_max_vertex * y_max_vertex + ( n_vertex     ) * x_max_vertex + m_vertex;
+            m_v = 2 * m_1 - 1;
+            n_v = 2 * n - 1;
+            ell_v = 2 * ell - 1;
+            p0      = ( ell_v - 1 ) * x_max_vertex * y_max_vertex + ( n_v - 1 ) * x_max_vertex + m_v;
+            p0_back = ( ell_v - 1 ) * x_max_vertex * y_max_vertex + ( n_v     ) * x_max_vertex + m_v;
 
             S_row = zeros(1, 2);
             S_row(1) = p0;
             S_row(2) = 1;
             sparseS_1{ p0 } = S_row;
+            [ m_v_tmp, n_v_tmp, ell_v_tmp ] = getMNL(S_row(1), x_max_vertex, y_max_vertex, z_max_vertex);
+            BndryTable(m_v_tmp, n_v_tmp, ell_v_tmp) = TpElctrdPos;
             B_phi( p0 ) = V_0;
 
             if n ~= int64((y_0 + h_y_half) / dy + h_torso / (2 * dy) + 1);
@@ -165,6 +183,8 @@ for z = 0: dz: air_z / 2
                 S_row(1) = p0_back;
                 S_row(2) = 1;
                 sparseS_1{ p0_back } = S_row;
+                [ m_v_tmp, n_v_tmp, ell_v_tmp ] = getMNL(S_row(1), x_max_vertex, y_max_vertex, z_max_vertex);
+                BndryTable(m_v_tmp, n_v_tmp, ell_v_tmp) = TpElctrdPos;
                 B_phi( p0_back ) = V_0;
             end
 
@@ -176,16 +196,16 @@ for z = 0: dz: air_z / 2
             switch flag
                 case 1
                     % right
-                    p_adjacent = ( ell_vertex - 1 ) * x_max_vertex * y_max_vertex + ( n_vertex - 1 ) * x_max_vertex + m_vertex + 1;
-                    p_adj_back = ( ell_vertex - 1 ) * x_max_vertex * y_max_vertex + ( n_vertex     ) * x_max_vertex + m_vertex + 1;
+                    p_adjacent = ( ell_v - 1 ) * x_max_vertex * y_max_vertex + ( n_v - 1 ) * x_max_vertex + m_v + 1;
+                    p_adj_back = ( ell_v - 1 ) * x_max_vertex * y_max_vertex + ( n_v     ) * x_max_vertex + m_v + 1;
                 case 2
                     % up-right
-                    p_adjacent = ( ell_vertex     ) * x_max_vertex * y_max_vertex + ( n_vertex - 1 ) * x_max_vertex + m_vertex + 1;
-                    p_adj_back = ( ell_vertex     ) * x_max_vertex * y_max_vertex + ( n_vertex     ) * x_max_vertex + m_vertex + 1;
+                    p_adjacent = ( ell_v     ) * x_max_vertex * y_max_vertex + ( n_v - 1 ) * x_max_vertex + m_v + 1;
+                    p_adj_back = ( ell_v     ) * x_max_vertex * y_max_vertex + ( n_v     ) * x_max_vertex + m_v + 1;
                 case 3
                     % up
-                    p_adjacent = ( ell_vertex     ) * x_max_vertex * y_max_vertex + ( n_vertex - 1 ) * x_max_vertex + m_vertex    ;
-                    p_adj_back = ( ell_vertex     ) * x_max_vertex * y_max_vertex + ( n_vertex     ) * x_max_vertex + m_vertex    ;
+                    p_adjacent = ( ell_v     ) * x_max_vertex * y_max_vertex + ( n_v - 1 ) * x_max_vertex + m_v    ;
+                    p_adj_back = ( ell_v     ) * x_max_vertex * y_max_vertex + ( n_v     ) * x_max_vertex + m_v    ;
                 otherwise
                     error('check');
             end
@@ -195,6 +215,8 @@ for z = 0: dz: air_z / 2
                 S_row_adj(1) = p_adjacent;
                 S_row_adj(2) = 1;
                 sparseS_1{ p_adjacent } = S_row_adj;
+                [ m_v_tmp, n_v_tmp, ell_v_tmp ] = getMNL(S_row_adj(1), x_max_vertex, y_max_vertex, z_max_vertex);
+                BndryTable(m_v_tmp, n_v_tmp, ell_v_tmp) = TpElctrdPos;
                 B_phi( p_adjacent ) = V_0;
 
                 if n ~= int64((y_0 + h_y_half) / dy + h_torso / (2 * dy) + 1);
@@ -202,6 +224,8 @@ for z = 0: dz: air_z / 2
                     S_row_adj(1) = p_adj_back;
                     S_row_adj(2) = 1;
                     sparseS_1{ p_adj_back } = S_row_adj;
+                    [ m_v_tmp, n_v_tmp, ell_v_tmp ] = getMNL(S_row_adj(1), x_max_vertex, y_max_vertex, z_max_vertex);
+                    BndryTable(m_v_tmp, n_v_tmp, ell_v_tmp) = TpElctrdPos;
                     B_phi( p_adj_back ) = V_0;
                 end
             end

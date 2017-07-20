@@ -24,7 +24,7 @@ if flag_XZ == 1
             G_27cols = sparse(N_v, 27);
             G_27cols = G(:, PntsIdx_t(:));
             % the getH_2 is now modified to getE^{(1)}: E^(1) = - j omega \mu_0 A^(1) field, 
-            % where \mu_0 is amended for a drop scaling in the GMRES.
+            % where \mu_0 is amended for a dropped scaling in the GMRES procedure.
             H_XZ(m, ell, :, :, :) = - j * Omega_0 * Mu_0 * getH_2( PntsIdx, Vertex_Crdnt, A, G_27cols, mu_r, squeeze(SegMed(m, n, ell, :, :)), x_max_vertex, y_max_vertex, z_max_vertex );
         end
     end
