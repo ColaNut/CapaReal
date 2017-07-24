@@ -170,10 +170,10 @@
 h_torso = 36 / 100;
 air_x = 50 / 100; % width: 50 cm
 air_z = 40 / 100; % height: 40 cm
-bolus_a = 34 / 200;
-bolus_c = 26 / 200;
-skin_a = 0 / 200; % fat
-skin_c = 0 / 200; 
+bolus_a = 30 / 200;
+bolus_c = 22 / 200;
+skin_a = 28 / 200; % fat
+skin_c = 20 / 200; 
 muscle_a = 30 / 200;
 muscle_c = 22 / 200;
 l_lung_x = - 6 / 100;

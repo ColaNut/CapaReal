@@ -46,7 +46,7 @@ cap_b          = 4180;
 %               %  air,  bolus, muscle, lung, tumor, bone, fat
 % Q_met          = [ 0,      0,   4200,     1700,     8000,       0,      5 ]';
 
-% testing version
+% submitted version
                % air, bolus,  muscle,     lung,    tumor,    bone,    fat
 cap            = [ 0,  4200,    3500,     3886,     3886,    1300,   2300 ]';
 xi             = [ 0,     0, 8.3/1e6, 6.68/1e6, 2.53/1e6, 4.2/1e7,  5/1e7 ]';

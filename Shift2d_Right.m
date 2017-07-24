@@ -167,6 +167,18 @@ end
 % % === % Filling of SheetPntsTable % === %
 % % === % ========================= % === %
 
+Vrtx_bndry = zeros( x_max_vertex, y_max_vertex, z_max_vertex, 'uint8');
+%  2: computational domain boundary
+n_far  = y_idx_max - 1;
+n_near = 2;
+for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
+    [ m_v, n_v, ell_v ] = getMNL(vIdx, x_max_vertex, y_max_vertex, z_max_vertex);
+    borderFlag = getBorderFlag(m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex);
+    if my_F(borderFlag, 1)
+        Vrtx_bndry(m_v, n_v, ell_v) = 2;
+    end
+end
+
 % thin current sheet: need to trim the near end and the far end
 SheetPntsTable = zeros( x_max_vertex, y_max_vertex, z_max_vertex, 'uint8');
 % sheetPoints is set to be 1
@@ -207,7 +219,6 @@ ends = [];
 vals = [];
 borderFlag = false(1, 6);
 disp('Constructing the directed graph');
-% the validity of the input must be gurantee !!!
 for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
     [ m_v, n_v, ell_v ] = getMNL(vIdx, x_max_vertex, y_max_vertex, z_max_vertex);
     flag = getMNL_flag(m_v, n_v, ell_v);
@@ -217,29 +228,35 @@ for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
         [ starts, ends, vals ] = fillGraph( m_v, n_v, ell_v, starts, ends, vals, x_max_vertex, y_max_vertex, z_max_vertex, corner_flag );
     end
 end
-G = sparse(starts, ends, vals, N_v, N_v);
+G = sparse(ends, starts, vals, N_v, N_v);
 toc;
-[ P1, P2 ] = find(G);
+[ P2, P1 ] = find(G);
 l_G = length(find(G));
 
 % undirected graph
 uG = G + G';
 
+% === % =================================== % === %
+% === % Filling Time of K1, Kev, Kve and Bk % === %
+% === % =================================== % === %
+
 B_k = zeros(N_e, 1);
-M_K1 = sparse(N_e, N_e);
-M_K2 = sparse(N_e, N_e);
-M_KEV = sparse(N_e, N_v);
-M_KVE = sparse(N_v, N_e);
+m_K1 = cell(N_e, 1);
+m_K2 = cell(N_e, 1);
+m_KEV = cell(N_e, 1);
+m_KVE = cell(1, N_e);
 edgeChecker = false(l_G, 1);
 cFlagChecker = false(l_G, 1);
+BioFlag = true(N_v, 1);
+
 tic; 
 disp('The filling time of K_1, K_EV, K_VE and B: ');
 for lGidx = 1: 1: l_G
-    eIdx = full( G(P1(lGidx), P2(lGidx)) );
+    eIdx = full( G(P2(lGidx), P1(lGidx)) );
     Candi = [];
     % get candidate points
-    P1_cand = uG(P1(lGidx), :);
-    P2_cand = uG(P2(lGidx), :);
+    P1_cand = uG(:, P1(lGidx));
+    P2_cand = uG(:, P2(lGidx));
     P1_nz = find(P1_cand);
     P2_nz = find(P2_cand);
     for CandiFinder = 1: 1: length(P1_nz)
@@ -248,10 +265,10 @@ for lGidx = 1: 1: l_G
         end
     end
     % get adjacent tetrahdron
-    K1_6 = sparse(1, N_e); 
-    K2_6 = sparse(1, N_e); 
-    Kev_4 = sparse(1, N_v);
-    Kve_4 = sparse(N_v, 1);
+    K1_6 = zeros(1, N_e); 
+    K2_6 = zeros(1, N_e); 
+    Kev_4 = zeros(1, N_v);
+    Kve_4 = zeros(N_v, 1);
     B_k_Pnt = 0;
     cFlag = false;
     for TetFinder = 1: 1: length(Candi) - 1
@@ -264,16 +281,16 @@ for lGidx = 1: 1: l_G
                     error('check te construction of MedTetTable');
                 end
                 MedVal = MedTetTable( tetRow, v1234(1) );
-                % implement the cFlag variable in getWmJ
-                [ K1_6, K2_6, Kev_4, Kve_4, B_k_Pnt, cFlag ] = fillK( P1(lGidx), P2(lGidx), Candi(itr), Candi(TetFinder), ...
-                    G( P1(lGidx), : ), G( P2(lGidx), : ), G( Candi(itr), : ), G( Candi(TetFinder), : ), ...
-                    SheetPntsTable( P1(lGidx) ), SheetPntsTable( P2(lGidx) ), SheetPntsTable( Candi(itr) ), SheetPntsTable( Candi(TetFinder) ), ...
-                    lGidx, K1_6, K2_6, Kev_4, Kve_4, B_k_Pnt, cFlag, J_0, MedVal, epsilon_r, mu_r, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt, 'Right' );
+                % use tetRow to check the accordance of SigmaE and J_xyz
+                [ K1_6, K2_6, Kev_4, Kve_4, B_k_Pnt ] = fillK_FW( P1(lGidx), P2(lGidx), Candi(itr), Candi(TetFinder), ...
+                    G( :, P1(lGidx) ), G( :, P2(lGidx) ), G( :, Candi(itr) ), G( :, Candi(TetFinder) ), ...
+                    Vrtx_bndry( P1(lGidx) ), Vrtx_bndry( P2(lGidx) ), Vrtx_bndry( Candi(itr) ), Vrtx_bndry( Candi(TetFinder) ), ...
+                    K1_6, K2_6, Kev_4, Kve_4, B_k_Pnt, J_xyz(tetRow, :), MedVal, epsilon_r, mu_r, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt );
             end
         end
     end
 
-    if isempty(K1_6) % || isempty(K2_6) || isempty(Kev_4)
+    if isempty(K1_6) || isempty(K2_6) || isempty(Kev_4)
         disp('K1, K2 or KEV: empty');
         [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
         [ m_v, n_v, ell_v, edgeNum ]
@@ -296,10 +313,11 @@ for lGidx = 1: 1: l_G
     end
 
     edgeChecker(eIdx) = true;
-    M_K1(eIdx, :)  = K1_6;
-    M_K2(eIdx, :)  = K2_6;
-    M_KEV(eIdx, :) = Kev_4;
-    M_KVE(:, eIdx) = Kve_4;
+    
+    m_K1{eIdx} = Mrow2myRow(K1_6);
+    m_K2{eIdx}  = Mrow2myRow(K2_6);
+    m_KEV{eIdx} = Mrow2myRow(Kev_4);
+    m_KVE{eIdx} = Mrow2myRow(Kve_4')';
     B_k(eIdx) = B_k_Pnt;
 end
 toc;
@@ -334,6 +352,7 @@ TEX = 'Right';
 CaseTEX = 'Case1';
 Tol = 0.2;
 GVV_test; % a script
+save( strcat('SAI_Tol', num2str(Tol), '.mat'), 'M_sparseGVV_inv_spai', 'column_res', 'f_norm' );
 % load( strcat('SAI_Tol', num2str(Tol), '_', TEX, '_', CaseTEX, '.mat'), 'M_sparseGVV_inv_spai');
 
 % === % ========================= % === %
