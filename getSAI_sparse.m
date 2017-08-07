@@ -1,4 +1,4 @@
-function [ M, column_res ] = getSAI_sparse(A, dim, Tol, ns)
+function [ M, column_res ] = getSAI_sparse(A, dim, Tol, ns, varargin )
 
     zeroVec = zeros(dim, 1);
     column_res = zeros(1, dim);
@@ -12,8 +12,18 @@ function [ M, column_res ] = getSAI_sparse(A, dim, Tol, ns)
     J = [];
 
     % ns = 27; % number of improvement steps allowed per column
+    nVarargs = length(varargin);
+    if nVarargs == 2
+        startPnt = varargin{1};
+        endPnt   = varargin{2};
+    elseif nVarargs == 0
+        startPnt = 1;
+        endPnt = dim;
+    else
+        error('check');
+    end 
 
-    parfor column = 1: 1: dim
+    parfor column = startPnt: 1: endPnt
         % ek = Id_Matrix(:, column);
         ek = zeroVec;
         ek(column) = 1; % 'column' happen to be k

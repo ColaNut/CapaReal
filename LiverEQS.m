@@ -2,15 +2,12 @@
 % === === === === === === === === ===  % S part % === === === === === === === === === %
 % === === === === === === === === ===  % ====== % === === === === === === === === === %
 
-% the testing function include: getRoughMed_Test, PutOnTopElctrd_TestCase and PutOnDwnElctrd_TestCase.
-% the calculation of fillUVd, fillK_FW, 
-
-% === % ========================================= % === %
-% === % Construction of coordinate and grid shift % === %
-% === % ========================================= % === %
+% === % ========================================== % === %
+% === % Construction of coordinates and grid shift % === %
+% === % ========================================== % === %
 clc; clear;
 digits;
-disp('Full Wave: EQS');
+disp('Full Wave: EQS, liver');
 
 Mu_0          = 4 * pi * 10^(-7);
 Epsilon_0     = 10^(-9) / (36 * pi);
@@ -18,30 +15,22 @@ Omega_0       = 2 * pi * 8 * 10^6; % 2 * pi * 8 MHz
 V_0           = 86.26; 
 
 % parameters
-% rho           = [ 1,  1020,  1020,  1050, 1040 ]';
-              % [ air, bolus, muscle, lung,  tumor,  bone,   fat ]';
-rho           = [   1,  1020,   1020,  394,  697,  1790,   900 ]';
-% epsilon_r_pre = [ 1, 113.0,   184, 264.9,  402,    7.3]';
-% sigma         = [ 0,  0.61, 0.685,  0.42, 0.68, 0.028 ]';
-epsilon_r_pre = [   1, 113.0,    113, 264.9,   402,   7.3,    20 ]';
-sigma         = [   0,  0.61,   0.61,  0.42,  0.68, 0.028, 0.047 ]';
+              % [ air, bolus, muscle, liver,  tumor,  bone,   fat ]';
+rho           = [   1,  1020,   1020,  1080,  1040,  1790,   900 ]';
+epsilon_r_pre = [   1, 113.0,    113,   338,   338,   7.3,    20 ]';
+sigma         = [   0,  0.61,   0.61,  0.42,  0.42, 0.028, 0.047 ]';
 epsilon_r     = epsilon_r_pre - i * sigma ./ ( Omega_0 * Epsilon_0 );
 
 % There 'must' be a grid point at the origin.
-loadParas;
+loadParas_liver;
 % paras = [ h_torso, air_x, air_z, ...
 %         bolus_a, bolus_c, skin_a, skin_c, muscle_a, muscle_c, ...
-%         l_lung_x, l_lung_z, l_lung_a, l_lung_b, l_lung_c, ...
-%         r_lung_x, r_lung_z, r_lung_a, r_lung_b, l_lung_c, ...
+%         liver_x, liver_z, liver_a, liver_b, liver_c, liverTheta, liverPhi, liverPsi, ...
 %         tumor_x, tumor_y, tumor_z, tumor_r ];
 
-% the top and bottom electrodes' size
-top_x0  = - 1 / 100;
-top_dx  = 1 / 100;
-top_dy  = 4 / 100;
-down_x0  = - 1 / 100;
-down_dx = 1 / 100;
-down_dy = 4 / 100;
+tumor_m = tumor_x / dx + air_x / (2 * dx) + 1;
+tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1;
+tumor_ell = tumor_z / dz + air_z / (2 * dz) + 1;
 
 Ribs = zeros(7, 9);
 SSBone = zeros(1, 8);
@@ -61,44 +50,64 @@ GridShiftTableXZ = cell( h_torso / dy + 1, 1);
 
 mediumTable = ones( x_idx_max, y_idx_max, z_idx_max, 'uint8');
 % check the 6, 7, 8 number in the mediumTable; not accord with size(rho) ?
-% Normal Points: [ air, bolus, muscle, lung, tumor, ribs, spine, sternum ] -> [  1,  2,  3,  4,  5,  6,  7,  8 ]
-% Interfaces:    [ air-bolus, bolus-muscle, muscle-lung, lung-tumor ]      -> [ 11, 13, 12*, 14, 15 ] % temperarily set to 12
+% Normal Points: [ air, bolus, muscle, liver, tumor, ribs, spine, sternum ] -> [  1,  2,  3,  4,  5,  6,  7,  8 ]
+% Interfaces:    [ air-bolus, bolus-muscle, muscle-liver, liver-tumor ]      -> [ 11, 13, 12*, 14, 15 ] % temperarily set to 12
 % Bone Interfaces: [ Ribs-others, spine-others, sternum-others ]           -> [ 16, 17, 18 ] 
 byndCD = 30;
 % beyond computation: 30
 
+% reconstruct the paras2dXZ_liver.m
 for y = - h_torso / 2: dy: h_torso / 2
-    paras2dXZ = genParas2d( y, paras, dx, dy, dz );
-    % paras2dXZ = [ air_x, air_z, bolus_a, bolus_c, skin_a, skin_c, muscle_a, muscle_c, ...
-    %     l_lung_x, l_lung_z, l_lung_a_prime, l_lung_c_prime, ...
-    %     r_lung_x, r_lung_z, r_lung_a_prime, r_lung_c_prime, ...
-    %     tumor_x, tumor_z, tumor_r_prime ];
+    paras2dXZ_liver = genParas2d_liver( y, paras, dx, dy, dz );
+    % paras2dXZ_liver = [ air_x, air_z, bolus_a, bolus_c, skin_a, skin_c, muscle_a, muscle_c, ...
+    %     liver_x, liver_z, liver_x_0, liver_z_0, liver_a_prime, liver_c_prime, liver_rotate, m_1, m_2, ...
+    %     tumor_x, tumor_y, tumor_z, tumor_r_prime ];
     y_idx = y / dy + h_torso / (2 * dy) + 1;
-    mediumTable(:, int64(y_idx), :) = getRoughMed( mediumTable(:, int64(y_idx), :), paras2dXZ, dx, dz, 'no_fat' );
-    [ GridShiftTableXZ{ int64(y_idx) }, mediumTable(:, int64(y_idx), :) ] = constructCoordinateXZ_all( paras2dXZ, dx, dz, mediumTable(:, int64(y_idx), :) );
+    if y_idx == tumor_n
+        ;
+    end
+    mediumTable(:, int64(y_idx), :) = getRoughMed_liver( mediumTable(:, int64(y_idx), :), paras2dXZ_liver, y, dx, dz, 'no_fat' );
+    [ GridShiftTableXZ{ int64(y_idx) }, mediumTable(:, int64(y_idx), :) ] = constructCoordinateXZ_all_liver( paras2dXZ_liver, dx, dz, mediumTable(:, int64(y_idx), :) );
 end
 
-% 1 to 7, corresponding to 1-st to 7-th rib.
-RibValid = 0; 
-SSBoneValid = false;
+% return;
+
+% % 1 to 7, corresponding to 1-st to 7-th rib.
+% RibValid = 0; 
+% SSBoneValid = false;
 BoneMediumTable = ones( x_idx_max, y_idx_max, z_idx_max, 'uint8');
-% BoneGridShiftTableXZ = cell( h_torso / dy + 1, 1);
+% % BoneGridShiftTableXZ = cell( h_torso / dy + 1, 1);
 
-for y = - h_torso / 2: dy: h_torso / 2
-    [ RibValid, SSBoneValid ] = Bone2d(y, Ribs, SSBone, dy, h_torso);
-    y_idx = y / dy + h_torso / (2 * dy) + 1;
-    [ GridShiftTableXZ{ int64(y_idx) }, BoneMediumTable(:, int64(y_idx), :) ] ...
-        = UpdateBoneMed( y, mediumTable(:, int64(y_idx), :), Ribs, SSBone, RibValid, SSBoneValid, ...
-                            dx, dz, air_x, air_z, x_idx_max, z_idx_max, GridShiftTableXZ{ int64(y_idx) } );
-end
+% for y = - h_torso / 2: dy: h_torso / 2
+%     [ RibValid, SSBoneValid ] = Bone2d(y, Ribs, SSBone, dy, h_torso);
+%     y_idx = y / dy + h_torso / (2 * dy) + 1;
+%     [ GridShiftTableXZ{ int64(y_idx) }, BoneMediumTable(:, int64(y_idx), :) ] ...
+%         = UpdateBoneMed( y, mediumTable(:, int64(y_idx), :), Ribs, SSBone, RibValid, SSBoneValid, ...
+%                             dx, dz, air_x, air_z, x_idx_max, z_idx_max, GridShiftTableXZ{ int64(y_idx) } );
+% end
 
-% need to recover after resumming the original case.
+% reconstruct the paras2dYZ_liver.m
 for x = - air_x / 2: dx: air_x / 2
-    paras2dYZ = genParas2dYZ( x, paras, dy, dz );
-    y_grid_table = fillGridTableY_all( paras2dYZ, dy, dz );
+    % implement genParas2dYZ_liver.m
+    paras2dYZ_liver = genParas2dYZ_liver( x, paras, dy, dz );
+    % paras2dYZ = [ h_torso, air_x, air_z, ...
+    %     bolus_a, bolusHghtZ, skin_a, skin_c, muscle_a, muscleHghtZ, ...
+    %     liver_z, liver_y_0, liver_z_0, liver_a_prime, liver_c_prime, liver_rotate, m_1, m_2, ...
+    %     tumor_y, tumor_z, tumor_r_prime ];
+    % implement fillGridTableY_all
+    y_grid_table = fillGridTableY_all_liver( paras2dYZ_liver, dy, dz );
     x_idx = x / dx + air_x / (2 * dx) + 1;
-    [ GridShiftTableXZ, mediumTable ] = constructGridShiftTableXYZ( GridShiftTableXZ, int64(x_idx), y_grid_table, h_torso, air_z, dy, dz, mediumTable, paras2dYZ );
+    if uint8(x_idx) == uint8(22)
+        ;
+    end
+    [ GridShiftTableXZ, mediumTable ] = constructGridShiftTableXYZ_liver( GridShiftTableXZ, int64(x_idx), y_grid_table, h_torso, air_z, dy, dz, mediumTable, paras2dYZ_liver );
 end
+
+% parameters-oriented model.
+mediumTable(18, 11, 30) = 13;
+mediumTable(18, 12, 30) = 13;
+mediumTable(18, 13, 30) = 13;
+mediumTable(21, 12, 31) = 13;
 
 % re-organize the GridShiftTable
 GridShiftTable = cell( air_x / dx + 1, h_torso / dy + 1, air_z / dz + 1 );
@@ -112,6 +121,44 @@ for y_idx = 1: 1: h_torso / dy + 1
 end
 
 shiftedCoordinateXYZ = constructCoordinateXYZ( GridShiftTable, paras, dx, dy, dz );
+
+% === % ============== % === %
+% === % Plotting Liver % === %
+% === % ============== % === %
+
+% counter = 1;
+% for y = - h_torso / 2: dy: h_torso / 2
+%     figure(counter);
+%     counter = counter + 1;
+%     clf;
+%     hold on;
+%     plotLiverXZ( paras, y, dx, dz );
+%     plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
+%     axis equal;
+% end
+
+figure(1);
+clf;
+hold on;
+plotLiverXZ( paras, tumor_y, dx, dz );
+plotGridLineXZ( shiftedCoordinateXYZ, uint64(tumor_y / dy + h_torso / (2 * dy) + 1) );
+axis equal;
+
+figure(2);
+clf;
+hold on;
+plotLiverXY( paras, tumor_z, dx, dy );
+plotGridLineXY( shiftedCoordinateXYZ, uint64(tumor_z / dz + air_z / (2 * dz) + 1) );
+axis equal;
+
+figure(3);
+clf;
+hold on;
+plotLiverYZ( paras, tumor_x, dy, dz );
+plotGridLineYZ( shiftedCoordinateXYZ, uint64(tumor_x / dx + air_x / (2 * dx) + 1) );
+axis equal;
+
+% return;
 
 % % BlsBndryMsk = zeros(x_idx_max, z_idx_max);c  
 % % BlsBndryMsk = get1cmBlsBndryMsk( bolus_a, bolus_c, muscle_a, muscle_c, dx, dz, x_idx_max, z_idx_max, air_x, air_z );
@@ -197,69 +244,66 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
 end
 toc;
 
-UpElecTb = false( x_idx_max, y_idx_max, z_idx_max );
-[ sparseA, B, UpElecTb ] = UpElectrode( sparseA, B, Xtable, Ztable, paras, V_0, x_idx_max, y_idx_max, dx, dy, dz, z_idx_max );
+% % warning messages occurr in the above determination of SegMed; ammended by the below SegMed determination process
 
-% warning messages occurr in the above determination of SegMed; ammended by the below SegMed determination process
+% for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+%     % idx = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
+%     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
+%     p0 = idx;
 
-for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
-    % idx = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
-    [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
-    p0 = idx;
+%     if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
+%         if mediumTable(p0) == 11 % air-bolus boundary pnt
+%             % check the validity of the LHS accepance.
+%             % update the bolus
+%             SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
+%                                             squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 2, 'inner' );
 
-    if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
-        if mediumTable(p0) == 11 % air-bolus boundary pnt
-            % check the validity of the LHS accepance.
-            % update the bolus
-            SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
-                                            squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 2, 'inner' );
+%             [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
+%                 shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
+%                 epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
 
-            [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
-                shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
-                epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
+%         elseif mediumTable(p0) == 13 % bolus-muscle pnt
+%             % update the bolus
+%             SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
+%                                             squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 2, 'outer' );
+%             % update the fat tissue
+%             SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
+%                                             squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 7, 'inner' );
 
-        elseif mediumTable(p0) == 13 % bolus-muscle pnt
-            % update the bolus
-            SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
-                                            squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 2, 'outer' );
-            % update the fat tissue
-            SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
-                                            squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 7, 'inner' );
+%             if BoneMediumTable(p0) == 1 % normal bondary point
+%                 [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
+%                     shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
+%                     epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
+%             elseif BoneMediumTable(p0) == 16  % rib boundary point
+%                 [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrRibPt_A( m, n, ell, ...
+%                     shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
+%                         MskMedTab, BoneMediumTable, epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
+%             else
+%                 error('check');
+%             end
+%         % if fat is incorporated, the following code is needed.
+%         % elseif mediumTable(p0) == 12 % fat-muscle
+%         %     % update the fat tissue
+%         %     SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
+%         %                                     squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 7, 'outer' );
+%         %     if MskMedTab(p0) ~= 0
+%         %         error('check');
+%         %     end
+%         %     if BoneMediumTable(p0) == 1 % normal bondary point
+%         %         [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
+%         %             shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
+%         %             epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
+%         %     elseif BoneMediumTable(p0) == 16  % rib boundary point
+%         %         [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrRibPt_A( m, n, ell, ...
+%         %             shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
+%         %                 MskMedTab, BoneMediumTable, epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
+%         %     else
+%         %         error('check');
+%         %     end
 
-            if BoneMediumTable(p0) == 1 % normal bondary point
-                [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
-                    shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
-                    epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
-            elseif BoneMediumTable(p0) == 16  % rib boundary point
-                [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrRibPt_A( m, n, ell, ...
-                    shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
-                        MskMedTab, BoneMediumTable, epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
-            else
-                error('check');
-            end
-        % if fat is incorporated, the following code is needed.
-        % elseif mediumTable(p0) == 12 % fat-muscle
-        %     % update the fat tissue
-        %     SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
-        %                                     squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 7, 'outer' );
-        %     if MskMedTab(p0) ~= 0
-        %         error('check');
-        %     end
-        %     if BoneMediumTable(p0) == 1 % normal bondary point
-        %         [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
-        %             shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
-        %             epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
-        %     elseif BoneMediumTable(p0) == 16  % rib boundary point
-        %         [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrRibPt_A( m, n, ell, ...
-        %             shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
-        %                 MskMedTab, BoneMediumTable, epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
-        %     else
-        %         error('check');
-        %     end
-
-        end
-    end
-end
+%         end
+%     end
+% end
 
 % === % ========================================= % === %
 % === % Fill the SegMed on the computation domain % === %
@@ -340,6 +384,7 @@ y_mid = ( h_torso / ( 2 * dy ) ) + 1;
 BndryTable = zeros( x_max_vertex, y_max_vertex, z_max_vertex );
 % 19: position of top-electrode
 TpElctrdPos = 19;
+% update the PutOnTopElctrd and PutOnDwnElctrd.m
 [ sparseS, B_phi, BndryTable ] = PutOnTopElctrd( sparseS, B_phi, V_0, squeeze(mediumTable(:, y_mid, :)), tumor_x, tumor_y, ...
                         dx, dy, dz, air_x, air_z, h_torso, x_max_vertex, y_max_vertex, z_max_vertex, BndryTable, TpElctrdPos );
 sparseS = PutOnDwnElctrd( sparseS, squeeze(mediumTable(:, y_mid, :)), tumor_x, tumor_y, ...
@@ -400,9 +445,9 @@ bar_x_my_gmresPhi = gmres( M_S, B_phi, int_itr_num, tol, ext_itr_num, L_S, U_S )
 % bar_x_my_gmres = my_gmres( sparseS, B_phi, int_itr_num, tol, ext_itr_num );
 toc;
 
-save('EQS_Phi.mat');
+save('0729.mat');
 
-return;
+% return;
 
 % % === === === === === === === === % ========== % === === === === === === === === %
 % % === === === === === === === === % K part (1) % === === === === === === === === %
@@ -544,9 +589,9 @@ toc;
 % === === === === === === === === % ================ % === === === === === === === === %
 
 dt = 15; % 20 seconds
-timeNum_all = 60; % 1 minutes
-% timeNum_all = 50 * 60; % 50 minutes
-loadThermalParas;
+% timeNum_all = 60; % 1 minutes
+timeNum_all = 50 * 60; % 50 minutes
+loadThermalParas_liver;
 
 m_U   = cell(N_v, 1);
 m_V   = cell(N_v, 1);
@@ -653,7 +698,7 @@ T_flagXZ = 1;
 T_flagXY = 1;
 T_flagYZ = 1;
 
-T_plot;
+T_plot_liver;
 
 return;
 
@@ -729,10 +774,7 @@ for eIdx = 1: 1: l_G
         end
     end
     % get adjacent tetrahdron
-    K1_6 = sparse(1, N_e); 
-    K2_6 = sparse(1, N_e); 
-    Kev_4 = sparse(1, N_e); 
-    Kve_4 = sparse(N_e, 1); 
+    K1_6 = zeros(1, N_e); 
     B_k_Pnt = 0;
     cFlag = false;
     for TetFinder = 1: 1: length(Candi) - 1

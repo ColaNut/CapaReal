@@ -685,107 +685,111 @@
 % % undirected graph
 % uG = G + G';
 
-% % === % =================================== % === %
-% % === % Filling Time of K1, Kev, Kve and Bk % === %
-% % === % =================================== % === %
-
-load('d:\Kevin\CapaReal\0721\0721preK.mat');
+% === % =================================== % === %
+% === % Filling Time of K1, Kev, Kve and Bk % === %
+% === % =================================== % === %
 
 B_k = zeros(N_e, 1);
-m_K1 = cell(N_e, 1);
-m_K2 = cell(N_e, 1);
-m_KEV = cell(N_e, 1);
-m_KVE = cell(1, N_e);
-edgeChecker = false(l_G, 1);
-cFlagChecker = false(l_G, 1);
-BioFlag = true(N_v, 1);
+% m_K1 = cell(N_e, 1);
+% m_K2 = cell(N_e, 1);
+% m_KEV = cell(N_e, 1);
+% m_KVE = cell(1, N_e);
+% edgeChecker = false(l_G, 1);
+% cFlagChecker = false(l_G, 1);
+% BioFlag = true(N_v, 1);
 J_0 = 5000; % surface current density: 5000 (A/m)
 
+Vrtx_bndry( find(Vrtx_bndry == loopNum) ) = uint8(1);
 tic; 
 disp('The filling time of K_1, K_EV, K_VE and B: ');
-for eIdx = l_G / 2 + 1: 1: 3 * l_G / 4
+for eIdx = 1: 1: l_G
     % eIdx = full( G(P2(lGidx), P1(lGidx)) );
     Candi = [];
-    % get candidate points
-    P1_cand = uG(:, P1(eIdx));
-    P2_cand = uG(:, P2(eIdx));
-    P1_nz = find(P1_cand);
-    P2_nz = find(P2_cand);
-    for CandiFinder = 1: 1: length(P1_nz)
-        if find(P2_nz == P1_nz(CandiFinder))
-            Candi = horzcat(Candi, P1_nz(CandiFinder));
-        end
-    end
-    % get adjacent tetrahdron
-    K1_6 = zeros(1, N_e); 
-    K2_6 = zeros(1, N_e); 
-    Kev_4 = zeros(1, N_e); 
-    Kve_4 = zeros(N_e, 1); 
-    B_k_Pnt = 0;
-    cFlag = false;
-    for TetFinder = 1: 1: length(Candi) - 1
-        for itr = TetFinder + 1: length(Candi)
-            if uG( Candi(TetFinder), Candi(itr) )
-                % linked to become a tetrahedron
-                v1234 = [ P1(eIdx), P2(eIdx), Candi(itr), Candi(TetFinder) ];
-                tetRow = find( sum( logical(MedTetTable(:, v1234)), 2 ) == 4 );
-                if length(tetRow) ~= 1
-                    error('check te construction of MedTetTable');
-                end
-                MedVal = MedTetTable( tetRow, v1234(1) );
-                % use tetRow to check the accordance of SigmaE and J_xyz
-                [ K1_6, K2_6, Kev_4, Kve_4, B_k_Pnt ] = fillK_FW_currentsheet( P1(eIdx), P2(eIdx), Candi(itr), Candi(TetFinder), ...
-                    G( :, P1(eIdx) ), G( :, P2(eIdx) ), G( :, Candi(itr) ), G( :, Candi(TetFinder) ), Vrtx_bndry, J_0, ...
-                    K1_6, K2_6, Kev_4, Kve_4, B_k_Pnt, zeros(1, 3), MedVal, epsilon_r, mu_r, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt );
+    [ m_P1_v, n_P1_v, ell_P1_v ] = getMNL(P1(eIdx), x_max_vertex, y_max_vertex, z_max_vertex);
+    [ m_P2_v, n_P2_v, ell_P2_v ] = getMNL(P2(eIdx), x_max_vertex, y_max_vertex, z_max_vertex);
+    if Vrtx_bndry(m_P1_v, n_P1_v, ell_P1_v) == uint8(1) && Vrtx_bndry(m_P2_v, n_P2_v, ell_P2_v) == uint8(1)
+        % get candidate points
+        P1_cand = uG(:, P1(eIdx));
+        P2_cand = uG(:, P2(eIdx));
+        P1_nz = find(P1_cand);
+        P2_nz = find(P2_cand);
+        for CandiFinder = 1: 1: length(P1_nz)
+            if find(P2_nz == P1_nz(CandiFinder))
+                Candi = horzcat(Candi, P1_nz(CandiFinder));
             end
         end
-    end
+        % get adjacent tetrahdron
+        % K1_6 = zeros(1, N_e); 
+        % K2_6 = zeros(1, N_e); 
+        % Kev_4 = zeros(1, N_e); 
+        % Kve_4 = zeros(N_e, 1); 
+        B_k_Pnt = 0;
+        % cFlag = false;
+        for TetFinder = 1: 1: length(Candi) - 1
+            for itr = TetFinder + 1: length(Candi)
+                if uG( Candi(TetFinder), Candi(itr) )
+                    % linked to become a tetrahedron
+                    v1234 = [ P1(eIdx), P2(eIdx), Candi(itr), Candi(TetFinder) ];
+                    tetRow = find( sum( logical(MedTetTable(:, v1234)), 2 ) == 4 );
+                    if length(tetRow) ~= 1
+                        error('check te construction of MedTetTable');
+                    end
+                    MedFinder = MedTetTableCell{ tetRow };
+                    MedVal = MedFinder(5);
+                    % MedVal = MedTetTable( tetRow, v1234(1) );
+                    % use tetRow to check the accordance of SigmaE and J_xyz
+                    B_k_Pnt = fillK_FW_currentsheet_ZerothOrder( P1(eIdx), P2(eIdx), Candi(itr), Candi(TetFinder), ...
+                        G( :, P1(eIdx) ), G( :, P2(eIdx) ), G( :, Candi(itr) ), G( :, Candi(TetFinder) ), Vrtx_bndry, J_0, ...
+                        B_k_Pnt, zeros(1, 3), MedVal, epsilon_r, mu_r, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt );
+                end
+            end
+        end
 
-    if isempty(K1_6) || isempty(K2_6) || isempty(Kev_4)
-        disp('K1, K2 or KEV: empty');
-        [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
-        [ m_v, n_v, ell_v, edgeNum ]
-    end
-    if isnan(K1_6) | isinf(K1_6) | isnan(K2_6) | isinf(K2_6)
-        disp('K1 or K2: NaN or Inf');
-        [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
-        [ m_v, n_v, ell_v, edgeNum ]
-    end
-    if isnan(Kev_4) | isinf(Kev_4)
-        disp('Kev: NaN or Inf');
-        [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
-        [ m_v, n_v, ell_v, edgeNum ]
-    end
-    if edgeChecker(eIdx) == true
-        lGidx
-        [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
-        [ m_v, n_v, ell_v, edgeNum ]
-        error('check')
-    end
+        % if isempty(K1_6) || isempty(K2_6) || isempty(Kev_4)
+        %     disp('K1, K2 or KEV: empty');
+        %     [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
+        %     [ m_v, n_v, ell_v, edgeNum ]
+        % end
+        % if isnan(K1_6) | isinf(K1_6) | isnan(K2_6) | isinf(K2_6)
+        %     disp('K1 or K2: NaN or Inf');
+        %     [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
+        %     [ m_v, n_v, ell_v, edgeNum ]
+        % end
+        % if isnan(Kev_4) | isinf(Kev_4)
+        %     disp('Kev: NaN or Inf');
+        %     [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
+        %     [ m_v, n_v, ell_v, edgeNum ]
+        % end
+        % if edgeChecker(eIdx) == true
+        %     lGidx
+        %     [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
+        %     [ m_v, n_v, ell_v, edgeNum ]
+        %     error('check')
+        % end
 
-    edgeChecker(eIdx) = true;
-    
-    m_K1{eIdx} = Mrow2myRow(K1_6);
-    m_K2{eIdx}  = Mrow2myRow(K2_6);
-    m_KEV{eIdx} = Mrow2myRow(Kev_4);
-    m_KVE{eIdx} = Mrow2myRow(Kve_4')';
-    B_k(eIdx) = B_k_Pnt;
+        % edgeChecker(eIdx) = true;
+        
+        % m_K1{eIdx} = Mrow2myRow(K1_6);
+        % m_K2{eIdx}  = Mrow2myRow(K2_6);
+        % m_KEV{eIdx} = Mrow2myRow(Kev_4);
+        % m_KVE{eIdx} = Mrow2myRow(Kve_4')';
+        B_k(eIdx) = B_k_Pnt;
+    end
 end
 toc;
 
-save('0721PostK_PostQuarter1.mat');
-
-% % M_K1 = sparse(N_e, N_e);
-% % M_K2 = sparse(N_e, N_e);
-% % M_KEV = sparse(N_e, N_v);
-% % M_KVE = sparse(N_v, N_e);
-% % tic;
-% % disp('Transfroming M_K1, M_K2, M_KEV and M_KVE')
-% % M_K1 = mySparse2MatlabSparse( m_K1, N_e, N_e, 'Row' );
-% % M_K2 = mySparse2MatlabSparse( m_K2, N_e, N_e, 'Row' );
-% % M_KEV = mySparse2MatlabSparse( m_KEV, N_e, N_v, 'Row' );
-% % M_KVE = mySparse2MatlabSparse( m_KVE, N_v, N_e, 'Col' );
-% % toc;
+save('0721_Bk.mat', 'B_k');
+% M_K1 = sparse(N_e, N_e);
+% M_K2 = sparse(N_e, N_e);
+% M_KEV = sparse(N_e, N_v);
+% M_KVE = sparse(N_v, N_e);
+% tic;
+% disp('Transfroming M_K1, M_K2, M_KEV and M_KVE')
+% M_K1 = mySparse2MatlabSparse( m_K1, N_e, N_e, 'Row' );
+% M_K2 = mySparse2MatlabSparse( m_K2, N_e, N_e, 'Row' );
+% M_KEV = mySparse2MatlabSparse( m_KEV, N_e, N_v, 'Row' );
+% M_KVE = mySparse2MatlabSparse( m_KVE, N_v, N_e, 'Col' );
+% toc;
 
 % % === % ========== % === %
 % % === % GVV matrix % === %
@@ -820,52 +824,52 @@ save('0721PostK_PostQuarter1.mat');
 % GVV_test; % a script
 % % load( strcat('SAI_Tol', num2str(Tol), '_', TEX, '_', CaseTEX, '.mat'), 'M_sparseGVV_inv_spai');
 
-% % % === % ========================= % === %
-% % % === % Matrices product to get K % === %
-% % % === % ========================= % === %
+% % === % ========================= % === %
+% % === % Matrices product to get K % === %
+% % === % ========================= % === %
 
-% % M_K = sparse(N_e, N_e);
-% % M_K = M_K1 - Mu_0 * Omega_0^2 * M_K2 - M_KEV * M_sparseGVV_inv_spai * M_KVE;
+% M_K = sparse(N_e, N_e);
+% M_K = M_K1 - Mu_0 * Omega_0^2 * M_K2 - M_KEV * M_sparseGVV_inv_spai * M_KVE;
 
-% % % === % ============================ % === %
-% % % === % Sparse Normalization Process % === %
-% % % === % ============================ % === %
+% % === % ============================ % === %
+% % === % Sparse Normalization Process % === %
+% % === % ============================ % === %
 
-% % tic;
-% % disp('Time for normalization');
-% % sptmp = spdiags( 1 ./ max(abs(M_K),[], 2), 0, N_e, N_e );
-% % nrmlM_K = sptmp * M_K;
-% % nrmlB_k = sptmp * B_k;
+% tic;
+% disp('Time for normalization');
+% sptmp = spdiags( 1 ./ max(abs(M_K),[], 2), 0, N_e, N_e );
+% nrmlM_K = sptmp * M_K;
+% nrmlB_k = sptmp * B_k;
+% toc;
+
+% % === % ============================================================ % === %
+% % === % Direct solver and iteratve solver (iLU-preconditioned GMRES) % === %
+% % === % ============================================================ % === %
+
+% tol = 1e-6;
+% ext_itr_num = 5;
+% int_itr_num = 20;
+
+% bar_x_my_gmres = zeros(size(nrmlB_k));
+% tic;
+% disp('Calculation time of iLU: ')
+% [ L_K, U_K ] = ilu( nrmlM_K, struct('type', 'ilutp', 'droptol', 1e-2) );
+% toc;
+% % tic; 
+% % disp('Computational time for solving Ax = b: ')
+% % bar_x_my_gmres = nrmlM_K\nrmlB_k;
 % % toc;
+% tic;
+% disp('The gmres solutin of Ax = B: ');
+% bar_x_my_gmres = gmres( nrmlM_K, nrmlB_k, int_itr_num, tol, ext_itr_num, L_K, U_K );
+% toc;
 
-% % % === % ============================================================ % === %
-% % % === % Direct solver and iteratve solver (iLU-preconditioned GMRES) % === %
-% % % === % ============================================================ % === %
+% w_y = h_torso;
+% w_x = air_x;
+% w_z = air_z;
+% AFigsScript;
 
-% % tol = 1e-6;
-% % ext_itr_num = 5;
-% % int_itr_num = 20;
-
-% % bar_x_my_gmres = zeros(size(nrmlB_k));
 % % tic;
 % % disp('Calculation time of iLU: ')
 % % [ L_K, U_K ] = ilu( nrmlM_K, struct('type', 'ilutp', 'droptol', 1e-2) );
 % % toc;
-% % % tic; 
-% % % disp('Computational time for solving Ax = b: ')
-% % % bar_x_my_gmres = nrmlM_K\nrmlB_k;
-% % % toc;
-% % tic;
-% % disp('The gmres solutin of Ax = B: ');
-% % bar_x_my_gmres = gmres( nrmlM_K, nrmlB_k, int_itr_num, tol, ext_itr_num, L_K, U_K );
-% % toc;
-
-% % w_y = h_torso;
-% % w_x = air_x;
-% % w_z = air_z;
-% % AFigsScript;
-
-% % % tic;
-% % % disp('Calculation time of iLU: ')
-% % % [ L_K, U_K ] = ilu( nrmlM_K, struct('type', 'ilutp', 'droptol', 1e-2) );
-% % % toc;

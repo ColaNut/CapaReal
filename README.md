@@ -44,3 +44,28 @@ The cal48TtrVol.m was cal8TtrVol.m not used.
 Similar calculation are related in getWmJ.m, get6E4V_omega.m, calKVE_TetPatch_Right.m, getBk.m.
 
 07/07: plotPntH.m is now log10(.)
+
+08/06: supported of regular-tetrahedron code.
+
+08/07: 
+
+Lung    -- EQS  
+            -- FullWave.m
+            -- LungEQS_MQS_validation.m
+            -- FigsScriptLungEQS.m & PhiDstrbtn
+            -- AFigsScript.m & ADstrbtn_Directed_H.m & LungEQS_EOnePlot.m
+        -- MQS  
+            -- LungMQS.m (LungMQS_Bk_amend.m)
+            -- LungMQS_H0_plot.m
+
+Liver   -- EQS  
+            -- LiverEQS.m
+            -- FigsScriptLiverEQS.m & PhiDstrbtnLiverEQS.m & T_plot_liver.m & TumorTmptr_FW_liver.m
+        -- MQS
+
+
+MQS_2 add the loop specific part; set Vrtx_bndry to 1 for the current related vertices.
+LungMQS: comment the redundant part, add temperature part.
+-- MQS_2 can be deleted.
+
+git commit-m 'Prepare LiverEQS.m; '

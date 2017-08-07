@@ -1,5 +1,5 @@
 % clc; clear;
-PhiSAR_flag = 0;
+PhiSAR_flag = 1;
 
 % Need to modify the 'save' in the PhiDstrbtn.m to make it accord with the 'load' in TmprtrFigs.m
 if PhiSAR_flag == 1
@@ -13,17 +13,17 @@ if PhiSAR_flag == 1
     flag_XY = 1;
     flag_YZ = 1;
 
-    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0717';
+    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0715';
     % % fname = 'e:\Kevin\CapaReal\Case0220_1cmFat';
     % CaseDate = 'Case0622_PHI_enhancex';
     CaseName = 'Power300';
-    load( strcat(fname, '\BasicParameters.mat') );
+    load( strcat(fname, '\BasicParameters0717.mat') );
     load( strcat(fname, '\', CaseName, '.mat'), 'bar_x_my_gmresPhi' );
     rho           = [   1,  1020,   1020, 242.6,  697,  1790,   900 ]';
 
     PhiDstrbtn;
 
-    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0717';
+    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0717LungEQS';
     % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'fig');
     saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
     % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'fig');
@@ -38,13 +38,13 @@ if PhiSAR_flag == 1
     saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'jpg');
 end
 
-TumorTmptr_flag = 1;
+TumorTmptr_flag = 0;
 
 if TumorTmptr_flag == 1
     clc; clear;
-    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0717';
+    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0717LungEQS';
     load( strcat(fname, '\BasicParameters.mat') );
-    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0717';
+    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0717LungEQS';
     load( strcat(fname, '\', 'Tmprtr2cm0717Report.mat'), 'bar_b' );
 
     % chose the maximum temperature.
@@ -52,7 +52,7 @@ if TumorTmptr_flag == 1
 
     TumorTmptr_FW;
 
-    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0717';
+    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0717LungEQS';
     % saveas(figure(4), fullfile(fname, 'TotalQmet42000TumorTmprtr'), 'fig');
     saveas(figure(4), fullfile(fname, 'TotalQmet42000TumorTmprtr'), 'jpg');
 end
@@ -61,9 +61,9 @@ Tmprtr_flag = 0;
 
 if Tmprtr_flag == 1
     clc; clear;
-    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0717';
+    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0717LungEQS';
     load( strcat(fname, '\BasicParameters.mat') );
-    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0717';
+    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0717LungEQS';
     load( strcat(fname, '\', 'Tmprtr2cm0717Report.mat'), 'bar_b', 'MedTetTable', 'MedTetTableCell' );
     loadThermalParas;
 
@@ -74,7 +74,7 @@ if Tmprtr_flag == 1
     % TmprtrDstrbtn
     T_plot;
 
-    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0717';
+    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0717LungEQS';
     % saveas(figure(21), fullfile(fname, strcat(CaseName, 'TmprtrXZ')), 'fig');
     saveas(figure(21), fullfile(fname, strcat(CaseName, 'TmprtrXZ')), 'jpg');
     % saveas(figure(22), fullfile(fname, strcat(CaseName, 'TmprtrXY')), 'fig');

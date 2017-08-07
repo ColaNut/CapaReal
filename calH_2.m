@@ -1,7 +1,7 @@
-function OneSideH_XZ = calH_2( vIdx1, vIdx2, vIdx3, vIdx4, G1, G234, A, Vertex_Crdnt, mu_r, medVal, x_max_vertex, y_max_vertex, z_max_vertex, varargin )
+function PntH_or_E = calH_2( vIdx1, vIdx2, vIdx3, vIdx4, G1, G234, A, Vertex_Crdnt, mu_r, medVal, x_max_vertex, y_max_vertex, z_max_vertex, varargin )
 
     % most of the code are duplicated from fillK
-    OneSideH_XZ = zeros(3, 1);
+    PntH_or_E = zeros(3, 1);
 
     % determine P1, P2, P3 and P4 
     v1Table = G1;
@@ -38,23 +38,11 @@ function OneSideH_XZ = calH_2( vIdx1, vIdx2, vIdx3, vIdx4, G1, G234, A, Vertex_C
     P4_table = G4Col( :, vIdxSet_permute(4) );
 
     % get the corresponding P1_Crdt, P2_Crdt, P3_Crdt and P4_Crdt
-    nVarargs = length(varargin);
-    if nVarargs == 1
-        RegText = varargin{1};
-        if strcmp(RegText, 'Regular')
-            [ m_v(1), n_v(1), ell_v(1) ] = getMNL(r2v(P1), x_max_vertex, y_max_vertex, z_max_vertex);
-            [ m_v(2), n_v(2), ell_v(2) ] = getMNL(r2v(P2), x_max_vertex, y_max_vertex, z_max_vertex);
-            [ m_v(3), n_v(3), ell_v(3) ] = getMNL(r2v(P3), x_max_vertex, y_max_vertex, z_max_vertex);
-            [ m_v(4), n_v(4), ell_v(4) ] = getMNL(r2v(P4), x_max_vertex, y_max_vertex, z_max_vertex);
-        else
-            error('check');
-        end
-    else
-        [ m_v(1), n_v(1), ell_v(1) ] = getMNL(P1, x_max_vertex, y_max_vertex, z_max_vertex);
-        [ m_v(2), n_v(2), ell_v(2) ] = getMNL(P2, x_max_vertex, y_max_vertex, z_max_vertex);
-        [ m_v(3), n_v(3), ell_v(3) ] = getMNL(P3, x_max_vertex, y_max_vertex, z_max_vertex);
-        [ m_v(4), n_v(4), ell_v(4) ] = getMNL(P4, x_max_vertex, y_max_vertex, z_max_vertex);
-    end
+    [ m_v(1), n_v(1), ell_v(1) ] = getMNL(P1, x_max_vertex, y_max_vertex, z_max_vertex);
+    [ m_v(2), n_v(2), ell_v(2) ] = getMNL(P2, x_max_vertex, y_max_vertex, z_max_vertex);
+    [ m_v(3), n_v(3), ell_v(3) ] = getMNL(P3, x_max_vertex, y_max_vertex, z_max_vertex);
+    [ m_v(4), n_v(4), ell_v(4) ] = getMNL(P4, x_max_vertex, y_max_vertex, z_max_vertex);
+    
     P1_Crdt = squeeze( Vertex_Crdnt(m_v(1), n_v(1), ell_v(1), :) );
     P2_Crdt = squeeze( Vertex_Crdnt(m_v(2), n_v(2), ell_v(2), :) );
     P3_Crdt = squeeze( Vertex_Crdnt(m_v(3), n_v(3), ell_v(3), :) );
@@ -105,39 +93,47 @@ end
         % Coeff = tmp_curl_W / ( 3 * TtrVol * mu );
         % varargout{1} = Coeff;
     % else
-        % OneSideH_XZ = ( tmp_curl_W' * A(six_eIdx) ) / ( 3 * TtrVol * mu_r(medVal) );
+        % PntH_or_E = ( tmp_curl_W' * A(six_eIdx) ) / ( 3 * TtrVol * mu_r(medVal) );
     % end
 
-    % % original H_XZ
-    % OneSideH_XZ = ( tmp_curl_W' * A(six_eIdx) ) / ( 3 * TtrVol * mu_r(medVal) );
+    nVarargs = length(varargin);
+    if nVarargs == 1
+        TexFlag = varargin{1};
+        if strcmp(TexFlag, 'H')
+            % original H_XZ
+            PntH_or_E = ( tmp_curl_W' * A(six_eIdx) ) / ( 3 * TtrVol * mu_r(medVal) );
+        else
+            error('check the input');
+        end
+    else
+        % E field from A
+        switch InnExtText
+            case 'inn'
+                nabla(1, :) = calTriVec( P2_Crdt, P3_Crdt, P4_Crdt );
+                nabla(2, :) = calTriVec( P3_Crdt, P1_Crdt, P4_Crdt );
+                nabla(3, :) = calTriVec( P4_Crdt, P1_Crdt, P2_Crdt );
+                nabla(4, :) = calTriVec( P2_Crdt, P1_Crdt, P3_Crdt );
+            case 'ext'
+                nabla(1, :) = calTriVec( P2_Crdt, P4_Crdt, P3_Crdt );
+                nabla(2, :) = calTriVec( P4_Crdt, P1_Crdt, P3_Crdt );
+                nabla(3, :) = calTriVec( P4_Crdt, P2_Crdt, P1_Crdt );
+                nabla(4, :) = calTriVec( P3_Crdt, P1_Crdt, P2_Crdt );
+            otherwise
+                error('check');
+        end
 
-    % test for E field
-    switch InnExtText
-        case 'inn'
-            nabla(1, :) = calTriVec( P2_Crdt, P3_Crdt, P4_Crdt );
-            nabla(2, :) = calTriVec( P3_Crdt, P1_Crdt, P4_Crdt );
-            nabla(3, :) = calTriVec( P4_Crdt, P1_Crdt, P2_Crdt );
-            nabla(4, :) = calTriVec( P2_Crdt, P1_Crdt, P3_Crdt );
-        case 'ext'
-            nabla(1, :) = calTriVec( P2_Crdt, P4_Crdt, P3_Crdt );
-            nabla(2, :) = calTriVec( P4_Crdt, P1_Crdt, P3_Crdt );
-            nabla(3, :) = calTriVec( P4_Crdt, P2_Crdt, P1_Crdt );
-            nabla(4, :) = calTriVec( P3_Crdt, P1_Crdt, P2_Crdt );
-        otherwise
-            error('check');
+        GradDiff = zeros(6, 3);
+        GradDiff(1, :) = nabla(2, :) - nabla(1, :);
+        GradDiff(2, :) = nabla(3, :) - nabla(1, :);
+        GradDiff(3, :) = nabla(4, :) - nabla(1, :);
+        GradDiff(4, :) = nabla(3, :) - nabla(2, :);
+        GradDiff(5, :) = nabla(4, :) - nabla(2, :);
+        GradDiff(6, :) = nabla(4, :) - nabla(3, :);
+
+        % PntH_or_E = zeros(3, 1);
+        % Mu_0          = 4 * pi * 10^(-7);
+        % the 1 / 2 is contributed by lambda in the middle point.
+        PntH_or_E = ( GradDiff' * A(six_eIdx) ) / ( 3 * TtrVol * 2 );
     end
-
-    GradDiff = zeros(6, 3);
-    GradDiff(1, :) = nabla(2, :) - nabla(1, :);
-    GradDiff(2, :) = nabla(3, :) - nabla(1, :);
-    GradDiff(3, :) = nabla(4, :) - nabla(1, :);
-    GradDiff(4, :) = nabla(3, :) - nabla(2, :);
-    GradDiff(5, :) = nabla(4, :) - nabla(2, :);
-    GradDiff(6, :) = nabla(4, :) - nabla(3, :);
-
-    % OneSideH_XZ = zeros(3, 1);
-    % Mu_0          = 4 * pi * 10^(-7);
-    % the 1 / 2 is contributed by lambda in the middle point.
-    OneSideH_XZ = ( GradDiff' * A(six_eIdx) ) / ( 3 * TtrVol * 2 );
 
 end

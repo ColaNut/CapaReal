@@ -15,13 +15,13 @@ if A_flag == 1
     flag_XY = 1;
     flag_YZ = 1;
     
-    % Fname = 'K1_0711';
-    % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0614MQSDirection';
+    Fname = 'K_0731';
+    fname = 'D:\Kevin\CapaReal\0731';
     % fname = 'D:\Kevin\CapaReal\0711K1';
     % CaseName = '0321';
     % fname = 'e:\Kevin\CapaReal\Case0220_1cmFat';
     % CaseDate = 'Case0220_1cmFat';
-    ADstrbtn_Directed_H;
+    ADstrbtn_Directed;
     % ADstrbtn;
     % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'fig');
     % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
