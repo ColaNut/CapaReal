@@ -42,7 +42,7 @@ figure(4);
 clf;
 set(gca,'fontsize',18);
 set(gca,'LineWidth',2.0);
-timeNum_all = (Duration1 + Duration2 + Duration3);
+
 if max_flag 
     plot(0: dt / 60: timeNum_all / 60, T_0 + squeeze(bar_b(386465, :)), 'k', 'LineWidth', 2.5);
 else

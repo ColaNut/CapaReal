@@ -10,7 +10,7 @@ if flag_XZ == 1
     % CrossN = int64( w_y / (2 * dy) + 1 );
     n = tumor_n;
     tic;
-    disp('Getting H^(0): XZ');
+    disp('Getting E^(0): XZ');
     for idx = 1: 1: x_idx_max * z_idx_max
         [ m, ell ] = getML(idx, x_idx_max);
         if m >= 2 && m <= x_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1
@@ -25,7 +25,7 @@ if flag_XZ == 1
             G_27cols = G(:, PntsIdx_t(:));
             % the getH_2 is now modified to getE^{(1)}: E^(1) = - j omega \mu_0 A^(1) field, 
             % where \mu_0 is amended for a dropped scaling in the GMRES procedure.
-            H_XZ(m, ell, :, :, :) = getH_2( PntsIdx, Vertex_Crdnt, A, G_27cols, mu_r, squeeze(SegMed(m, n, ell, :, :)), x_max_vertex, y_max_vertex, z_max_vertex );
+            H_XZ(m, ell, :, :, :) = - j * Omega_0 * Mu_0 * getEfromA( PntsIdx, Vertex_Crdnt, A, G_27cols, mu_r, squeeze(SegMed(m, n, ell, :, :)), x_max_vertex, y_max_vertex, z_max_vertex );
         end
     end
     toc;
@@ -121,7 +121,7 @@ if flag_XZ == 1
         paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
         plotMap( paras2dXZ, dx, dz );
         % plotGridLineXZ( shiftedCoordinateXYZ, CrossN );
-        saveas(figure(dirFlag), fullfile(fname, strcat('H_XZ', num2str(dirFlag))), 'jpg');
+        saveas(figure(dirFlag), fullfile(fname, strcat('E_XZ', num2str(dirFlag))), 'jpg');
         % save( strcat( fname, '\', CaseDate, 'TmprtrFigXZ.mat') );
         % save('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0108\Case0108TmprtrFigXZ.mat');
     end
@@ -132,7 +132,7 @@ if flag_XY == 1
     ell = tumor_ell;
     % ell = CrossEll;
     tic;
-    disp('Getting H^(0): XY');
+    disp('Getting E^(0): XY');
     for idx = 1: 1: x_idx_max * y_idx_max
         [ m, n ] = getML(idx, x_idx_max);
         if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1 
@@ -145,7 +145,7 @@ if flag_XY == 1
             G_27cols = sparse(N_v, 27);
             G_27cols = G(:, PntsIdx_t(:));
             % the getH_2 is now modified to getE^{(1)}.
-            H_XY(m, n, :, :, :) = getH_2( PntsIdx, Vertex_Crdnt, A, G_27cols, mu_r, squeeze(SegMed(m, n, ell, :, :)), x_max_vertex, y_max_vertex, z_max_vertex );
+            H_XY(m, n, :, :, :) = - j * Omega_0 * Mu_0 * getEfromA( PntsIdx, Vertex_Crdnt, A, G_27cols, mu_r, squeeze(SegMed(m, n, ell, :, :)), x_max_vertex, y_max_vertex, z_max_vertex );
             % H_XY(m, n, :, :, :) = getH(m, n, ell, x_idx_max, y_idx_max, ...
             %                             x_max_vertex, y_max_vertex, z_max_vertex, shiftedCoordinateXYZ, ...
             %                                 A, mu_r, squeeze( SegMed( m, n, ell, :, : ) ) );
@@ -255,7 +255,7 @@ if flag_XY == 1
         paras2dXY = genParas2dXY( tumor_z, paras, dx, dy, dz );
         plotXY( paras2dXY, dx, dy );
         % plotGridLineXY( shiftedCoordinateXYZ, CrossEll );
-        saveas(figure(dirFlag + 5), fullfile(fname, strcat('H_XY', num2str(dirFlag))), 'jpg');
+        saveas(figure(dirFlag + 5), fullfile(fname, strcat('E_XY', num2str(dirFlag))), 'jpg');
         % save( strcat( fname, '\', CaseDate, 'TmprtrFigXY.mat') );
     end
 end
@@ -265,7 +265,7 @@ if flag_YZ == 1
     m = tumor_m;
     % m = CrossM;
     tic;
-    disp('Getting H^(0): YZ');
+    disp('Getting E^(0): YZ');
     for idx = 1: 1: y_idx_max * z_idx_max
         [ n, ell ] = getML(idx, y_idx_max);
         if n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1
@@ -279,7 +279,7 @@ if flag_YZ == 1
             G_27cols = sparse(N_v, 27);
             G_27cols = G(:, PntsIdx_t(:));
             % the getH_2 is now modified to getE^{(1)}.
-            H_YZ(n, ell, :, :, :) = getH_2( PntsIdx, Vertex_Crdnt, A, G_27cols, mu_r, squeeze(SegMed(m, n, ell, :, :)), x_max_vertex, y_max_vertex, z_max_vertex );
+            H_YZ(n, ell, :, :, :) = - j * Omega_0 * Mu_0 * getEfromA( PntsIdx, Vertex_Crdnt, A, G_27cols, mu_r, squeeze(SegMed(m, n, ell, :, :)), x_max_vertex, y_max_vertex, z_max_vertex );
             % H_YZ(n, ell, :, :, :) = getH(m, n, ell, x_idx_max, y_idx_max, ...
             %                             x_max_vertex, y_max_vertex, z_max_vertex, shiftedCoordinateXYZ, ...
             %                                 A, mu_r, squeeze( SegMed( m, n, ell, :, : ) ) );
@@ -368,7 +368,7 @@ if flag_YZ == 1
         % axis( [ - 15, 15, - 15, 15 ]);
         axis( [ - 100 * w_y / 2 + 0.5, 100 * w_y / 2 - 0.5, - 100 * w_z / 2 + 0.5, 100 * w_z / 2 - 0.5 ]);
         view(2);
-        saveas(figure(dirFlag + 10), fullfile(fname, strcat('H_YZ', num2str(dirFlag))), 'jpg');
+        saveas(figure(dirFlag + 10), fullfile(fname, strcat('E_YZ', num2str(dirFlag))), 'jpg');
         % save( strcat( fname, '\', CaseDate, 'TmprtrFigYZ.mat') );
     end
 end

@@ -22,8 +22,10 @@ x_idx_rght = int64(  h_x / (2 * dx) + w_x / (2 * dx) + 1);
 z_idx_down = int64(- h_z / (2 * dz) + w_z / (2 * dz) + 1);
 z_idx_up   = int64(  h_z / (2 * dz) + w_z / (2 * dz) + 1);
 
+mediumTableXZ = medFill( mediumTableXZ, 0, 0, r_c, r_c, dx, dz, 2, w_x, w_z );
+
 if sample_valid
-    mediumTableXZ(x_idx_left: x_idx_rght, z_idx_down: z_idx_up) = uint8(2);
+    mediumTableXZ(x_idx_left: x_idx_rght, z_idx_down: z_idx_up) = uint8(3);
 end
 
 end

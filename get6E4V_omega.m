@@ -102,8 +102,8 @@ for n = 1: 1: 6
     part(n, 2) = - dot( nabla(mainPair(1), :), nabla(vicePair(2), :) );
     part(n, 3) = - dot( nabla(mainPair(2), :), nabla(vicePair(1), :) );
     part(n, 4) =   dot( nabla(mainPair(1), :), nabla(vicePair(1), :) );
-    part(n, sameMN) = part(n, sameMN) * TtrVol / 10;
-    part(n, diffMN) = part(n, diffMN) * TtrVol / 20;
+    part(n, sameMN) = part(n, sameMN) / 10;
+    part(n, diffMN) = part(n, diffMN) / 20;
 end
 
 % part(1) = lambda_a lambda_c \nabla lambda_b \nabla lambda_d
@@ -111,6 +111,9 @@ end
 % part(3) = - lambda_a lambda_d \nabla lambda_b \nabla \lambda_c
 % part(4) = lambda_b lambda_d \nabla \lambda_a \nabla \lambda_c
 
-Edge6Value(2, :) = epsilonValue * sum(part, 2)';
+% 9 * TtrVol^2 is contributed by the \nabla lambda_b \cdot \nabla lambda_d term
+% TtrVol is contributed by the \int lambda term
+% the two TtrVol is cancelled by one, the remaining TtrVol is in the denominator
+Edge6Value(2, :) = epsilonValue * sum(part, 2)' / ( 9 * TtrVol );
 
 end

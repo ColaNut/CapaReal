@@ -2,7 +2,7 @@
 % === % Calculation of SPAI % === %
 % === % =================== % === %
 
-load('preGVV_inv.mat', 'sparseGVV', 'N_v');
+load('0808LungConformal_preGVVinv.mat', 'sparseGVV', 'N_v');
 PartNum = 1;
 
 switch PartNum
@@ -42,7 +42,7 @@ n_s = 27;
     [ sparseGVV_inv_octant, column_res_oct ] = getSAI_sparse(sparseGVV, N_v, Tol, n_s, Rng(1), Rng(2));
     toc;
 
-    save( strcat( 'GVV_inv_O', num2str(PartNum), '.mat' ), 'sparseGVV_inv_octant', 'column_res_oct');
+    save( strcat( 'GVV_inv_conformal_O', num2str(PartNum), '.mat' ), 'sparseGVV_inv_octant', 'column_res_oct');
     % M_sparseGVV_inv_spai = mySparse2MatlabSparse( sparseGVV_inv, N_v, N_v, 'Col' );
     % tic;
     % cond2 = cond(full(M_sparseGVV * M_sparseGVV_inv_spai), 2);

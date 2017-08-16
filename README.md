@@ -50,22 +50,31 @@ Similar calculation are related in getWmJ.m, get6E4V_omega.m, calKVE_TetPatch_Ri
 08/07: 
 
 Lung    -- EQS  
-            -- FullWave.m
+            -- LungEQS.m
             -- LungEQS_MQS_validation.m
             -- FigsScriptLungEQS.m & PhiDstrbtn
             -- AFigsScript.m & ADstrbtn_Directed_H.m & LungEQS_EOnePlot.m
-        -- MQS  
+        -- MQS -- conformal
             -- LungMQS.m (LungMQS_Bk_amend.m)
             -- LungMQS_H0_plot.m
 
 Liver   -- EQS  
             -- LiverEQS.m
             -- FigsScriptLiverEQS.m & PhiDstrbtnLiverEQS.m & T_plot_liver.m & TumorTmptr_FW_liver.m
-        -- MQS
+        -- MQS -- conformal
 
 
-MQS_2 add the loop specific part; set Vrtx_bndry to 1 for the current related vertices.
-LungMQS: comment the redundant part, add temperature part.
--- MQS_2 can be deleted.
+LungMQS:  add the loop specific part; 
+          set Vrtx_bndry to 1 for the current related vertices; 
+          comment the redundant part, add temperature part.
 
-git commit-m 'Prepare LiverEQS.m; '
+Need to merge LungMQS_conformal_amend.m and LungMQS_conformal.m 
+
+0816:
+Lung    -- EQS  -- tumor temperature comparison
+        -- MQS  -- conformal current sheet with bolus
+
+Liver   -- EQS  -- updating Loop liver colission
+
+Test    -- update the getRoughMed_Mag.m
+        -- fix K_2 matrix

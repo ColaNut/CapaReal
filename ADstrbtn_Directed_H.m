@@ -121,7 +121,7 @@ if flag_XZ == 1
         paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
         plotMap( paras2dXZ, dx, dz );
         % plotGridLineXZ( shiftedCoordinateXYZ, CrossN );
-        saveas(figure(dirFlag), fullfile(fname, strcat('H_XZ', num2str(dirFlag))), 'jpg');
+        % saveas(figure(dirFlag), fullfile(fname, strcat('H_XZ', num2str(dirFlag))), 'jpg');
         % save( strcat( fname, '\', CaseDate, 'TmprtrFigXZ.mat') );
         % save('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0108\Case0108TmprtrFigXZ.mat');
     end
@@ -255,7 +255,7 @@ if flag_XY == 1
         paras2dXY = genParas2dXY( tumor_z, paras, dx, dy, dz );
         plotXY( paras2dXY, dx, dy );
         % plotGridLineXY( shiftedCoordinateXYZ, CrossEll );
-        saveas(figure(dirFlag + 5), fullfile(fname, strcat('H_XY', num2str(dirFlag))), 'jpg');
+        % saveas(figure(dirFlag + 5), fullfile(fname, strcat('H_XY', num2str(dirFlag))), 'jpg');
         % save( strcat( fname, '\', CaseDate, 'TmprtrFigXY.mat') );
     end
 end
@@ -368,7 +368,7 @@ if flag_YZ == 1
         % axis( [ - 15, 15, - 15, 15 ]);
         axis( [ - 100 * w_y / 2 + 0.5, 100 * w_y / 2 - 0.5, - 100 * w_z / 2 + 0.5, 100 * w_z / 2 - 0.5 ]);
         view(2);
-        saveas(figure(dirFlag + 10), fullfile(fname, strcat('H_YZ', num2str(dirFlag))), 'jpg');
+        % saveas(figure(dirFlag + 10), fullfile(fname, strcat('H_YZ', num2str(dirFlag))), 'jpg');
         % save( strcat( fname, '\', CaseDate, 'TmprtrFigYZ.mat') );
     end
 end

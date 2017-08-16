@@ -46,14 +46,23 @@ cap_b          = 4180;
 %               %  air,  bolus, muscle, lung, tumor, bone, fat
 % Q_met          = [ 0,      0,   4200,     1700,     8000,       0,      5 ]';
 
-% submitted version
+% latest version (08/16)
                % air, bolus,  muscle,     lung,    tumor,    bone,    fat
 cap            = [ 0,  4200,    3500,     3886,     3886,    1300,   2300 ]';
 xi             = [ 0,     0, 8.3/1e6, 6.68/1e6, 2.53/1e6, 4.2/1e7,  5/1e7 ]';
 % xi             = [ 0,     0, 8.3/1e6, 23.8/1e6, 1.92/1e6 ]';
-zeta           = [ 0,     0,     0.6,     0.44,     0.39,   0.436,   0.22 ]';
+zeta           = [ 0,     0,     0.6,     0.11,     0.39,   0.436,   0.22 ]';
               %  air,  bolus, muscle, lung, tumor, bone, fat
 Q_met          = [ 0,      0,   4200,     1700,     8000,       0,      5 ]';
+
+% % test version ( [ 0.44 or 0.11 ] for normal lung tissue in the latest version (08/09); [ 1.23 or 2.53 ] for \xi in tumor )
+%                % air, bolus,  muscle,     lung,    tumor,    bone,    fat
+% cap            = [ 0,  4200,    3500,     3886,     3886,    1300,   2300 ]';
+% xi             = [ 0,     0, 8.3/1e6, 6.68/1e6, 1.23/1e6, 4.2/1e7,  5/1e7 ]';
+% % xi             = [ 0,     0, 8.3/1e6, 23.8/1e6, 1.92/1e6 ]';
+% zeta           = [ 0,     0,     0.6,     0.44,     0.39,   0.436,   0.22 ]';
+%               %  air,  bolus, muscle, lung, tumor, bone, fat
+% Q_met          = [ 0,      0,   4200,     1700,     8000,       0,      5 ]';
 
 % % MuscleBone Case:
 % cap            = [ 0,  4200,    3500,     3886,     3795,    3500,   2300 ]';

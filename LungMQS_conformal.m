@@ -7,7 +7,7 @@
 % === % ========================================= % === %
 clc; clear;
 digits;
-disp('MQS');
+disp('MQS: conformal');
 
 Mu_0          = 4 * pi * 10^(-7);
 Epsilon_0     = 10^(-9) / (36 * pi);
@@ -88,9 +88,11 @@ loopNum = 20;
 for y = - h_torso / 2: dy: h_torso / 2
     [ x_grid_table, z_grid_table ] = fillGridTable( 0, 0, loop_r, loop_r, dx, dz );
     y_idx = y / dy + h_torso / (2 * dy) + 1;
-    [ GridShiftTableXZ{ int64(y_idx) }, mediumTable(:, int64(y_idx), :) ] = UpdateLoop( x_grid_table, z_grid_table, GridShiftTableXZ{ int64(y_idx) }, mediumTable(:, int64(y_idx), :), loopNum, air_x, air_z, dx, dz );
+    [ GridShiftTableXZ{ int64(y_idx) }, mediumTable(:, int64(y_idx), :) ] = UpdateLoop( x_grid_table, z_grid_table, GridShiftTableXZ{ int64(y_idx) }, mediumTable(:, int64(y_idx), :), loopNum, air_x, air_z, dx, dz, 11 );
 end
 
+% update the shifting of grid, but not the mediumTable
+mediumTable( find(mediumTable == loopNum) ) = 1;
 % === === % ====================== % === === %
 % === === % loop specific part end % === === % 
 % === === % ====================== % === === %
@@ -344,13 +346,13 @@ TpElctrdPos = 19;
 % sparseS = PutOnDwnElctrd( sparseS, squeeze(mediumTable(:, y_mid, :)), tumor_x, tumor_y, ...
 %                         dx, dy, dz, air_x, air_z, h_torso, x_max_vertex, y_max_vertex );
 
-% % % extend the BndryTable
-% % tumor_m   = tumor_x / dx + air_x / (2 * dx) + 1;
-% % tumor_n   = tumor_y / dy + h_torso / (2 * dy) + 1;
-% % tumor_ell = tumor_z / dz + air_z / (2 * dz) + 1;
-% % tumor_m_v    = 2 * tumor_m - 1;
-% % tumor_n_v    = 2 * tumor_n - 1;
-% % tumor_ell_v  = 2 * tumor_ell - 1;
+% extend the BndryTable
+tumor_m   = tumor_x / dx + air_x / (2 * dx) + 1;
+tumor_n   = tumor_y / dy + h_torso / (2 * dy) + 1;
+tumor_ell = tumor_z / dz + air_z / (2 * dz) + 1;
+tumor_m_v    = 2 * tumor_m - 1;
+tumor_n_v    = 2 * tumor_n - 1;
+tumor_ell_v  = 2 * tumor_ell - 1;
 
 % % % implement FirstIdx and LastIdx
 % % TumorXZ = squeeze(BndryTable(:, tumor_n_v, :));
@@ -416,15 +418,16 @@ TpElctrdPos = 19;
 % === % get Sheet pnts table % === %
 % === % ==================== % === %
 
+% Vrtx_bndry: v-location of current sheet and computational domain 
 Vrtx_bndry = zeros( x_max_vertex, y_max_vertex, z_max_vertex, 'uint8');
-SheetY_0 = - 5 / 100;
-w_cs     =   5 / 100;
+SheetY_0 = 0;
+w_cs     = h_torso / 2 - 1 / 100;
 % 1: sheetPoints boundary
-n_far  = ( SheetY_0 + w_cs ) / (2 * dy) + ( y_idx_max + 1 ) / 2;
-n_near = ( SheetY_0 - w_cs ) / (2 * dy) + ( y_idx_max + 1 ) / 2;
+n_far  = uint8( ( SheetY_0 + w_cs ) / dy + h_torso / (2 * dy) + 1 );
+n_near = uint8( ( SheetY_0 - w_cs ) / dy + h_torso / (2 * dy) + 1 );
 for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
-    if n >= n_near && n <= n_far && mediumTable(m, n, ell) == loopNum
+    if n >= n_near && n <= n_far && mediumTable(m, n, ell) == 11
         m_v = 2 * m - 1;
         n_v = 2 * n - 1;
         ell_v = 2 * ell - 1;
@@ -433,6 +436,8 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
                 Vrtx_bndry(m_v - 1: m_v + 1, n_v - 1: n_v + 1, ell_v - 1: ell_v + 1) );
     end
 end
+Vrtx_bndry( find(Vrtx_bndry == 11) ) = 1;
+
 % 2: computational domain boundary 
 for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
     [ m_v, n_v, ell_v ] = getMNL(vIdx, x_max_vertex, y_max_vertex, z_max_vertex);
@@ -442,8 +447,9 @@ for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
     end
 end
 
-n_far  = y_idx_max - 1;
-n_near = 2;
+n_far  = uint8( y_idx_max - 1 );
+n_near = uint8( 2 );
+% BndryTable: v-location of bolus-muscle boundary
 % 13: bolus-muscle boundary
 BndryTable = zeros( x_max_vertex, y_max_vertex, z_max_vertex );
 BM_bndryNum = 13;
@@ -490,9 +496,11 @@ end
 validNum = 48 * x_idx_max * y_idx_max * z_idx_max - 24 * (x_idx_max * y_idx_max + y_idx_max * z_idx_max + x_idx_max * z_idx_max) * 2 ...
                 + 12 * (x_idx_max + y_idx_max + z_idx_max) * 4 - 48;
 
+% load('D:\Kevin\CapaReal\0721\0721MedTetTableCell.mat', 'MedTetTableCell')
+
 tic;
 disp('Getting MedTetTableCell: ');
-MedTetTableCell  = cell(0, 1);
+% MedTetTableCell  = cell(0, 1);
 % rearrange SigmaE and Q_s; construct the MedTetTableCell
 for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);

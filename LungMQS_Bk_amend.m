@@ -689,6 +689,36 @@
 % === % Filling Time of K1, Kev, Kve and Bk % === %
 % === % =================================== % === %
 
+% Vrtx_bndry: v-location of current sheet and computational domain 
+Vrtx_bndry = zeros( x_max_vertex, y_max_vertex, z_max_vertex, 'uint8');
+SheetY_0 = 0;
+w_cs     = 12 / 100;
+% 1: sheetPoints boundary
+n_far  = uint8( ( SheetY_0 + w_cs ) / dy + h_torso / (2 * dy) + 1 );
+n_near = uint8( ( SheetY_0 - w_cs ) / dy + h_torso / (2 * dy) + 1 );
+for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+    [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
+    if n >= n_near && n <= n_far && mediumTable(m, n, ell) == 11
+        m_v = 2 * m - 1;
+        n_v = 2 * n - 1;
+        ell_v = 2 * ell - 1;
+        Vrtx_bndry(m_v - 1: m_v + 1, n_v - 1: n_v + 1, ell_v - 1: ell_v + 1) ...
+            = getSheetPnts(m, n, ell, x_idx_max, y_idx_max, shiftedCoordinateXYZ, mediumTable, ...
+                Vrtx_bndry(m_v - 1: m_v + 1, n_v - 1: n_v + 1, ell_v - 1: ell_v + 1) );
+    end
+end
+
+Vrtx_bndry( find(Vrtx_bndry == 11) ) = 1;
+
+% 2: computational domain boundary 
+for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
+    [ m_v, n_v, ell_v ] = getMNL(vIdx, x_max_vertex, y_max_vertex, z_max_vertex);
+    borderFlag = getBorderFlag(m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex);
+    if my_F(borderFlag, 1)
+        Vrtx_bndry(m_v, n_v, ell_v) = 2;
+    end
+end
+
 B_k = zeros(N_e, 1);
 % m_K1 = cell(N_e, 1);
 % m_K2 = cell(N_e, 1);
@@ -702,7 +732,7 @@ J_0 = 5000; % surface current density: 5000 (A/m)
 Vrtx_bndry( find(Vrtx_bndry == loopNum) ) = uint8(1);
 tic; 
 disp('The filling time of K_1, K_EV, K_VE and B: ');
-for eIdx = 1: 1: l_G
+parfor eIdx = 1: 1: l_G
     % eIdx = full( G(P2(lGidx), P1(lGidx)) );
     Candi = [];
     [ m_P1_v, n_P1_v, ell_P1_v ] = getMNL(P1(eIdx), x_max_vertex, y_max_vertex, z_max_vertex);
@@ -738,7 +768,7 @@ for eIdx = 1: 1: l_G
                     MedVal = MedFinder(5);
                     % MedVal = MedTetTable( tetRow, v1234(1) );
                     % use tetRow to check the accordance of SigmaE and J_xyz
-                    B_k_Pnt = fillK_FW_currentsheet_ZerothOrder( P1(eIdx), P2(eIdx), Candi(itr), Candi(TetFinder), ...
+                    B_k_Pnt = fillK_FW_MQS_A0( P1(eIdx), P2(eIdx), Candi(itr), Candi(TetFinder), ...
                         G( :, P1(eIdx) ), G( :, P2(eIdx) ), G( :, Candi(itr) ), G( :, Candi(TetFinder) ), Vrtx_bndry, J_0, ...
                         B_k_Pnt, zeros(1, 3), MedVal, epsilon_r, mu_r, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt );
                 end
@@ -778,7 +808,7 @@ for eIdx = 1: 1: l_G
 end
 toc;
 
-save('0721_Bk.mat', 'B_k');
+% save('0721_Bk.mat', 'B_k');
 % M_K1 = sparse(N_e, N_e);
 % M_K2 = sparse(N_e, N_e);
 % M_KEV = sparse(N_e, N_v);

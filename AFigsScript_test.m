@@ -15,8 +15,9 @@ if A_flag == 1
     flag_XY = 1;
     flag_YZ = 1;
     
-    Fname = 'K_0731';
-    fname = 'D:\Kevin\CapaReal\0731';
+    Fname = 'K_0815';
+    fname = 'D:\Kevin\CapaReal\0815';
+    % fname = 'D:\Kevin\CapaReal\0731';
     % fname = 'D:\Kevin\CapaReal\0711K1';
     % CaseName = '0321';
     % fname = 'e:\Kevin\CapaReal\Case0220_1cmFat';

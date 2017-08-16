@@ -12,12 +12,15 @@ Omega_0       = 2 * pi * 100 * 10^3; % 2 * pi * 100 kHz
 J_0           = 1500;
 
 % paras: 
-rho           = [ 1, 4600 ]';
-epsilon_r_pre = [ 1,    1 ]';
-sigma         = [ 0,    0 ]';
+%               air, bolus, mucle
+rho           = [ 1,  1020, 1020 ]';
+% epsilon_r_pre = [ 1,    80,   80 ]';
+% sigma         = [ 0,     0,    0 ]';
+epsilon_r_pre = [ 1, 80, 9658 ]';
+sigma         = [ 0,  0,  0.4 ]';
 epsilon_r     = epsilon_r_pre - j * sigma / ( Omega_0 * Epsilon_0 );
-mu_prime      = [ 1,      1 ]';
-mu_db_prime   = [ 0, 0.6214 ]';
+mu_prime      = [ 1,     1,    1 ]';
+mu_db_prime   = [ 0,     0,    0 ]';
 % mu_db_prime   = [ 0,    0.62 ]';
 mu_r          = mu_prime - i * mu_db_prime;
 
@@ -34,9 +37,9 @@ GridShiftTableXZ = cell( y_idx_max, 1);
 % Need to check whether [ 3, 1, 0.3 ] & [ 3, 1, -0.3 ] are stored in the same cell(idx).
 % xy_grid_table format: [ x_coordonate, y_coordonate, difference ]
 mediumTable = ones( x_idx_max, y_idx_max, z_idx_max, 'uint8');
-% medium1            : 1 
-% magnetic particle  : 2
-% % conductor        : 3
+% air                : 1 
+% bolus              : 2
+% muscle             : 3 
 % current sheet bndry: 11
 
 for y = - w_y / 2: dy: w_y / 2
@@ -60,7 +63,10 @@ for y_idx = 1: 1: w_y / dy + 1
     end
 end
 
+% if the following command is added, the bug is fixed.
+% mediumTable( find(mediumTable == 3) ) = 2;
 shiftedCoordinateXYZ = constructCoordinateXYZ( GridShiftTable, [ w_y, w_x, w_z ], dx, dy, dz );
+
 
 % === % =================== % === %
 % === % Updating the SegMed % === %
@@ -69,8 +75,8 @@ shiftedCoordinateXYZ = constructCoordinateXYZ( GridShiftTable, [ w_y, w_x, w_z ]
 SegMed = ones( x_idx_max, y_idx_max, z_idx_max, 6, 8, 'uint8');
 for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
-    if mediumTable(m, n, ell) == uint8(2)
-        SegMed(m, n, ell, :, :) = uint8(2);
+    if mediumTable(m, n, ell) == uint8(3)
+        SegMed(m, n, ell, :, :) = uint8(3);
 
         x_idx_left = int64(- h_x / (2 * dx) + w_x / (2 * dx) + 1);
         x_idx_rght = int64(  h_x / (2 * dx) + w_x / (2 * dx) + 1);
@@ -82,22 +88,22 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
         z_idx_up   = int64(  h_z / (2 * dz) + w_z / (2 * dz) + 1);
 
         if ell == z_idx_up
-            SegMed(m, n, ell, :, :) = trimUp( squeeze( SegMed(m, n, ell, :, :) ), 1 );
+            SegMed(m, n, ell, :, :) = trimUp( squeeze( SegMed(m, n, ell, :, :) ), 2 );
         end
         if ell == z_idx_down
-            SegMed(m, n, ell, :, :) = trimDown( squeeze( SegMed(m, n, ell, :, :) ), 1 );
+            SegMed(m, n, ell, :, :) = trimDown( squeeze( SegMed(m, n, ell, :, :) ), 2 );
         end
         if m   == x_idx_left
-            SegMed(m, n, ell, :, :) = trimLeft( squeeze( SegMed(m, n, ell, :, :) ), 1 );
+            SegMed(m, n, ell, :, :) = trimLeft( squeeze( SegMed(m, n, ell, :, :) ), 2 );
         end
         if m   == x_idx_rght
-            SegMed(m, n, ell, :, :) = trimRight( squeeze( SegMed(m, n, ell, :, :) ), 1 );
+            SegMed(m, n, ell, :, :) = trimRight( squeeze( SegMed(m, n, ell, :, :) ), 2 );
         end
         if n   == y_idx_far
-            SegMed(m, n, ell, :, :) = trimFar( squeeze( SegMed(m, n, ell, :, :) ), 1 );
+            SegMed(m, n, ell, :, :) = trimFar( squeeze( SegMed(m, n, ell, :, :) ), 2 );
         end
         if n   == y_idx_near
-            SegMed(m, n, ell, :, :) = trimNear( squeeze( SegMed(m, n, ell, :, :) ), 1 );
+            SegMed(m, n, ell, :, :) = trimNear( squeeze( SegMed(m, n, ell, :, :) ), 2 );
         end
     end
 end
@@ -148,6 +154,9 @@ toc;
 % === % MedTetTable Construction % === %
 % === % ======================== % === % 
 
+% masking of SegMed
+SegMed( find(SegMed == 3) ) = 2;
+
 tic;
 disp('Getting MedTetTableCell: ');
 MedTetTableCell  = cell(0, 1);
@@ -159,8 +168,12 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
 
     PntMedTetTableCell  = cell(48, 1);
     % rearrange (6, 8, 3) to (48, 3);
+    % check getPntMedTetTable_2
     PntMedTetTableCell = getPntMedTetTable_2( squeeze( SegMed(m, n, ell, :, :) )', N_v, m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
     validTet = find( squeeze( SegMed(m, n, ell, :, :) )' ~= byndCD );
+    if find( squeeze( SegMed(m, n, ell, :, :) )' == 3, 1 )
+        ;
+    end
 
     % set a inf and nan checker for PntTetTable_Ix, PntTetTable_Iy and PntTetTable_Iz
     % start from here: the temperature is getting lower, and the Q_s and J_xyz is in the order 0.35 and 0.002, respectively.
@@ -197,7 +210,7 @@ for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
     end
 end
 
-% sheetPoints is set to be 11 (modify to 1 in the latter command)
+% sheetPoints is set to be 11 previously (modify to 1 in the latter script)
 n_far  =   ell_y / (2 * dy) + ( y_idx_max + 1 ) / 2;
 n_near = - ell_y / (2 * dy) + ( y_idx_max + 1 ) / 2;
 for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
@@ -240,6 +253,12 @@ l_G = length(find(G));
 % undirected graph
 uG = G + G';
 
+[ P2, P1, Vals ] = find(G);
+[ Vals, idxSet ] = sort(Vals);
+P1 = P1(idxSet);
+P2 = P2(idxSet);
+l_G = length(P1);
+
 % === % =================================== % === %
 % === % Filling Time of K1, Kev, Kve and Bk % === %
 % === % =================================== % === %
@@ -252,13 +271,13 @@ m_KVE = cell(1, N_e);
 edgeChecker = false(l_G, 1);
 
 tic; 
-disp('The filling time of K_1, K_EV, K_VE and B: ');
-for lGidx = 1: 1: l_G
-    eIdx = full( G(P2(lGidx), P1(lGidx)) );
+disp('The filling time of K_1, K_2, K_EV, K_VE and B: ');
+parfor eIdx = 1: 1: l_G
+    % eIdx = full( G(P2(lGidx), P1(lGidx)) );
     Candi = [];
     % get candidate points
-    P1_cand = uG(:, P1(lGidx));
-    P2_cand = uG(:, P2(lGidx));
+    P1_cand = uG(:, P1(eIdx));
+    P2_cand = uG(:, P2(eIdx));
     P1_nz = find(P1_cand);
     P2_nz = find(P2_cand);
     for CandiFinder = 1: 1: length(P1_nz)
@@ -277,16 +296,19 @@ for lGidx = 1: 1: l_G
         for itr = TetFinder + 1: length(Candi)
             if uG( Candi(TetFinder), Candi(itr) )
                 % linked to become a tetrahedron
-                v1234 = [ P1(lGidx), P2(lGidx), Candi(itr), Candi(TetFinder) ];
+                v1234 = [ P1(eIdx), P2(eIdx), Candi(itr), Candi(TetFinder) ];
                 tetRow = find( sum( logical(MedTetTable(:, v1234)), 2 ) == 4 );
                 if length(tetRow) ~= 1
                     error('check te construction of MedTetTable');
                 end
                 MedFinder = MedTetTableCell{ tetRow };
                 MedVal = MedFinder(5);
+                if MedVal == 3
+                    ;
+                end
                 % check the validity of fillK_FW_currentsheet
-                [ K1_6, K2_6, Kev_4, Kve_4, B_k_Pnt ] = fillK_FW_currentsheet( P1(lGidx), P2(lGidx), Candi(itr), Candi(TetFinder), ...
-                    G( :, P1(lGidx) ), G( :, P2(lGidx) ), G( :, Candi(itr) ), G( :, Candi(TetFinder) ), Vrtx_bndry, J_0, ...
+                [ K1_6, K2_6, Kev_4, Kve_4, B_k_Pnt ] = fillK_FW_currentsheet( P1(eIdx), P2(eIdx), Candi(itr), Candi(TetFinder), ...
+                    G( :, P1(eIdx) ), G( :, P2(eIdx) ), G( :, Candi(itr) ), G( :, Candi(TetFinder) ), Vrtx_bndry, J_0, ...
                     K1_6, K2_6, Kev_4, Kve_4, B_k_Pnt, [0, 0, 0], MedVal, epsilon_r, mu_r, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt );
             end
         end
@@ -308,7 +330,7 @@ for lGidx = 1: 1: l_G
         [ m_v, n_v, ell_v, edgeNum ]
     end
     if edgeChecker(eIdx) == true
-        lGidx
+        % lGidx
         [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
         [ m_v, n_v, ell_v, edgeNum ]
         error('check')
@@ -352,7 +374,7 @@ toc;
 
 TEX = 'Right';
 CaseTEX = 'Case1';
-Tol = 0.2;
+Tol = 0.6;
 GVV_test; % a script
 % save( strcat('SAI_Tol', num2str(Tol), '.mat'), 'M_sparseGVV_inv_spai', 'column_res', 'f_norm' );
 % load( strcat('SAI_Tol', num2str(Tol), '_', TEX, '_', CaseTEX, '.mat'), 'M_sparseGVV_inv_spai');
@@ -373,7 +395,7 @@ M_K2 = mySparse2MatlabSparse( m_K2, N_e, N_e, 'Row' );
 M_KEV = mySparse2MatlabSparse( m_KEV, N_e, N_v, 'Row' );
 M_KVE = mySparse2MatlabSparse( m_KVE, N_v, N_e, 'Col' );
 toc;
-M_K = M_K1 - Mu_0 * Omega_0^2 * M_K2 - M_KEV * M_sparseGVV_inv_spai * M_KVE;
+M_K = M_K1 - Epsilon_0 * Mu_0 * Omega_0^2 * M_K2 - M_KEV * M_sparseGVV_inv_spai * M_KVE;
 
 % === % ============================ % === %
 % === % Sparse Normalization Process % === %
@@ -395,23 +417,24 @@ ext_itr_num = 10;
 int_itr_num = 50;
 
 bar_x_my_gmres = zeros(size(nrmlB_k));
-tic; 
-disp('Computational time for solving Ax = b: ')
-bar_x_my_gmres = nrmlM_K\nrmlB_k;
-toc;
+% tic; 
+% disp('Computational time for solving Ax = b: ')
+% bar_x_my_gmres = nrmlM_K\nrmlB_k;
+% toc;
 % tic;
 % disp('Calculation time of iLU: ')
-% [ L_K, U_K ] = ilu( nrmlM_K, struct('type', 'ilutp', 'droptol', 1e-2) );
+% [ L_K, U_K ] = ilu( nrmlM_K, struct('type', 'ilutp', 'droptol', 1e-1) );
 % toc;
-% tic;
-% disp('The gmres solutin of Ax = B: ');
-% bar_x_my_gmres = gmres( nrmlM_K, B_k, int_itr_num, tol, ext_itr_num );
-% toc;
+tic;
+disp('The gmres solutin of Ax = B: ');
+bar_x_my_gmres = gmres( nrmlM_K, nrmlB_k, int_itr_num, tol, ext_itr_num );
+toc;
 
 % % save('Case0528_preBC_Case4.mat', 'bar_x_my_gmres', 'B_k');
 
 AFigsScript_test;
 
+return;
 % === % ==================== % === %
 % === % Calculation of Q_rel % === %
 % === % ==================== % === %
