@@ -1,4 +1,6 @@
-function lxFltr = getBndryNum(idx, lengthArray)
+function lxFltr = getBndryNum(idx, lengthArray, varargin)
+
+    nVarargs = length(varargin);
 
     cumArray = cumsum(lengthArray);
     lxFltr = - 1;
@@ -11,7 +13,7 @@ function lxFltr = getBndryNum(idx, lengthArray)
     % muscle-lung: 14
     % lung-tumor:  15
 
-    if length(lengthArray) == 6 % design for liver in the XZ plane
+    if length(lengthArray) == 6 % design for lung and cervix in the XZ plane
         if idx <= cumArray(1)
             lxFltr = 11;
         elseif idx <= cumArray(2)
