@@ -67,12 +67,51 @@ end
 % mediumTable( find(mediumTable == 3) ) = 2;
 shiftedCoordinateXYZ = constructCoordinateXYZ( GridShiftTable, [ w_y, w_x, w_z ], dx, dy, dz );
 
-
 % === % =================== % === %
 % === % Updating the SegMed % === %
 % === % =================== % === % 
 
-SegMed = ones( x_idx_max, y_idx_max, z_idx_max, 6, 8, 'uint8');
+FillingMed = uint8(1);
+SegMed = FillingMed * ones( x_idx_max, y_idx_max, z_idx_max, 6, 8, 'uint8');
+
+% MskMedTab = mediumTable;
+% MskMedTab( find(MskMedTab >= 10) ) = 0;
+% % update the SegMed for mediumTable(:) == 2;
+% disp('The fill up time of SegMed: ');
+% tic;
+% for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+%     % idx = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
+%     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
+%     % idx = idx;
+
+%     if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
+%         if MskMedTab(idx) ~= 0 % normal normal point
+%         % if mediumTable(idx) == 1 || mediumTable(idx) == 2 || mediumTable(idx) == 3 || mediumTable(idx) == 4 || mediumTable(idx) == 5 
+%             [ sparseA{ idx }, SegMed( m, n, ell, :, : ) ] = fillNrmlPt_A( m, n, ell, ...
+%                             shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab );
+%         elseif MskMedTab(idx) == 0 % normal bondary point
+%             [ sparseA{ idx }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
+%                 shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
+%                 epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
+%         end
+%     elseif ell == z_idx_max
+%         sparseA{ idx } = fillTop_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
+%     elseif ell == 1
+%         sparseA{ idx } = fillBttm_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
+%     elseif m == x_idx_max && ell >= 2 && ell <= z_idx_max - 1 
+%         sparseA{ idx } = fillRight_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
+%     elseif m == 1 && ell >= 2 && ell <= z_idx_max - 1 
+%         sparseA{ idx } = fillLeft_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
+%     elseif n == y_idx_max && m >= 2 && m <= x_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
+%         sparseA{ idx } = fillFront_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
+%     elseif n == 1 && m >= 2 && m <= x_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
+%         sparseA{ idx } = fillBack_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
+%     end
+% end
+% toc;
+
+% calculate the power of current sheet.
+
 for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
     if mediumTable(m, n, ell) == uint8(3)
@@ -88,22 +127,22 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
         z_idx_up   = int64(  h_z / (2 * dz) + w_z / (2 * dz) + 1);
 
         if ell == z_idx_up
-            SegMed(m, n, ell, :, :) = trimUp( squeeze( SegMed(m, n, ell, :, :) ), 2 );
+            SegMed(m, n, ell, :, :) = trimUp( squeeze( SegMed(m, n, ell, :, :) ), FillingMed );
         end
         if ell == z_idx_down
-            SegMed(m, n, ell, :, :) = trimDown( squeeze( SegMed(m, n, ell, :, :) ), 2 );
+            SegMed(m, n, ell, :, :) = trimDown( squeeze( SegMed(m, n, ell, :, :) ), FillingMed );
         end
         if m   == x_idx_left
-            SegMed(m, n, ell, :, :) = trimLeft( squeeze( SegMed(m, n, ell, :, :) ), 2 );
+            SegMed(m, n, ell, :, :) = trimLeft( squeeze( SegMed(m, n, ell, :, :) ), FillingMed );
         end
         if m   == x_idx_rght
-            SegMed(m, n, ell, :, :) = trimRight( squeeze( SegMed(m, n, ell, :, :) ), 2 );
+            SegMed(m, n, ell, :, :) = trimRight( squeeze( SegMed(m, n, ell, :, :) ), FillingMed );
         end
         if n   == y_idx_far
-            SegMed(m, n, ell, :, :) = trimFar( squeeze( SegMed(m, n, ell, :, :) ), 2 );
+            SegMed(m, n, ell, :, :) = trimFar( squeeze( SegMed(m, n, ell, :, :) ), FillingMed );
         end
         if n   == y_idx_near
-            SegMed(m, n, ell, :, :) = trimNear( squeeze( SegMed(m, n, ell, :, :) ), 2 );
+            SegMed(m, n, ell, :, :) = trimNear( squeeze( SegMed(m, n, ell, :, :) ), FillingMed );
         end
     end
 end
@@ -154,8 +193,8 @@ toc;
 % === % MedTetTable Construction % === %
 % === % ======================== % === % 
 
-% masking of SegMed
-SegMed( find(SegMed == 3) ) = 2;
+% % masking of SegMed
+% SegMed( find(SegMed == 3) ) = 2;
 
 tic;
 disp('Getting MedTetTableCell: ');
