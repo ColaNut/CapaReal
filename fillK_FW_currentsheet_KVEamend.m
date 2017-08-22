@@ -1,5 +1,5 @@
-function [ K1_6, K2_6, Kev_4, Kve_4, B_k_Pnt ] = fillK_FW_currentsheet( vIdx1, vIdx2, vIdx3, vIdx4, v1Table, v2Table, v3Table, v4Table, Vrtx_bndry, J_0, ...
-                    K1_6, K2_6, Kev_4, Kve_4, B_k_Pnt, PntJ_xyz, MedVal, epsilon_r, mu_r, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt, varargin )
+function Kve_4 = fillK_FW_currentsheet_KVEamend( vIdx1, vIdx2, vIdx3, vIdx4, v1Table, v2Table, v3Table, v4Table, Vrtx_bndry, J_0, ...
+                    Kve_4, PntJ_xyz, MedVal, epsilon_r, mu_r, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt, varargin )
     
     % PntJ_xyz = zeros(1, 3);
     % v to P
@@ -82,38 +82,38 @@ function [ K1_6, K2_6, Kev_4, Kve_4, B_k_Pnt ] = fillK_FW_currentsheet( vIdx1, v
     end
 
     % calculate K1, Kev, Kve
-    six_eIdx     = zeros(1, 6);
-    six_eVal     = zeros(2, 6); % first row for K1; while the second for K2
+    % six_eIdx     = zeros(1, 6);
+    % six_eVal     = zeros(2, 6); % first row for K1; while the second for K2
     four_vIdx    = zeros(1, 4);
-    four_vVal_ev = zeros(1, 4);
+    % four_vVal_ev = zeros(1, 4);
     four_vVal_ve = zeros(4, 1);
-    Bk_val = 0;
+    % Bk_val = 0;
 
-    EightTet_e = zeros(8, 6);
-    EightTet_v = zeros(8, 4);
+    % EightTet_e = zeros(8, 6);
+    % EightTet_v = zeros(8, 4);
 
-    six_eIdx(1) = P1_table(P2);
-    six_eIdx(2) = P1_table(P3);
-    six_eIdx(3) = P1_table(P4);
-    six_eIdx(4) = P2_table(P3);
-    six_eIdx(5) = P2_table(P4);
-    six_eIdx(6) = P3_table(P4);
+    % six_eIdx(1) = P1_table(P2);
+    % six_eIdx(2) = P1_table(P3);
+    % six_eIdx(3) = P1_table(P4);
+    % six_eIdx(4) = P2_table(P3);
+    % six_eIdx(5) = P2_table(P4);
+    % six_eIdx(6) = P3_table(P4);
     four_vIdx = [ P1, P2, P3, P4 ]; 
 
     % update tge Px_flag and J_0
-    cFlag = false;
-    [ Bk_val, cFlag ] = getWmJ( P1_Crdt, P2_Crdt, P3_Crdt, P4_Crdt, ...
-                            P1_flag, P2_flag, P3_flag, P4_flag, mainEdge, InnExtText, J_0, cFlag );
-    [ six_eVal, four_vVal_ev ] = get6E4V_omega( P1_Crdt, P2_Crdt, P3_Crdt, P4_Crdt, mainEdge, InnExtText, mu_r(MedVal), epsilon_r(MedVal) );
+    % cFlag = false;
+    % [ Bk_val, cFlag ] = getWmJ( P1_Crdt, P2_Crdt, P3_Crdt, P4_Crdt, ...
+    %                         P1_flag, P2_flag, P3_flag, P4_flag, mainEdge, InnExtText, J_0, cFlag );
+    four_vVal_ev = get4V_omega_amend( P1_Crdt, P2_Crdt, P3_Crdt, P4_Crdt, mainEdge, InnExtText, mu_r(MedVal), epsilon_r(MedVal) );
 
     % Right tetrahedron
     four_vVal_ve = four_vVal_ev' / ( epsilon_r(MedVal)^2 * mu_r(MedVal) ) ...
             - calKVE_TetPatch_Right( P1_Crdt, P2_Crdt, P3_Crdt, P4_Crdt, ...
                     P1_flag, P2_flag, P3_flag, P4_flag, mainEdge, InnExtText, mu_r(MedVal), epsilon_r(MedVal) );
 
-    K1_6(six_eIdx) = K1_6(six_eIdx) + six_eVal(1, :); 
-    K2_6(six_eIdx) = K2_6(six_eIdx) + six_eVal(2, :); 
-    Kev_4(four_vIdx) = Kev_4(four_vIdx) + four_vVal_ev;
+    % K1_6(six_eIdx) = K1_6(six_eIdx) + six_eVal(1, :); 
+    % K2_6(six_eIdx) = K2_6(six_eIdx) + six_eVal(2, :); 
+    % Kev_4(four_vIdx) = Kev_4(four_vIdx) + four_vVal_ev;
     Kve_4(four_vIdx) = Kve_4(four_vIdx) - four_vVal_ve;
-    B_k_Pnt = B_k_Pnt + Bk_val;
+    % B_k_Pnt = B_k_Pnt + Bk_val;
 end

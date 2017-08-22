@@ -859,7 +859,7 @@ toc;
 % % === % ========================= % === %
 
 % M_K = sparse(N_e, N_e);
-% M_K = M_K1 - Mu_0 * Omega_0^2 * M_K2 - M_KEV * M_sparseGVV_inv_spai * M_KVE;
+% M_K = M_K1 - Epsilon_0 * Mu_0 * Omega_0^2 * M_K2 - M_KEV * M_sparseGVV_inv_spai * M_KVE;
 
 % % === % ============================ % === %
 % % === % Sparse Normalization Process % === %

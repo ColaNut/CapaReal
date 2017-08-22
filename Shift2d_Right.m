@@ -4,19 +4,22 @@
 
 clc; clear;
 digits;
-disp('K, case 1, Right Tetrahdra');
+disp('MQS, Right Tetrahedra, 100 kHz: ');
 
 Mu_0          = 4 * pi * 10^(-7);
 Epsilon_0     = 10^(-9) / (36 * pi);
+% Omega_0       = 2 * pi * 8 * 10^6; % 2 * pi * 8 MHz
 Omega_0       = 2 * pi * 100 * 10^3; % 2 * pi * 100 kHz
 J_0           = 1500;
 
 % paras: 
 %               air, bolus, mucle
 rho           = [ 1,  1020, 1020 ]';
-% epsilon_r_pre = [ 1,    80,   80 ]';
+% epsilon_r_pre = [ 1,     1,    1 ]';
 % sigma         = [ 0,     0,    0 ]';
-epsilon_r_pre = [ 1, 80, 9658 ]';
+% epsilon_r_pre = [ 1,    80,  113 ]';
+% sigma         = [ 0,     0, 0.61 ]';
+epsilon_r_pre = [ 1,  1, 9658 ]';
 sigma         = [ 0,  0,  0.4 ]';
 epsilon_r     = epsilon_r_pre - j * sigma / ( Omega_0 * Epsilon_0 );
 mu_prime      = [ 1,     1,    1 ]';
@@ -71,44 +74,44 @@ shiftedCoordinateXYZ = constructCoordinateXYZ( GridShiftTable, [ w_y, w_x, w_z ]
 % === % Updating the SegMed % === %
 % === % =================== % === % 
 
-FillingMed = uint8(1);
-SegMed = FillingMed * ones( x_idx_max, y_idx_max, z_idx_max, 6, 8, 'uint8');
+FillingMed = uint8(2);
+SegMed = ones( x_idx_max, y_idx_max, z_idx_max, 6, 8, 'uint8');
 
-% MskMedTab = mediumTable;
-% MskMedTab( find(MskMedTab >= 10) ) = 0;
-% % update the SegMed for mediumTable(:) == 2;
-% disp('The fill up time of SegMed: ');
-% tic;
-% for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
-%     % idx = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
-%     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
-%     % idx = idx;
+MskMedTab = mediumTable;
+MskMedTab( find(MskMedTab >= 10) ) = 0;
+% update the SegMed for mediumTable(:) == 2;
+disp('The fill up time of SegMed: ');
+tic;
+for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+    % idx = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
+    [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
+    % idx = idx;
 
-%     if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
-%         if MskMedTab(idx) ~= 0 % normal normal point
-%         % if mediumTable(idx) == 1 || mediumTable(idx) == 2 || mediumTable(idx) == 3 || mediumTable(idx) == 4 || mediumTable(idx) == 5 
-%             [ sparseA{ idx }, SegMed( m, n, ell, :, : ) ] = fillNrmlPt_A( m, n, ell, ...
-%                             shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab );
-%         elseif MskMedTab(idx) == 0 % normal bondary point
-%             [ sparseA{ idx }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
-%                 shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
-%                 epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
-%         end
-%     elseif ell == z_idx_max
-%         sparseA{ idx } = fillTop_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
-%     elseif ell == 1
-%         sparseA{ idx } = fillBttm_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
-%     elseif m == x_idx_max && ell >= 2 && ell <= z_idx_max - 1 
-%         sparseA{ idx } = fillRight_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
-%     elseif m == 1 && ell >= 2 && ell <= z_idx_max - 1 
-%         sparseA{ idx } = fillLeft_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
-%     elseif n == y_idx_max && m >= 2 && m <= x_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
-%         sparseA{ idx } = fillFront_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
-%     elseif n == 1 && m >= 2 && m <= x_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
-%         sparseA{ idx } = fillBack_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
-%     end
-% end
-% toc;
+    if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
+        if MskMedTab(idx) ~= 0 % normal normal point
+        % if mediumTable(idx) == 1 || mediumTable(idx) == 2 || mediumTable(idx) == 3 || mediumTable(idx) == 4 || mediumTable(idx) == 5 
+            [ sparseA{ idx }, SegMed( m, n, ell, :, : ) ] = fillNrmlPt_A( m, n, ell, ...
+                            shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab );
+        elseif MskMedTab(idx) == 0 % normal bondary point
+            [ sparseA{ idx }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
+                shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
+                epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
+        end
+    elseif ell == z_idx_max
+        sparseA{ idx } = fillTop_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
+    elseif ell == 1
+        sparseA{ idx } = fillBttm_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
+    elseif m == x_idx_max && ell >= 2 && ell <= z_idx_max - 1 
+        sparseA{ idx } = fillRight_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
+    elseif m == 1 && ell >= 2 && ell <= z_idx_max - 1 
+        sparseA{ idx } = fillLeft_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
+    elseif n == y_idx_max && m >= 2 && m <= x_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
+        sparseA{ idx } = fillFront_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
+    elseif n == 1 && m >= 2 && m <= x_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
+        sparseA{ idx } = fillBack_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
+    end
+end
+toc;
 
 % calculate the power of current sheet.
 
@@ -434,7 +437,8 @@ M_K2 = mySparse2MatlabSparse( m_K2, N_e, N_e, 'Row' );
 M_KEV = mySparse2MatlabSparse( m_KEV, N_e, N_v, 'Row' );
 M_KVE = mySparse2MatlabSparse( m_KVE, N_v, N_e, 'Col' );
 toc;
-M_K = M_K1 - Epsilon_0 * Mu_0 * Omega_0^2 * M_K2 - M_KEV * M_sparseGVV_inv_spai * M_KVE;
+M_K = M_K1 - M_KEV * M_sparseGVV_inv_spai * M_KVE;
+% M_K = M_K1 - Epsilon_0 * Mu_0 * Omega_0^2 * M_K2 - M_KEV * M_sparseGVV_inv_spai * M_KVE;
 
 % === % ============================ % === %
 % === % Sparse Normalization Process % === %
@@ -451,23 +455,23 @@ toc;
 % === % Direct solver and iteratve solver (iLU-preconditioned GMRES) % === %
 % === % ============================================================ % === %
 
-tol = 1e-6;
-ext_itr_num = 10;
-int_itr_num = 50;
+% tol = 1e-6;
+% ext_itr_num = 10;
+% int_itr_num = 50;
 
 bar_x_my_gmres = zeros(size(nrmlB_k));
-% tic; 
-% disp('Computational time for solving Ax = b: ')
-% bar_x_my_gmres = nrmlM_K\nrmlB_k;
-% toc;
+tic; 
+disp('Computational time for solving Ax = b: ')
+bar_x_my_gmres = nrmlM_K\nrmlB_k;
+toc;
 % tic;
 % disp('Calculation time of iLU: ')
 % [ L_K, U_K ] = ilu( nrmlM_K, struct('type', 'ilutp', 'droptol', 1e-1) );
 % toc;
-tic;
-disp('The gmres solutin of Ax = B: ');
-bar_x_my_gmres = gmres( nrmlM_K, nrmlB_k, int_itr_num, tol, ext_itr_num );
-toc;
+% tic;
+% disp('The gmres solutin of Ax = B: ');
+% bar_x_my_gmres = gmres( nrmlM_K, nrmlB_k, int_itr_num, tol, ext_itr_num, L_K, U_K );
+% toc;
 
 % % save('Case0528_preBC_Case4.mat', 'bar_x_my_gmres', 'B_k');
 
