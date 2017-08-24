@@ -7,6 +7,7 @@ tumor_ell = tumor_z / dz + air_z / (2 * dz) + 1;
 
 if flag_XZ == 1
     H_XZ = zeros(x_idx_max, z_idx_max, 6, 8, 3); 
+    E_XZ = zeros(x_idx_max, z_idx_max, 6, 8, 3); 
     % CrossN = int64( w_y / (2 * dy) + 1 );
     n = tumor_n;
     tic;
@@ -26,6 +27,7 @@ if flag_XZ == 1
             % the getH_2 is now modified to getE^{(1)}: E^(1) = - j omega \mu_0 A^(1) field, 
             % where \mu_0 is amended for a dropped scaling in the GMRES procedure.
             H_XZ(m, ell, :, :, :) = getH_2( PntsIdx, Vertex_Crdnt, A, G_27cols, mu_r, squeeze(SegMed(m, n, ell, :, :)), x_max_vertex, y_max_vertex, z_max_vertex );
+            E_XZ(m, ell, :, :, :) = - j * Omega_0 * Mu_0 * getEfromA( PntsIdx, Vertex_Crdnt, A, G_27cols, mu_r, squeeze(SegMed(m, n, ell, :, :)), x_max_vertex, y_max_vertex, z_max_vertex );
         end
     end
     toc;
@@ -88,7 +90,11 @@ if flag_XZ == 1
                 V27Crdnt = zeros(3, 9, 3);
                 [ bypasser, V27Crdnt ] = get27Pnts( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, Vertex_Crdnt );
                 MidPnts9Crdnt = getMidPnts9CrdntXZ( V27Crdnt );
-                plotPntH( abs(squeeze(H_XZ(m, ell, :, :, dirFlag))), MidPnts9Crdnt, 'XZ' );
+                if E_flag == 1
+                    plotPntH( abs(squeeze(E_XZ(m, ell, :, :, dirFlag))), MidPnts9Crdnt, 'XZ' );
+                else
+                    plotPntH( abs(squeeze(H_XZ(m, ell, :, :, dirFlag))), MidPnts9Crdnt, 'XZ' );
+                end
             end
         end
         toc;
@@ -129,6 +135,7 @@ end
 
 if flag_XY == 1
     H_XY = zeros(x_idx_max, y_idx_max, 6, 8, 3); 
+    E_XY = zeros(x_idx_max, y_idx_max, 6, 8, 3); 
     ell = tumor_ell;
     % ell = CrossEll;
     tic;
@@ -146,6 +153,7 @@ if flag_XY == 1
             G_27cols = G(:, PntsIdx_t(:));
             % the getH_2 is now modified to getE^{(1)}.
             H_XY(m, n, :, :, :) = getH_2( PntsIdx, Vertex_Crdnt, A, G_27cols, mu_r, squeeze(SegMed(m, n, ell, :, :)), x_max_vertex, y_max_vertex, z_max_vertex );
+            E_XY(m, n, :, :, :) = - j * Omega_0 * Mu_0 * getEfromA( PntsIdx, Vertex_Crdnt, A, G_27cols, mu_r, squeeze(SegMed(m, n, ell, :, :)), x_max_vertex, y_max_vertex, z_max_vertex );
             % H_XY(m, n, :, :, :) = getH(m, n, ell, x_idx_max, y_idx_max, ...
             %                             x_max_vertex, y_max_vertex, z_max_vertex, shiftedCoordinateXYZ, ...
             %                                 A, mu_r, squeeze( SegMed( m, n, ell, :, : ) ) );
@@ -222,7 +230,11 @@ if flag_XY == 1
                 V27Crdnt = zeros(3, 9, 3);
                 [ bypasser, V27Crdnt ] = get27Pnts( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, Vertex_Crdnt );
                 MidPnts9Crdnt = getMidPnts9CrdntXY( V27Crdnt );
-                plotPntH( abs(squeeze(H_XY(m, n, :, :, dirFlag))), MidPnts9Crdnt, 'XY' );
+                if E_flag == 1
+                    plotPntH( abs(squeeze(E_XY(m, n, :, :, dirFlag))), MidPnts9Crdnt, 'XY' );
+                else
+                    plotPntH( abs(squeeze(H_XY(m, n, :, :, dirFlag))), MidPnts9Crdnt, 'XY' );
+                end
             end
         end
         toc;
@@ -262,6 +274,7 @@ end
 
 if flag_YZ == 1
     H_YZ = zeros(y_idx_max, z_idx_max, 6, 8, 3); 
+    E_YZ = zeros(y_idx_max, z_idx_max, 6, 8, 3); 
     m = tumor_m;
     % m = CrossM;
     tic;
@@ -280,6 +293,7 @@ if flag_YZ == 1
             G_27cols = G(:, PntsIdx_t(:));
             % the getH_2 is now modified to getE^{(1)}.
             H_YZ(n, ell, :, :, :) = getH_2( PntsIdx, Vertex_Crdnt, A, G_27cols, mu_r, squeeze(SegMed(m, n, ell, :, :)), x_max_vertex, y_max_vertex, z_max_vertex );
+            E_YZ(m, ell, :, :, :) = - j * Omega_0 * Mu_0 * getEfromA( PntsIdx, Vertex_Crdnt, A, G_27cols, mu_r, squeeze(SegMed(m, n, ell, :, :)), x_max_vertex, y_max_vertex, z_max_vertex );
             % H_YZ(n, ell, :, :, :) = getH(m, n, ell, x_idx_max, y_idx_max, ...
             %                             x_max_vertex, y_max_vertex, z_max_vertex, shiftedCoordinateXYZ, ...
             %                                 A, mu_r, squeeze( SegMed( m, n, ell, :, : ) ) );
@@ -335,7 +349,11 @@ if flag_YZ == 1
                 V27Crdnt = zeros(3, 9, 3);
                 [ bypasser, V27Crdnt ] = get27Pnts( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, Vertex_Crdnt );
                 MidPnts9Crdnt = getMidPnts9CrdntYZ( V27Crdnt );
-                plotPntH( abs(squeeze(H_YZ(n, ell, :, :, dirFlag))), MidPnts9Crdnt, 'YZ' );
+                if E_flag == 1
+                    plotPntH( abs(squeeze(E_YZ(n, ell, :, :, dirFlag))), MidPnts9Crdnt, 'YZ' );
+                else
+                    plotPntH( abs(squeeze(H_YZ(n, ell, :, :, dirFlag))), MidPnts9Crdnt, 'YZ' );
+                end
             end
         end
         toc;

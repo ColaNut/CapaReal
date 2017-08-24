@@ -38,39 +38,39 @@ if isreal(tumor_r)
 end
 
 
-% plot electrode
-t = linspace( 0, 2 * pi, 400 );
-X = bolus_a * cos(t);
-Z = bolus_b * sin(t);
-% The below parameters need to be synchronize with UpElecrode and DwnELectrode
+% % plot electrode
+% t = linspace( 0, 2 * pi, 400 );
+% X = bolus_a * cos(t);
+% Z = bolus_b * sin(t);
+% % The below parameters need to be synchronize with UpElecrode and DwnELectrode
 
-nVarargs = length(varargin);
-if nVarargs == 3
-    ElectrodeX    = 100 * varargin{1};
-    h_x_halfUp    = 100 * varargin{2};
-    h_x_halfDwn   = 100 * varargin{3};
-else
-    ElectrodeX = tumor_x;
-    h_x_halfUp = 6;
-    h_x_halfDwn = 10;
-end
-UpIdx = find( Z > 0 & X >= ElectrodeX - h_x_halfUp & X <= ElectrodeX + h_x_halfUp );
-DwnIdx = find( Z < 0 & X >= ElectrodeX - h_x_halfDwn & X <= ElectrodeX + h_x_halfDwn );
-plot(X(UpIdx), Z(UpIdx), 'Color', [0, 0, 0], 'LineWidth', 4.5);
-hold on;
-plot(X(DwnIdx), Z(DwnIdx), 'Color', [0, 0, 0], 'LineWidth', 4.5);
-hold on;
-% Phi: 2.7; 2.7
-% SAR: 4.5; 4.5
-
-x_grid = - myCeil(air_x / 2, dx): dx: myCeil(air_x / 2, dx);
-z_grid = - myCeil(air_z / 2, dz): dz: myCeil(air_z / 2, dz);
-
-[ X_grid, Z_grid ] = meshgrid(x_grid, z_grid);
-% for idx = 1: 1: size(Z_grid, 1)
-%     scatter( x_grid, Z_grid(idx, :), 10 );
-%     hold on;
+% nVarargs = length(varargin);
+% if nVarargs == 3
+%     ElectrodeX    = 100 * varargin{1};
+%     h_x_halfUp    = 100 * varargin{2};
+%     h_x_halfDwn   = 100 * varargin{3};
+% else
+%     ElectrodeX = tumor_x;
+%     h_x_halfUp = 6;
+%     h_x_halfDwn = 10;
 % end
-% axis( [ min(x_grid), max(x_grid), min(z_grid), max(z_grid) ] );
+% UpIdx = find( Z > 0 & X >= ElectrodeX - h_x_halfUp & X <= ElectrodeX + h_x_halfUp );
+% DwnIdx = find( Z < 0 & X >= ElectrodeX - h_x_halfDwn & X <= ElectrodeX + h_x_halfDwn );
+% plot(X(UpIdx), Z(UpIdx), 'Color', [0, 0, 0], 'LineWidth', 4.5);
+% hold on;
+% plot(X(DwnIdx), Z(DwnIdx), 'Color', [0, 0, 0], 'LineWidth', 4.5);
+% hold on;
+% % Phi: 2.7; 2.7
+% % SAR: 4.5; 4.5
+
+% x_grid = - myCeil(air_x / 2, dx): dx: myCeil(air_x / 2, dx);
+% z_grid = - myCeil(air_z / 2, dz): dz: myCeil(air_z / 2, dz);
+
+% [ X_grid, Z_grid ] = meshgrid(x_grid, z_grid);
+% % for idx = 1: 1: size(Z_grid, 1)
+% %     scatter( x_grid, Z_grid(idx, :), 10 );
+% %     hold on;
+% % end
+% % axis( [ min(x_grid), max(x_grid), min(z_grid), max(z_grid) ] );
 
 end

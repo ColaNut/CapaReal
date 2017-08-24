@@ -21,8 +21,15 @@ if A_flag == 1
     % CaseName = '0321';
     % fname = 'e:\Kevin\CapaReal\Case0220_1cmFat';
     % CaseDate = 'Case0220_1cmFat';
-    ADstrbtn_Directed_H;
+    % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0823LungMQS\';
+    fname = 'D:\Kevin\CapaReal\0823LungMQS\';
+    LungMQS_H0_plot
+    LungMQS_E0_plot
+    % E_flag = 1;
+    % E_H_plot;
+
     % ADstrbtn;
+
     % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'fig');
     % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
     % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'fig');
