@@ -1006,8 +1006,8 @@ toc;
 % === === === === === === % =============================== % === === === === === === === %
 
 dt = 15; % 20 seconds
-timeNum_all = 60; % 1 minutes
-% timeNum_all = 50 * 60; % 50 minutes
+% timeNum_all = 60; % 1 minutes
+timeNum_all = 50 * 60; % 50 minutes
 loadThermalParas;
 
 m_U   = cell(N_v, 1);

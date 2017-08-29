@@ -1,16 +1,16 @@
-% % % === === % ================================= % === === %
-% % % === === % Reload zeroth-order E and H field % === === %
-% % % === === % =================================  % === === %
-% clc; clear;
-% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0808LungMQSConformal\0808MQS_conformal_preK.mat')
-% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0823LungMQS\0823_8MHz_zerothOrder.mat');
-% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0823LungMQS\Lung_Q_s_MNP.mat', 'muPrmPrm_MNP', 'Omega_0');
+% % === === % ================================= % === === %
+% % === === % Reload zeroth-order E and H field % === === %
+% % === === % =================================  % === === %
+clc; clear;
+load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0824LiverMQS\0824preK1_liver.mat')
+load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0824LiverMQS\0827_8MHz_Liver_zerothOrder.mat');
+load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0823LungMQS\0829_8MHz_Lung_Q_s_MNP.mat', 'muPrmPrm_MNP', 'Omega_0');
 
 % % === === % ========= % === === %
 % % === === % Flag Sets % === === %
 % % === === % ========= % === === %
-E_XZ_flag = 1;
-E_XY_flag = 1;
+E_XZ_flag = 0;
+E_XY_flag = 0;
 E_YZ_flag = 1;
 
 SAR_XZ_flag = 0;
@@ -19,9 +19,9 @@ SAR_YZ_flag = 0;
 
 SAR_XZ_MNP_flag = 0;
 
-% % === === % ===================== % === === %
-% % === === % J_0 modification part % === === %
-% % === === % ===================== % === === %
+% === === % ================================= % === === %
+% === === % J_0 modification part (cancelled) % === === %
+% === === % ================================= % === === %
 % % frequency from 100 kHz to 8 MHz; J_0 from 5,000 to 5,000 / 80
 % E_XZ = E_XZ / 80; 
 % E_XY = E_XY / 80; 
@@ -42,8 +42,8 @@ SAR_XZ_MNP_flag = 0;
 % tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1;
 % tumor_ell = tumor_z / dz + air_z / (2 * dz) + 1;
 
-% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0823LungMQS\';
-% CaseName = '0823';
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0824LiverMQS\';
+% CaseName = '0824';
 
 % % === === % =================== % === === %
 % % === === % Preparing Abs value % === === %
@@ -141,9 +141,10 @@ if E_XZ_flag
     % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
     box on;
     view(2);
-    paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
-    plotMap( paras2dXZ, dx, dz );
-    plotRibXZ(Ribs, SSBone, dx, dz);
+    plotLiverXZ( paras, tumor_y, dx, dz );
+    % paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
+    % plotMap( paras2dXZ, dx, dz );
+    % plotRibXZ(Ribs, SSBone, dx, dz);
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
     saveas(figure(27), fullfile(fname, strcat(CaseName, 'E1_XZ_MQS')), 'jpg');
     % saveas(figure(9), 'E_XZ_FullWave.jpg');
@@ -196,8 +197,9 @@ if E_XY_flag
     % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
     box on;
     view(2);
-    paras2dXY = genParas2dXY( tumor_z, paras, dx, dy, dz );
-    plotXY( paras2dXY, dx, dy );
+    plotLiverXY( paras, tumor_z, dx, dy );
+    % paras2dXY = genParas2dXY( tumor_z, paras, dx, dy, dz );
+    % plotXY( paras2dXY, dx, dy );
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
     saveas(figure(28), fullfile(fname, strcat(CaseName, 'E1_XY_MQS')), 'jpg');
     % saveas(figure(9), 'E_XZ_FullWave.jpg');
@@ -249,8 +251,9 @@ if E_YZ_flag
     % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
     box on;
     view(2);
-    paras2dYZ = genParas2dYZ( tumor_x, paras, dy, dz );
-    plotYZ( paras2dYZ, dy, dz );
+    plotLiverYZ( paras, tumor_x, dy, dz );
+    % paras2dYZ = genParas2dYZ( tumor_x, paras, dy, dz );
+    % plotYZ( paras2dYZ, dy, dz );
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
     saveas(figure(29), fullfile(fname, strcat(CaseName, 'E1_YZ_MQS')), 'jpg');
     % saveas(figure(9), 'E_XZ_FullWave.jpg');
@@ -313,9 +316,10 @@ if SAR_XZ_flag
     % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
     box on;
     view(2);
-    paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
-    plotMap( paras2dXZ, dx, dz );
-    plotRibXZ(Ribs, SSBone, dx, dz);
+    plotLiverXZ( paras, tumor_y, dx, dz );
+    % paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
+    % plotMap( paras2dXZ, dx, dz );
+    % plotRibXZ(Ribs, SSBone, dx, dz);
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
     saveas(figure(31), fullfile(fname, strcat(CaseName, 'SAR_XZ_MQS')), 'jpg');
     % saveas(figure(31), 'E_XZ_FullWave.jpg');
@@ -370,8 +374,9 @@ if SAR_XY_flag
     % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
     box on;
     view(2);
-    paras2dXY = genParas2dXY( tumor_z, paras, dx, dy, dz );
-    plotXY( paras2dXY, dx, dy );
+    plotLiverXY( paras, tumor_z, dx, dy );
+    % paras2dXY = genParas2dXY( tumor_z, paras, dx, dy, dz );
+    % plotXY( paras2dXY, dx, dy );
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
     saveas(figure(32), fullfile(fname, strcat(CaseName, 'SAR_XY_MQS')), 'jpg');
     % saveas(figure(32), 'E_XZ_FullWave.jpg');
@@ -428,8 +433,9 @@ if SAR_YZ_flag
     % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
     box on;
     view(2);
-    paras2dYZ = genParas2dYZ( tumor_x, paras, dy, dz );
-    plotYZ( paras2dYZ, dy, dz );
+    plotLiverYZ( paras, tumor_x, dy, dz );
+    % paras2dYZ = genParas2dYZ( tumor_x, paras, dy, dz );
+    % plotYZ( paras2dYZ, dy, dz );
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
     saveas(figure(33), fullfile(fname, strcat(CaseName, 'SAR_YZ_MQS')), 'jpg');
     % saveas(figure(33), 'E_XZ_FullWave.jpg');
@@ -493,9 +499,10 @@ if SAR_XZ_MNP_flag
     % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
     box on;
     view(2);
-    paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
-    plotMap( paras2dXZ, dx, dz );
-    plotRibXZ(Ribs, SSBone, dx, dz);
+    plotLiverXZ( paras, tumor_y, dx, dz );
+    % paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
+    % plotMap( paras2dXZ, dx, dz );
+    % plotRibXZ(Ribs, SSBone, dx, dz);
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
     saveas(figure(34), fullfile(fname, strcat(CaseName, 'SAR_XZ_MNP_MQS')), 'jpg');
     % saveas(figure(34), 'E_XZ_FullWave.jpg');

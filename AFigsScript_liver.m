@@ -22,10 +22,9 @@ if A_flag == 1
     % fname = 'e:\Kevin\CapaReal\Case0220_1cmFat';
     % CaseDate = 'Case0220_1cmFat';
     % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0823LungMQS\';
-    fname = 'D:\Kevin\CapaReal\0824LiverMQS\';
-    SAR_flag = 1;
-    LungMQS_H0_plot
-    LungMQS_E0_plot
+    fname = 'f:\CapaReal\';
+    LiverMQS_H0_plot
+    LiverMQS_E0_plot
     % E_flag = 1;
     % E_H_plot;
 

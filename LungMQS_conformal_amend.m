@@ -895,7 +895,7 @@
 % % % % % % end
 % % % % % % toc;
 
-% % % % % % save( strcat('0808MQS_conformal_postK', str2num(PartNum), '_noFatAndBone.mat' ) );
+% % % % % % save( strcat('0808MQS_conformal_postK', num2str(PartNum), '_noFatAndBone.mat' ) );
 
 % % % % % % return;
 % % % % % % % save('0721PostK_FirstHalf.mat');
@@ -1138,8 +1138,8 @@
 % % % %         PntE_0 = zeros(6, 8, 3);
 % % % %         PntE_0 = - j * Omega_0 * Mu_0 * getEfromA( PntsIdx, Vertex_Crdnt, A, G_27cols, mu_r, squeeze(SegMed(m, n, ell, :, :)), x_max_vertex, y_max_vertex, z_max_vertex );
 % % % %         SigmaE(m, n, ell, :, :, : ) = sigma( repmat( squeeze(SegMed(m, n, ell, :, :)), [1, 1, 3] ) ) .* PntE_0;
-% % % %         % implement get48_E0_norm.m
-% % % %         Q_s0(m, n, ell, :, :) = 0.5 * sigma( squeeze(SegMed(m, n, ell, :, :)) ) .* get48_E0_norm( PntE_0 );
+% % % %         % implement get48_E0_sqr.m
+% % % %         Q_s0(m, n, ell, :, :) = 0.5 * sigma( squeeze(SegMed(m, n, ell, :, :)) ) .* get48_E0_sqr( PntE_0 );
 % % % %     end
 % % % % end
 % % % % toc;
