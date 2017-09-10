@@ -25,23 +25,6 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
 end
 toc;
 
-% % updating the bolus
-% for tIdx = 1: 1: TetNum
-%     v1234 = find( MedTetTable(tIdx, :) )';
-%     MedVal = MedTetTable( tIdx, v1234(1) );
-%     if MedVal == 2
-%         T_end(v1234) = T_bolus;
-%     end
-% end
-% % updating the muscle
-% for tIdx = 1: 1: TetNum
-%     v1234 = find( MedTetTable(tIdx, :) )';
-%     MedVal = MedTetTable( tIdx, v1234(1) );
-%     if MedVal == 3
-%         T_end(v1234) = T_0;
-%     end
-% end
-
 if T_flagXZ == 1
     figure(21);
     clf;
@@ -145,7 +128,7 @@ if T_flagXZ == 1
     set(gca,'LineWidth',2.0);
     caxis([5, 50]);
     axis equal;
-    axis( [ - 20, 20, - 15, 15 ] );
+    axis( [ - 2.5, 2.5, - 2.5, 2.5 ] );
     cb = colorbar;
     box on;
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 25);
@@ -155,7 +138,7 @@ if T_flagXZ == 1
     paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
     plotMap( paras2dXZ, dx, dz );
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    saveas(figure(21), 'TestTmprtrXZ0903.jpg');
+    saveas(figure(21), 'CervixEQSTmprtrXZ0830.jpg');
 end
 
 if T_flagXY == 1
@@ -256,7 +239,7 @@ if T_flagXY == 1
     set(gca,'LineWidth',2.0);
     caxis([5, 50]);
     axis equal;
-    axis( [ - 20, 20, - 15, 15 ] );
+    axis( [ - 2.5, 2.5, - 2.5, 2.5 ] );
     cb = colorbar;
     set(cb, 'FontSize', 18);
     hold on;
@@ -268,7 +251,7 @@ if T_flagXY == 1
     % plotGridLineXY( shiftedCoordinateXYZ, tumor_ell_v );
     % plotMap( paras2dXZ, dx, dz, top_x0, top_dx, down_dx );
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    saveas(figure(22), 'TestTmprtrXY0903.jpg');
+    saveas(figure(22), 'CervixEQSTmprtrXY0830.jpg');
 end
 
 if T_flagYZ == 1
@@ -371,7 +354,7 @@ if T_flagYZ == 1
     set(cb, 'FontSize', 18);
     caxis([5, 50]);
     axis equal;
-    axis( [ - 15, 15, - 15, 15 ] );
+    axis( [ - 2.5, 2.5, - 2.5, 2.5 ] );
     hold on;
     box on;
     xlabel('$y$ (cm)', 'Interpreter','LaTex', 'FontSize', 25);
@@ -381,6 +364,6 @@ if T_flagYZ == 1
     % plotGridLineYZ( shiftedCoordinateXYZ, tumor_m_v );
     % plotMap( paras2dXZ, dx, dz, top_x0, top_dx, down_dx );
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    saveas(figure(23), 'TestTmprtrYZ0903.jpg');
+    saveas(figure(23), 'CervixEQSTmprtrYZ0830.jpg');
 end
 

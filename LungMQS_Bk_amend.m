@@ -727,7 +727,7 @@ B_k = zeros(N_e, 1);
 % edgeChecker = false(l_G, 1);
 % cFlagChecker = false(l_G, 1);
 % BioFlag = true(N_v, 1);
-J_0 = 5000; % surface current density: 5000 (A/m)
+J_0 = 400; % surface current density: 5000 (A/m)
 
 Vrtx_bndry( find(Vrtx_bndry == loopNum) ) = uint8(1);
 tic; 

@@ -767,161 +767,181 @@
 
 % % return;
 
-% clc; clear;
-% load('0824preK1_liver.mat');
+clc; clear;
+load('0824preK1_liver.mat');
 
-% PartNum = 1;
+              % [ air, bolus, muscle, lung,   tumor,  bone,   fat ]';
+mu_prime      = [   1,     1,      1,     1,      1,     1,     1 ]';
+mu_db_prime   = [   0,     0,      0,     0, 0.4288,     0,     0 ]';
+% mu_db_prime   = [ 0,    0.62 ]';
+mu_r          = mu_prime - i * mu_db_prime;
 
-% switch PartNum
-%     case 1
-%         Rng = [ 1, ceil(l_G / 6) ];
-%     case 2
-%         Rng = [ ceil(l_G / 6) + 1, ceil(2 * l_G / 6) ];
-%     case 3
-%         Rng = [ ceil(2 * l_G / 6) + 1, ceil(3 * l_G / 6) ];
-%     case 4
-%         Rng = [ ceil(3 * l_G / 6) + 1, ceil(4 * l_G / 6) ];
-%     case 5
-%         Rng = [ ceil(4 * l_G / 6) + 1, ceil(5 * l_G / 6) ];
-%     case 6
-%         Rng = [ ceil(5 * l_G / 6) + 1, l_G ];
-%     otherwise
-%         error('check');
-% end
+% === % =================================== % === %
+% === % Filling Time of K1, Kev, Kve and Bk % === %
+% === % =================================== % === %
 
-% % === % =================================== % === %
-% % === % Filling Time of K1, Kev, Kve and Bk % === %
-% % === % =================================== % === %
+B_k = zeros(N_e, 1);
+m_K1 = cell(N_e, 1);
+% m_K2 = cell(N_e, 1);
+% m_KEV = cell(N_e, 1);
+% m_KVE = cell(1, N_e);
+edgeChecker = false(l_G, 1);
+cFlagChecker = false(l_G, 1);
+BioFlag = true(N_v, 1);
+J_0 = 50; % surface current density: 50 (A/m) at 8 MHz
 
-% B_k = zeros(N_e, 1);
-% m_K1 = cell(N_e, 1);
-% % m_K2 = cell(N_e, 1);
-% % m_KEV = cell(N_e, 1);
-% % m_KVE = cell(1, N_e);
-% edgeChecker = false(l_G, 1);
-% cFlagChecker = false(l_G, 1);
-% BioFlag = true(N_v, 1);
- % J_0 = 50; % surface current density: 50 (A/m) at 8 MHz
+TumorRelated = false(l_G, 1);
+tic; 
+disp('Getting tumor related eIdx');
+% disp('The filling time of K_1, K_EV, K_VE and B: ');
+parfor eIdx = 1: 1: l_G
+    Candi = [];
+    % get candidate points
+    P1_cand = uG(:, P1(eIdx));
+    P2_cand = uG(:, P2(eIdx));
+    P1_nz = find(P1_cand);
+    P2_nz = find(P2_cand);
+    for CandiFinder = 1: 1: length(P1_nz)
+        if find(P2_nz == P1_nz(CandiFinder))
+            Candi = horzcat(Candi, P1_nz(CandiFinder));
+        end
+    end
+    % get adjacent tetrahdron
+    K1_6 = zeros(1, N_e); 
+    % K2_6 = zeros(1, N_e); 
+    % Kev_4 = zeros(1, N_e); 
+    % Kve_4 = zeros(N_e, 1); 
+    B_k_Pnt = 0;
+    cFlag = false;
+    for TetFinder = 1: 1: length(Candi) - 1
+        for itr = TetFinder + 1: length(Candi)
+            if uG( Candi(TetFinder), Candi(itr) )
+                % linked to become a tetrahedron
+                v1234 = [ P1(eIdx), P2(eIdx), Candi(itr), Candi(TetFinder) ];
+                tetRow = find( sum( logical(MedTetTable(:, v1234)), 2 ) == 4 );
+                if length(tetRow) ~= 1
+                    error('check te construction of MedTetTable');
+                end
+                MedVal = MedTetTable( tetRow, v1234(1) );
+                if MedVal == 5
+                    TumorRelated(eIdx) = true;
+                    break
+                end
+            end
+        end
+    end
+end
+toc;
 
-% tic; 
-% disp( strcat('The filling time of K_1 and B_k: part', num2str(PartNum)) );
-% % disp('The filling time of K_1, K_EV, K_VE and B: ');
-% parfor eIdx = Rng(1): 1: Rng(2)
-%     % eIdx = full( G(P2(lGidx), P1(lGidx)) );
-%     Candi = [];
-%     % get candidate points
-%     P1_cand = uG(:, P1(eIdx));
-%     P2_cand = uG(:, P2(eIdx));
-%     P1_nz = find(P1_cand);
-%     P2_nz = find(P2_cand);
-%     for CandiFinder = 1: 1: length(P1_nz)
-%         if find(P2_nz == P1_nz(CandiFinder))
-%             Candi = horzcat(Candi, P1_nz(CandiFinder));
-%         end
-%     end
-%     % get adjacent tetrahdron
-%     K1_6 = zeros(1, N_e); 
-%     % K2_6 = zeros(1, N_e); 
-%     % Kev_4 = zeros(1, N_e); 
-%     % Kve_4 = zeros(N_e, 1); 
-%     B_k_Pnt = 0;
-%     cFlag = false;
-%     for TetFinder = 1: 1: length(Candi) - 1
-%         for itr = TetFinder + 1: length(Candi)
-%             if uG( Candi(TetFinder), Candi(itr) )
-%                 % linked to become a tetrahedron
-%                 v1234 = [ P1(eIdx), P2(eIdx), Candi(itr), Candi(TetFinder) ];
-%                 tetRow = find( sum( logical(MedTetTable(:, v1234)), 2 ) == 4 );
-%                 if length(tetRow) ~= 1
-%                     error('check te construction of MedTetTable');
-%                 end
-%                 MedVal = MedTetTable( tetRow, v1234(1) );
-%                 % use tetRow to check the accordance of SigmaE and J_xyz
-%                 [ K1_6, B_k_Pnt ] = fillK1_FW_currentsheet( P1(eIdx), P2(eIdx), Candi(itr), Candi(TetFinder), ...
-%                     G( :, P1(eIdx) ), G( :, P2(eIdx) ), G( :, Candi(itr) ), G( :, Candi(TetFinder) ), Vrtx_bndry, J_0, ...
-%                     K1_6, B_k_Pnt, zeros(1, 3), MedVal, epsilon_r, mu_r, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt );
-%             end
-%         end
-%     end
+tic; 
+disp('The filling time of K_1: tumorAmendingPart');
+% disp('The filling time of K_1, K_EV, K_VE and B: ');
+parfor eIdx = 1: 1: l_G
+    if TumorRelated(eIdx)
+    % eIdx = full( G(P2(lGidx), P1(lGidx)) );
+    Candi = [];
+    % get candidate points
+    P1_cand = uG(:, P1(eIdx));
+    P2_cand = uG(:, P2(eIdx));
+    P1_nz = find(P1_cand);
+    P2_nz = find(P2_cand);
+    for CandiFinder = 1: 1: length(P1_nz)
+        if find(P2_nz == P1_nz(CandiFinder))
+            Candi = horzcat(Candi, P1_nz(CandiFinder));
+        end
+    end
+    % get adjacent tetrahdron
+    K1_6 = zeros(1, N_e); 
+    % K2_6 = zeros(1, N_e); 
+    % Kev_4 = zeros(1, N_e); 
+    % Kve_4 = zeros(N_e, 1); 
+    B_k_Pnt = 0;
+    cFlag = false;
+    for TetFinder = 1: 1: length(Candi) - 1
+        for itr = TetFinder + 1: length(Candi)
+            if uG( Candi(TetFinder), Candi(itr) )
+                % linked to become a tetrahedron
+                v1234 = [ P1(eIdx), P2(eIdx), Candi(itr), Candi(TetFinder) ];
+                tetRow = find( sum( logical(MedTetTable(:, v1234)), 2 ) == 4 );
+                if length(tetRow) ~= 1
+                    error('check te construction of MedTetTable');
+                end
+                MedVal = MedTetTable( tetRow, v1234(1) );
+                    % use tetRow to check the accordance of SigmaE and J_xyz
+                    K1_6 = fillK1_FW_currentsheet( P1(eIdx), P2(eIdx), Candi(itr), Candi(TetFinder), ...
+                        G( :, P1(eIdx) ), G( :, P2(eIdx) ), G( :, Candi(itr) ), G( :, Candi(TetFinder) ), Vrtx_bndry, J_0, ...
+                        K1_6, B_k_Pnt, zeros(1, 3), MedVal, epsilon_r, mu_r, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt );
+            end
+        end
+    end
 
-%     if isempty(K1_6) 
-%     % if isempty(K1_6) || isempty(K2_6) || isempty(Kev_4)
-%         disp('K1, K2 or KEV: empty');
-%         [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
-%         [ m_v, n_v, ell_v, edgeNum ]
-%     end
-%     if isnan(K1_6) 
-%     % if isnan(K1_6) | isinf(K1_6) | isnan(K2_6) | isinf(K2_6)
-%         disp('K1 or K2: NaN or Inf');
-%         [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
-%         [ m_v, n_v, ell_v, edgeNum ]
-%     end
-%     % if isnan(Kev_4) | isinf(Kev_4)
-%     %     disp('Kev: NaN or Inf');
-%     %     [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
-%     %     [ m_v, n_v, ell_v, edgeNum ]
-%     % end
-%     if edgeChecker(eIdx) == true
-%         lGidx
-%         [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
-%         [ m_v, n_v, ell_v, edgeNum ]
-%         error('check')
-%     end
+    % if isempty(K1_6) 
+    % % if isempty(K1_6) || isempty(K2_6) || isempty(Kev_4)
+    %     disp('K1, K2 or KEV: empty');
+    %     [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
+    %     [ m_v, n_v, ell_v, edgeNum ]
+    % end
+    % if isnan(K1_6) 
+    % % if isnan(K1_6) | isinf(K1_6) | isnan(K2_6) | isinf(K2_6)
+    %     disp('K1 or K2: NaN or Inf');
+    %     [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
+    %     [ m_v, n_v, ell_v, edgeNum ]
+    % end
+    % % if isnan(Kev_4) | isinf(Kev_4)
+    % %     disp('Kev: NaN or Inf');
+    % %     [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
+    % %     [ m_v, n_v, ell_v, edgeNum ]
+    % % end
+    if edgeChecker(eIdx) == true
+        lGidx
+        [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
+        [ m_v, n_v, ell_v, edgeNum ]
+        error('check')
+    end
 
-%     edgeChecker(eIdx) = true;
+    edgeChecker(eIdx) = true;
     
-%     m_K1{eIdx} = Mrow2myRow(K1_6);
-%     % m_K2{eIdx}  = Mrow2myRow(K2_6);
-%     % m_KEV{eIdx} = Mrow2myRow(Kev_4);
-%     % m_KVE{eIdx} = Mrow2myRow(Kve_4')';
-%     B_k(eIdx) = B_k_Pnt;
-% end
-% toc;
+    m_K1{eIdx} = Mrow2myRow(K1_6);
+    % m_K2{eIdx}  = Mrow2myRow(K2_6);
+    % m_KEV{eIdx} = Mrow2myRow(Kev_4);
+    % m_KVE{eIdx} = Mrow2myRow(Kve_4')';
+    % B_k(eIdx) = B_k_Pnt;
+    end
+end
+toc;
 
-% save( strcat('0824MQS_postK1', str2num(PartNum), '_noFatAndBone.mat' ) );
+save('0903LiverMQS_postK1_MuPrmPrmMod.mat', 'm_K1', 'mu_r');
 
-% return;
+return;
 
 % % === === % =========================== % === === %
 % % === === % Unite six part of K1 and Bk % === === %
 % % === === % ===========================  % === === %
 
 clc; clear;
-% load('0824preK1_liver.mat');
-load('0828_Liver_MQS.mat');
+load('0824preK1_liver.mat');
 
-% total_B_k = zeros(N_e, 1);
-% total_m_K1 = cell(N_e, 1);
-% % total_m_K2 = cell(N_e, 1);
-% % total_m_KEV = cell(N_e, 1);
-% % total_m_KVE = cell(1, N_e);
+total_B_k = zeros(N_e, 1);
+total_m_K1 = cell(N_e, 1);
+% total_m_K2 = cell(N_e, 1);
+% total_m_KEV = cell(N_e, 1);
+% total_m_KVE = cell(1, N_e);
 
-% for PartNum = 1: 1: 6
-%     % this is for liver
-%     load(strcat('e:\CapaReal\0824MQS_postK1', num2str(PartNum), '_noFatAndBone.mat'), 'B_k', 'm_K1');
-%     % load(strcat('D:\Kevin\CapaReal\0808\0808MQS_conformal_postK', num2str(PartNum), '.mat'), 'B_k', 'm_K1', 'm_K2', 'm_KEV', 'm_KVE');
-%     ne_B_k = find(B_k);
-%     ne_m_K1 = find(~cellfun(@isempty,m_K1));
-%     % ne_m_K2 = find(~cellfun(@isempty,m_K2));
-%     % ne_m_KEV = find(~cellfun(@isempty,m_KEV));
-%     % ne_m_KVE = find(~cellfun(@isempty,m_KVE));
-%     total_B_k(ne_B_k ) = B_k(ne_B_k);
-%     total_m_K1(ne_m_K1) = m_K1(ne_m_K1);
-%     % total_m_K2(ne_m_K2) = m_K2(ne_m_K2);
-%     % total_m_KEV(ne_m_KEV) = m_KEV(ne_m_KEV);
-%     % total_m_KVE(ne_m_KVE) = m_KVE(ne_m_KVE);
-% end
-disp('Mu_r value before amending');
-- imag( mu_r(5) )
-
-load('0903LiverMQS_postK1_MuPrmPrmMod.mat', 'm_K1', 'mu_r');
-Omega_0       = 2 * pi * 1.2 * 10^6; % 2 * pi * 8 MHz
-disp('Mu_r value after amending');
-- imag( mu_r(5) )
-
-% load('0824MQS_postK1_noFatAndBone_MuPrmPrmMod.mat', 'm_K1');
-ne_m_K1 = find(~cellfun(@isempty,m_K1));
-total_m_K1(ne_m_K1) = m_K1(ne_m_K1);
+for PartNum = 1: 1: 6
+    % this is for liver
+    load(strcat('E:\Kevin\CapaReal\0824MQS_postK1', num2str(PartNum), '_noFatAndBone.mat'), 'B_k', 'm_K1');
+    % load(strcat('D:\Kevin\CapaReal\0808\0808MQS_conformal_postK', num2str(PartNum), '.mat'), 'B_k', 'm_K1', 'm_K2', 'm_KEV', 'm_KVE');
+    ne_B_k = find(B_k);
+    ne_m_K1 = find(~cellfun(@isempty,m_K1));
+    % ne_m_K2 = find(~cellfun(@isempty,m_K2));
+    % ne_m_KEV = find(~cellfun(@isempty,m_KEV));
+    % ne_m_KVE = find(~cellfun(@isempty,m_KVE));
+    total_B_k(ne_B_k ) = B_k(ne_B_k);
+    total_m_K1(ne_m_K1) = m_K1(ne_m_K1);
+    % total_m_K2(ne_m_K2) = m_K2(ne_m_K2);
+    % total_m_KEV(ne_m_KEV) = m_KEV(ne_m_KEV);
+    % total_m_KVE(ne_m_KVE) = m_KVE(ne_m_KVE);
+end
 
 M_K1 = sparse(N_e, N_e);
 % M_K2 = sparse(N_e, N_e);
@@ -929,7 +949,7 @@ M_K1 = sparse(N_e, N_e);
 % M_KVE = sparse(N_v, N_e);
 tic;
 disp('Transfroming M_K1, M_K2, M_KEV and M_KVE')
-M_K1 = mySparse2MatlabSparse( total_m_K1, N_e, N_e, 'Row' );
+M_K1 = mySparse2MatlabSparse( m_K1, N_e, N_e, 'Row' );
 % M_K2 = mySparse2MatlabSparse( m_K2, N_e, N_e, 'Row' );
 % M_KEV = mySparse2MatlabSparse( m_KEV, N_e, N_v, 'Row' );
 % M_KVE = mySparse2MatlabSparse( m_KVE, N_v, N_e, 'Col' );
@@ -1016,9 +1036,8 @@ toc;
 w_y = h_torso;
 w_x = air_x;
 w_z = air_z;
-AFigsScript_liver;
+AFigsScript;
 
-squeeze(H_XZ(tumor_m, tumor_ell, :, :, 2))
 % tic;
 % disp('Calculation time of iLU: ')
 % [ L_K, U_K ] = ilu( nrmlM_K, struct('type', 'ilutp', 'droptol', 1e-2) );
@@ -1026,17 +1045,14 @@ squeeze(H_XZ(tumor_m, tumor_ell, :, :, 2))
 
 % sline
 
-save('0903_Liver_MQS.mat');
-
-% return;
+load('0828_Liver_MQS.mat');
 
 % === === % ============================ % === === %
 % === === % The epsilon_r is not changed % === === %
 % === === % ============================ % === === %
 Omega_0       = 2 * pi * 1.2 * 10^6; % 2 * pi * 8 MHz
-              % [ air, bolus, muscle,c_liver,   HCC,  bone,   fat ]';
-epsilon_r_pre = [   1, 113.0,    113,    338,   338,   7.3,    20 ]';
-sigma         = [   0,     0,   0.54,  0.324, 0.324, 0.028, 0.047 ]';
+epsilon_r_pre = [   1, 113.0,    113,   338,   338,   7.3,    20 ]';
+sigma         = [   0,     0,   0.54, 0.324, 0.324, 0.028, 0.047 ]';
 epsilon_r     = epsilon_r_pre - i * sigma ./ ( Omega_0 * Epsilon_0 );
 
 A = bar_x_my_gmres;
@@ -1109,8 +1125,7 @@ toc;
 bar_x_my_gmres1 = bar_x_my_gmres;
 % using mixing formula to model the mu'' of ( tumor + MNPs )
 % the first simulation: mu'' is the same as MNP.
-muPrmPrm_MNP = - imag( mu_r(5) );
-% muPrmPrm_MNP = 0.3759;
+muPrmPrm_MNP = 0.3759;
 % muPrmPrm_MNP = 0.6214;
 Q_s_MNP = zeros(validNum, 1);
 for tIdx = 1: 1: validNum
@@ -1123,82 +1138,26 @@ for tIdx = 1: 1: validNum
     end
 end
 
-Q_s_Vector_mod = Q_s_Vector * (400 / 50)^2;
-Q_s_MNP_mod = Q_s_MNP * (400 / 50)^2;
+Q_s_Vector_mod = Q_s_Vector * (212.5 / 50)^2;
+Q_s_MNP_mod = Q_s_MNP * (212.5 / 50)^2;
 
-% % === % ================= % === %
-% % === % Original m_U, m_V % === %
-% % === % ================= % === %
+% === % ================= % === %
+% === % Original m_U, m_V % === %
+% === % ================= % === %
 
-% dt = 15; % 20 seconds
-% timeNum_all = 60 * 50; % 50 minutes
-% loadThermalParas_liver;
+dt = 15; % 20 seconds
+timeNum_all = 60 * 50; % 50 minutes
+loadThermalParas_liver;
 
-% m_U   = cell(N_v, 1);
-% m_V   = cell(N_v, 1);
-% bar_d = zeros(N_v, 1);
-% disp('The filling time of m_U, m_V and d_m: ');
-% tic;
-% parfor vIdx = 1: 1: N_v
-%     bioValid = false;
-%     U_row = zeros(1, N_v);
-%     V_row = zeros(1, N_v);
-%     Pnt_d = 0;
-%     CandiTet = find( MedTetTable(:, vIdx));
-%     for itr = 1: 1: length(CandiTet)
-%         % v is un-ordered vertices; while p is ordered vertices.
-%         % fix the problem in the determination of v1234 here .
-%         TetRow = MedTetTableCell{ CandiTet(itr) };
-%         v1234 = TetRow(1: 4);
-%         if length(v1234) ~= 4
-%             error('check');
-%         end
-%         MedVal = TetRow(5);
-%         % MedVal = MedTetTable( CandiTet(itr), v1234(1) );
-%         % this judgement below is based on the current test case
-%         if MedVal >= 3 && MedVal <= 9
-%             bioValid = true;
-%             % if MedTetTable( CandiTet(itr), v1234(1) ) ~= MedTetTable( CandiTet(itr), v1234(2) )
-%             %     error('check');
-%             % end
-%             % check the validity of Q_s_Vector input.
-%             p1234 = horzcat( v1234(find(v1234 == vIdx)), v1234(find(v1234 ~= vIdx)));
-%             [ U_row, V_row, Pnt_d ] = fillUVd( p1234, BndryTable, U_row, V_row, Pnt_d, ...
-%                         dt, Q_s_Vector_mod(CandiTet(itr)) + Q_met(MedVal) + Q_s_MNP_mod(CandiTet(itr)), rho(MedVal), xi(MedVal), zeta(MedVal), cap(MedVal), rho_b, cap_b, alpha, T_blood, T_bolus, ...
-%                         x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt, BM_bndryNum );
-%         end
-%     end
-
-%     if bioValid
-%         m_U{vIdx} = Mrow2myRow(U_row);
-%         m_V{vIdx} = Mrow2myRow(V_row);
-%         bar_d(vIdx) = Pnt_d;
-%     else
-%         m_U{vIdx} = [vIdx, 1];
-%         m_V{vIdx} = [vIdx, 1];
-%     end
-% end
-% toc;
-
-% M_U   = sparse(N_v, N_v);
-% M_V   = sparse(N_v, N_v);
-% tic;
-% disp('Transfroming M_U and M_V from my_sparse to Matlab sparse matrix')
-% M_U = mySparse2MatlabSparse( m_U, N_v, N_v, 'Row' );
-% M_V = mySparse2MatlabSparse( m_V, N_v, N_v, 'Row' );
-% toc;
-
-% === % ================ % === %
-% === % Amending for d_k % === %
-% === % ================ % === %
-
-% clc; clear;
-% load('0828_Liver_MQS.mat');
-
+m_U   = cell(N_v, 1);
+m_V   = cell(N_v, 1);
 bar_d = zeros(N_v, 1);
-disp('The filling time d_m: ');
+disp('The filling time of m_U, m_V and d_m: ');
 tic;
 parfor vIdx = 1: 1: N_v
+    bioValid = false;
+    U_row = zeros(1, N_v);
+    V_row = zeros(1, N_v);
     Pnt_d = 0;
     CandiTet = find( MedTetTable(:, vIdx));
     for itr = 1: 1: length(CandiTet)
@@ -1212,23 +1171,79 @@ parfor vIdx = 1: 1: N_v
         MedVal = TetRow(5);
         % MedVal = MedTetTable( CandiTet(itr), v1234(1) );
         % this judgement below is based on the current test case
-        % if MedVal == 5 
         if MedVal >= 3 && MedVal <= 9
-            %               %  air,  bolus, muscle, lung, tumor, bone, fat
-            % Q_met          = [ 0,      0,   4200, 1700,  8000,  0,   5 ]';
-            if MedTetTable( CandiTet(itr), v1234(1) ) ~= MedTetTable( CandiTet(itr), v1234(2) )
-                error('check');
-            end
+            bioValid = true;
+            % if MedTetTable( CandiTet(itr), v1234(1) ) ~= MedTetTable( CandiTet(itr), v1234(2) )
+            %     error('check');
+            % end
             % check the validity of Q_s_Vector input.
             p1234 = horzcat( v1234(find(v1234 == vIdx)), v1234(find(v1234 ~= vIdx)));
-            Pnt_d = filld( p1234, Vrtx_bndry, Pnt_d, ...
-                            dt, Q_s_Vector_mod(CandiTet(itr)) + Q_met(MedVal) + Q_s_MNP_mod(CandiTet(itr)), rho(MedVal), xi(MedVal), zeta(MedVal), cap(MedVal), rho_b, cap_b, alpha, T_blood, T_bolus, ...
-                            x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt, BM_bndryNum );
+            [ U_row, V_row, Pnt_d ] = fillUVd( p1234, BndryTable, U_row, V_row, Pnt_d, ...
+                        dt, Q_s_Vector_mod(CandiTet(itr)) + Q_met(MedVal) + Q_s_MNP_mod(CandiTet(itr)), rho(MedVal), xi(MedVal), zeta(MedVal), cap(MedVal), rho_b, cap_b, alpha, T_blood, T_bolus, ...
+                        x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt, BM_bndryNum );
         end
     end
-    bar_d(vIdx) = Pnt_d;
+
+    if bioValid
+        m_U{vIdx} = Mrow2myRow(U_row);
+        m_V{vIdx} = Mrow2myRow(V_row);
+        bar_d(vIdx) = Pnt_d;
+    else
+        m_U{vIdx} = [vIdx, 1];
+        m_V{vIdx} = [vIdx, 1];
+    end
 end
 toc;
+
+M_U   = sparse(N_v, N_v);
+M_V   = sparse(N_v, N_v);
+tic;
+disp('Transfroming M_U and M_V from my_sparse to Matlab sparse matrix')
+M_U = mySparse2MatlabSparse( m_U, N_v, N_v, 'Row' );
+M_V = mySparse2MatlabSparse( m_V, N_v, N_v, 'Row' );
+toc;
+
+% % % === % ================ % === %
+% % % === % Amending for d_k % === %
+% % % === % ================ % === %
+
+% % clc; clear;
+% % load('0828_Liver_MQS.mat');
+
+% bar_d = zeros(N_v, 1);
+% disp('The filling time d_m: ');
+% tic;
+% parfor vIdx = 1: 1: N_v
+%     Pnt_d = 0;
+%     CandiTet = find( MedTetTable(:, vIdx));
+%     for itr = 1: 1: length(CandiTet)
+%         % v is un-ordered vertices; while p is ordered vertices.
+%         % fix the problem in the determination of v1234 here .
+%         TetRow = MedTetTableCell{ CandiTet(itr) };
+%         v1234 = TetRow(1: 4);
+%         if length(v1234) ~= 4
+%             error('check');
+%         end
+%         MedVal = TetRow(5);
+%         % MedVal = MedTetTable( CandiTet(itr), v1234(1) );
+%         % this judgement below is based on the current test case
+%         % if MedVal == 5 
+%         if MedVal == 3 && MedVal <= 9
+%             %               %  air,  bolus, muscle, lung, tumor, bone, fat
+%             % Q_met          = [ 0,      0,   4200, 1700,  8000,  0,   5 ]';
+%             if MedTetTable( CandiTet(itr), v1234(1) ) ~= MedTetTable( CandiTet(itr), v1234(2) )
+%                 error('check');
+%             end
+%             % check the validity of Q_s_Vector input.
+%             p1234 = horzcat( v1234(find(v1234 == vIdx)), v1234(find(v1234 ~= vIdx)));
+%             Pnt_d = filld( p1234, Vrtx_bndry, Pnt_d, ...
+%                             dt, Q_s_Vector(CandiTet(itr)) + Q_met(MedVal) + Q_s_MNP(CandiTet(itr)), rho(MedVal), xi(MedVal), zeta(MedVal), cap(MedVal), rho_b, cap_b, alpha, T_blood, T_bolus, ...
+%                             x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt, BM_bndryNum );
+%         end
+%     end
+%     bar_d(vIdx) = Pnt_d;
+% end
+% toc;
 
 % === % ============================= % === %
 % === % Initialization of Temperature % === %
@@ -1271,8 +1286,6 @@ T_flagXY = 1;
 T_flagYZ = 1;
 
 T_plot_liver;
-
-save('0903_1dot2MHz_Liver_zerothOrder.mat', 'H_XZ', 'H_XY', 'H_YZ', 'E_XZ', 'E_XY', 'E_YZ');
 
 % === === % =============== % === === %
 % === === % Getting B^(2)_k % === === %
@@ -1382,7 +1395,5 @@ bar_x_my_gmres2 = bar_x_my_gmres;
 w_y = h_torso;
 w_x = air_x;
 w_z = air_z;
-Fname = '0903';
-AFigsScript_liver;
-
-save('0903_1dot2MHz_Liver_secondOrder.mat', 'H_XZ', 'H_XY', 'H_YZ', 'E_XZ', 'E_XY', 'E_YZ');
+Fname = '0829';
+AFigsScript;

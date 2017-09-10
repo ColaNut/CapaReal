@@ -79,3 +79,8 @@ Liver   -- EQS  -- updating Loop liver colission
 
 Test    -- update the getRoughMed_Mag.m
         -- fix K_2 matrix
+
+0910: 
+Cervix MQS; loadParas_Colon and Plot E^(0) field for cervixEQS
+Modification of liver therml properties, electrode size and position in liverEQS, computational domain in liverEQS.
+Test different epsilon of insulator; modify the sigma of bolus.

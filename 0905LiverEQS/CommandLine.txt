@@ -1,0 +1,671 @@
+Digits = 32
+ 
+EQS, liver
+Calculation of vertex coordinate
+Elapsed time is 14.887645 seconds.
+Filling SegMed: 
+
+tmpArr =
+
+     0     4     0     3
+
+Warning: check for the homogeneity 
+> In octantCube (line 39)
+  In calWeight (line 17)
+  In bndrEffValue (line 31)
+  In fillBndrPt_A (line 50)
+  In LiverEQS (line 162) 
+
+tmpArr =
+
+     3     0     0     4
+
+Warning: check for the homogeneity 
+> In octantCube (line 39)
+  In calWeight (line 8)
+  In bndrEffValue (line 31)
+  In fillBndrPt_A (line 120)
+  In LiverEQS (line 162) 
+
+tmpArr =
+
+     0     3     0     4
+
+Warning: check for the homogeneity 
+> In octantCube (line 39)
+  In calWeight (line 11)
+  In bndrEffValue (line 31)
+  In fillBndrPt_A (line 78)
+  In LiverEQS (line 162) 
+
+tmpArr =
+
+     4     0     0     3
+
+Warning: check for the homogeneity 
+> In octantCube (line 39)
+  In calWeight (line 14)
+  In bndrEffValue (line 31)
+  In fillBndrPt_A (line 106)
+  In LiverEQS (line 162) 
+
+tmpArr =
+
+     0     4     0     3
+
+Warning: check for the homogeneity 
+> In octantCube (line 39)
+  In calWeight (line 17)
+  In bndrEffValue (line 31)
+  In fillBndrPt_A (line 50)
+  In LiverEQS (line 162) 
+
+tmpArr =
+
+     3     0     0     4
+
+Warning: check for the homogeneity 
+> In octantCube (line 39)
+  In calWeight (line 8)
+  In bndrEffValue (line 31)
+  In fillBndrPt_A (line 120)
+  In LiverEQS (line 162) 
+
+tmpArr =
+
+     0     3     0     4
+
+Warning: check for the homogeneity 
+> In octantCube (line 39)
+  In calWeight (line 11)
+  In bndrEffValue (line 31)
+  In fillBndrPt_A (line 78)
+  In LiverEQS (line 162) 
+
+tmpArr =
+
+     4     0     0     3
+
+Warning: check for the homogeneity 
+> In octantCube (line 39)
+  In calWeight (line 14)
+  In bndrEffValue (line 31)
+  In fillBndrPt_A (line 106)
+  In LiverEQS (line 162) 
+
+tmpArr =
+
+     3     0     0     4
+
+Warning: check for the homogeneity 
+> In octantCube (line 39)
+  In calWeight (line 8)
+  In bndrEffValue (line 31)
+  In fillBndrPt_A (line 50)
+  In LiverEQS (line 162) 
+
+tmpArr =
+
+     0     4     0     3
+
+Warning: check for the homogeneity 
+> In octantCube (line 39)
+  In calWeight (line 11)
+  In bndrEffValue (line 31)
+  In fillBndrPt_A (line 106)
+  In LiverEQS (line 162) 
+
+tmpArr =
+
+     0     3     0     4
+
+Warning: check for the homogeneity 
+> In octantCube (line 39)
+  In calWeight (line 17)
+  In bndrEffValue (line 31)
+  In fillBndrPt_A (line 50)
+  In LiverEQS (line 162) 
+
+tmpArr =
+
+     4     0     0     3
+
+Warning: check for the homogeneity 
+> In octantCube (line 39)
+  In calWeight (line 8)
+  In bndrEffValue (line 31)
+  In fillBndrPt_A (line 120)
+  In LiverEQS (line 162) 
+
+tmpArr =
+
+     4     0     0     3
+
+Warning: check for the homogeneity 
+> In octantCube (line 39)
+  In calWeight (line 14)
+  In bndrEffValue (line 31)
+  In fillBndrPt_A (line 78)
+  In LiverEQS (line 162) 
+
+tmpArr =
+
+     0     3     0     4
+
+Warning: check for the homogeneity 
+> In octantCube (line 39)
+  In calWeight (line 17)
+  In bndrEffValue (line 31)
+  In fillBndrPt_A (line 120)
+  In LiverEQS (line 162) 
+
+tmpArr =
+
+     3     0     0     4
+
+Warning: check for the homogeneity 
+> In octantCube (line 39)
+  In calWeight (line 17)
+  In bndrEffValue (line 31)
+  In fillBndrPt_A (line 92)
+  In LiverEQS (line 162) 
+
+tmpArr =
+
+     0     4     0     3
+
+Warning: check for the homogeneity 
+> In octantCube (line 39)
+  In calWeight (line 14)
+  In bndrEffValue (line 31)
+  In fillBndrPt_A (line 106)
+  In LiverEQS (line 162) 
+
+tmpArr =
+
+     4     0     0     3
+
+Warning: check for the homogeneity 
+> In octantCube (line 39)
+  In calWeight (line 17)
+  In bndrEffValue (line 31)
+  In fillBndrPt_A (line 64)
+  In LiverEQS (line 162) 
+
+tmpArr =
+
+     0     3     0     4
+
+Warning: check for the homogeneity 
+> In octantCube (line 39)
+  In calWeight (line 14)
+  In bndrEffValue (line 31)
+  In fillBndrPt_A (line 120)
+  In LiverEQS (line 162) 
+
+tmpArr =
+
+     3     0     0     4
+
+Warning: check for the homogeneity 
+> In octantCube (line 39)
+  In calWeight (line 17)
+  In bndrEffValue (line 31)
+  In fillBndrPt_A (line 92)
+  In LiverEQS (line 162) 
+
+tmpArr =
+
+     0     4     0     3
+
+Warning: check for the homogeneity 
+> In octantCube (line 39)
+  In calWeight (line 14)
+  In bndrEffValue (line 31)
+  In fillBndrPt_A (line 106)
+  In LiverEQS (line 162) 
+
+tmpArr =
+
+     4     0     0     3
+
+Warning: check for the homogeneity 
+> In octantCube (line 39)
+  In calWeight (line 17)
+  In bndrEffValue (line 31)
+  In fillBndrPt_A (line 64)
+  In LiverEQS (line 162) 
+
+tmpArr =
+
+     0     3     0     4
+
+Warning: check for the homogeneity 
+> In octantCube (line 39)
+  In calWeight (line 14)
+  In bndrEffValue (line 31)
+  In fillBndrPt_A (line 120)
+  In LiverEQS (line 162) 
+
+tmpArr =
+
+     4     0     0     3
+
+Warning: check for the homogeneity 
+> In octantCube (line 39)
+  In calWeight (line 17)
+  In bndrEffValue (line 31)
+  In fillBndrPt_A (line 92)
+  In LiverEQS (line 162) 
+
+tmpArr =
+
+     0     3     0     4
+
+Warning: check for the homogeneity 
+> In octantCube (line 39)
+  In calWeight (line 14)
+  In bndrEffValue (line 31)
+  In fillBndrPt_A (line 106)
+  In LiverEQS (line 162) 
+
+tmpArr =
+
+     3     0     0     4
+
+Warning: check for the homogeneity 
+> In octantCube (line 39)
+  In calWeight (line 17)
+  In bndrEffValue (line 31)
+  In fillBndrPt_A (line 64)
+  In LiverEQS (line 162) 
+
+tmpArr =
+
+     0     4     0     3
+
+Warning: check for the homogeneity 
+> In octantCube (line 39)
+  In calWeight (line 11)
+  In bndrEffValue (line 31)
+  In fillBndrPt_A (line 78)
+  In LiverEQS (line 162) 
+
+tmpArr =
+
+     3     0     0     4
+
+Warning: check for the homogeneity 
+> In octantCube (line 39)
+  In calWeight (line 14)
+  In bndrEffValue (line 31)
+  In fillBndrPt_A (line 106)
+  In LiverEQS (line 162) 
+
+tmpArr =
+
+     0     4     0     3
+
+Warning: check for the homogeneity 
+> In octantCube (line 39)
+  In calWeight (line 14)
+  In bndrEffValue (line 31)
+  In fillBndrPt_A (line 120)
+  In LiverEQS (line 162) 
+
+tmpArr =
+
+     0     3     0     4
+
+Warning: check for the homogeneity 
+> In octantCube (line 39)
+  In calWeight (line 17)
+  In bndrEffValue (line 31)
+  In fillBndrPt_A (line 50)
+  In LiverEQS (line 162) 
+
+tmpArr =
+
+     4     0     0     3
+
+Warning: check for the homogeneity 
+> In octantCube (line 39)
+  In calWeight (line 8)
+  In bndrEffValue (line 31)
+  In fillBndrPt_A (line 120)
+  In LiverEQS (line 162) 
+
+tmpArr =
+
+     0     4     0     3
+
+Warning: check for the homogeneity 
+> In octantCube (line 39)
+  In calWeight (line 11)
+  In bndrEffValue (line 31)
+  In fillBndrPt_A (line 78)
+  In LiverEQS (line 162) 
+
+tmpArr =
+
+     3     0     0     4
+
+Warning: check for the homogeneity 
+> In octantCube (line 39)
+  In calWeight (line 14)
+  In bndrEffValue (line 31)
+  In fillBndrPt_A (line 106)
+  In LiverEQS (line 162) 
+Elapsed time is 50.959838 seconds.
+235 B_phi = zeros(N_v, 1);
+K>> x_max_vertex * y_max_vertex * z_max_vertex
+
+ans =
+
+      433593
+
+K>> [x_idx_max, y_idx_max, z_idx_max]
+
+ans =
+
+    51    27    41
+
+The filling time of S phi = b_phi: 
+save('0905LiverEQS.mat');
+Elapsed time is 204.591004 seconds.
+Calculation time of iLU: 
+Elapsed time is 88.653927 seconds.
+The gmres solutin of M_S x = B_phi: 
+LiverEQS
+gmres(20) converged at outer iteration 5 (inner iteration 15) to a solution with relative residual 8.7e-07.
+Elapsed time is 34.345830 seconds.
+calclation time of SigmeE and Q_s
+Operation terminated by user during get27Pnts_prm (line
+13)
+
+
+In LiverEQS (line 368)
+    [ PntsIdx, PntsCrdnt ] = get27Pnts_prm( m_v, n_v,
+    ell_v, x_max_vertex, y_max_vertex, z_max_vertex,
+    Vertex_Crdnt );
+ 
+>> FigsScriptLiverEQS
+Undefined function or variable 'PhiDstrbtn_liver'.
+
+Error in FigsScriptLiverEQS (line 16)
+    PhiDstrbtn_liver;
+ 
+>> FigsScriptLiverEQS
+time for interpolation: 
+Elapsed time is 0.704835 seconds.
+Error using colorbar (line 179)
+Unknown property 'Yscale'.
+
+Error in PhiDstrbtnLiverEQS (line 184)
+    cbar = colorbar('peer', gca, 'Yscale', 'log');
+
+Error in FigsScriptLiverEQS (line 16)
+    PhiDstrbtnLiverEQS;
+ 
+>> LiverEQS
+calclation time of SigmeE and Q_s
+Elapsed time is 137.684742 seconds.
+Assigning each tetrahdron with a conducting current
+Elapsed time is 3309.250579 seconds.
+Transfroming MedTetTable from my_sparse to Matlab sparse matrix
+Elapsed time is 10.103223 seconds.
+Estimate the current out of the plate
+Elapsed time is 3.489383 seconds.
+
+Current =
+
+   8.5801 + 0.2426i
+
+
+W =
+
+   3.6466e+02 - 1.0310e+01i
+
+IdleTimeout has been reached.
+Parallel pool using the 'local' profile is shutting down.
+>> LiverEQS
+The filling time of m_U, m_V and d_m: 
+Starting parallel pool (parpool) using the 'local' profile ...
+connected to 4 workers.
+Operation terminated by user during fillUVd (line 47)
+
+
+In parallel_function>make_general_channel/channel_general (line 914)
+                    O = F(C{:});
+
+In remoteParallelFunction (line 38)
+        out = parallel.internal.pool.serialize(feval(channel, channelArgs{:}));
+
+Operation terminated by user during fillUVd (line 39)
+
+
+In parallel_function>make_general_channel/channel_general (line 914)
+                    O = F(C{:});
+
+In remoteParallelFunction (line 38)
+        out = parallel.internal.pool.serialize(feval(channel, channelArgs{:}));
+
+Operation terminated by user during fillUVd (line 47)
+
+
+In parallel_function>make_general_channel/channel_general (line 914)
+                    O = F(C{:});
+
+In remoteParallelFunction (line 38)
+        out = parallel.internal.pool.serialize(feval(channel, channelArgs{:}));
+
+Operation terminated by user during fillUVd (line 39)
+
+
+In parallel_function>make_general_channel/channel_general (line 914)
+                    O = F(C{:});
+
+In remoteParallelFunction (line 38)
+        out = parallel.internal.pool.serialize(feval(channel, channelArgs{:}));
+
+Operation terminated by user during distcomp.remoteparfor/getCompleteIntervals
+(line 127)
+
+
+In parallel_function>distributed_execution (line 820)
+        [tags, out] = P.getCompleteIntervals(chunkSize);
+
+In parallel_function (line 587)
+        R = distributed_execution(...
+
+In LiverEQS (line 476)
+parfor vIdx = 1: 1: N_v
+ 
+>> load('0903_Liver_MQS.mat', 'm_U', 'm_V');
+>> LiverEQS
+Transfroming M_U and M_V from my_sparse to Matlab sparse matrix
+Elapsed time is 3.508668 seconds.
+Initialization of Temperature
+Elapsed time is 0.122708 seconds.
+Elapsed time is 1.431493 seconds.
+Checking bio and bolus related vetrices: 
+Elapsed time is 1.320033 seconds.
+Getting T_xz
+Elapsed time is 0.057367 seconds.
+Elapsed time is 6.991979 seconds.
+Getting T_xy
+Elapsed time is 0.033231 seconds.
+Elapsed time is 8.964744 seconds.
+Error using drawnow
+Operation terminated by user
+
+Error in print (line 36)
+drawnow; % give changes a chance to be processed
+
+Error in saveas (line 168)
+        print( h, name, ['-d' dev{i}] )
+
+Error in T_plot_liver (line 272)
+    saveas(figure(22), 'TestTmprtrXY.jpg');
+
+Error in LiverEQS (line 565)
+T_plot_liver;
+ 
+>> timeNum_all
+
+timeNum_all =
+
+        3000
+
+>> timeNum_all/60
+
+ans =
+
+    50
+
+>> size(bar_b)
+
+ans =
+
+      433593         201
+
+>> timeNum_all / dt + 1
+
+ans =
+
+   201
+
+>> timeNum_all
+
+timeNum_all =
+
+        3000
+
+>> size(bar_b, 2)
+
+ans =
+
+   201
+
+>> find(bar_d);
+>> LiverEQS
+The filling time d_m: 
+Analyzing and transferring files to the workers ...done.
+Error using LiverEQS (line 522)
+An UndefinedFunction error was thrown on the workers for
+'Q_s_Vector_mod'.  This might be because the file containing
+'Q_s_Vector_mod' is not accessible on the workers.  Use
+addAttachedFiles(pool, files) to specify the required files to be
+attached.  See the documentation for
+'parallel.Pool/addAttachedFiles' for more details.
+
+Caused by:
+    Undefined function 'Q_s_Vector_mod' for input arguments of
+    type 'double'.
+ 
+>> LiverEQS
+The filling time d_m: 
+Elapsed time is 96.776966 seconds.
+Initialization of Temperature
+Elapsed time is 0.161696 seconds.
+Elapsed time is 168.355235 seconds.
+Checking bio and bolus related vetrices: 
+Elapsed time is 1.309077 seconds.
+Getting T_xz
+Elapsed time is 0.051862 seconds.
+Elapsed time is 6.820839 seconds.
+Getting T_xy
+Elapsed time is 0.030505 seconds.
+Elapsed time is 8.247995 seconds.
+Getting T_yz
+Elapsed time is 0.037379 seconds.
+Elapsed time is 6.133934 seconds.
+>> max(bar_b(:, end))
+
+ans =
+
+    4.9457
+
+>> xi
+
+xi =
+
+   1.0e-05 *
+
+         0
+         0
+    0.8300
+    0.1820
+    0.0583
+
+>> load('0903_Liver_MQS.mat', 'xi');
+>> xi
+
+xi =
+
+   1.0e-05 *
+
+         0
+         0
+    0.8300
+    0.6680
+    0.2530
+    0.0420
+    0.0500
+
+>> LiverEQS
+The filling time of m_U, m_V and d_m: 
+disp('start from 2:57 p.m.');
+Elapsed time is 3904.562354 seconds.
+Transfroming M_U and M_V from my_sparse to Matlab sparse matrix
+Elapsed time is 6.017085 seconds.
+Initialization of Temperature
+Elapsed time is 0.168409 seconds.
+Elapsed time is 174.208410 seconds.
+Checking bio and bolus related vetrices: 
+Elapsed time is 1.327343 seconds.
+Getting T_xz
+Elapsed time is 0.052572 seconds.
+Elapsed time is 6.917013 seconds.
+Error using checkArgsForHandleToPrint
+Handle input argument contains nonhandle values.
+
+Error in checkArgsForHandleToPrint
+
+Error in print>LocalCreatePrintJob (line 97)
+handles = checkArgsForHandleToPrint(0, varargin{:});
+
+Error in print (line 38)
+[pj, inputargs] = LocalCreatePrintJob(varargin{:});
+
+Error in saveas (line 168)
+        print( h, name, ['-d' dev{i}] )
+
+Error in T_plot_liver (line 159)
+    saveas(figure(21), 'TestTmprtrXZ.jpg');
+
+Error in LiverEQS (line 566)
+T_plot_liver;
+ 
+start from 2:57 p.m.
+>> T_plot_liver
+Checking bio and bolus related vetrices: 
+Elapsed time is 1.308022 seconds.
+Getting T_xz
+Elapsed time is 0.051845 seconds.
+Elapsed time is 7.045999 seconds.
+Getting T_xy
+Elapsed time is 0.031993 seconds.
+Elapsed time is 8.240075 seconds.
+Getting T_yz
+Elapsed time is 0.035759 seconds.
+Elapsed time is 6.204166 seconds.
+>> max(bar_b(:, end))
+
+ans =
+
+   11.5996
+
+IdleTimeout has been reached.
+Parallel pool using the 'local' profile is shutting down.
+>> save('0906LiverCirrhoticEQS.mat');

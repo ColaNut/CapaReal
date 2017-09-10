@@ -1,5 +1,5 @@
 % clc; clear;
-PhiSAR_flag = 0;
+PhiSAR_flag = 1;
 
 % Need to modify the 'save' in the PhiDstrbtn.m to make it accord with the 'load' in TmprtrFigs.m
 if PhiSAR_flag == 1
@@ -13,7 +13,7 @@ if PhiSAR_flag == 1
     % CaseName = '0729';
     % load( strcat(fname, '\', CaseName, '.mat') );
 
-    PhiDstrbtn_liver;
+    PhiDstrbtnLiverEQS;
 
     % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0717';
     % % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'fig');
@@ -30,7 +30,7 @@ if PhiSAR_flag == 1
     % saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'jpg');
 end
 
-TumorTmptr_flag = 1;
+TumorTmptr_flag = 0;
 
 if TumorTmptr_flag == 1
     % clc; clear;
@@ -54,10 +54,10 @@ Tmprtr_flag = 0;
 if Tmprtr_flag == 1
     clc; clear;
     fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0717';
-    load( strcat(fname, '\BasicParameters.mat') );
+    % load( strcat(fname, '\BasicParameters.mat') );
     fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0717';
-    load( strcat(fname, '\', 'Tmprtr2cm0717Report.mat'), 'bar_b', 'MedTetTable', 'MedTetTableCell' );
-    loadThermalParas;
+    % load( strcat(fname, '\', 'Tmprtr2cm0717Report.mat'), 'bar_b', 'MedTetTable', 'MedTetTableCell' );
+    % loadThermalParas;
 
     T_flagXZ = 1;
     T_flagXY = 1;

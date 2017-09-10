@@ -15,6 +15,7 @@ if A_flag == 1
     flag_XY = 1;
     flag_YZ = 1;
     
+    Fname = '0906CervixMQS';
     % Fname = 'K1_0711';
     % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0614MQSDirection';
     % fname = 'D:\Kevin\CapaReal\0711K1';
@@ -22,7 +23,9 @@ if A_flag == 1
     % fname = 'e:\Kevin\CapaReal\Case0220_1cmFat';
     % CaseDate = 'Case0220_1cmFat';
     % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0823LungMQS\';
-    fname = 'D:\Kevin\CapaReal\0824LiverMQS\';
+    % fname = 'D:\Kevin\CapaReal\0824LiverMQS\';
+    fname = 'E:\Kevin\CapaReal\0906CervixMQS\';
+    % fname = 'E:\Kevin\CapaReal\0829LungMQS_1MHz\';
     SAR_flag = 1;
     LungMQS_H0_plot
     LungMQS_E0_plot

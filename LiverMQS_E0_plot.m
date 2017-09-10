@@ -375,3 +375,41 @@ if flag_YZ == 1
         % save( strcat( fname, '\', CaseDate, 'TmprtrFigYZ.mat') );
     end
 end
+
+% === % ============== % === %
+% === % Plotting Liver % === %
+% === % ============== % === %
+
+% % counter = 1;
+% % for y = - h_torso / 2: dy: h_torso / 2
+% %     figure(counter);
+% %     counter = counter + 1;
+% %     clf;
+% %     hold on;
+% %     plotLiverXZ( paras, y, dx, dz );
+% %     plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
+% %     axis equal;
+% % end
+
+% figure(1);
+% clf;
+% hold on;
+% plotLiverXZ( paras, tumor_y, dx, dz );
+% plotGridLineXZ( shiftedCoordinateXYZ, uint64(tumor_y / dy + h_torso / (2 * dy) + 1) );
+% axis equal;
+
+% figure(2);
+% clf;
+% hold on;
+% plotLiverXY( paras, tumor_z, dx, dy );
+% plotGridLineXY( shiftedCoordinateXYZ, uint64(tumor_z / dz + air_z / (2 * dz) + 1) );
+% axis equal;
+
+% figure(3);
+% clf;
+% hold on;
+% plotLiverYZ( paras, tumor_x, dy, dz );
+% plotGridLineYZ( shiftedCoordinateXYZ, uint64(tumor_x / dx + air_x / (2 * dx) + 1) );
+% axis equal;
+
+% % return;

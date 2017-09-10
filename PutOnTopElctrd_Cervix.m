@@ -2,7 +2,7 @@ function [ sparseS_1, B_phi, BndryTable ] = PutOnTopElctrd_Cervix( sparseS_1, B_
                                         air_x, air_z, h_torso, x_max_vertex, y_max_vertex, z_max_vertex, BndryTable, TpElctrdPos, CervixY )
 
 % tmp code for the cervix
-for y = 0 - CervixY / 2: dy: 0 + CervixY / 2
+for y = 0 - CervixY / 4: dy: 0 + CervixY / 4
     m = int64(dx/ dx + air_x / (2 * dx) + 1);
     n = int64(y / dy + h_torso / (2 * dy) + 1);
     ell = int64(0 / dz + air_z / (2 * dz) + 1);

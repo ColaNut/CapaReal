@@ -76,7 +76,7 @@ if flag_XZ == 1
         hold on;
 
         % TtrVol is approximated as the same for all the tetrahedra
-        disp('Time to plot SAR');
+        disp('Time to plot E_XZ');
         tic;
         for idx = 1: 1: x_idx_max * z_idx_max
             [ m, ell ] = getML(idx, x_idx_max);
@@ -210,7 +210,7 @@ if flag_XY == 1
         % set(cbar, 'FontSize', 18 );
         hold on;
 
-        disp('Time to plot SAR');
+        disp('Time to plot E_XY');
         tic;
         for idx = 1: 1: x_idx_max * y_idx_max
             [ m, n ] = getML(idx, x_idx_max);
@@ -323,7 +323,7 @@ if flag_YZ == 1
         % set(cbar, 'FontSize', 25);
         hold on;
         
-        disp('Time to plot SAR');
+        disp('Time to plot E_YZ');
         tic;
         for idx = 1: 1: x_idx_max * y_idx_max
             [ n, ell ] = getML(idx, y_idx_max);

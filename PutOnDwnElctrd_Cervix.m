@@ -2,7 +2,7 @@ function sparseS_1 = PutOnDwnElctrd_Cervix( sparseS_1, mediumTableXZ, tumor_x, t
                                     dx, dy, dz, air_x, air_z, h_torso, x_max_vertex, y_max_vertex, CervixY );
 
 % tmp code for the cervix
-for y = 0 - CervixY / 2: dy: 0 + CervixY / 2
+for y = 0 - CervixY / 4: dy: 0 + CervixY / 4
     m = int64(- dx/ dx + air_x / (2 * dx) + 1);
     n = int64(y / dy + h_torso / (2 * dy) + 1);
     ell = int64(0 / dz + air_z / (2 * dz) + 1);

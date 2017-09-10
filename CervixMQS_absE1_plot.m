@@ -2,9 +2,9 @@
 % === === % Reload zeroth-order E and H field % === === %
 % === === % ================================= % === === %
 clc; clear;
-load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0808LungMQSConformal\0808MQS_conformal_preK.mat')
-load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0903LungMQS\0903LungMQS_1pnt2MHz_MuPrmPrm_zerothOrder.mat');
-load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0903LungMQS\0903LungMQS_1pnt2MHz_MuPrmPrm_Q_s_MNP.mat', 'muPrmPrm_MNP', 'Omega_0');
+load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0906CervixMQS\0906_Cervix_preK1.mat')
+load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0906CervixMQS\0907CervixMQS_zerothOrder.mat', 'H_XZ', 'H_XY', 'H_YZ', 'E_XZ', 'E_XY', 'E_YZ');
+% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0903LungMQS\0903LungMQS_1pnt2MHz_MuPrmPrm_Q_s_MNP.mat', 'muPrmPrm_MNP', 'Omega_0');
 
 % === === % ========= % === === %
 % === === % Flag Sets % === === %
@@ -17,19 +17,19 @@ SAR_XZ_flag = 1;
 SAR_XY_flag = 1;
 SAR_YZ_flag = 1;
 
-SAR_XZ_MNP_flag = 1;
+SAR_XZ_MNP_flag = 0;
 
 % === === % ===================== % === === %
 % === === % J_0 modification part % === === %
 % === === % ===================== % === === %
 % frequency from 100 kHz to 1.2 MHz; J_0 from 5,000 to 400
-E_XZ = E_XZ * 400 / 5000; 
-E_XY = E_XY * 400 / 5000; 
-E_YZ = E_YZ * 400 / 5000; 
+E_XZ = E_XZ * 400 / 80; 
+E_XY = E_XY * 400 / 80; 
+E_YZ = E_YZ * 400 / 80; 
 
-H_XZ = H_XZ * 400 / 5000; 
-H_XY = H_XY * 400 / 5000; 
-H_YZ = H_YZ * 400 / 5000; 
+H_XZ = H_XZ * 400 / 80; 
+H_XY = H_XY * 400 / 80; 
+H_YZ = H_YZ * 400 / 80; 
 
 % === === % =============== % === === %
 % === === % Parameters part % === === %
@@ -42,8 +42,8 @@ tumor_m = tumor_x / dx + air_x / (2 * dx) + 1;
 tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1;
 tumor_ell = tumor_z / dz + air_z / (2 * dz) + 1;
 
-fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0903LungMQS\';
-CaseName = '0903';
+fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0906CervixMQS\';
+CaseName = '0907';
 
 % === === % =================== % === === %
 % === === % Preparing Abs value % === === %
@@ -102,7 +102,7 @@ if E_XZ_flag
     myRange = [ 1e-1, 1e4 ];
     caxis(myRange);
     axis equal;
-    axis( [ - 20, 20, - 15, 15 ] );
+    axis( [ - 2, 2, - 2, 2 ] );
     cbar = colorbar('peer', gca, 'Yscale', 'log');
     set(gca, 'Visible', 'off')
     log_axes = axes('Position', get(gca, 'Position'));
@@ -135,7 +135,7 @@ if E_XZ_flag
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
     axis equal;
-    axis( [ - 20, 20, - 15, 15 ] );
+    axis( [ - 2, 2, - 2, 2 ] );
     set(log_axes,'fontsize',20);
     set(log_axes,'LineWidth',2.0);
     % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
@@ -143,7 +143,7 @@ if E_XZ_flag
     view(2);
     paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
     plotMap( paras2dXZ, dx, dz );
-    plotRibXZ(Ribs, SSBone, dx, dz);
+    % plotRibXZ(Ribs, SSBone, dx, dz);
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
     saveas(figure(27), fullfile(fname, strcat(CaseName, 'E1_XZ_MQS')), 'jpg');
     % saveas(figure(9), 'E_XZ_FullWave.jpg');
@@ -157,7 +157,7 @@ if E_XY_flag
     myRange = [ 1e-1, 1e4 ];
     caxis(myRange);
     axis equal;
-    axis( [ - 20, 20, - 15, 15 ] );
+    axis( [ - 2, 2, - 2, 2 ] );
     cbar = colorbar('peer', gca, 'Yscale', 'log');
     set(gca, 'Visible', 'off')
     log_axes = axes('Position', get(gca, 'Position'));
@@ -190,7 +190,7 @@ if E_XY_flag
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$y$ (cm)','Interpreter','LaTex', 'FontSize', 20);
     axis equal;
-    axis( [ - 20, 20, - 15, 15 ] );
+    axis( [ - 2, 2, - 2, 2 ] );
     set(log_axes,'fontsize',20);
     set(log_axes,'LineWidth',2.0);
     % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
@@ -211,7 +211,7 @@ if E_YZ_flag
     myRange = [ 1e-1, 1e4 ];
     caxis(myRange);
     axis equal;
-    axis( [ - 15, 15, - 15, 15 ] );
+    axis( [ - 2, 2, - 2, 2 ] );
     cbar = colorbar('peer', gca, 'Yscale', 'log');
     set(gca, 'Visible', 'off')
     log_axes = axes('Position', get(gca, 'Position'));
@@ -243,7 +243,7 @@ if E_YZ_flag
     xlabel('$y$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
     axis equal;
-    axis( [ - 15, 15, - 15, 15 ] );
+    axis( [ - 2, 2, - 2, 2 ] );
     set(log_axes,'fontsize',20);
     set(log_axes,'LineWidth',2.0);
     % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
@@ -274,7 +274,7 @@ if SAR_XZ_flag
     myRange = [ 1e-1, 1e4 ];
     caxis(myRange);
     axis equal;
-    axis( [ - 20, 20, - 15, 15 ] );
+    axis( [ - 2, 2, - 2, 2 ] );
     cbar = colorbar('peer', gca, 'Yscale', 'log');
     set(gca, 'Visible', 'off')
     log_axes = axes('Position', get(gca, 'Position'));
@@ -307,7 +307,7 @@ if SAR_XZ_flag
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
     axis equal;
-    axis( [ - 20, 20, - 15, 15 ] );
+    axis( [ - 2, 2, - 2, 2 ] );
     set(log_axes,'fontsize',20);
     set(log_axes,'LineWidth',2.0);
     % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
@@ -315,7 +315,7 @@ if SAR_XZ_flag
     view(2);
     paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
     plotMap( paras2dXZ, dx, dz );
-    plotRibXZ(Ribs, SSBone, dx, dz);
+    % plotRibXZ(Ribs, SSBone, dx, dz);
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
     saveas(figure(31), fullfile(fname, strcat(CaseName, 'SAR_XZ_MQS')), 'jpg');
     % saveas(figure(31), 'E_XZ_FullWave.jpg');
@@ -331,7 +331,7 @@ if SAR_XY_flag
     myRange = [ 1e-1, 1e4 ];
     caxis(myRange);
     axis equal;
-    axis( [ - 20, 20, - 15, 15 ] );
+    axis( [ - 2, 2, - 2, 2 ] );
     cbar = colorbar('peer', gca, 'Yscale', 'log');
     set(gca, 'Visible', 'off')
     log_axes = axes('Position', get(gca, 'Position'));
@@ -364,7 +364,7 @@ if SAR_XY_flag
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$y$ (cm)','Interpreter','LaTex', 'FontSize', 20);
     axis equal;
-    axis( [ - 20, 20, - 15, 15 ] );
+    axis( [ - 2, 2, - 2, 2 ] );
     set(log_axes,'fontsize',20);
     set(log_axes,'LineWidth',2.0);
     % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
@@ -387,7 +387,7 @@ if SAR_YZ_flag
     myRange = [ 1e-1, 1e4 ];
     caxis(myRange);
     axis equal;
-    axis( [ - 20, 20, - 15, 15 ] );
+    axis( [ - 2, 2, - 2, 2 ] );
     cbar = colorbar('peer', gca, 'Yscale', 'log');
     set(gca, 'Visible', 'off')
     log_axes = axes('Position', get(gca, 'Position'));
@@ -422,7 +422,7 @@ if SAR_YZ_flag
     xlabel('$y$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
     axis equal;
-    axis( [ - 15, 15, - 15, 15 ] );
+    axis( [ - 2, 2, - 2, 2 ] );
     set(log_axes,'fontsize',20);
     set(log_axes,'LineWidth',2.0);
     % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
@@ -456,7 +456,7 @@ if SAR_XZ_MNP_flag
     myRange = [ 1e-1, 1e4 ];
     caxis(myRange);
     axis equal;
-    axis( [ - 20, 20, - 15, 15 ] );
+    axis( [ - 2, 2, - 2, 2 ] );
     cbar = colorbar('peer', gca, 'Yscale', 'log');
     set(gca, 'Visible', 'off')
     log_axes = axes('Position', get(gca, 'Position'));
@@ -489,7 +489,7 @@ if SAR_XZ_MNP_flag
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
     axis equal;
-    axis( [ - 20, 20, - 15, 15 ] );
+    axis( [ - 2, 2, - 2, 2 ] );
     set(log_axes,'fontsize',20);
     set(log_axes,'LineWidth',2.0);
     % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
@@ -497,7 +497,7 @@ if SAR_XZ_MNP_flag
     view(2);
     paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
     plotMap( paras2dXZ, dx, dz );
-    plotRibXZ(Ribs, SSBone, dx, dz);
+    % plotRibXZ(Ribs, SSBone, dx, dz);
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
     saveas(figure(34), fullfile(fname, strcat(CaseName, 'SAR_XZ_MNP_MQS')), 'jpg');
     % saveas(figure(34), 'E_XZ_FullWave.jpg');

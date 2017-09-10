@@ -1,35 +1,36 @@
+% % % === === % ================================= % === === %
+% % % === === % Reload zeroth-order E and H field % === === %
+% % % === === % =================================  % === === %
+% clc; clear;
+% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0824LiverMQS\0824preK1_liver.mat')
+% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0903LiverMQS\0903_1dot2MHz_Liver_zerothOrder.mat');
+% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0903LiverMQS\0903_1dot2MHz_Liver_Q_s_MNP.mat', 'muPrmPrm_MNP', 'Omega_0');
+% % % === === % ========= % === === %
+% % % === === % Flag Sets % === === %
+% % % === === % ========= % === === %
+% E_XZ_flag = 1;
+% E_XY_flag = 1;
+% E_YZ_flag = 1;
+
+% SAR_XZ_flag = 1;
+% SAR_XY_flag = 1;
+% SAR_YZ_flag = 1;
+
+% SAR_XZ_MNP_flag = 1;
+
 % % === === % ================================= % === === %
-% % === === % Reload zeroth-order E and H field % === === %
-% % === === % =================================  % === === %
-clc; clear;
-load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0824LiverMQS\0824preK1_liver.mat')
-load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0824LiverMQS\0827_8MHz_Liver_zerothOrder.mat');
-load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0823LungMQS\0829_8MHz_Lung_Q_s_MNP.mat', 'muPrmPrm_MNP', 'Omega_0');
-
-% % === === % ========= % === === %
-% % === === % Flag Sets % === === %
-% % === === % ========= % === === %
-E_XZ_flag = 0;
-E_XY_flag = 0;
-E_YZ_flag = 1;
-
-SAR_XZ_flag = 0;
-SAR_XY_flag = 0;
-SAR_YZ_flag = 0;
-
-SAR_XZ_MNP_flag = 0;
-
-% === === % ================================= % === === %
-% === === % J_0 modification part (cancelled) % === === %
-% === === % ================================= % === === %
+% % === === % J_0 modification part (cancelled) % === === %
+% % === === % ================================= % === === %
 % % frequency from 100 kHz to 8 MHz; J_0 from 5,000 to 5,000 / 80
-% E_XZ = E_XZ / 80; 
-% E_XY = E_XY / 80; 
-% E_YZ = E_YZ / 80; 
+% % the electric field is computed using Omega = 2 * pi * 8 * 10^6; instead of 2 * pi * 1.2 * 10^6
 
-% H_XZ = H_XZ / 80; 
-% H_XY = H_XY / 80; 
-% H_YZ = H_YZ / 80; 
+% E_XZ = E_XZ * ( 400 / 50 ) * (1.2 / 8); 
+% E_XY = E_XY * ( 400 / 50 ) * (1.2 / 8); 
+% E_YZ = E_YZ * ( 400 / 50 ) * (1.2 / 8); 
+
+% H_XZ = H_XZ * ( 400 / 50 ) ; 
+% H_XY = H_XY * ( 400 / 50 ) ; 
+% H_YZ = H_YZ * ( 400 / 50 ) ; 
 
 % % === === % =============== % === === %
 % % === === % Parameters part % === === %
@@ -42,8 +43,8 @@ SAR_XZ_MNP_flag = 0;
 % tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1;
 % tumor_ell = tumor_z / dz + air_z / (2 * dz) + 1;
 
-% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0824LiverMQS\';
-% CaseName = '0824';
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0903LiverMQS\';
+% CaseName = '0903';
 
 % % === === % =================== % === === %
 % % === === % Preparing Abs value % === === %
@@ -158,7 +159,7 @@ if E_XY_flag
     myRange = [ 1e-1, 1e4 ];
     caxis(myRange);
     axis equal;
-    axis( [ - 20, 20, - 15, 15 ] );
+    axis( [ - 20, 20, - 10, 10 ] );
     cbar = colorbar('peer', gca, 'Yscale', 'log');
     set(gca, 'Visible', 'off')
     log_axes = axes('Position', get(gca, 'Position'));
@@ -191,7 +192,7 @@ if E_XY_flag
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$y$ (cm)','Interpreter','LaTex', 'FontSize', 20);
     axis equal;
-    axis( [ - 20, 20, - 15, 15 ] );
+    axis( [ - 20, 20, - 10, 10 ] );
     set(log_axes,'fontsize',20);
     set(log_axes,'LineWidth',2.0);
     % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
@@ -213,7 +214,7 @@ if E_YZ_flag
     myRange = [ 1e-1, 1e4 ];
     caxis(myRange);
     axis equal;
-    axis( [ - 20, 20, - 15, 15 ] );
+    axis( [ - 10, 10, - 15, 15 ] );
     cbar = colorbar('peer', gca, 'Yscale', 'log');
     set(gca, 'Visible', 'off')
     log_axes = axes('Position', get(gca, 'Position'));
@@ -245,7 +246,7 @@ if E_YZ_flag
     xlabel('$y$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
     axis equal;
-    axis( [ - 20, 20, - 15, 15 ] );
+    axis( [ - 10, 10, - 15, 15 ] );
     set(log_axes,'fontsize',20);
     set(log_axes,'LineWidth',2.0);
     % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
@@ -335,7 +336,7 @@ if SAR_XY_flag
     myRange = [ 1e-1, 1e4 ];
     caxis(myRange);
     axis equal;
-    axis( [ - 20, 20, - 15, 15 ] );
+    axis( [ - 20, 20, - 10, 10 ] );
     cbar = colorbar('peer', gca, 'Yscale', 'log');
     set(gca, 'Visible', 'off')
     log_axes = axes('Position', get(gca, 'Position'));
@@ -368,7 +369,7 @@ if SAR_XY_flag
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$y$ (cm)','Interpreter','LaTex', 'FontSize', 20);
     axis equal;
-    axis( [ - 20, 20, - 15, 15 ] );
+    axis( [ - 20, 20, - 10, 10 ] );
     set(log_axes,'fontsize',20);
     set(log_axes,'LineWidth',2.0);
     % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
@@ -392,7 +393,7 @@ if SAR_YZ_flag
     myRange = [ 1e-1, 1e4 ];
     caxis(myRange);
     axis equal;
-    axis( [ - 20, 20, - 15, 15 ] );
+    axis( [ - 10, 10, - 15, 15 ] );
     cbar = colorbar('peer', gca, 'Yscale', 'log');
     set(gca, 'Visible', 'off')
     log_axes = axes('Position', get(gca, 'Position'));
@@ -427,7 +428,7 @@ if SAR_YZ_flag
     xlabel('$y$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
     axis equal;
-    axis( [ - 20, 20, - 15, 15 ] );
+    axis( [ - 10, 10, - 15, 15 ] );
     set(log_axes,'fontsize',20);
     set(log_axes,'LineWidth',2.0);
     % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
@@ -450,7 +451,8 @@ SegMedMask = SegMed;
 SegMedMask(find(SegMedMask ~= 5)) = 0;
 SegMedMask(find(SegMedMask == 5)) = 1;
 if SAR_XZ_MNP_flag
-    muPrmPrm_MNP = 4.4743;
+    % muPrmPrm_MNP = 4.4743;
+    % muPrmPrm_MNP = 0.3759;
     % muPrmPrm_MNP = 0.6214;
     SAR_XZ_MNP = 0.5 * Omega_0 * Mu_0 * muPrmPrm_MNP * double(squeeze(SegMedMask(:, tumor_n, :, :, :))) .* H_XZabs.^2 / rho(5);
     
@@ -504,7 +506,7 @@ if SAR_XZ_MNP_flag
     % plotMap( paras2dXZ, dx, dz );
     % plotRibXZ(Ribs, SSBone, dx, dz);
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    saveas(figure(34), fullfile(fname, strcat(CaseName, 'SAR_XZ_MNP_MQS')), 'jpg');
+    saveas(figure(34), fullfile(fname, strcat(CaseName, 'Liver_SAR_XZ_MNP_MQS')), 'jpg');
     % saveas(figure(34), 'E_XZ_FullWave.jpg');
     % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
 end
