@@ -1,8 +1,11 @@
-clc; clear;
-load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0906CervixMQS\0906_Cervix_preK1.mat')
-load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0906CervixMQS\0907CervixMQS_zerothOrder.mat', 'H_XZ', 'H_XY', 'H_YZ', 'E_XZ', 'E_XY', 'E_YZ');
+% clc; clear;
+% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0906CervixMQS\0906_Cervix_preK1.mat')
+% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0906CervixMQS\0907CervixMQS_zerothOrder.mat', 'H_XZ', 'H_XY', 'H_YZ', 'E_XZ', 'E_XY', 'E_YZ');
 % load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0903LungMQS\0903LungMQS_1pnt2MHz_MuPrmPrm_secondOrder.mat');
 % load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0829LungMQS_1dot2MHz\0829_1dot2MHz_zerothOrder.mat');
+clc; clear;
+load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0906CervixMQS\0906_Cervix_preK1.mat')
+load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0906CervixMQS\0913CervixMQS.mat', 'H_XZ', 'H_XY', 'H_YZ', 'E_XZ', 'E_XY', 'E_YZ');
 
 tumor_m = tumor_x / dx + air_x / (2 * dx) + 1;
 tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1;
@@ -12,21 +15,22 @@ tumor_ell = tumor_z / dz + air_z / (2 * dz) + 1;
 % === === % J_0 modification part % === === %
 % === === % ===================== % === === %
 % frequency from 100 kHz to 1.2 MHz; J_0 from 5,000 to 212.5
-E_XZ = E_XZ * 400 / 80;
-E_XY = E_XY * 400 / 80;
-E_YZ = E_YZ * 400 / 80;
+% modification of H field
+E_XZ = E_XZ * ( 1200 / 100 ) * 400 / 80; 
+E_XY = E_XY * ( 1200 / 100 ) * 400 / 80; 
+E_YZ = E_YZ * ( 1200 / 100 ) * 400 / 80; 
 
-H_XZ = H_XZ * 400 / 80;
-H_XY = H_XY * 400 / 80;
-H_YZ = H_YZ * 400 / 80;
+H_XZ = H_XZ * ( 1200 / 100 ) * 400 / 80; 
+H_XY = H_XY * ( 1200 / 100 ) * 400 / 80; 
+H_YZ = H_YZ * ( 1200 / 100 ) * 400 / 80; 
 
 % === === % ================== % === === %
 % === === % Plotting H_XZ part % === === %
 % === === % ================== % === === %
 H_oneXZ = H_XZ;
 tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1;
-fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0906CervixMQS\';
-CaseName = '0907';
+fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0908CervixMQStest\';
+CaseName = '0908';
 
 H_oneXZabs = zeros(x_idx_max, z_idx_max, 6, 8);
 for m_idx = 1: 1: x_idx_max
@@ -97,8 +101,8 @@ saveas(figure(8), fullfile(fname, strcat(CaseName, 'H0_XZ_MQS')), 'jpg');
 % === === % ================== % === === %
 H_oneYZ = H_YZ;
 tumor_m = tumor_x / dx + air_x / (2 * dx) + 1;
-fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0906CervixMQS\';
-CaseName = '0907';
+fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0908CervixMQStest\';
+CaseName = '0908';
 
 H_oneYZabs = zeros(x_idx_max, z_idx_max, 6, 8);
 for n_idx = 1: 1: y_idx_max

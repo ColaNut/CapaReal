@@ -84,3 +84,8 @@ Test    -- update the getRoughMed_Mag.m
 Cervix MQS; loadParas_Colon and Plot E^(0) field for cervixEQS
 Modification of liver therml properties, electrode size and position in liverEQS, computational domain in liverEQS.
 Test different epsilon of insulator; modify the sigma of bolus.
+
+0914: 
+Fail to test intra-cervical electrodes and a pair of coils with opposite direction. 
+Implement: determination of SegMed for cervix model; liver plotting; \xi of HCC; Geometric parameters of cervix
+Notes: Fix the problem of Vrtx_bndry and BndryTable, where the former is for the filling of K and the latter is for the filling of d_k.

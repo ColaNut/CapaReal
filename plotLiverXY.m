@@ -54,7 +54,7 @@ Cont(3, :) = getSqrCoeff( Product(3, 1), Product(3, 2), Product(3, 3) ) / liver_
 
 [ x_0, y_0, a, c, t ] = plotQuaEllipse( sum(Cont) + [0, 0, 0, 0, 0, - 1] );
 if a > 0 && c > 0
-    plotEllipse( liver_x + x_0 + a * cos(t), y_0 + a * sin(t), liver_x + x_0 - a * cos(t), y_0 - a * sin(t), c, dx, dy );
+    plotEllipse_liverXY( liver_x + x_0 + a * cos(t), y_0 + a * sin(t), liver_x + x_0 - a * cos(t), y_0 - a * sin(t), c, dx, dy );
 end
 % if isreal(l_lung_c)
 %     plotEllipse( l_lung_x + l_lung_a, l_lung_z, l_lung_x - l_lung_a, l_lung_z, l_lung_c, dx, dz );
@@ -68,11 +68,11 @@ if isreal(tumor_r_prime)
 end
 
 % plot the line: z = m x + b
-line_x = -15: 0.5: 15;
+line_x = -10.5: 0.5: 4;
 % plot the line: z = m_1 x + m_2
 m_1 = - Product(3, 1) / Product(3, 2);
 m_2 = - Product(3, 3) / Product(3, 2) + liver_x * Product(3, 1) / Product(3, 2);
-plot( line_x, m_1 * line_x + m_2, 'k', 'LineWidth', 2.0);
+plot( line_x, m_1 * line_x + m_2, 'Color', [0.5, 0.5, 0.5], 'LineWidth', 2.5);
 
 % plotEllipse( bolus_a, 0, - bolus_a, 0, bolus_b, dx, dy );
 % plotEllipse( skin_a, 0, - skin_a, 0, skin_b, dx, dy );
@@ -115,33 +115,33 @@ hold on;
 plot( muscleLft, y_idx, 'Color', [0.5, 0.5, 0.5], 'LineWidth', 2.5);
 hold on;
 
-% plotting electrodes
-UpElectrodeSize = 22;
-DwnElectrodeSize = 22;
+% % plotting electrodes
+% UpElectrodeSize = 22;
+% DwnElectrodeSize = 22;
 
-x_axUp = 0 - UpElectrodeSize / 2: dx: 0 + UpElectrodeSize / 2;
-plot( x_axUp, ( tumor_y - UpElectrodeSize / 2 ) * ones( size(x_axUp) ), 'k--', 'LineWidth', 3.0);
-plot( x_axUp, ( tumor_y + UpElectrodeSize / 2 ) * ones( size(x_axUp) ), 'k--', 'LineWidth', 3.0);
+% x_axUp = 0 - UpElectrodeSize / 2: dx: 0 + UpElectrodeSize / 2;
+% plot( x_axUp, ( tumor_y - UpElectrodeSize / 2 ) * ones( size(x_axUp) ), 'k--', 'LineWidth', 3.0);
+% plot( x_axUp, ( tumor_y + UpElectrodeSize / 2 ) * ones( size(x_axUp) ), 'k--', 'LineWidth', 3.0);
 
-y_axUp = tumor_y - UpElectrodeSize / 2: dy: tumor_y + UpElectrodeSize / 2;
-plot( ( 0 + UpElectrodeSize / 2 ) * ones( size(y_axUp) ), y_axUp, 'k--', 'LineWidth', 3.0);
-plot( ( 0 - UpElectrodeSize / 2 ) * ones( size(y_axUp) ), y_axUp, 'k--', 'LineWidth', 3.0);
+% y_axUp = tumor_y - UpElectrodeSize / 2: dy: tumor_y + UpElectrodeSize / 2;
+% plot( ( 0 + UpElectrodeSize / 2 ) * ones( size(y_axUp) ), y_axUp, 'k--', 'LineWidth', 3.0);
+% plot( ( 0 - UpElectrodeSize / 2 ) * ones( size(y_axUp) ), y_axUp, 'k--', 'LineWidth', 3.0);
 
-x_axDwn = 0 - DwnElectrodeSize / 2: dx: 0 + DwnElectrodeSize / 2;
-plot( x_axDwn, ( tumor_y - DwnElectrodeSize / 2 ) * ones( size(x_axDwn) ), 'k--', 'LineWidth', 3.0);
-plot( x_axDwn, ( tumor_y + DwnElectrodeSize / 2 ) * ones( size(x_axDwn) ), 'k--', 'LineWidth', 3.0);
+% x_axDwn = 0 - DwnElectrodeSize / 2: dx: 0 + DwnElectrodeSize / 2;
+% plot( x_axDwn, ( tumor_y - DwnElectrodeSize / 2 ) * ones( size(x_axDwn) ), 'k--', 'LineWidth', 3.0);
+% plot( x_axDwn, ( tumor_y + DwnElectrodeSize / 2 ) * ones( size(x_axDwn) ), 'k--', 'LineWidth', 3.0);
 
-y_axDwn = tumor_y - DwnElectrodeSize / 2: dy: tumor_y + DwnElectrodeSize / 2;
-plot( ( 0 + DwnElectrodeSize / 2 ) * ones( size(y_axDwn) ), y_axDwn, 'k--', 'LineWidth', 3.0);
-plot( ( 0 - DwnElectrodeSize / 2 ) * ones( size(y_axDwn) ), y_axDwn, 'k--', 'LineWidth', 3.0);
+% y_axDwn = tumor_y - DwnElectrodeSize / 2: dy: tumor_y + DwnElectrodeSize / 2;
+% plot( ( 0 + DwnElectrodeSize / 2 ) * ones( size(y_axDwn) ), y_axDwn, 'k--', 'LineWidth', 3.0);
+% plot( ( 0 - DwnElectrodeSize / 2 ) * ones( size(y_axDwn) ), y_axDwn, 'k--', 'LineWidth', 3.0);
 
-% Phi: 2.5 for all.
-% SAR: 3.0 for all.
+% % Phi: 2.5 for all.
+% % SAR: 3.0 for all.
 
-% y_idx = - h_torso / 2: dy: h_torso / 2;
-% bolusUpL = bolusHghtZ * ones(size(y_idx));
-% bolusDnL = - bolusHghtZ * ones(size(y_idx));
-% muscleUpL = muscleHghtZ * ones(size(y_idx));
-% muscleDnL = - muscleHghtZ * ones(size(y_idx));
+% % y_idx = - h_torso / 2: dy: h_torso / 2;
+% % bolusUpL = bolusHghtZ * ones(size(y_idx));
+% % bolusDnL = - bolusHghtZ * ones(size(y_idx));
+% % muscleUpL = muscleHghtZ * ones(size(y_idx));
+% % muscleDnL = - muscleHghtZ * ones(size(y_idx));
 
 end

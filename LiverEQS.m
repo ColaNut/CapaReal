@@ -613,7 +613,7 @@ parfor vIdx = 1: 1: N_v
             end
             % check the validity of Q_s_Vector input.
             p1234 = horzcat( v1234(find(v1234 == vIdx)), v1234(find(v1234 ~= vIdx)));
-            Pnt_d = filld( p1234, Vrtx_bndry, Pnt_d, ...
+            Pnt_d = filld( p1234, BndryTable, Pnt_d, ...
                             dt, Q_s_Vector_mod(CandiTet(itr)) + Q_met(MedVal), rho(MedVal), xi(MedVal), zeta(MedVal), cap(MedVal), rho_b, cap_b, alpha, T_blood, T_bolus, ...
                             x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt, BM_bndryNum );
         end
@@ -663,6 +663,8 @@ T_flagXY = 1;
 T_flagYZ = 1;
 
 T_plot_liver;
+
+save('0912LiverEQS_XiMod.mat');
 
 % save('0905_CirrhoticLiverEQS.mat');
 % save('0818CirrhoticLiverEQS.mat');

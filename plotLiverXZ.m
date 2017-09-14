@@ -57,7 +57,7 @@ Cont(3, :) = getSqrCoeff( Product(3, 1), Product(3, 3), Product(3, 2) ) / liver_
 
 [ x_0, z_0, a, c, t ] = plotQuaEllipse( sum(Cont) + [0, 0, 0, 0, 0, - 1] );
 if a > 0 && c > 0
-    plotEllipse( liver_x + x_0 + a * cos(t), liver_z + z_0 + a * sin(t), liver_x + x_0 - a * cos(t), liver_z + z_0 - a * sin(t), c, dx, dz );
+    plotEllipse_liverXZ( liver_x + x_0 + a * cos(t), liver_z + z_0 + a * sin(t), liver_x + x_0 - a * cos(t), liver_z + z_0 - a * sin(t), c, dx, dz );
 end
 % if isreal(l_lung_c)
 %     plotEllipse( l_lung_x + l_lung_a, l_lung_z, l_lung_x - l_lung_a, l_lung_z, l_lung_c, dx, dz );
@@ -71,45 +71,45 @@ if isreal(tumor_r_prime)
 end
 
 % plot the line: z = m x + b
-line_x = - 15: 0.5: 15;
+line_x = - 7: 0.5: 3.5;
 % plot the line: z = m_1 x + m_2
 m_1 = - Product(3, 1) / Product(3, 3);
 m_2 = - Product(3, 2) / Product(3, 3) + liver_z + liver_x * Product(3, 1) / Product(3, 3);
-plot( line_x, m_1 * line_x + m_2, 'k', 'LineWidth', 2.0);
+plot( line_x, m_1 * line_x + m_2, 'Color', [0.5, 0.5, 0.5], 'LineWidth', 2.5);
 
-% plot electrode
-t = linspace( 0, 2 * pi, 400 );
-X = bolus_a * cos(t);
-Z = bolus_c * sin(t);
-% The below parameters need to be synchronize with UpElecrode and DwnELectrode
+% % plot electrode
+% t = linspace( 0, 2 * pi, 400 );
+% X = bolus_a * cos(t);
+% Z = bolus_c * sin(t);
+% % The below parameters need to be synchronize with UpElecrode and DwnELectrode
 
-nVarargs = length(varargin);
-if nVarargs == 3
-    ElectrodeX    = 100 * varargin{1};
-    h_x_halfUp    = 100 * varargin{2};
-    h_x_halfDwn   = 100 * varargin{3};
-else
-    ElectrodeX = - 0;
-    h_x_halfUp = 11;
-    h_x_halfDwn = 11;
-end
-UpIdx = find( Z > 0 & X >= ElectrodeX - h_x_halfUp & X <= ElectrodeX + h_x_halfUp );
-DwnIdx = find( Z < 0 & X >= ElectrodeX - h_x_halfDwn & X <= ElectrodeX + h_x_halfDwn );
-plot(X(UpIdx), Z(UpIdx), 'Color', [0, 0, 0], 'LineWidth', 4.5);
-hold on;
-plot(X(DwnIdx), Z(DwnIdx), 'Color', [0, 0, 0], 'LineWidth', 4.5);
-hold on;
-% Phi: 2.7; 2.7
-% SAR: 4.5; 4.5
-
-x_grid = - myCeil(air_x / 2, dx): dx: myCeil(air_x / 2, dx);
-z_grid = - myCeil(air_z / 2, dz): dz: myCeil(air_z / 2, dz);
-
-[ X_grid, Z_grid ] = meshgrid(x_grid, z_grid);
-% for idx = 1: 1: size(Z_grid, 1)
-%     scatter( x_grid, Z_grid(idx, :), 10 );
-%     hold on;
+% nVarargs = length(varargin);
+% if nVarargs == 3
+%     ElectrodeX    = 100 * varargin{1};
+%     h_x_halfUp    = 100 * varargin{2};
+%     h_x_halfDwn   = 100 * varargin{3};
+% else
+%     ElectrodeX = - 0;
+%     h_x_halfUp = 11;
+%     h_x_halfDwn = 11;
 % end
-% axis( [ min(x_grid), max(x_grid), min(z_grid), max(z_grid) ] );
+% UpIdx = find( Z > 0 & X >= ElectrodeX - h_x_halfUp & X <= ElectrodeX + h_x_halfUp );
+% DwnIdx = find( Z < 0 & X >= ElectrodeX - h_x_halfDwn & X <= ElectrodeX + h_x_halfDwn );
+% plot(X(UpIdx), Z(UpIdx), 'Color', [0, 0, 0], 'LineWidth', 4.5);
+% hold on;
+% plot(X(DwnIdx), Z(DwnIdx), 'Color', [0, 0, 0], 'LineWidth', 4.5);
+% hold on;
+% % Phi: 2.7; 2.7
+% % SAR: 4.5; 4.5
+
+% x_grid = - myCeil(air_x / 2, dx): dx: myCeil(air_x / 2, dx);
+% z_grid = - myCeil(air_z / 2, dz): dz: myCeil(air_z / 2, dz);
+
+% [ X_grid, Z_grid ] = meshgrid(x_grid, z_grid);
+% % for idx = 1: 1: size(Z_grid, 1)
+% %     scatter( x_grid, Z_grid(idx, :), 10 );
+% %     hold on;
+% % end
+% % axis( [ min(x_grid), max(x_grid), min(z_grid), max(z_grid) ] );
 
 end

@@ -3,95 +3,101 @@
 % % % === === % =================================  % === === %
 % clc; clear;
 % load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0824LiverMQS\0824preK1_liver.mat')
-% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0903LiverMQS\0903_1dot2MHz_Liver_zerothOrder.mat');
-% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0903LiverMQS\0903_1dot2MHz_Liver_Q_s_MNP.mat', 'muPrmPrm_MNP', 'Omega_0');
-% % % === === % ========= % === === %
-% % % === === % Flag Sets % === === %
-% % % === === % ========= % === === %
-% E_XZ_flag = 1;
-% E_XY_flag = 1;
-% E_YZ_flag = 1;
+% % load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0911LiverXiMod\MQS\0911_1dot2MHz_Liver_zerothOrder.mat');
+load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0911LiverXiMod\MQS\0912_1dot2MHz_Liver_zerothOrder.mat');
+load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0911LiverXiMod\MQS\0911_1dot2MHz_Liver_Q_s_MNP.mat', 'muPrmPrm_MNP', 'Omega_0');
 
-% SAR_XZ_flag = 1;
-% SAR_XY_flag = 1;
-% SAR_YZ_flag = 1;
+% In 0911_1dot2MHz_Liver_zerothOrder.mat, E_XZ should be modified to E_XZ = E_XZ * (400 / 50) (1.2 / 8); 
 
-% SAR_XZ_MNP_flag = 1;
+sigma(2) = 0;
 
-% % === === % ================================= % === === %
-% % === === % J_0 modification part (cancelled) % === === %
-% % === === % ================================= % === === %
-% % frequency from 100 kHz to 8 MHz; J_0 from 5,000 to 5,000 / 80
-% % the electric field is computed using Omega = 2 * pi * 8 * 10^6; instead of 2 * pi * 1.2 * 10^6
+% % === === % ========= % === === %
+% % === === % Flag Sets % === === %
+% % === === % ========= % === === %
+E_XZ_flag = 0;
+E_XY_flag = 0;
+E_YZ_flag = 0;
 
-% E_XZ = E_XZ * ( 400 / 50 ) * (1.2 / 8); 
-% E_XY = E_XY * ( 400 / 50 ) * (1.2 / 8); 
-% E_YZ = E_YZ * ( 400 / 50 ) * (1.2 / 8); 
+SAR_XZ_flag = 1;
+SAR_XY_flag = 1;
+SAR_YZ_flag = 1;
 
-% H_XZ = H_XZ * ( 400 / 50 ) ; 
-% H_XY = H_XY * ( 400 / 50 ) ; 
-% H_YZ = H_YZ * ( 400 / 50 ) ; 
+SAR_XZ_MNP_flag = 0;
 
-% % === === % =============== % === === %
-% % === === % Parameters part % === === %
-% % === === % =============== % === === %
-% E_oneXZ = E_XZ;
-% E_oneXY = E_XY;
-% E_oneYZ = E_YZ;
+% === === % ================================= % === === %
+% === === % J_0 modification part (cancelled) % === === %
+% === === % ================================= % === === %
+% frequency from 100 kHz to 8 MHz; J_0 from 5,000 to 5,000 / 80
+% the electric field is computed using Omega = 2 * pi * 8 * 10^6; instead of 2 * pi * 1.2 * 10^6
 
-% tumor_m = tumor_x / dx + air_x / (2 * dx) + 1;
-% tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1;
-% tumor_ell = tumor_z / dz + air_z / (2 * dz) + 1;
+E_XZ = E_XZ * (400 / 50); 
+E_XY = E_XY * (400 / 50); 
+E_YZ = E_YZ * (400 / 50); 
 
-% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0903LiverMQS\';
-% CaseName = '0903';
+H_XZ = H_XZ * (400 / 50); 
+H_XY = H_XY * (400 / 50); 
+H_YZ = H_YZ * (400 / 50); 
 
-% % === === % =================== % === === %
-% % === === % Preparing Abs value % === === %
-% % === === % =================== % === === %
-% E_oneXZabs = zeros(x_idx_max, z_idx_max, 6, 8);
-% for m_idx = 1: 1: x_idx_max
-%     for ell_idx = 1: 1: z_idx_max
-%         for f_idx = 1: 1: 6
-%             for t_idx = 1: 1: 8
-%                 E_oneXZabs(m_idx, ell_idx, f_idx, t_idx) = norm( squeeze(E_oneXZ(m_idx, ell_idx, f_idx, t_idx, :)) );
-%             end
-%         end
-%     end
-% end
+% === === % =============== % === === %
+% === === % Parameters part % === === %
+% === === % =============== % === === %
+E_oneXZ = E_XZ;
+E_oneXY = E_XY;
+E_oneYZ = E_YZ;
 
-% H_XZabs = zeros(x_idx_max, z_idx_max, 6, 8);
-% for m_idx = 1: 1: x_idx_max
-%     for ell_idx = 1: 1: z_idx_max
-%         for f_idx = 1: 1: 6
-%             for t_idx = 1: 1: 8
-%                 H_XZabs(m_idx, ell_idx, f_idx, t_idx) = norm( squeeze(H_XZ(m_idx, ell_idx, f_idx, t_idx, :)) );
-%             end
-%         end
-%     end
-% end
+tumor_m = tumor_x / dx + air_x / (2 * dx) + 1;
+tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1;
+tumor_ell = tumor_z / dz + air_z / (2 * dz) + 1;
 
-% E_oneXYabs = zeros(x_idx_max, y_idx_max, 6, 8);
-% for m_idx = 1: 1: x_idx_max
-%     for n_idx = 1: 1: y_idx_max
-%         for f_idx = 1: 1: 6
-%             for t_idx = 1: 1: 8
-%                 E_oneXYabs(m_idx, n_idx, f_idx, t_idx) = norm( squeeze(E_oneXY(m_idx, n_idx, f_idx, t_idx, :)) );
-%             end
-%         end
-%     end
-% end
+fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0911LiverXiMod\MQS\';
+CaseName = '0911';
 
-% E_oneYZabs = zeros(y_idx_max, z_idx_max, 6, 8);
-% for n_idx = 1: 1: y_idx_max
-%     for ell_idx = 1: 1: z_idx_max
-%         for f_idx = 1: 1: 6
-%             for t_idx = 1: 1: 8
-%                 E_oneYZabs(n_idx, ell_idx, f_idx, t_idx) = norm( squeeze(E_oneYZ(n_idx, ell_idx, f_idx, t_idx, :)) );
-%             end
-%         end
-%     end
-% end
+% === === % =================== % === === %
+% === === % Preparing Abs value % === === %
+% === === % =================== % === === %
+E_oneXZabs = zeros(x_idx_max, z_idx_max, 6, 8);
+for m_idx = 1: 1: x_idx_max
+    for ell_idx = 1: 1: z_idx_max
+        for f_idx = 1: 1: 6
+            for t_idx = 1: 1: 8
+                E_oneXZabs(m_idx, ell_idx, f_idx, t_idx) = norm( squeeze(E_oneXZ(m_idx, ell_idx, f_idx, t_idx, :)) );
+            end
+        end
+    end
+end
+
+H_XZabs = zeros(x_idx_max, z_idx_max, 6, 8);
+for m_idx = 1: 1: x_idx_max
+    for ell_idx = 1: 1: z_idx_max
+        for f_idx = 1: 1: 6
+            for t_idx = 1: 1: 8
+                H_XZabs(m_idx, ell_idx, f_idx, t_idx) = norm( squeeze(H_XZ(m_idx, ell_idx, f_idx, t_idx, :)) );
+            end
+        end
+    end
+end
+
+E_oneXYabs = zeros(x_idx_max, y_idx_max, 6, 8);
+for m_idx = 1: 1: x_idx_max
+    for n_idx = 1: 1: y_idx_max
+        for f_idx = 1: 1: 6
+            for t_idx = 1: 1: 8
+                E_oneXYabs(m_idx, n_idx, f_idx, t_idx) = norm( squeeze(E_oneXY(m_idx, n_idx, f_idx, t_idx, :)) );
+            end
+        end
+    end
+end
+
+E_oneYZabs = zeros(y_idx_max, z_idx_max, 6, 8);
+for n_idx = 1: 1: y_idx_max
+    for ell_idx = 1: 1: z_idx_max
+        for f_idx = 1: 1: 6
+            for t_idx = 1: 1: 8
+                E_oneYZabs(n_idx, ell_idx, f_idx, t_idx) = norm( squeeze(E_oneYZ(n_idx, ell_idx, f_idx, t_idx, :)) );
+            end
+        end
+    end
+end
 
 % === === % ====== % === === %
 % === === % E part % === === %
@@ -203,8 +209,8 @@ if E_XY_flag
     % plotXY( paras2dXY, dx, dy );
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
     saveas(figure(28), fullfile(fname, strcat(CaseName, 'E1_XY_MQS')), 'jpg');
-    % saveas(figure(9), 'E_XZ_FullWave.jpg');
-    % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
+    % % saveas(figure(9), 'E_XZ_FullWave.jpg');
+    % % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
 end
 
 if E_YZ_flag
@@ -257,8 +263,8 @@ if E_YZ_flag
     % plotYZ( paras2dYZ, dy, dz );
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
     saveas(figure(29), fullfile(fname, strcat(CaseName, 'E1_YZ_MQS')), 'jpg');
-    % saveas(figure(9), 'E_XZ_FullWave.jpg');
-    % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
+    % % saveas(figure(9), 'E_XZ_FullWave.jpg');
+    % % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
 end
 
 % === === % ======== % === === %
@@ -323,8 +329,8 @@ if SAR_XZ_flag
     % plotRibXZ(Ribs, SSBone, dx, dz);
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
     saveas(figure(31), fullfile(fname, strcat(CaseName, 'SAR_XZ_MQS')), 'jpg');
-    % saveas(figure(31), 'E_XZ_FullWave.jpg');
-    % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
+    % % saveas(figure(31), 'E_XZ_FullWave.jpg');
+    % % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
 end
 
 if SAR_XY_flag
@@ -380,8 +386,8 @@ if SAR_XY_flag
     % plotXY( paras2dXY, dx, dy );
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
     saveas(figure(32), fullfile(fname, strcat(CaseName, 'SAR_XY_MQS')), 'jpg');
-    % saveas(figure(32), 'E_XZ_FullWave.jpg');
-    % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
+    % % saveas(figure(32), 'E_XZ_FullWave.jpg');
+    % % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
 end
 
 if SAR_YZ_flag
@@ -439,8 +445,8 @@ if SAR_YZ_flag
     % plotYZ( paras2dYZ, dy, dz );
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
     saveas(figure(33), fullfile(fname, strcat(CaseName, 'SAR_YZ_MQS')), 'jpg');
-    % saveas(figure(33), 'E_XZ_FullWave.jpg');
-    % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
+    % % saveas(figure(33), 'E_XZ_FullWave.jpg');
+    % % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
 end
 
 % === === % ============================= % === === %
@@ -507,6 +513,6 @@ if SAR_XZ_MNP_flag
     % plotRibXZ(Ribs, SSBone, dx, dz);
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
     saveas(figure(34), fullfile(fname, strcat(CaseName, 'Liver_SAR_XZ_MNP_MQS')), 'jpg');
-    % saveas(figure(34), 'E_XZ_FullWave.jpg');
-    % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
+    % % saveas(figure(34), 'E_XZ_FullWave.jpg');
+    % % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
 end

@@ -14,13 +14,13 @@
 
 % Mu_0          = 4 * pi * 10^(-7);
 % Epsilon_0     = 10^(-9) / (36 * pi);
-% Omega_0       = 2 * pi * 1.2 * 10^6; % 2 * pi * 8 MHz
+% Omega_0       = 2 * pi * 100 * 10^3; % 2 * pi * 100 kHz
 % % V_0           = 10; 
 
 % % parameters
 %               % [ air, bolus, muscle, cervical tumor ]';
 % rho           = [   1,  1020,   1020,           1050 ]';
-% epsilon_r_pre = [   4,    80,    113,            386 ]';
+% epsilon_r_pre = [   4,     1,    113,            386 ]';
 % sigma         = [   0,     0,   0.54,         0.4827 ]';
 % epsilon_r     = epsilon_r_pre - i * sigma ./ ( Omega_0 * Epsilon_0 );
 
@@ -43,6 +43,8 @@
 % byndCD = 30;
 % % beyond computation: 30
 % CervixY = 2.8 / 100;
+% y_far = int64(CervixY / (2 * dy) + h_torso / (2 * dy) + 1);
+% y_near = int64(- CervixY / (2 * dy) + h_torso / (2 * dy) + 1);
 % for y = - h_torso / 2: dy: h_torso / 2
 %     paras2dXZ = genParas2d( y, paras, dx, dy, dz );
 %     % paras2dXZ = [ air_x, air_z, bolus_a, bolus_c, skin_a, skin_c, muscle_a, muscle_c, ...
@@ -52,15 +54,15 @@
 %     y_idx = y / dy + h_torso / (2 * dy) + 1;
 %     % modify getRoughMed to getRoughMed_cervix
 %     % apply tubeValid flag for the determination of boundary
-%     if y >= - CervixY / 2 && y <= CervixY / 2 
+%     % if y_idx >= y_near && y_idx <= y_far
 %         mediumTable(:, int64(y_idx), :) = getRoughMed_Cervix( mediumTable(:, int64(y_idx), :), paras2dXZ, dx, dz );
-%         if y == - CervixY / 2 || y == CervixY / 2 
-%             mediumTable(:, int64(y_idx), :) = getRoughMed_Cervix_amend( mediumTable(:, int64(y_idx), :), paras2dXZ, dx, dz );
-%         end
+%         % if y_idx == int64(y_near) || y_idx == int64(y_far)
+%         %     mediumTable(:, int64(y_idx), :) = getRoughMed_Cervix_amend( mediumTable(:, int64(y_idx), :), paras2dXZ, dx, dz );
+%         % end
 %         [ GridShiftTableXZ{ int64(y_idx) }, mediumTable(:, int64(y_idx), :) ] = constructCoordinateXZ_all( paras2dXZ, dx, dz, mediumTable(:, int64(y_idx), :) );
-%     else
-%         GridShiftTableXZ{ int64(y_idx) } = constructCoordinateXZ_all( paras2dXZ, dx, dz, mediumTable(:, int64(y_idx), :) );
-%     end
+%     % else
+%         % GridShiftTableXZ{ int64(y_idx) } = constructCoordinateXZ_all( paras2dXZ, dx, dz, mediumTable(:, int64(y_idx), :) );
+%     % end
 % end
 
 % % % 1 to 7, corresponding to 1-st to 7-th rib.
@@ -76,7 +78,6 @@
 % %         = UpdateBoneMed( y, mediumTable(:, int64(y_idx), :), Ribs, SSBone, RibValid, SSBoneValid, ...
 % %                             dx, dz, air_x, air_z, x_idx_max, z_idx_max, GridShiftTableXZ{ int64(y_idx) } );
 % % end
-
 % % % need to recover after resumming the original case.
 % % for x = - air_x / 2: dx: air_x / 2
 % %     paras2dYZ = genParas2dYZ( x, paras, dy, dz );
@@ -104,25 +105,14 @@
 % plotGridLineXZ( shiftedCoordinateXYZ, uint64(0 / dy + h_torso / (2 * dy) + 1) );
 % axis equal;
 
-% % === % ========================= % === %
-% % === % Amend for the MediumTable % === %
-% % === % ========================= % === %
-
+% % Amend for the MediumTable % === %
 % mediumTable( find(mediumTable == 14 | mediumTable == 15) ) = 1;
-
 % % % BlsBndryMsk = zeros(x_idx_max, z_idx_max);c  
 % % % BlsBndryMsk = get1cmBlsBndryMsk( bolus_a, bolus_c, muscle_a, muscle_c, dx, dz, x_idx_max, z_idx_max, air_x, air_z );
-
 % sparseA = cell( x_idx_max * y_idx_max * z_idx_max, 1 );
 % B = zeros( x_idx_max * y_idx_max * z_idx_max, 1 );
-% SegMed = uint8(3) * ones( x_idx_max, y_idx_max, z_idx_max, 6, 8, 'uint8');
-
-% % Mask the medium table
-% MskMedTab = mediumTable;
-% % normal point remains the same, the boundary point are forced to zero
-% MskMedTab( find(MskMedTab >= 10) ) = 0;
-
-% % the above process update the medium value and construct the shiftedCoordinateXYZ
+% backgroundMed = uint8(3);
+% SegMed = backgroundMed * ones( x_idx_max, y_idx_max, z_idx_max, 6, 8, 'uint8');
 
 % x_max_vertex = 2 * ( x_idx_max - 1 ) + 1;
 % y_max_vertex = 2 * ( y_idx_max - 1 ) + 1;
@@ -131,112 +121,69 @@
 % N_e = 7 * (x_max_vertex - 1) * (y_max_vertex - 1) * (z_max_vertex - 1) ...
 %     + 3 * ( (x_max_vertex - 1) * (y_max_vertex - 1) + (y_max_vertex - 1) * (z_max_vertex - 1) + (x_max_vertex - 1) * (z_max_vertex - 1) ) ...
 %     + ( (x_max_vertex - 1) + (y_max_vertex - 1) + (z_max_vertex - 1) );
-
 % Vertex_Crdnt = zeros( x_max_vertex, y_max_vertex, z_max_vertex, 3 );
 % tic;
 % disp('Calculation of vertex coordinate');
 % Vertex_Crdnt = buildCoordinateXYZ_Vertex( shiftedCoordinateXYZ );
 % toc;
 
-% % === % ================= % === %
-% % === % Filling time of S % === %
-% % === % ================= % === %
-
-% sparseA = cell( x_idx_max * y_idx_max * z_idx_max, 1 );
-% B = zeros( x_idx_max * y_idx_max * z_idx_max, 1 );
-
-% % Mask the medium table
-% MskMedTab = mediumTable;
-% % normal point remains the same, the boundary point are forced to zero
-% MskMedTab( find(MskMedTab >= 10) ) = 0;
-
-% disp('The fill up time of A: ');
-% tic;
-% % for idx = 29 * x_idx_max * y_idx_max: 1: 30 * x_idx_max * y_idx_max 
+% % === % =============== % === %
+% % === % Fill the SegMed % === %
+% % === % =============== % === % 
+% % mediumVrtx = ones(x_max_vertex, y_max_vertex, z_max_vertex, 'uint8');
 % for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
-%     % idx = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
 %     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
-%     p0 = idx;
-
-%     if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
-%         if MskMedTab(p0) ~= 0 && BoneMediumTable(p0) == 1 % normal normal point
-%         % if mediumTable(p0) == 1 || mediumTable(p0) == 2 || mediumTable(p0) == 3 || mediumTable(p0) == 4 || mediumTable(p0) == 5 
-%             [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillNrmlPt_A( m, n, ell, ...
-%                             shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab );
-%         elseif MskMedTab(p0) == 0 && BoneMediumTable(p0) == 1 % normal bondary point
-%             [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
-%                 shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
-%                 epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
-%         elseif MskMedTab(p0) ~= 0 && BoneMediumTable(p0) >= 16 && BoneMediumTable(p0) <= 18 % rib normal point
-%             [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillNrmlRibPt_A( m, n, ell, ...
-%                 shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
-%                     MskMedTab, BoneMediumTable, epsilon_r );
-%         elseif MskMedTab(p0) == 0 && BoneMediumTable(p0) == 16  % rib boundary point
-%             [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrRibPt_A( m, n, ell, ...
-%                 shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
-%                     MskMedTab, BoneMediumTable, epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
-%         else
-%             error('check');
-%         end
-%     elseif ell == z_idx_max
-%         sparseA{ p0 } = fillTop_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
-%     elseif ell == 1
-%         sparseA{ p0 } = fillBttm_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
-%     elseif m == x_idx_max && ell >= 2 && ell <= z_idx_max - 1 
-%         sparseA{ p0 } = fillRight_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
-%     elseif m == 1 && ell >= 2 && ell <= z_idx_max - 1 
-%         sparseA{ p0 } = fillLeft_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
-%     elseif n == y_idx_max && m >= 2 && m <= x_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
-%         sparseA{ p0 } = fillFront_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
-%     elseif n == 1 && m >= 2 && m <= x_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
-%         sparseA{ p0 } = fillBack_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
+%     if mediumTable(m, n, ell) < 10
+%         SegMed(m, n, ell, :, :) = mediumTable(m, n, ell);
+%     elseif m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 && mediumTable(m, n, ell) ~= 1
+%         % m_v = 2 * m - 1;
+%         % n_v = 2 * n - 1;
+%         % ell_v = 2 * ell - 1;
+%         % mediumVrtx(m_v - 1: m_v + 1, n_v - 1: n_v + 1, ell_v - 1: ell_v + 1) ...
+%         %     = getSheetPnts(m, n, ell, x_idx_max, y_idx_max, shiftedCoordinateXYZ, mediumTable, ...
+%         %         mediumVrtx(m_v - 1: m_v + 1, n_v - 1: n_v + 1, ell_v - 1: ell_v + 1), mediumTable(m, n, ell) );
+%         SegMed( m, n, ell, :, : ) = fillBndrySegMed( m, n, ell, ...
+%                 shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, mediumTable );
 %     end
 % end
-% toc;
-
-% % UpElecTb = false( x_idx_max, y_idx_max, z_idx_max );
-% % [ sparseA, B, UpElecTb ] = UpElectrode( sparseA, B, Xtable, Ztable, paras, V_0, x_idx_max, y_idx_max, dx, dy, dz, z_idx_max );
-% % % warning messages occurr in the above determination of SegMed; 
-% % ammended by the below SegMed determination process -- todo
 
 % % === % ========================================= % === %
 % % === % Fill the SegMed on the computation domain % === %
 % % === % ========================================= % === % 
-
 % % x- and z-direction.
 % for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
 %     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
-%     if m == 1 || m == x_idx_max || n == 1 || n == y_idx_max || ell == 1 && ell == z_idx_max 
+%     if m == 1 || m == x_idx_max || ell == 1 && ell == z_idx_max 
 %         SegMed(m, n, ell, :, :) = uint8(3);
 %     end
 % end 
 
-% % % y-direction.
-% % for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
-% %     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
-% %     if n == 1 || n == y_idx_max
-% %         tmpSeg = zeros(6, 8, 'uint8');
-% %         SegCopy = zeros(8, 1, 'uint8');
-% %         SegCopy(1) = SegMed(m, 2, ell, 4, 1);
-% %         SegCopy(2) = SegMed(m, 2, ell, 1, 1);
-% %         SegCopy(3) = SegMed(m, 2, ell, 1, 3);
-% %         SegCopy(4) = SegMed(m, 2, ell, 2, 1);
-% %         SegCopy(5) = SegMed(m, 2, ell, 2, 5);
-% %         SegCopy(6) = SegMed(m, 2, ell, 3, 1);
-% %         SegCopy(7) = SegMed(m, 2, ell, 3, 3);
-% %         SegCopy(8) = SegMed(m, 2, ell, 4, 5);
+% % y-direction.
+% for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+%     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
+%     if n == 1 || n == y_idx_max
+%         tmpSeg = zeros(6, 8, 'uint8');
+%         SegCopy = zeros(8, 1, 'uint8');
+%         SegCopy(1) = SegMed(m, 2, ell, 4, 1);
+%         SegCopy(2) = SegMed(m, 2, ell, 1, 1);
+%         SegCopy(3) = SegMed(m, 2, ell, 1, 3);
+%         SegCopy(4) = SegMed(m, 2, ell, 2, 1);
+%         SegCopy(5) = SegMed(m, 2, ell, 2, 5);
+%         SegCopy(6) = SegMed(m, 2, ell, 3, 1);
+%         SegCopy(7) = SegMed(m, 2, ell, 3, 3);
+%         SegCopy(8) = SegMed(m, 2, ell, 4, 5);
 
-% %         tmpSeg(4, 1) = SegCopy(1); tmpSeg(4, 2) = SegCopy(1); tmpSeg(4, 3) = SegCopy(1); tmpSeg(4, 4) = SegCopy(1); tmpSeg(5, 4) = SegCopy(1); tmpSeg(6, 1) = SegCopy(1);
-% %         tmpSeg(1, 1) = SegCopy(2); tmpSeg(1, 2) = SegCopy(2); tmpSeg(1, 7) = SegCopy(2); tmpSeg(1, 8) = SegCopy(2); tmpSeg(5, 3) = SegCopy(2); tmpSeg(6, 2) = SegCopy(2); 
-% %         tmpSeg(1, 3) = SegCopy(3); tmpSeg(1, 4) = SegCopy(3); tmpSeg(1, 5) = SegCopy(3); tmpSeg(1, 6) = SegCopy(3); tmpSeg(5, 2) = SegCopy(3); tmpSeg(6, 3) = SegCopy(3); 
-% %         tmpSeg(2, 1) = SegCopy(4); tmpSeg(2, 2) = SegCopy(4); tmpSeg(2, 3) = SegCopy(4); tmpSeg(2, 4) = SegCopy(4); tmpSeg(5, 1) = SegCopy(4); tmpSeg(6, 4) = SegCopy(4); 
-% %         tmpSeg(2, 5) = SegCopy(5); tmpSeg(2, 6) = SegCopy(5); tmpSeg(2, 7) = SegCopy(5); tmpSeg(2, 8) = SegCopy(5); tmpSeg(5, 8) = SegCopy(5); tmpSeg(6, 5) = SegCopy(5); 
-% %         tmpSeg(3, 1) = SegCopy(6); tmpSeg(3, 2) = SegCopy(6); tmpSeg(3, 7) = SegCopy(6); tmpSeg(3, 8) = SegCopy(6); tmpSeg(5, 7) = SegCopy(6); tmpSeg(6, 6) = SegCopy(6); 
-% %         tmpSeg(3, 3) = SegCopy(7); tmpSeg(3, 4) = SegCopy(7); tmpSeg(3, 5) = SegCopy(7); tmpSeg(3, 6) = SegCopy(7); tmpSeg(5, 6) = SegCopy(7); tmpSeg(6, 7) = SegCopy(7); 
-% %         tmpSeg(4, 5) = SegCopy(8); tmpSeg(4, 6) = SegCopy(8); tmpSeg(4, 7) = SegCopy(8); tmpSeg(4, 8) = SegCopy(8); tmpSeg(5, 5) = SegCopy(8); tmpSeg(6, 8) = SegCopy(8); 
-% %         SegMed(m, n, ell, :, :) = tmpSeg;
-% %     end
-% % end 
+%         tmpSeg(4, 1) = SegCopy(1); tmpSeg(4, 2) = SegCopy(1); tmpSeg(4, 3) = SegCopy(1); tmpSeg(4, 4) = SegCopy(1); tmpSeg(5, 4) = SegCopy(1); tmpSeg(6, 1) = SegCopy(1);
+%         tmpSeg(1, 1) = SegCopy(2); tmpSeg(1, 2) = SegCopy(2); tmpSeg(1, 7) = SegCopy(2); tmpSeg(1, 8) = SegCopy(2); tmpSeg(5, 3) = SegCopy(2); tmpSeg(6, 2) = SegCopy(2); 
+%         tmpSeg(1, 3) = SegCopy(3); tmpSeg(1, 4) = SegCopy(3); tmpSeg(1, 5) = SegCopy(3); tmpSeg(1, 6) = SegCopy(3); tmpSeg(5, 2) = SegCopy(3); tmpSeg(6, 3) = SegCopy(3); 
+%         tmpSeg(2, 1) = SegCopy(4); tmpSeg(2, 2) = SegCopy(4); tmpSeg(2, 3) = SegCopy(4); tmpSeg(2, 4) = SegCopy(4); tmpSeg(5, 1) = SegCopy(4); tmpSeg(6, 4) = SegCopy(4); 
+%         tmpSeg(2, 5) = SegCopy(5); tmpSeg(2, 6) = SegCopy(5); tmpSeg(2, 7) = SegCopy(5); tmpSeg(2, 8) = SegCopy(5); tmpSeg(5, 8) = SegCopy(5); tmpSeg(6, 5) = SegCopy(5); 
+%         tmpSeg(3, 1) = SegCopy(6); tmpSeg(3, 2) = SegCopy(6); tmpSeg(3, 7) = SegCopy(6); tmpSeg(3, 8) = SegCopy(6); tmpSeg(5, 7) = SegCopy(6); tmpSeg(6, 6) = SegCopy(6); 
+%         tmpSeg(3, 3) = SegCopy(7); tmpSeg(3, 4) = SegCopy(7); tmpSeg(3, 5) = SegCopy(7); tmpSeg(3, 6) = SegCopy(7); tmpSeg(5, 6) = SegCopy(7); tmpSeg(6, 7) = SegCopy(7); 
+%         tmpSeg(4, 5) = SegCopy(8); tmpSeg(4, 6) = SegCopy(8); tmpSeg(4, 7) = SegCopy(8); tmpSeg(4, 8) = SegCopy(8); tmpSeg(5, 5) = SegCopy(8); tmpSeg(6, 8) = SegCopy(8); 
+%         SegMed(m, n, ell, :, :) = tmpSeg;
+%     end
+% end 
 
 % % % === % =================================== % === %
 % % % === % Fill Up Time for sparseS and SegMed % === %
@@ -341,12 +288,6 @@
 % %         Vrtx_bndry(m_v, n_v, ell_v) = 2;
 % %     end
 % % end
-
-% % 13: bolus-muscle boundary
-% mediumTable(12, 20, 12) = 2;
-% mediumTable(12, 20, 14) = 2;
-% mediumTable(14, 20, 12) = 2;
-% mediumTable(14, 20, 14) = 2;
 
 % BndryTable = zeros( x_max_vertex, y_max_vertex, z_max_vertex );
 % BM_bndryNum = 13;
@@ -660,9 +601,15 @@
 % 3: current sheet_2 
 Vrtx_bndry = zeros( x_max_vertex, y_max_vertex, z_max_vertex, 'uint8');
 
+% === === % ====================== % === === %
+% === === % Update Coil VrtxNumber % === === %
+% === === % ====================== % === === %
+% counter-clock wise: 1
+% clock wise: 2
+
 % far coil: counterclock-wise
 SheetY1_0 = 0.5 / 100;
-w_cs     = 0.2 / 100;
+w_cs     = 0.6 / 100;
 % 1: sheetPoints boundary
 n_far1  = uint8( ( SheetY1_0 + w_cs / 2 ) / dy + h_torso / (2 * dy) + 1 );
 n_near1 = uint8( ( SheetY1_0 - w_cs / 2 ) / dy + h_torso / (2 * dy) + 1 );
@@ -670,21 +617,49 @@ n_far_v1  = 2 * n_far1 - 1;
 n_near_v1 = 2 * n_near1 - 1;
 
 SheetY3_0 = - 0.5 / 100;
-w_cs     = 0.2 / 100;
+w_cs     = 0.6 / 100;
 % 1: sheetPoints boundary
 n_far3  = uint8( ( SheetY3_0 + w_cs / 2 ) / dy + h_torso / (2 * dy) + 1 );
 n_near3 = uint8( ( SheetY3_0 - w_cs / 2 ) / dy + h_torso / (2 * dy) + 1 );
 n_far_v3  = 2 * n_far3 - 1;
 n_near_v3 = 2 * n_near3 - 1;
 
-Vrtx_bndry(23, n_near_v1: n_far_v1, 25) = 1;    Vrtx_bndry(23, n_near_v3: n_far_v3, 25) = 3;
-Vrtx_bndry(24, n_near_v1: n_far_v1, 26) = 1;    Vrtx_bndry(24, n_near_v3: n_far_v3, 26) = 3;
-Vrtx_bndry(25, n_near_v1: n_far_v1, 27) = 1;    Vrtx_bndry(25, n_near_v3: n_far_v3, 27) = 3;
-Vrtx_bndry(26, n_near_v1: n_far_v1, 26) = 1;    Vrtx_bndry(26, n_near_v3: n_far_v3, 26) = 3;
-Vrtx_bndry(27, n_near_v1: n_far_v1, 25) = 1;    Vrtx_bndry(27, n_near_v3: n_far_v3, 25) = 3;
-Vrtx_bndry(26, n_near_v1: n_far_v1, 24) = 1;    Vrtx_bndry(26, n_near_v3: n_far_v3, 24) = 3;
-Vrtx_bndry(25, n_near_v1: n_far_v1, 23) = 1;    Vrtx_bndry(25, n_near_v3: n_far_v3, 23) = 3;
-Vrtx_bndry(24, n_near_v1: n_far_v1, 24) = 1;    Vrtx_bndry(24, n_near_v3: n_far_v3, 24) = 3;
+AirBolusBndryNum = 12;
+for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+    [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
+    % far coil
+    if n >= n_near1 && n <= n_far1 && mediumTable(m, n, ell) == AirBolusBndryNum
+        m_v = 2 * m - 1;
+        n_v = 2 * n - 1;
+        ell_v = 2 * ell - 1;
+        Vrtx_bndry(m_v - 1: m_v + 1, n_v - 1: n_v + 1, ell_v - 1: ell_v + 1) ...
+            = getSheetPnts(m, n, ell, x_idx_max, y_idx_max, shiftedCoordinateXYZ, mediumTable, ...
+                Vrtx_bndry(m_v - 1: m_v + 1, n_v - 1: n_v + 1, ell_v - 1: ell_v + 1), AirBolusBndryNum );
+    end
+end
+Vrtx_bndry( find(Vrtx_bndry == AirBolusBndryNum) ) = 1;
+
+for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+    [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
+    % near coil
+    if n >= n_near3 && n <= n_far3 && mediumTable(m, n, ell) == AirBolusBndryNum
+        m_v = 2 * m - 1;
+        n_v = 2 * n - 1;
+        ell_v = 2 * ell - 1;
+        Vrtx_bndry(m_v - 1: m_v + 1, n_v - 1: n_v + 1, ell_v - 1: ell_v + 1) ...
+            = getSheetPnts(m, n, ell, x_idx_max, y_idx_max, shiftedCoordinateXYZ, mediumTable, ...
+                Vrtx_bndry(m_v - 1: m_v + 1, n_v - 1: n_v + 1, ell_v - 1: ell_v + 1), AirBolusBndryNum );
+    end
+end
+Vrtx_bndry( find(Vrtx_bndry == AirBolusBndryNum) ) = 3;
+% % Vrtx_bndry(23, n_near_v1: n_far_v1, 25) = 1;    Vrtx_bndry(23, n_near_v3: n_far_v3, 25) = 3;
+% % Vrtx_bndry(24, n_near_v1: n_far_v1, 26) = 1;    Vrtx_bndry(24, n_near_v3: n_far_v3, 26) = 3;
+% % Vrtx_bndry(25, n_near_v1: n_far_v1, 27) = 1;    Vrtx_bndry(25, n_near_v3: n_far_v3, 27) = 3;
+% % Vrtx_bndry(26, n_near_v1: n_far_v1, 26) = 1;    Vrtx_bndry(26, n_near_v3: n_far_v3, 26) = 3;
+% % Vrtx_bndry(27, n_near_v1: n_far_v1, 25) = 1;    Vrtx_bndry(27, n_near_v3: n_far_v3, 25) = 3;
+% % Vrtx_bndry(26, n_near_v1: n_far_v1, 24) = 1;    Vrtx_bndry(26, n_near_v3: n_far_v3, 24) = 3;
+% % Vrtx_bndry(25, n_near_v1: n_far_v1, 23) = 1;    Vrtx_bndry(25, n_near_v3: n_far_v3, 23) = 3;
+% % Vrtx_bndry(24, n_near_v1: n_far_v1, 24) = 1;    Vrtx_bndry(24, n_near_v3: n_far_v3, 24) = 3;
 
 % for idx = 1: 1: x_idx_max * z_idx_max
 %     [ m, ell ] = getML(idx, x_idx_max);
@@ -761,18 +736,19 @@ end
 % end
 
 B_k = zeros(N_e, 1);
-m_K1 = cell(N_e, 1);
+% m_K1 = cell(N_e, 1);
 % m_K2 = cell(N_e, 1);
 % m_KEV = cell(N_e, 1);
 % m_KVE = cell(1, N_e);
 edgeChecker = false(l_G, 1);
-cFlagChecker = false(l_G, 1);
-BioFlag = true(N_v, 1);
-J_0 = 400; % surface current density: 50 (A/m) at 8 MHz
+J_0 = 1500; % surface current density: 50 (A/m) at 8 MHz
 
+% === === % =============== % === === %
+% === === % Ameding for B_k % === === %
+% === === % =============== % === === %
 tic; 
 % disp( strcat('The filling time of K_1 and B_k: part', num2str(PartNum)) );
-disp('The filling time of K_1 and B_k ');
+disp('The filling time of B_k ');
 parfor eIdx = 1: 1: l_G
     % eIdx = full( G(P2(lGidx), P1(lGidx)) );
     Candi = [];
@@ -805,25 +781,25 @@ parfor eIdx = 1: 1: l_G
                 MedVal = MedTetTable( tetRow, v1234(1) );
                 % use tetRow to check the accordance of SigmaE and J_xyz
                 % update the Vrtx_bndry and MedTetTable.
-                [ K1_6, B_k_Pnt ] = fillK1_FW_currentsheet_Cervix( P1(eIdx), P2(eIdx), Candi(itr), Candi(TetFinder), ...
+                B_k_Pnt = fillBk_currentsheet_Cervix( P1(eIdx), P2(eIdx), Candi(itr), Candi(TetFinder), ...
                     G( :, P1(eIdx) ), G( :, P2(eIdx) ), G( :, Candi(itr) ), G( :, Candi(TetFinder) ), Vrtx_bndry, J_0, ...
-                    K1_6, B_k_Pnt, zeros(1, 3), MedVal, epsilon_r, mu_r, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt );
+                    B_k_Pnt, zeros(1, 3), MedVal, epsilon_r, mu_r, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt );
             end
         end
     end
 
-    if isempty(K1_6) 
-    % if isempty(K1_6) || isempty(K2_6) || isempty(Kev_4)
-        disp('K1, K2 or KEV: empty');
-        [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
-        [ m_v, n_v, ell_v, edgeNum ]
-    end
-    if isnan(K1_6) 
-    % if isnan(K1_6) | isinf(K1_6) | isnan(K2_6) | isinf(K2_6)
-        disp('K1 or K2: NaN or Inf');
-        [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
-        [ m_v, n_v, ell_v, edgeNum ]
-    end
+    % if isempty(K1_6) 
+    % % if isempty(K1_6) || isempty(K2_6) || isempty(Kev_4)
+    %     disp('K1, K2 or KEV: empty');
+    %     [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
+    %     [ m_v, n_v, ell_v, edgeNum ]
+    % end
+    % if isnan(K1_6) 
+    % % if isnan(K1_6) | isinf(K1_6) | isnan(K2_6) | isinf(K2_6)
+    %     disp('K1 or K2: NaN or Inf');
+    %     [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
+    %     [ m_v, n_v, ell_v, edgeNum ]
+    % end
     % if isnan(Kev_4) | isinf(Kev_4)
     %     disp('Kev: NaN or Inf');
     %     [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
@@ -838,7 +814,7 @@ parfor eIdx = 1: 1: l_G
 
     edgeChecker(eIdx) = true;
     
-    m_K1{eIdx} = Mrow2myRow(K1_6);
+    % m_K1{eIdx} = Mrow2myRow(K1_6);
     % m_K2{eIdx}  = Mrow2myRow(K2_6);
     % m_KEV{eIdx} = Mrow2myRow(Kev_4);
     % m_KVE{eIdx} = Mrow2myRow(Kve_4')';
@@ -857,6 +833,104 @@ M_K1 = mySparse2MatlabSparse( m_K1, N_e, N_e, 'Row' );
 % M_KEV = mySparse2MatlabSparse( m_KEV, N_e, N_v, 'Row' );
 % M_KVE = mySparse2MatlabSparse( m_KVE, N_v, N_e, 'Col' );
 toc;
+
+% B_k = zeros(N_e, 1);
+% m_K1 = cell(N_e, 1);
+% % m_K2 = cell(N_e, 1);
+% % m_KEV = cell(N_e, 1);
+% % m_KVE = cell(1, N_e);
+% edgeChecker = false(l_G, 1);
+% cFlagChecker = false(l_G, 1);
+% BioFlag = true(N_v, 1);
+% J_0 = 1500; % surface current density: 50 (A/m) at 8 MHz
+
+% tic; 
+% % disp( strcat('The filling time of K_1 and B_k: part', num2str(PartNum)) );
+% disp('The filling time of K_1 and B_k ');
+% parfor eIdx = 1: 1: l_G
+%     % eIdx = full( G(P2(lGidx), P1(lGidx)) );
+%     Candi = [];
+%     % get candidate points
+%     P1_cand = uG(:, P1(eIdx));
+%     P2_cand = uG(:, P2(eIdx));
+%     P1_nz = find(P1_cand);
+%     P2_nz = find(P2_cand);
+%     for CandiFinder = 1: 1: length(P1_nz)
+%         if find(P2_nz == P1_nz(CandiFinder))
+%             Candi = horzcat(Candi, P1_nz(CandiFinder));
+%         end
+%     end
+%     % get adjacent tetrahdron
+%     K1_6 = zeros(1, N_e); 
+%     % K2_6 = zeros(1, N_e); 
+%     % Kev_4 = zeros(1, N_e); 
+%     % Kve_4 = zeros(N_e, 1); 
+%     B_k_Pnt = 0;
+%     cFlag = false;
+%     for TetFinder = 1: 1: length(Candi) - 1
+%         for itr = TetFinder + 1: length(Candi)
+%             if uG( Candi(TetFinder), Candi(itr) )
+%                 % linked to become a tetrahedron
+%                 v1234 = [ P1(eIdx), P2(eIdx), Candi(itr), Candi(TetFinder) ];
+%                 tetRow = find( sum( logical(MedTetTable(:, v1234)), 2 ) == 4 );
+%                 if length(tetRow) ~= 1
+%                     error('check te construction of MedTetTable');
+%                 end
+%                 MedVal = MedTetTable( tetRow, v1234(1) );
+%                 % use tetRow to check the accordance of SigmaE and J_xyz
+%                 % update the Vrtx_bndry and MedTetTable.
+%                 [ K1_6, B_k_Pnt ] = fillK1_FW_currentsheet_Cervix( P1(eIdx), P2(eIdx), Candi(itr), Candi(TetFinder), ...
+%                     G( :, P1(eIdx) ), G( :, P2(eIdx) ), G( :, Candi(itr) ), G( :, Candi(TetFinder) ), Vrtx_bndry, J_0, ...
+%                     K1_6, B_k_Pnt, zeros(1, 3), MedVal, epsilon_r, mu_r, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt );
+%             end
+%         end
+%     end
+
+%     if isempty(K1_6) 
+%     % if isempty(K1_6) || isempty(K2_6) || isempty(Kev_4)
+%         disp('K1, K2 or KEV: empty');
+%         [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
+%         [ m_v, n_v, ell_v, edgeNum ]
+%     end
+%     if isnan(K1_6) 
+%     % if isnan(K1_6) | isinf(K1_6) | isnan(K2_6) | isinf(K2_6)
+%         disp('K1 or K2: NaN or Inf');
+%         [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
+%         [ m_v, n_v, ell_v, edgeNum ]
+%     end
+%     % if isnan(Kev_4) | isinf(Kev_4)
+%     %     disp('Kev: NaN or Inf');
+%     %     [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
+%     %     [ m_v, n_v, ell_v, edgeNum ]
+%     % end
+%     if edgeChecker(eIdx) == true
+%         lGidx
+%         [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
+%         [ m_v, n_v, ell_v, edgeNum ]
+%         error('check')
+%     end
+
+%     edgeChecker(eIdx) = true;
+    
+%     m_K1{eIdx} = Mrow2myRow(K1_6);
+%     % m_K2{eIdx}  = Mrow2myRow(K2_6);
+%     % m_KEV{eIdx} = Mrow2myRow(Kev_4);
+%     % m_KVE{eIdx} = Mrow2myRow(Kve_4')';
+%     B_k(eIdx) = B_k_Pnt;
+% end
+% toc;
+
+% M_K1 = sparse(N_e, N_e);
+% % M_K2 = sparse(N_e, N_e);
+% % M_KEV = sparse(N_e, N_v);
+% % M_KVE = sparse(N_v, N_e);
+% tic;
+% disp('Transfroming M_K1, M_K2, M_KEV and M_KVE')
+% M_K1 = mySparse2MatlabSparse( m_K1, N_e, N_e, 'Row' );
+% % M_K2 = mySparse2MatlabSparse( m_K2, N_e, N_e, 'Row' );
+% % M_KEV = mySparse2MatlabSparse( m_KEV, N_e, N_v, 'Row' );
+% % M_KVE = mySparse2MatlabSparse( m_KVE, N_v, N_e, 'Col' );
+% toc;
 
 % % === % ========== % === %
 % % === % GVV matrix % === %
@@ -941,7 +1015,7 @@ w_x = air_x;
 w_z = air_z;
 AFigsScript;
 
-save('0908_Cervix_zerothOrder.mat', 'H_XZ', 'H_XY', 'H_YZ', 'E_XZ', 'E_XY', 'E_YZ');
+save('0914_Cervix_zerothOrder.mat', 'H_XZ', 'H_XY', 'H_YZ', 'E_XZ', 'E_XY', 'E_YZ');
 
 % tic;
 % disp('Calculation time of iLU: ')
@@ -1037,8 +1111,8 @@ for tIdx = 1: 1: validNum
 end
 
 J_0
-Q_s_Vector_mod = Q_s_Vector * (400 / 80)^2;
-Q_s_MNP_mod = Q_s_MNP * (400 / 80)^2;
+Q_s_Vector_mod = Q_s_Vector;
+Q_s_MNP_mod = Q_s_MNP;
 
 % === % ================= % === %
 % === % Original m_U, m_V % === %
@@ -1048,6 +1122,7 @@ dt = 15; % 20 seconds
 timeNum_all = 60 * 50; % 50 minutes
 loadThermalParas_Cervix;
 
+load('0914CervixEQS.mat', 'm_U', 'm_V');
 % m_U   = cell(N_v, 1);
 % m_V   = cell(N_v, 1);
 % bar_d = zeros(N_v, 1);
@@ -1094,13 +1169,13 @@ loadThermalParas_Cervix;
 % end
 % toc;
 
-% M_U   = sparse(N_v, N_v);
-% M_V   = sparse(N_v, N_v);
-% tic;
-% disp('Transfroming M_U and M_V from my_sparse to Matlab sparse matrix')
-% M_U = mySparse2MatlabSparse( m_U, N_v, N_v, 'Row' );
-% M_V = mySparse2MatlabSparse( m_V, N_v, N_v, 'Row' );
-% toc;
+M_U   = sparse(N_v, N_v);
+M_V   = sparse(N_v, N_v);
+tic;
+disp('Transfroming M_U and M_V from my_sparse to Matlab sparse matrix')
+M_U = mySparse2MatlabSparse( m_U, N_v, N_v, 'Row' );
+M_V = mySparse2MatlabSparse( m_V, N_v, N_v, 'Row' );
+toc;
 
 % === % ================ % === %
 % === % Amending for d_k % === %
@@ -1135,7 +1210,7 @@ parfor vIdx = 1: 1: N_v
             end
             % check the validity of Q_s_Vector input.
             p1234 = horzcat( v1234(find(v1234 == vIdx)), v1234(find(v1234 ~= vIdx)));
-            Pnt_d = filld( p1234, Vrtx_bndry, Pnt_d, ...
+            Pnt_d = filld( p1234, BndryTable, Pnt_d, ...
                             dt, Q_s_Vector_mod(CandiTet(itr)) + Q_met(MedVal) + Q_s_MNP_mod(CandiTet(itr)), rho(MedVal), xi(MedVal), zeta(MedVal), cap(MedVal), rho_b, cap_b, alpha, T_blood, T_bolus, ...
                             x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt, BM_bndryNum );
         end
@@ -1184,8 +1259,8 @@ T_flagXZ = 1;
 T_flagXY = 1;
 T_flagYZ = 1;
 
-T_plot;
-
+T_plot_Cervix;
+return;
 % save('0907_Cervix_zerothOrder.mat', 'H_XZ', 'H_XY', 'H_YZ', 'E_XZ', 'E_XY', 'E_YZ');
 
 % % === === % =============== % === === %

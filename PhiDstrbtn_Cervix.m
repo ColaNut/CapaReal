@@ -104,7 +104,7 @@ if flag_XZ == 1
     set(gca,'LineWidth',2.0);
     cb = colorbar;
     % caxis([-50, 50]);
-    caxis([0, 10]);
+    caxis([0, 20]);
     ylabel(cb, '$\left| \Phi \right|$ ($V$)', 'Interpreter','LaTex', 'FontSize', 20);
     set(cb, 'FontSize', 18);
     box on;
@@ -117,7 +117,7 @@ if flag_XZ == 1
     % plotRibXZ(Ribs, SSBone, dx, dz);
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
     % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'fig');
-    % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
+    saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
 
     % calculate the E field
     SARseg  = zeros( x_idx_max, z_idx_max, 6, 8 );
@@ -322,7 +322,7 @@ if flag_XY == 1
     set(gca,'fontsize',20);
     set(gca,'LineWidth',2.0);
     cb = colorbar;
-    caxis([0, 10]);
+    caxis([0, 20]);
     ylabel(cb, '$\left| \Phi \right|$ ($V$)', 'Interpreter','LaTex', 'FontSize', 20);
     set(cb, 'FontSize', 18);
     box on;
@@ -337,7 +337,7 @@ if flag_XY == 1
     plotXY( paras2dXY, dx, dy );
     % plotGridLineXY( shiftedCoordinateXYZ, tumor_ell );
     % saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'fig');
-    % saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'jpg');
+    saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'jpg');
 
     % calculate the E field
     SARseg = zeros( x_idx_max, y_idx_max, 6, 8 );
@@ -552,7 +552,7 @@ if flag_YZ == 1
     set(gca,'LineWidth',2.0);
     cb = colorbar;
     % caxis([-50, 50])
-    caxis([0, 10]);
+    caxis([0, 20]);
     % caxis([0, 100]);
     ylabel(cb, '$\left| \Phi \right|$ ($V$)', 'Interpreter','LaTex', 'FontSize', 20);
     set(cb, 'FontSize', 18);
@@ -573,7 +573,7 @@ if flag_YZ == 1
     box on;
     view(2);
     % saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'fig');
-    % saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'jpg');
+    saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'jpg');
 
     % calculate the E field
     SARseg = zeros( y_idx_max, z_idx_max, 6, 8 );

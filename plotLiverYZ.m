@@ -65,7 +65,7 @@ Cont(3, :) = getSqrCoeff( Product(3, 2), Product(3, 3), Product(3, 1) ) / liver_
 
 [ y_0, z_0, a, c, t ] = plotQuaEllipse( sum(Cont) + [0, 0, 0, 0, 0, - 1] );
 if a > 0 && c > 0
-    plotEllipse( y_0 + a * cos(t), liver_z + z_0 + a * sin(t), y_0 - a * cos(t), liver_z + z_0 - a * sin(t), c, dy, dz );
+    plotEllipse_liverYZ( y_0 + a * cos(t), liver_z + z_0 + a * sin(t), y_0 - a * cos(t), liver_z + z_0 - a * sin(t), c, dy, dz );
 end
 % if isreal(l_lung_c)
 %     plotEllipse( l_lung_x + l_lung_a, l_lung_z, l_lung_x - l_lung_a, l_lung_z, l_lung_c, dx, dz );
@@ -80,12 +80,12 @@ if isreal(tumor_r_prime)
 end
 
 % plot the line: z = m x + b
-line_y = - 10: 0.5: 10;
+line_y = - 4.6: 0.1: 1.8;
 % plot the line: z = m_1 x + m_2
 m_1 = - Product(3, 2) / Product(3, 3);
 m_2 = - Product(3, 1) / Product(3, 3) + liver_z;
 
-plot( line_y, m_1 * line_y + m_2, 'k', 'LineWidth', 2.0);
+plot( line_y, m_1 * line_y + m_2, 'Color', [0.5, 0.5, 0.5], 'LineWidth', 2.5);
 
 % plot torso border
 y_idx = - h_torso / 2: dy: h_torso / 2;
@@ -106,53 +106,53 @@ hold on;
 plot( y_idx, muscleDnL, 'Color', [0.5, 0.5, 0.5], 'LineWidth', 2.5);
 hold on;
 
-% plot electrode
-% The following parameters need to be synchronize with UpElecrode and DwnELectrode
-h_y_halfUp = 11;
-h_y_halfDwn = 11;
-ElectrodeY = 0;
-Y_up = linspace( ElectrodeY - h_y_halfUp, ElectrodeY + h_y_halfUp, 100 );
-Z_up = bolusHghtZ * ones( size(Y_up) );
-Y_dn = linspace( ElectrodeY - h_y_halfDwn, ElectrodeY + h_y_halfDwn, 100 );
-Z_dn = - bolusHghtZ * ones( size(Y_dn) );
-plot(Y_up, Z_up, 'Color', [0, 0, 0], 'LineWidth', 4.0);
-hold on;
-plot(Y_dn, Z_dn, 'Color', [0, 0, 0], 'LineWidth', 4.5);
-hold on;
-% Phi: 2.8; 2.8
-% SAR: 4.0; 4.5
+% % plot electrode
+% % The following parameters need to be synchronize with UpElecrode and DwnELectrode
+% h_y_halfUp = 11;
+% h_y_halfDwn = 11;
+% ElectrodeY = 0;
+% Y_up = linspace( ElectrodeY - h_y_halfUp, ElectrodeY + h_y_halfUp, 100 );
+% Z_up = bolusHghtZ * ones( size(Y_up) );
+% Y_dn = linspace( ElectrodeY - h_y_halfDwn, ElectrodeY + h_y_halfDwn, 100 );
+% Z_dn = - bolusHghtZ * ones( size(Y_dn) );
+% plot(Y_up, Z_up, 'Color', [0, 0, 0], 'LineWidth', 4.0);
+% hold on;
+% plot(Y_dn, Z_dn, 'Color', [0, 0, 0], 'LineWidth', 4.5);
+% hold on;
+% % Phi: 2.8; 2.8
+% % SAR: 4.0; 4.5
 
-% x_idx = x / dx + air_x / (2 * dx) + 1;
+% % x_idx = x / dx + air_x / (2 * dx) + 1;
 
-% x_idx = int64(x_idx);
+% % x_idx = int64(x_idx);
 
-% for z_idx = 1: 1: air_z / dz + 1
-%     scatter( shiftedCoordinateXYZ( x_idx, :, z_idx, 2 ), ...
-%         shiftedCoordinateXYZ( x_idx, :, z_idx, 3 ), 10, 'k', 'filled' );
-%     plot( shiftedCoordinateXYZ( x_idx, :, z_idx, 2 ), ...
-%         shiftedCoordinateXYZ( x_idx, :, z_idx, 3 ), 'k', 'LineWidth', 0.5 );
-%     hold on;
-% end
+% % for z_idx = 1: 1: air_z / dz + 1
+% %     scatter( shiftedCoordinateXYZ( x_idx, :, z_idx, 2 ), ...
+% %         shiftedCoordinateXYZ( x_idx, :, z_idx, 3 ), 10, 'k', 'filled' );
+% %     plot( shiftedCoordinateXYZ( x_idx, :, z_idx, 2 ), ...
+% %         shiftedCoordinateXYZ( x_idx, :, z_idx, 3 ), 'k', 'LineWidth', 0.5 );
+% %     hold on;
+% % end
 
-% for y_idx = 1: 1: h_torso / dy + 1
-%     plot( squeeze(shiftedCoordinateXYZ( x_idx, y_idx, :, 2 )), ...
-%         squeeze(shiftedCoordinateXYZ( x_idx, y_idx, :, 3 )), 'k', 'LineWidth', 0.5 );
-%     hold on;
-% end
+% % for y_idx = 1: 1: h_torso / dy + 1
+% %     plot( squeeze(shiftedCoordinateXYZ( x_idx, y_idx, :, 2 )), ...
+% %         squeeze(shiftedCoordinateXYZ( x_idx, y_idx, :, 3 )), 'k', 'LineWidth', 0.5 );
+% %     hold on;
+% % end
 
-% set(gca,'fontsize',18);
-y_grid = - myCeil(h_torso / 2, dy): dy: myCeil(h_torso / 2, dy);
-z_grid = - myCeil(air_z / 2, dz): dz: myCeil(air_z / 2, dz);
+% % set(gca,'fontsize',18);
+% y_grid = - myCeil(h_torso / 2, dy): dy: myCeil(h_torso / 2, dy);
+% z_grid = - myCeil(air_z / 2, dz): dz: myCeil(air_z / 2, dz);
 
-% [ X_grid, Z_grid ] = meshgrid(y_grid, z_grid);
-% for idx = 1: 1: size(Z_grid, 1)
-%     scatter( y_grid, Z_grid(idx, :), 10 );
-%     hold on;
-% end
+% % [ X_grid, Z_grid ] = meshgrid(y_grid, z_grid);
+% % for idx = 1: 1: size(Z_grid, 1)
+% %     scatter( y_grid, Z_grid(idx, :), 10 );
+% %     hold on;
+% % end
 
-% axis( [ - 15, 15, - 15, 15 ] );
-% axis( [ - h_torso / 2, h_torso / 2, - air_z / 2, air_z / 2 ] );
-% xlabel('$y$ (cm)', 'Interpreter','LaTex', 'FontSize', 18);
-% ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 18); 
+% % axis( [ - 15, 15, - 15, 15 ] );
+% % axis( [ - h_torso / 2, h_torso / 2, - air_z / 2, air_z / 2 ] );
+% % xlabel('$y$ (cm)', 'Interpreter','LaTex', 'FontSize', 18);
+% % ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 18); 
 
 end

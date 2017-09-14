@@ -12,8 +12,9 @@ if PhiSAR_flag == 1
     flag_XZ = 1;
     flag_XY = 1;
     flag_YZ = 1;
-
-    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0908CervixEQStest';
+    
+    % fname = 'F:\CapaReal';
+    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0914CervixEQS';
     % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0816Cervix';
     % % % fname = 'e:\Kevin\CapaReal\Case0220_1cmFat';
     % % CaseDate = 'Case0622_PHI_enhancex';

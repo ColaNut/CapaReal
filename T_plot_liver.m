@@ -264,6 +264,7 @@ if T_flagXY == 1
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 25);
     ylabel('$y$ (cm)','Interpreter','LaTex', 'FontSize', 25);
     plotLiverXY( paras, tumor_z, dx, dy );
+    axis( [ - 20, 20, - 10, 10 ] );
     axis( [ - 20, 20, - 15, 15 ] );
     % plotGridLineXY( shiftedCoordinateXYZ, uint64(tumor_z / dz + air_z / (2 * dz) + 1) );
     % paras2dXY = genParas2dXY( tumor_z, paras, dx, dy, dz );
@@ -377,6 +378,7 @@ if T_flagYZ == 1
     xlabel('$y$ (cm)', 'Interpreter','LaTex', 'FontSize', 25);
     ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 25);
     plotLiverYZ( paras, tumor_x, dy, dz );
+    axis( [ - 10, 10, - 15, 15 ] );
     axis( [ - 15, 15, - 15, 15 ] );
     % plotGridLineYZ( shiftedCoordinateXYZ, uint64(tumor_x / dx + air_x / (2 * dx) + 1) );
     % paras2dYZ = genParas2dYZ( tumor_x, paras, dy, dz );

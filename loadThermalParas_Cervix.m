@@ -1,8 +1,10 @@
 T_0 = 36; 
 T_blood = T_0;
-T_bolus = 20;
+T_bolus = T_0;
+% T_bolus = 5;
 T_air = 25;
-alpha = 111;
+alpha = 0;
+% alpha = 111;
 
 rho_b          = 1000;
 cap_b          = 4180;

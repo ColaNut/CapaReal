@@ -138,7 +138,7 @@ if T_flagXZ == 1
     paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
     plotMap( paras2dXZ, dx, dz );
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    saveas(figure(21), 'CervixEQSTmprtrXZ0830.jpg');
+    saveas(figure(21), 'CervixEQSTmprtrXZ0913.jpg');
 end
 
 if T_flagXY == 1
@@ -251,7 +251,7 @@ if T_flagXY == 1
     % plotGridLineXY( shiftedCoordinateXYZ, tumor_ell_v );
     % plotMap( paras2dXZ, dx, dz, top_x0, top_dx, down_dx );
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    saveas(figure(22), 'CervixEQSTmprtrXY0830.jpg');
+    saveas(figure(22), 'CervixEQSTmprtrXY0913.jpg');
 end
 
 if T_flagYZ == 1
@@ -364,6 +364,6 @@ if T_flagYZ == 1
     % plotGridLineYZ( shiftedCoordinateXYZ, tumor_m_v );
     % plotMap( paras2dXZ, dx, dz, top_x0, top_dx, down_dx );
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    saveas(figure(23), 'CervixEQSTmprtrYZ0830.jpg');
+    saveas(figure(23), 'CervixEQSTmprtrYZ0913.jpg');
 end
 

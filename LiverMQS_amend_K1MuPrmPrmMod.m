@@ -772,8 +772,7 @@ load('0824preK1_liver.mat');
 
               % [ air, bolus, muscle, lung,   tumor,  bone,   fat ]';
 mu_prime      = [   1,     1,      1,     1,      1,     1,     1 ]';
-mu_db_prime   = [   0,     0,      0,     0, 0.4288,     0,     0 ]';
-% mu_db_prime   = [ 0,    0.62 ]';
+mu_db_prime   = [   0,     0,      0,     0, 0.3584,     0,     0 ]';
 mu_r          = mu_prime - i * mu_db_prime;
 
 % === % =================================== % === %
