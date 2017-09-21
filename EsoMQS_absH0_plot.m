@@ -1,6 +1,6 @@
-clc; clear;
-load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0918EsoEQS\0918EsophagusEQS_test2.mat')
-load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0920EsoMQS_v2\0920EsoMQS_night.mat', 'H_XZ', 'H_XY', 'H_YZ', 'E_XZ', 'E_XY', 'E_YZ', 'Omega_0', 'muPrmPrm_MNP', 'SegMed');
+% clc; clear;
+% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0918EsoEQS\0918EsophagusEQS_test2.mat')
+% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0921EsoMQS\0921EsoMQS_2cmCoil.mat', 'H_XZ', 'H_XY', 'H_YZ', 'E_XZ', 'E_XY', 'E_YZ', 'Omega_0', 'muPrmPrm_MNP', 'SegMed');
 
 tumor_m = tumor_x_es / dx + air_x / (2 * dx) + 1;
 tumor_n = tumor_y_es / dy + h_torso / (2 * dy) + 1;
@@ -22,7 +22,7 @@ H_YZ = H_YZ;
 % === === % Parameters part % === === %
 % === === % =============== % === === %
 H_oneXZ = H_XZ;
-fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0920EsoMQS_v2\';
+fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0921EsoMQS\';
 CaseName = '0921';
 
 H_oneXZabs = zeros(x_idx_max, z_idx_max, 6, 8);
@@ -81,8 +81,8 @@ set(log_axes,'LineWidth',2.0);
 % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
 box on;
 view(2);
-paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
-plotMap( paras2dXZ, dx, dz );
+paras2dXZ = genParas2d( tumor_y_es, paras, dx, dy, dz );
+plotMap_Eso( paras2dXZ, dx, dz );
 plotRibXZ(Ribs, SSBone, dx, dz);
 % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
 saveas(figure(8), fullfile(fname, strcat(CaseName, 'H0_XZ_MQS')), 'jpg');

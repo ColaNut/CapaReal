@@ -1,9 +1,10 @@
 % === === % ================================= % === === %
 % === === % Reload zeroth-order E and H field % === === %
 % === === % ================================= % === === %
-clc; clear;
-load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0918EsoEQS\0918EsophagusEQS_test2.mat')
-load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0920EsoMQS_v2\0920EsoMQS_night.mat', 'H_XZ', 'H_XY', 'H_YZ', 'E_XZ', 'E_XY', 'E_YZ', 'Omega_0', 'muPrmPrm_MNP', 'SegMed');
+% clc; clear;
+% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0918EsoEQS\0918EsophagusEQS_test2.mat')
+% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0921EsoMQS\0921EsoMQS_2cmCoil.mat', 'H_XZ', 'H_XY', 'H_YZ', 'E_XZ', 'E_XY', 'E_YZ', 'Omega_0', 'muPrmPrm_MNP', 'SegMed');
+% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0920EsoMQS_v2\0920EsoMQS_night.mat', 'H_XZ', 'H_XY', 'H_YZ', 'E_XZ', 'E_XY', 'E_YZ', 'Omega_0', 'muPrmPrm_MNP', 'SegMed');
 % load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0919EsoMQS\0919EsoMQS_night.mat', 'H_XZ', 'H_XY', 'H_YZ', 'E_XZ', 'E_XY', 'E_YZ', 'Omega_0', 'muPrmPrm_MNP', 'SegMed');
 % % load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0903LungMQS\0903LungMQS_1pnt2MHz_MuPrmPrm_Q_s_MNP.mat', 'muPrmPrm_MNP', 'Omega_0');
 
@@ -43,7 +44,7 @@ tumor_m = tumor_x_es / dx + air_x / (2 * dx) + 1;
 tumor_n = tumor_y_es / dy + h_torso / (2 * dy) + 1;
 tumor_ell = tumor_z_es / dz + air_z / (2 * dz) + 1;
 
-fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0920EsoMQS_v2\';
+fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0921EsoMQS';
 CaseName = '0921';
 
 % === === % =================== % === === %
@@ -445,11 +446,11 @@ SegMedMask = SegMed;
 SegMedMask(find(SegMedMask ~= 9)) = 0;
 SegMedMask(find(SegMedMask == 9)) = 1;
 if SAR_XZ_MNP_flag
-    % muPrmPrm_MNP = 0.163;
+    muPrmPrm_MNP = 0.3;
     % muPrmPrm_MNP = 0.06357;
     % muPrmPrm_MNP = 4.4743;
     % muPrmPrm_MNP = 0.6214;
-    SAR_XZ_MNP = 0.5 * Omega_0 * Mu_0 * muPrmPrm_MNP * double(squeeze(SegMedMask(:, tumor_n, :, :, :))) .* H_XZabs.^2 / rho(5);
+    SAR_XZ_MNP = 0.5 * Omega_0 * Mu_0 * muPrmPrm_MNP * double(squeeze(SegMedMask(:, tumor_n, :, :, :))) .* H_XZabs.^2 / rho(9);
     
     figure(34);
     clf;

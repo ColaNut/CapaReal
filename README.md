@@ -89,3 +89,7 @@ Test different epsilon of insulator; modify the sigma of bolus.
 Fail to test intra-cervical electrodes and a pair of coils with opposite direction. 
 Implement: determination of SegMed for cervix model; liver plotting; \xi of HCC; Geometric parameters of cervix
 Notes: Fix the problem of Vrtx_bndry and BndryTable, where the former is for the filling of K and the latter is for the filling of d_k.
+
+0921: 
+Build a small model to test for the xy-coil.
+First version of SegMed with EQS and MQS temperature report..

@@ -22,8 +22,8 @@ if A_flag == 1
     % CaseName = '0321';
     % fname = 'e:\Kevin\CapaReal\Case0220_1cmFat';
     % CaseDate = 'Case0220_1cmFat';
-    fname = 'E:\Kevin\CapaReal';
-    ADstrbtn_Directed;
+    fname = 'E:\Kevin\CapaReal\0920TestCoilXY';
+    TestMQS_H0_plot;
     % ADstrbtn;
     % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'fig');
     % saveas(figure(1), fullfile(fname, strcat(CaseName, 'HXZ')), 'jpg');

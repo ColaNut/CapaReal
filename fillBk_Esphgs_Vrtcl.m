@@ -1,4 +1,4 @@
-function B_k_Pnt = fillBk_Esphgs_test( vIdx1, vIdx2, vIdx3, vIdx4, v1Table, v2Table, v3Table, v4Table, Vrtx_bndry, J_0, ...
+function B_k_Pnt = fillBk_Esphgs_Vrtcl( vIdx1, vIdx2, vIdx3, vIdx4, v1Table, v2Table, v3Table, v4Table, Vrtx_bndry, J_0, ...
                     B_k_Pnt, PntJ_xyz, MedVal, epsilon_r, mu_r, x_max_vertex, y_max_vertex, z_max_vertex, Vertex_Crdnt, varargin )
     
     % PntJ_xyz = zeros(1, 3);
@@ -102,7 +102,7 @@ function B_k_Pnt = fillBk_Esphgs_test( vIdx1, vIdx2, vIdx3, vIdx4, v1Table, v2Ta
 
     % update tge Px_flag and J_0
     cFlag = false;
-    Bk_val = getWmJ_esphgs( P1_Crdt, P2_Crdt, P3_Crdt, P4_Crdt, ...
+    Bk_val = getWmJ_esphgs_Vrtcl( P1_Crdt, P2_Crdt, P3_Crdt, P4_Crdt, ...
                             P1_flag, P2_flag, P3_flag, P4_flag, mainEdge, InnExtText, J_0, cFlag );
     % [ six_eVal, four_vVal_ev ] = get6E4V_omega( P1_Crdt, P2_Crdt, P3_Crdt, P4_Crdt, mainEdge, InnExtText, mu_r(MedVal), epsilon_r(MedVal) );
 
