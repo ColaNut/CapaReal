@@ -135,7 +135,7 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
     if mediumTable(m, n, ell) < 10
         SegMed(m, n, ell, :, :) = mediumTable(m, n, ell);
-    elseif m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 && mediumTable(m, n, ell) ~= 1
+    elseif m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
         % m_v = 2 * m - 1;
         % n_v = 2 * n - 1;
         % ell_v = 2 * ell - 1;
