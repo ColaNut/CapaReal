@@ -46,9 +46,10 @@ tumor_z_es = 100 * tumor_z_es;
 tumor_r_es = 100 * tumor_r_es;
 
 % plot the esophagus
-plotEllipse( x_es + r_es, z_es, x_es - r_es, z_es, r_es, dx, dz );
+% plotEllipse( x_es + r_es, z_es, x_es - r_es, z_es, r_es, dx, dz );
+plotEllipse( x_es + r_es, z_es - r_es / 2, x_es - r_es, z_es - r_es / 2, r_es, dx, dz );
 % plot the tumor
-plotEllipse( tumor_x_es + tumor_r_es, tumor_z_es + tumor_r_es, tumor_x_es - tumor_r_es, tumor_z_es + tumor_r_es, tumor_r_es, dx, dz );
+plotEllipse( tumor_x_es + tumor_r_es, tumor_z_es - tumor_r_es / 4, tumor_x_es - tumor_r_es, tumor_z_es - tumor_r_es / 4, 3 * tumor_r_es / 4, dx, dz );
 
 % % plot electrode
 % t = linspace( 0, 2 * pi, 400 );

@@ -1,10 +1,10 @@
 % === % =============== % === %
 % === % Amending for K1 % === %
 % === % =============== % === %
-load('0920EsoMQS_preK.mat');
+load('0922EsoMQS_preK.mat');
 m_K1 = cell(N_e, 1);
 edgeChecker = false(l_G, 1);
-J_0 = 50; % surface current density: 50 (A/m) at 8 MHz
+J_0 = 400; % surface current density: 50 (A/m) at 8 MHz
 
 TumorRelatedEIdx = false(N_e, 1);
 tic; 
@@ -124,4 +124,4 @@ parfor eIdx = 1: 1: N_e
 end
 toc;
 
-save('0920EsoMQS_K1_Amend.mat', 'm_K1');
+save('0922EsoMQS_K1_Amend.mat', 'm_K1');

@@ -49,15 +49,15 @@ Similar calculation are related in getWmJ.m, get6E4V_omega.m, calKVE_TetPatch_Ri
 
 08/07: 
 
-Lung    -- EQS  
-            -- LungEQS.m
-            -- LungEQS_MQS_validation.m
-            -- FigsScriptLungEQS.m & PhiDstrbtn
-            -- AFigsScript.m & ADstrbtn_Directed_H.m & LungEQS_EOnePlot.m
+Lung -- EQS  
+        -- LungEQS.m
+        -- LungEQS_MQS_validation.m
+        -- FigsScriptLungEQS.m & PhiDstrbtn
+        -- AFigsScript.m & ADstrbtn_Directed_H.m & LungEQS_EOnePlot.m
         -- MQS -- conformal
-            -- LungMQS.m (LungMQS_Bk_amend.m)
-            -- LungMQS_H0_plot.m
-			-- LungMQS_absH0_plot.m
+        -- LungMQS.m (LungMQS_Bk_amend.m)
+        -- LungMQS_H0_plot.m
+        -- LungMQS_absH0_plot.m
 
 Liver   -- EQS  
             -- LiverEQS.m
@@ -71,7 +71,7 @@ LungMQS:  add the loop specific part;
 
 Need to merge LungMQS_conformal_amend.m and LungMQS_conformal.m 
 
-0816:
+08/16:
 Lung    -- EQS  -- tumor temperature comparison
         -- MQS  -- conformal current sheet with bolus
 
@@ -80,16 +80,15 @@ Liver   -- EQS  -- updating Loop liver colission
 Test    -- update the getRoughMed_Mag.m
         -- fix K_2 matrix
 
-0910: 
-Cervix MQS; loadParas_Colon and Plot E^(0) field for cervixEQS
-Modification of liver therml properties, electrode size and position in liverEQS, computational domain in liverEQS.
-Test different epsilon of insulator; modify the sigma of bolus.
+09/10:   Cervix MQS; loadParas_Colon and Plot E^(0) field for cervixEQS
+        Modification of liver therml properties, electrode size and position in liverEQS, computational domain in liverEQS.
+        Test different epsilon of insulator; modify the sigma of bolus.
 
-0914: 
-Fail to test intra-cervical electrodes and a pair of coils with opposite direction. 
-Implement: determination of SegMed for cervix model; liver plotting; \xi of HCC; Geometric parameters of cervix
-Notes: Fix the problem of Vrtx_bndry and BndryTable, where the former is for the filling of K and the latter is for the filling of d_k.
+09/14:   Fail to test intra-cervical electrodes and a pair of coils with opposite direction. 
+        Implement: determination of SegMed for cervix model; liver plotting; \xi of HCC; Geometric parameters of cervix
+        Notes: Fix the problem of Vrtx_bndry and BndryTable, where the former is for the filling of K and the latter is for the filling of d_k.
 
-0921: 
-Build a small model to test for the xy-coil.
-First version of SegMed with EQS and MQS temperature report..
+09/21:   Build a small model to test for the xy-coil.
+        First version of SegMed with EQS and MQS temperature report.
+
+09/22:  Suspended version of rough resolution (esophageal cancer)

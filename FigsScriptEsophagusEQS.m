@@ -6,9 +6,9 @@ if PhiSAR_flag == 1
     flag_XY = 1;
     flag_YZ = 1;
 
-%     PhiDstrbtn_esophagus;
-    CaseName = '0920';
-    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0920EsoEQS_v2';
+    PhiDstrbtn_esophagus;
+    CaseName = '0922';
+    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0922EsoEQS';
     saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
     saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
     saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'jpg');

@@ -6,16 +6,16 @@
 % % % rho           = [ 1,  1020,  1020,  242.6, 1040 ]';
 % % % save('TestCase2.mat');
 % % % load('RealCase3.mat');
-% 
+
 % % % XZmidY      = zeros( z_idx_max, x_idx_max );
 % tumor_m = tumor_x_es / dx + air_x / (2 * dx) + 1;
 % tumor_n = tumor_y_es / dy + h_torso / (2 * dy) + 1;
 % tumor_ell = tumor_z_es / dz + air_z / (2 * dz) + 1;
-% 
+
 % % flag_XZ = 1;
 % % flag_XY = 0;
 % % flag_YZ = 0;
-% 
+
 % % % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\TexFile2';
 % % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0108';
 % % % CaseName = 'Sigma';
@@ -96,7 +96,7 @@ if flag_XZ == 1
     PhiHlfY2 = squeeze(PhiHlfY(:, 2, :));
     pcolor(x_mesh * 100, z_mesh * 100, abs( PhiHlfY2' ));
     axis equal;
-    axis( [ - 20, 20, - 20, 20 ] );
+    axis( [- 5, 5, 0, 10] );
     % shading flat
     shading interp
     colormap jet;
@@ -104,7 +104,7 @@ if flag_XZ == 1
     set(gca,'LineWidth',2.0);
     cb = colorbar;
     % caxis([-50, 50]);
-    caxis([0, 30]);
+    caxis([0, 10]);
     ylabel(cb, '$\left| \Phi \right|$ ($V$)', 'Interpreter','LaTex', 'FontSize', 20);
     set(cb, 'FontSize', 18);
     box on;
@@ -177,7 +177,7 @@ if flag_XZ == 1
     myRange = [ 1e-1, 1e4 ];
     caxis(myRange);
     axis equal;
-    axis( [ - 20, 20, - 15, 15 ] );
+    axis( [- 5, 5, 0, 10] );
     cbar = colorbar('peer', gca, 'Yscale', 'log');
     set(gca, 'Visible', 'off')
     log_axes = axes('Position', get(gca, 'Position'));
@@ -226,7 +226,7 @@ if flag_XZ == 1
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
     axis equal;
-    axis( [ - 20, 20, - 15, 15 ] );
+    axis( [- 5, 5, 0, 10] );
     set(log_axes,'fontsize',20);
     set(log_axes,'LineWidth',2.0);
     % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
@@ -308,14 +308,14 @@ if flag_XY == 1
     PhiTpElctrd2 = squeeze(PhiTpElctrd(:, :, 2));
     pcolor(x_mesh * 100, y_mesh * 100, abs( PhiTpElctrd2' ));
     axis equal;
-    axis( [ - 20, 20, - 15, 15 ] );
+    axis( [- 5, 5, - 5, 5] );
     % shading flat
     shading interp
     colormap jet;
     set(gca,'fontsize',20);
     set(gca,'LineWidth',2.0);
     cb = colorbar;
-    caxis([0, 30]);
+    caxis([0, 10]);
     ylabel(cb, '$\left| \Phi \right|$ ($V$)', 'Interpreter','LaTex', 'FontSize', 20);
     set(cb, 'FontSize', 18);
     box on;
@@ -384,7 +384,7 @@ if flag_XY == 1
     myRange = [ 9.99e-2, 1e4 ];
     caxis(myRange);
     axis equal;
-    axis( [ - 20, 20, - 15, 15 ]);
+    axis( [- 5, 5, - 5, 5] );
     cbar = colorbar('peer', gca, 'Yscale', 'log');
     set(gca, 'Visible', 'off')
     log_axes = axes('Position', get(gca, 'Position'));
@@ -444,7 +444,7 @@ if flag_XY == 1
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$y$ (cm)','Interpreter','LaTex', 'FontSize', 20);
     axis equal;
-    axis( [ - 20, 20, - 15, 15 ]);
+    axis( [- 5, 5, - 5, 5] );
     % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 18);
     set(log_axes,'fontsize',20);
     set(log_axes,'LineWidth',2.0);
@@ -521,7 +521,7 @@ if flag_YZ == 1
     PhiYZ2 = squeeze(PhiYZ(2, :, :));
     pcolor(y_mesh * 100, z_mesh * 100, abs( PhiYZ2' ));
     axis equal;
-    axis( [ - 15, 15, - 20, 20 ] );
+    axis( [- 5, 5, 0, 10] );
     % shading flat
     shading interp
     colormap jet;
@@ -529,7 +529,7 @@ if flag_YZ == 1
     set(gca,'LineWidth',2.0);
     cb = colorbar;
     % caxis([-50, 50])
-    caxis([0, 30]);;
+    caxis([0, 10]);;
     % caxis([0, 100]);
     ylabel(cb, '$\left| \Phi \right|$ ($V$)', 'Interpreter','LaTex', 'FontSize', 20);
     set(cb, 'FontSize', 18);
@@ -606,7 +606,7 @@ if flag_YZ == 1
     myRange = [ 9.99e-2, 1e4 ];
     caxis(myRange);
     axis equal;
-    axis( [ - 15, 15, - 15, 15 ]);
+    axis( [- 5, 5, 0, 10] );
     cbar = colorbar('peer', gca, 'Yscale', 'log');
     set(gca, 'Visible', 'off')
     log_axes = axes('Position', get(gca, 'Position'));
@@ -672,7 +672,7 @@ if flag_YZ == 1
     plotYZ_Eso( paras2dYZ, dy, dz );
     % plotGridLineYZ( shiftedCoordinateXYZ, tumor_m );
     axis equal;
-    axis( [ - 15, 15, - 15, 15 ]);
+    axis( [- 5, 5, 0, 10] );
     % axis( [ - 100 * h_torso / 2, 100 * h_torso / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);
     view(2);
     % saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'fig');

@@ -143,9 +143,9 @@ if T_flagXZ == 1
     colormap jet;
     set(gca,'fontsize',20);
     set(gca,'LineWidth',2.0);
-    caxis([5, 50]);
+    caxis([20, 50]);
     axis equal;
-    axis( [ - 20, 20, - 15, 15 ] );
+    axis( [ - 5, 5, 0, 10 ] );
     cb = colorbar;
     box on;
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 25);
@@ -155,7 +155,7 @@ if T_flagXZ == 1
     paras2dXZ = genParas2d( tumor_y_es, paras, dx, dy, dz );
     plotMap_Eso( paras2dXZ, dx, dz );
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    saveas(figure(21), 'EsoEQSTmprtrXZ0921.jpg');
+    saveas(figure(21), 'EsoEQSTmprtrXZ0922.jpg');
 end
 
 if T_flagXY == 1
@@ -254,9 +254,9 @@ if T_flagXY == 1
     colormap jet;
     set(gca,'fontsize',20);
     set(gca,'LineWidth',2.0);
-    caxis([5, 50]);
+    caxis([20, 50]);
     axis equal;
-    axis( [ - 20, 20, - 15, 15 ] );
+    axis( [ - 5, 5, - 5, - 5 ] );
     cb = colorbar;
     set(cb, 'FontSize', 18);
     hold on;
@@ -268,7 +268,7 @@ if T_flagXY == 1
     % plotGridLineXY( shiftedCoordinateXYZ, tumor_ell_v );
     % plotMap( paras2dXZ, dx, dz, top_x0, top_dx, down_dx );
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    saveas(figure(22), 'EsoEQSTmprtrXY0921.jpg');
+    saveas(figure(22), 'EsoEQSTmprtrXY0922.jpg');
 end
 
 if T_flagYZ == 1
@@ -369,7 +369,7 @@ if T_flagYZ == 1
     set(gca,'LineWidth',2.0);
     cb = colorbar;
     set(cb, 'FontSize', 18);
-    caxis([5, 50]);
+    caxis([20, 50]);
     axis equal;
     axis( [ - 15, 15, - 15, 15 ] );
     hold on;
@@ -381,6 +381,6 @@ if T_flagYZ == 1
     % plotGridLineYZ( shiftedCoordinateXYZ, tumor_m_v );
     % plotMap( paras2dXZ, dx, dz, top_x0, top_dx, down_dx );
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    saveas(figure(23), 'EsoEQSTmprtrYZ0921.jpg');
+    saveas(figure(23), 'EsoEQSTmprtrYZ0922.jpg');
 end
 

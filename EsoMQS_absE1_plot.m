@@ -1,12 +1,9 @@
 % === === % ================================= % === === %
 % === === % Reload zeroth-order E and H field % === === %
 % === === % ================================= % === === %
-% clc; clear;
-% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0918EsoEQS\0918EsophagusEQS_test2.mat')
-% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0921EsoMQS\0921EsoMQS_2cmCoil.mat', 'H_XZ', 'H_XY', 'H_YZ', 'E_XZ', 'E_XY', 'E_YZ', 'Omega_0', 'muPrmPrm_MNP', 'SegMed');
-% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0920EsoMQS_v2\0920EsoMQS_night.mat', 'H_XZ', 'H_XY', 'H_YZ', 'E_XZ', 'E_XY', 'E_YZ', 'Omega_0', 'muPrmPrm_MNP', 'SegMed');
-% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0919EsoMQS\0919EsoMQS_night.mat', 'H_XZ', 'H_XY', 'H_YZ', 'E_XZ', 'E_XY', 'E_YZ', 'Omega_0', 'muPrmPrm_MNP', 'SegMed');
-% % load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0903LungMQS\0903LungMQS_1pnt2MHz_MuPrmPrm_Q_s_MNP.mat', 'muPrmPrm_MNP', 'Omega_0');
+clc; clear;
+load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0918EsoEQS\0918EsophagusEQS_test2.mat')
+load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0921EsoMQS\0921EsoMQS_2cmCoil.mat', 'H_XZ', 'H_XY', 'H_YZ', 'E_XZ', 'E_XY', 'E_YZ', 'Omega_0', 'muPrmPrm_MNP', 'SegMed');
 
 % === === % ========= % === === %
 % === === % Flag Sets % === === %
@@ -24,7 +21,6 @@ SAR_XZ_MNP_flag = 1;
 % === === % ===================== % === === %
 % === === % J_0 modification part % === === %
 % === === % ===================== % === === %
-% frequency from 100 kHz to 1.2 MHz; J_0 from 5,000 to 400
 E_XZ = E_XZ * 400 / 400; 
 E_XY = E_XY * 400 / 400; 
 E_YZ = E_YZ * 400 / 400; 

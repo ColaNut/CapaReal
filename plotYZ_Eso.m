@@ -49,15 +49,16 @@ end
 if isreal(r_lung_c)
     plotEllipse( r_lung_b, r_lung_z, - r_lung_b, r_lung_z, r_lung_c, dy, dz );
 end
-plotEllipse( tumor_y_es + tumor_r_es, tumor_z_es + tumor_r_es, tumor_y_es - tumor_r_es, tumor_z_es + tumor_r_es, tumor_r_es, dy, dz );
+plotEllipse( tumor_y_es + tumor_r_es, tumor_z_es - tumor_r_es / 4, tumor_y_es - tumor_r_es, tumor_z_es - tumor_r_es / 4, 3 * tumor_r_es / 4, dy, dz );
+% plotEllipse( tumor_y_es + tumor_r_es, tumor_z_es + tumor_r_es, tumor_y_es - tumor_r_es, tumor_z_es + tumor_r_es, tumor_r_es, dy, dz );
 
 y_idx = - h_torso / 2: dy: h_torso / 2;
 bolusUpL = bolusHghtZ * ones(size(y_idx));
 bolusDnL = - bolusHghtZ * ones(size(y_idx));
 muscleUpL = muscleHghtZ * ones(size(y_idx));
 muscleDnL = - muscleHghtZ * ones(size(y_idx));
-EsoUpL    = ( z_es + r_es ) * ones(size(y_idx));
-EsoDnL    = ( z_es - r_es ) * ones(size(y_idx));
+EsoUpL    = ( z_es + r_es - dz / 2 ) * ones(size(y_idx));
+EsoDnL    = ( z_es - r_es - dz / 2 ) * ones(size(y_idx));
 
 plot( y_idx, bolusUpL, 'Color', [0.5, 0.5, 0.5], 'LineWidth', 2.5);
 hold on;
