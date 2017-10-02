@@ -1,41 +1,20 @@
 % clc; clear;
 PhiSAR_flag = 1;
-
-% Need to modify the 'save' in the PhiDstrbtn.m to make it accord with the 'load' in TmprtrFigs.m
 if PhiSAR_flag == 1
     % clc; clear;
-    % CaseName = 'Case0503_PHI_enhance';
-    % load( strcat('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0220_1cmFat\', CaseName, '.mat') );
-    % load('Case0220_1cmFat.mat');
-    % load( strcat('e:\Kevin\CapaReal\Case0220_1cmFat', '\', CaseName, '.mat') );
-    % load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0503_PHI_enhance\0502_PHI.mat');
     flag_XZ = 1;
     flag_XY = 1;
     flag_YZ = 1;
 
-    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0717LungEQS';
-    % % fname = 'e:\Kevin\CapaReal\Case0220_1cmFat';
-    % CaseDate = 'Case0622_PHI_enhancex';
-    CaseName = 'Power300';
-    load( strcat(fname, '\BasicParameters.mat') );
-    load( strcat(fname, '\', CaseName, '.mat'), 'bar_x_my_gmresPhi' );
-    rho           = [   1,  1020,   1020, 242.6,  697,  1790,   900 ]';
-
-    PhiDstrbtn_bw;
-
-    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0717LungEQS';
-    % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'fig');
-    saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ(bw)')), 'jpg');
-    % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'fig');
-    saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ(bw)')), 'jpg');
-    % saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'fig');
-    saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY(bw)')), 'jpg');
-    % saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'fig');
-    saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY(bw)')), 'jpg');
-    % saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'fig');
-    saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ(bw)')), 'jpg');
-    % saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'fig');
-    saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ(bw)')), 'jpg');
+    Phi_Plot_Esophagus;
+    % CaseName = '0922';
+    % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0922EsoEQS';
+    % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
+    % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
+    % saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'jpg');
+    % saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'jpg');
+    % saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'jpg');
+    % saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'jpg');
 end
 
 TumorTmptr_flag = 0;

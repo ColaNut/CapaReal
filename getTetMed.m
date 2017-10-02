@@ -1,30 +1,65 @@
-function MedValue = getTetMed( TtrCrdnt, CtrlPntFlag )
-    loadParas_Cervix;
+function MedValue = getTetMed( TtrCrdnt, CtrlPntFlag, varargin )
+
+    nVarargs = length(varargin);
     MedValue = 0;
     x = TtrCrdnt(1);
     y = TtrCrdnt(2);
     z = TtrCrdnt(3);
-    switch CtrlPntFlag
-        case 11
-            if (x / bolus_a)^2 + (z / bolus_c)^2 - 1 > 0 % exterior
-                MedValue = 3;
-            else % interior
-                MedValue = 4;
-            end
-        case 13
-            if (x / muscle_a)^2 + (z / muscle_c)^2 - 1 > 0 % exterior
-                MedValue = 4;
-            else % interior
-                MedValue = 2;
-            end
-        case 12
-            if (x / skin_a)^2 + (z / skin_c)^2 - 1 > 0 % exterior
-                MedValue = 2;
-            else % interior
-                MedValue = 1;
-            end
-        otherwise
-            error('check the mediumTable');
-    end
 
+    if nVarargs == 1
+        OrganType = varargin{1};
+        if strcmp(OrganType, 'Eso')
+            loadParas_Eso0924;
+            AirOrTumor = 1;
+            if y <= tumor_y_es + tumor_hy_es / 2 && y >= tumor_y_es - tumor_hy_es / 2
+                AirOrTumor = 9;
+            end
+            switch CtrlPntFlag
+                case 41
+                    % this may be wrong in the junction point of spine
+                    if ( (x - es_x) / es_r )^2 + ( (z - es_z) / es_r)^2 - 1 > 0 % exterior
+                        MedValue = 3;
+                    else % interior
+                        MedValue = AirOrTumor;
+                    end
+                case 42
+                    if ( (x - es_x) / es_r )^2 + ( (z - es_z) / es_r)^2 - 1 > 0 % exterior
+                        MedValue = 3;
+                    else % interior
+                        MedValue = AirOrTumor;
+                    end
+                    if ( (x - endo_x) / endo_r )^2 + ( (z - endo_z) / endo_r)^2 - 1 < 0 % interior
+                        MedValue = 2;
+                    end
+                otherwise
+                    error('check eso');
+                end
+        else
+            error('check');
+        end
+    else
+        loadParas_Cervix;
+        switch CtrlPntFlag
+            case 11
+                if (x / bolus_a)^2 + (z / bolus_c)^2 - 1 > 0 % exterior
+                    MedValue = 3;
+                else % interior
+                    MedValue = 4;
+                end
+            case 13
+                if (x / muscle_a)^2 + (z / muscle_c)^2 - 1 > 0 % exterior
+                    MedValue = 4;
+                else % interior
+                    MedValue = 2;
+                end
+            case 12
+                if (x / skin_a)^2 + (z / skin_c)^2 - 1 > 0 % exterior
+                    MedValue = 2;
+                else % interior
+                    MedValue = 1;
+                end
+            otherwise
+                error('check the mediumTable');
+        end
+    end
 end

@@ -34,6 +34,7 @@ function [ PntsIdx, PntsCrdnt ] = get27Pnts( m, n, ell, x_idx_max, y_idx_max, sh
     PntsIdx( 3, 8 ) = int64( ( ell     ) * x_idx_max * y_idx_max + ( n     ) * x_idx_max + m );
     PntsIdx( 3, 9 ) = int64( ( ell     ) * x_idx_max * y_idx_max + ( n     ) * x_idx_max + m + 1 );
 
+
     % need to check whether to add squeeze or not.
     PntsCrdnt( 1, 1, : ) = shiftedCoordinateXYZ( m - 1, n - 1, ell - 1, :);
     PntsCrdnt( 1, 2, : ) = shiftedCoordinateXYZ( m    , n - 1, ell - 1, :);

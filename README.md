@@ -92,3 +92,14 @@ Test    -- update the getRoughMed_Mag.m
         First version of SegMed with EQS and MQS temperature report.
 
 09/22:  Suspended version of rough resolution (esophageal cancer)
+
+10/02:  
+LungEQS: Gray plotting; 
+EsoEQS: Suspended for nested esophageal cancer.
+        plot SAR in interpolation (XZ, XY)
+          -- successul for Phi distrubution
+          -- Phi_Plot_Esophagus.m for the Phi plotting; 
+          -- PhiDstrbtn_esophagus_B for SAR plotting.
+              -- Wrong determination of SegMed ?
+        Temperature distribution
+          -- failed

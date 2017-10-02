@@ -1,6 +1,9 @@
 function lxFltr = getBndryNum(idx, lengthArray, varargin)
 
     nVarargs = length(varargin);
+    % if nVarargs == 1
+    %     TEXT_flag    = varargin{1};
+    % end
 
     cumArray = cumsum(lengthArray);
     lxFltr = - 1;
@@ -12,6 +15,8 @@ function lxFltr = getBndryNum(idx, lengthArray, varargin)
     % skin-muscle: 13
     % muscle-lung: 14
     % lung-tumor:  15
+    % Esophagus-muscle: 41
+    % endoscopy-other: 42
 
     if length(lengthArray) == 6 % design for lung and cervix in the XZ plane
         if idx <= cumArray(1)
@@ -53,13 +58,23 @@ function lxFltr = getBndryNum(idx, lengthArray, varargin)
         else
             error('check');
         end
-    elseif length(lengthArray) == 2 % design for liver in the YZ plane
-        if idx <= cumArray(1)
-            lxFltr = 14;
-        elseif idx <= cumArray(2)
-            lxFltr = 15;
-        else
-            error('check');
+    elseif length(lengthArray) == 2 
+        if nVarargs % design for esophagus
+            if idx <= cumArray(1)
+                lxFltr = 41;
+            elseif idx <= cumArray(2)
+                lxFltr = 42;
+            else
+                error('check');
+            end
+        else % design for liver in the YZ plane
+            if idx <= cumArray(1)
+                lxFltr = 14;
+            elseif idx <= cumArray(2)
+                lxFltr = 15;
+            else
+                error('check');
+            end
         end
     else
         error('check');

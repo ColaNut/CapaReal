@@ -1,7 +1,7 @@
 clc; clear;
 fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0715';
-EQS_Flag = 0;
-FullWave_Flag = 1;
+EQS_Flag = 1;
+FullWave_Flag = 0;
 if EQS_Flag
     CaseName = 'Power300';
 elseif FullWave_Flag
@@ -54,9 +54,9 @@ cbar = colorbar('peer', gca, 'Yscale', 'log');
 set(gca, 'Visible', 'off')
 log_axes = axes('Position', get(gca, 'Position'));
 if EQS_Flag
-    ylabel(cbar, '$\Vert \bar{E}^{(0)} \ \Vert$ (V/m)', 'Interpreter','LaTex', 'FontSize', 20);
+    ylabel(cbar, '$\left| \bar{E}^{(0)} \ \right|$ (V/m)', 'Interpreter','LaTex', 'FontSize', 20);
 elseif FullWave_Flag
-    ylabel(cbar, '$\Vert \bar{E} \ \Vert$ (V/m)', 'Interpreter','LaTex', 'FontSize', 20);
+    ylabel(cbar, '$\left| \bar{E} \ \right|$ (V/m)', 'Interpreter','LaTex', 'FontSize', 20);
 end
 set(cbar, 'FontSize', 18 );
 
@@ -80,7 +80,7 @@ toc;
 hold on;
 
 caxis(log10(myRange));
-colormap jet;
+colormap gray;
 % axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);
 xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
 ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
@@ -95,10 +95,10 @@ paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
 plotMap( paras2dXZ, dx, dz );
 plotRibXZ(Ribs, SSBone, dx, dz);
 % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-% if EQS_Flag
-%     saveas(figure(9), fullfile(fname, strcat(CaseName, 'E_0_XZ_EQS')), 'jpg');
-% elseif FullWave_Flag
-%     saveas(figure(9), fullfile(fname, 'Power300E_XZ_EQS'), 'jpg');
-% end
+if EQS_Flag
+    saveas(figure(9), fullfile(fname, strcat('\', CaseName, 'E_0_XZ_EQS(bw)')), 'jpg');
+elseif FullWave_Flag
+    saveas(figure(9), fullfile(fname, 'Power300E_XZ_EQS(bw)'), 'jpg');
+end
 % saveas(figure(9), 'E_XZ_FullWave.jpg');
 

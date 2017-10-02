@@ -1,4 +1,4 @@
-function SegMed = fillSideBndrySegMed( Side9Pnts, CtrlPnt, SidePntFlag, CtrlPntFlag )
+function SegMed = fillSideBndrySegMed( Side9Pnts, CtrlPnt, SidePntFlag, CtrlPntFlag, varargin )
 
 TtrCrdnt    = zeros(8, 3);
 SegMed      = ones(1, 8, 'uint8');
@@ -14,7 +14,7 @@ SegMed      = ones(1, 8, 'uint8');
     TtrCrdnt(8, :) = ( CtrlPnt + Side9Pnts(5, :) + Side9Pnts(3, :) + Side9Pnts(6, :) ) / 4;
 
     for idx = 1: 1: 8
-        SegMed(idx) = getTetMed( TtrCrdnt(idx, :), CtrlPntFlag );
+        SegMed(idx) = getTetMed( TtrCrdnt(idx, :), CtrlPntFlag, varargin{:} );
     end
 
 end

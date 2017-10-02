@@ -1,5 +1,5 @@
 function SegMed = fillBndrySegMed( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
-                                    mediumTable )
+                                    mediumTable, varargin )
 
     PntsIdx       = zeros( 3, 9 );
     PntsCrdnt     = zeros( 3, 9, 3 );
@@ -19,7 +19,7 @@ function SegMed = fillBndrySegMed( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y
         SegMed(1, :) = ones( size(SegMed(1, :)) ) * PntsMed(3, 5);
     else
         SegMed(1, :) = fillSideBndrySegMed( squeeze( MidPntsCrdnt(3, :, :) ), ...
-                        squeeze( PntsCrdnt(2, 5, :) )', PntsMed(3, 5), PntsMed(2, 5) );
+                        squeeze( PntsCrdnt(2, 5, :) )', PntsMed(3, 5), PntsMed(2, 5), varargin{:} );
     end
 
     % p2
@@ -28,7 +28,7 @@ function SegMed = fillBndrySegMed( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y
         SegMed(2, :) = ones( size(SegMed(2, :)) ) * PntsMed(2, 4);
     else
         SegMed(2, :) = fillSideBndrySegMed( squeeze( tmpMidCrdnt ), ...
-                        squeeze( PntsCrdnt(2, 5, :) )', PntsMed(2, 4), PntsMed(2, 5) );
+                        squeeze( PntsCrdnt(2, 5, :) )', PntsMed(2, 4), PntsMed(2, 5), varargin{:} );
     end
 
     % p3
@@ -38,7 +38,7 @@ function SegMed = fillBndrySegMed( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y
     else
         tmpMed2Layers = p3FaceMed( PntsMed );
         SegMed(3, :) = fillSideBndrySegMed( squeeze( tmpMidCrdnt ), ...
-                        squeeze( PntsCrdnt(2, 5, :) )', PntsMed(1, 5), PntsMed(2, 5) );
+                        squeeze( PntsCrdnt(2, 5, :) )', PntsMed(1, 5), PntsMed(2, 5), varargin{:} );
     end
 
     % p4
@@ -48,7 +48,7 @@ function SegMed = fillBndrySegMed( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y
     else
         tmpMed2Layers = p4FaceMed( PntsMed );
         SegMed(4, :) = fillSideBndrySegMed( squeeze( tmpMidCrdnt ), ...
-                        squeeze( PntsCrdnt(2, 5, :) )', PntsMed(2, 6), PntsMed(2, 5) );
+                        squeeze( PntsCrdnt(2, 5, :) )', PntsMed(2, 6), PntsMed(2, 5), varargin{:} );
     end
 
     % p5
@@ -58,7 +58,7 @@ function SegMed = fillBndrySegMed( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y
     else
         tmpMed2Layers = p5FaceMed( PntsMed );
         SegMed(5, :) = fillSideBndrySegMed( squeeze( tmpMidCrdnt ), ...
-                        squeeze( PntsCrdnt(2, 5, :) )', PntsMed(2, 8), PntsMed(2, 5) );
+                        squeeze( PntsCrdnt(2, 5, :) )', PntsMed(2, 8), PntsMed(2, 5), varargin{:} );
     end
 
     % p6
@@ -68,7 +68,7 @@ function SegMed = fillBndrySegMed( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y
     else
         tmpMed2Layers = p6FaceMed( PntsMed );
         SegMed(6, :) = fillSideBndrySegMed( squeeze( tmpMidCrdnt ), ...
-                        squeeze( PntsCrdnt(2, 5, :) )', PntsMed(2, 2), PntsMed(2, 5) );
+                        squeeze( PntsCrdnt(2, 5, :) )', PntsMed(2, 2), PntsMed(2, 5), varargin{:} );
     end
 
 end
