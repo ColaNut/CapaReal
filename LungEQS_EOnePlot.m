@@ -2,9 +2,9 @@ clc; clear;
 fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0715';
 CaseName = 'Power300';
 load( strcat(fname, '\BasicParameters.mat') );
-load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0715\0715K1.mat', 'H_XZ');
+load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0715\1003Eone_XZ.mat', 'E_XZ');
 % H_XZ = zeros(x_idx_max, z_idx_max, 6, 8, 3); 
-E_oneXZ = H_XZ;
+E_oneXZ = E_XZ;
 tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1;
 
 E_oneXZabs = zeros(x_idx_max, z_idx_max, 6, 8);
@@ -28,7 +28,7 @@ axis( [ - 20, 20, - 15, 15 ] );
 cbar = colorbar('peer', gca, 'Yscale', 'log');
 set(gca, 'Visible', 'off')
 log_axes = axes('Position', get(gca, 'Position'));
-ylabel(cbar, '$\Vert \bar{E}^{(1)} \ \Vert$ (V/m)', 'Interpreter','LaTex', 'FontSize', 20);
+ylabel(cbar, '$\left| \bar{E}^{(1)} \ \right|$ (V/m)', 'Interpreter','LaTex', 'FontSize', 20);
 % ylabel(cbar, '$\Vert \bar{E}^{(0)} \ \Vert$ (V/m)', 'Interpreter','LaTex', 'FontSize', 20);
 set(cbar, 'FontSize', 18 );
 
@@ -52,7 +52,7 @@ toc;
 hold on;
 
 caxis(log10(myRange));
-colormap jet;
+colormap gray;
 % axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);
 xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
 ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
@@ -67,7 +67,7 @@ paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
 plotMap( paras2dXZ, dx, dz );
 plotRibXZ(Ribs, SSBone, dx, dz);
 % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-saveas(figure(8), fullfile(fname, strcat(CaseName, 'E_1_XZ_EQS')), 'jpg');
+saveas(figure(8), fullfile(fname, strcat(CaseName, 'E_1_XZ_EQS(bw)')), 'jpg');
 % saveas(figure(9), 'E_XZ_FullWave.jpg');
 % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
 

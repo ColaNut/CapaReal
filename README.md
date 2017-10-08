@@ -103,3 +103,15 @@ EsoEQS: Suspended for nested esophageal cancer.
               -- Wrong determination of SegMed ?
         Temperature distribution
           -- failed
+10/06: 
+  the v2Crdnt, VrtxValidFx, and A_MNEllv_2_B_MNEllv are three esophageal specific code. 
+  For smaller case, modificatio of these three fx are needed.
+  Namely, fillUVd_B.m filld_B.m and fillS1_Eso.m.
+
+10/08: 
+  -- EsoEQS: 
+    -- plot SAR in interpolation (YZ)
+    -- T_plot_Esophagus_Fine.m
+    -- yet for small case 
+  -- EsoMQS: 
+    -- plot |E| and SAR

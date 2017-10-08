@@ -32,11 +32,11 @@ tumor_r = 100 * paras2dYZ(20);
 dy = 100 * dy;
 dz = 100 * dz;
 
-loadAmendParas_Esophagus;
+loadParas_Eso0924;
 % loadAmendParas_Esophagus
-x_es = 100 * x_es;
-z_es = 100 * z_es;
-r_es = 100 * r_es;
+es_x = 100 * es_x;
+es_z = 100 * es_z;
+es_r = 100 * es_r;
 
 tumor_x_es = 100 * tumor_x_es;
 tumor_y_es = 100 * tumor_y_es;
@@ -49,7 +49,7 @@ end
 if isreal(r_lung_c)
     plotEllipse( r_lung_b, r_lung_z, - r_lung_b, r_lung_z, r_lung_c, dy, dz );
 end
-plotEllipse( tumor_y_es + tumor_r_es, tumor_z_es - tumor_r_es / 4, tumor_y_es - tumor_r_es, tumor_z_es - tumor_r_es / 4, 3 * tumor_r_es / 4, dy, dz );
+plotEllipse( tumor_y_es + 2 * tumor_r_es, tumor_z_es + tumor_r_es / 2, tumor_y_es - 2 *tumor_r_es, tumor_z_es + tumor_r_es / 2, tumor_r_es / 2, dy, dz );
 % plotEllipse( tumor_y_es + tumor_r_es, tumor_z_es + tumor_r_es, tumor_y_es - tumor_r_es, tumor_z_es + tumor_r_es, tumor_r_es, dy, dz );
 
 y_idx = - h_torso / 2: dy: h_torso / 2;
@@ -57,8 +57,8 @@ bolusUpL = bolusHghtZ * ones(size(y_idx));
 bolusDnL = - bolusHghtZ * ones(size(y_idx));
 muscleUpL = muscleHghtZ * ones(size(y_idx));
 muscleDnL = - muscleHghtZ * ones(size(y_idx));
-EsoUpL    = ( z_es + r_es - dz / 2 ) * ones(size(y_idx));
-EsoDnL    = ( z_es - r_es - dz / 2 ) * ones(size(y_idx));
+EsoUpL    = ( es_z + es_r ) * ones(size(y_idx));
+EsoDnL    = ( es_z - es_r ) * ones(size(y_idx));
 
 plot( y_idx, bolusUpL, 'Color', [0.5, 0.5, 0.5], 'LineWidth', 2.5);
 hold on;

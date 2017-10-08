@@ -1,6 +1,6 @@
 T_0 = 36; 
 T_blood = T_0;
-T_bolus = 36;
+T_bolus = 25;
 T_air = 25;
 alpha = 111;
 

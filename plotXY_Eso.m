@@ -1,4 +1,4 @@
-function plotXY( paras2dXY, dx, dy )
+function plotXY_Eso( paras2dXY, dx, dy )
 
 % paras2dXY = [ h_torso, air_x, air_z, bolus_a, bolus_b, skin_a, skin_b, muscle_a, muscle_b, ...
 %             l_lung_x, l_lung_y, l_lung_a_prime, l_lung_b_prime, ...
@@ -29,11 +29,12 @@ tumor_r = paras2dXY(20) * 100;
 dx = 100 * dx;
 dy = 100 * dy;
 
-loadAmendParas_Esophagus;
+loadParas_Eso0924;
 % loadAmendParas_Esophagus
-x_es = 100 * x_es;
-z_es = 100 * z_es;
-r_es = 100 * r_es;
+es_x = 100 * es_x;
+es_z = 100 * es_z;
+es_r = 100 * es_r;
+tumor_hy_es = 100 * tumor_hy_es;
 
 tumor_x_es = 100 * tumor_x_es;
 tumor_y_es = 100 * tumor_y_es;
@@ -50,7 +51,7 @@ if isreal(r_lung_b)
     plotEllipse( r_lung_x + r_lung_a, r_lung_y, r_lung_x - r_lung_a, r_lung_y, r_lung_b, dx, dy );
 end
 % plot esophgeal tumor
-plotEllipse( tumor_x_es + tumor_r_es, tumor_y_es, tumor_x_es - tumor_r_es, tumor_y_es, tumor_r_es, dx, dy );
+plotEllipse( tumor_x_es + tumor_r_es, tumor_y_es, tumor_x_es - tumor_r_es, tumor_y_es, tumor_hy_es / 2, dx, dy );
 
 x_grid = - myCeil(air_x / 2, dx): dx: myCeil(air_x / 2, dx);
 y_grid = - myCeil(h_torso / 2, dy): dy: myCeil(h_torso / 2, dy);
@@ -67,8 +68,8 @@ bolusRght  = bolus_a * ones(size(y_idx));
 bolusLft   = - bolus_a * ones(size(y_idx));
 muscleRght = muscle_a * ones(size(y_idx));
 muscleLft  = - muscle_a * ones(size(y_idx));
-EsoRght    = ( x_es + r_es ) * ones(size(y_idx));
-EsoLeft    = ( x_es - r_es ) * ones(size(y_idx));
+EsoRght    = ( es_x + es_r ) * ones(size(y_idx));
+EsoLeft    = ( es_x - es_r ) * ones(size(y_idx));
 
 plot( bolusRght, y_idx, 'Color', [0.5, 0.5, 0.5], 'LineWidth', 2.5);
 hold on;

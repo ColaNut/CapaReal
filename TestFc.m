@@ -1,9 +1,53 @@
-Data=magic(100);
-c=[0.1 1 10 100 1000];
-contourf(log(Data(:,:)),log(c));
-colormap(bone);  %Color palate named "bone"
-caxis(log([c(1) c(length(c))]));
-colorbar('FontSize',11,'YTick',log(c),'YTickLabel',c);
+% === % =========== % === %
+% === % Getting Q_s % === %
+% === % =========== % === % 
+Q_s_Vector       = zeros(ExpandedNum, 1);
+% to-do
+% the facets and line boundary tetrahdron are ignored
+tic;
+disp('Rearranging Q_s In Domain A:');
+for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+    [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
+    m_v = 2 * m - 1;
+    n_v = 2 * n - 1;
+    ell_v = 2 * ell - 1;
+
+    PntQ_s          = zeros(48, 1);
+    % rearrange (6, 8, 3) to (48, 3);
+    tmp = zeros(8, 6);
+    tmp = squeeze(Q_s(m, n, ell, :, :))';
+    PntQ_s = tmp(:);
+    Q_s_Vector( 48 * (idx - 1) + 1: 48 * idx ) = PntQ_s;
+end
+toc;
+
+tic;
+disp('Rearrangement of Q_s_B In Domain B: ');
+BaseIdx = 48 * x_idx_max * y_idx_max * z_idx_max;
+for idx = 1: 1: x_idx_max_B * y_idx_max_B * z_idx_max_B
+    [ m, n, ell ] = getMNL(idx, x_idx_max_B, y_idx_max_B, z_idx_max_B);
+    m_v = 2 * m - 1;
+    n_v = 2 * n - 1;
+    ell_v = 2 * ell - 1;
+
+    PntQ_s          = zeros(48, 1);
+    % rearrange (6, 8, 3) to (48, 3);
+    tmp = zeros(8, 6);
+    tmp = squeeze(Q_s_B(m, n, ell, :, :))';
+    PntQ_s = tmp(:);
+    Q_s_Vector( BaseIdx + 48 * (idx - 1) + 1: BaseIdx + 48 * idx ) = PntQ_s;
+end
+toc;
+
+Q_s_Vector(~validTetTable) = [];
+
+% Data=magic(100);
+% c=[0.1 1 10 100 1000];
+% contourf(log(Data(:,:)),log(c));
+% colormap(bone);  %Color palate named "bone"
+% caxis(log([c(1) c(length(c))]));
+% colorbar('FontSize',11,'YTick',log(c),'YTickLabel',c);
+% set('gca','YTicklabel','$10^2$ (cm)','interpreter','latex') 
 % for PartNum = 1: 1: 8
 %     load(strcat('D:\Kevin\CapaReal\0808\0808MQS_conformal_postK', num2str(PartNum), '.mat'), 'B_k', 'm_K1', 'm_K2', 'm_KEV', 'm_KVE');
 %     % ne_B_k = find(~cellfun(@isempty,B_k));

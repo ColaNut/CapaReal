@@ -1,4 +1,4 @@
-function plotMap( paras, dx, dz, varargin )
+function plotMap_Eso( paras, dx, dz, varargin )
 
 % m -> cm
 air_x = paras(1) * 100;
@@ -34,11 +34,11 @@ if isreal(r_lung_c)
     plotEllipse( r_lung_x + r_lung_a, r_lung_z, r_lung_x - r_lung_a, r_lung_z, r_lung_c, dx, dz );
 end
 
-loadAmendParas_Esophagus;
+loadParas_Eso0924;
 % loadAmendParas_Esophagus
-x_es = 100 * x_es;
-z_es = 100 * z_es;
-r_es = 100 * r_es;
+es_x = 100 * es_x;
+es_z = 100 * es_z;
+es_r = 100 * es_r;
 
 tumor_x_es = 100 * tumor_x_es;
 tumor_y_es = 100 * tumor_y_es;
@@ -47,7 +47,7 @@ tumor_r_es = 100 * tumor_r_es;
 
 % plot the esophagus
 % plotEllipse( x_es + r_es, z_es, x_es - r_es, z_es, r_es, dx, dz );
-plotEllipse( x_es + r_es, z_es, x_es - r_es, z_es, r_es, dx, dz );
+plotEllipse( es_x + es_r, es_z, es_x - es_r, es_z, es_r, dx, dz );
 % plot the tumor
 plotEllipse( tumor_x_es + tumor_r_es, tumor_z_es + tumor_r_es / 2, tumor_x_es - tumor_r_es, tumor_z_es + tumor_r_es / 2, tumor_r_es / 2, dx, dz );
 
