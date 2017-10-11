@@ -145,17 +145,18 @@ if T_flagXZ == 1
     set(gca,'LineWidth',2.0);
     caxis([5, 50]);
     axis equal;
-    axis( [ - 20, 20, - 15, 15 ] );
     cb = colorbar;
     box on;
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 25);
     ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 25);
     set(cb, 'FontSize', 18);
     hold on;
-    paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
-    plotMap( paras2dXZ, dx, dz );
-    % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    saveas(figure(21), 'TestTmprtrXZ0903(bw).jpg');
+    plotLiverXZ( paras, tumor_y, dx, dz );
+    axis( [ - 20, 20, - 15, 15 ] );
+    % plotGridLineXZ( shiftedCoordinateXYZ, uint64(tumor_y / dy + h_torso / (2 * dy) + 1) );
+    % paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
+    % plotMap( paras2dXZ, dx, dz );
+    saveas(figure(21), 'LiverTmprtrXZ_EQS(bw).jpg');
 end
 
 if T_flagXY == 1
@@ -256,19 +257,20 @@ if T_flagXY == 1
     set(gca,'LineWidth',2.0);
     caxis([5, 50]);
     axis equal;
-    axis( [ - 20, 20, - 15, 15 ] );
     cb = colorbar;
     set(cb, 'FontSize', 18);
     hold on;
     box on;
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 25);
     ylabel('$y$ (cm)','Interpreter','LaTex', 'FontSize', 25);
-    paras2dXY = genParas2dXY( tumor_z, paras, dx, dy, dz );
-    plotXY( paras2dXY, dx, dy );
-    % plotGridLineXY( shiftedCoordinateXYZ, tumor_ell_v );
+    plotLiverXY( paras, tumor_z, dx, dy );
+    axis( [ - 20, 20, - 10, 10 ] );
+    axis( [ - 20, 20, - 15, 15 ] );
+    % plotGridLineXY( shiftedCoordinateXYZ, uint64(tumor_z / dz + air_z / (2 * dz) + 1) );
+    % paras2dXY = genParas2dXY( tumor_z, paras, dx, dy, dz );
+    % plotXY( paras2dXY, dx, dy );
     % plotMap( paras2dXZ, dx, dz, top_x0, top_dx, down_dx );
-    % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    saveas(figure(22), 'TestTmprtrXY0903(bw).jpg');
+    saveas(figure(22), 'LiverTmprtrXY_EQS(bw).jpg');
 end
 
 if T_flagYZ == 1
@@ -371,16 +373,17 @@ if T_flagYZ == 1
     set(cb, 'FontSize', 18);
     caxis([5, 50]);
     axis equal;
-    axis( [ - 15, 15, - 15, 15 ] );
     hold on;
     box on;
     xlabel('$y$ (cm)', 'Interpreter','LaTex', 'FontSize', 25);
     ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 25);
-    paras2dYZ = genParas2dYZ( tumor_x, paras, dy, dz );
-    plotYZ( paras2dYZ, dy, dz );
-    % plotGridLineYZ( shiftedCoordinateXYZ, tumor_m_v );
+    plotLiverYZ( paras, tumor_x, dy, dz );
+    axis( [ - 10, 10, - 15, 15 ] );
+    axis( [ - 15, 15, - 15, 15 ] );
+    % plotGridLineYZ( shiftedCoordinateXYZ, uint64(tumor_x / dx + air_x / (2 * dx) + 1) );
+    % paras2dYZ = genParas2dYZ( tumor_x, paras, dy, dz );
+    % plotYZ( paras2dYZ, dy, dz );
     % plotMap( paras2dXZ, dx, dz, top_x0, top_dx, down_dx );
-    % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    saveas(figure(23), 'TestTmprtrYZ0903(bw).jpg');
+    saveas(figure(23), 'LiverTmprtrYZ_EQS(bw).jpg');
 end
 

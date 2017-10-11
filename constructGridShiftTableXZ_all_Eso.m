@@ -9,14 +9,14 @@ GridShiftTable = cell( length(x_grid), length(z_grid) );
 % mediumTable = ones( air_x / dx + 1, air_z / dz  + 1, 'uint8' );
 % mediumTable = false(size(GridShiftTable));
 
-lengthXArray = zeros(2, 1);
-lengthZArray = zeros(2, 1);
+lengthXArray = zeros(1, 1);
+lengthZArray = zeros(1, 1);
 
 lengthXArray(1) = length([ myCeil(es_x - es_r, dx): dx: myFloor(es_x + es_r, dx) ]);
-lengthXArray(2) = length([ myCeil(endo_x - endo_r, dx): dx: myFloor(endo_x + endo_r, dx) ]);
+% lengthXArray(2) = length([ myCeil(endo_x - endo_r, dx): dx: myFloor(endo_x + endo_r, dx) ]);
 
 lengthZArray(1) = length([ myCeil(es_z - es_r, dz): dz: myFloor(es_z + es_r, dz) ]);
-lengthZArray(2) = length([ myCeil(endo_z - endo_r, dz): dz: myFloor(endo_z + endo_r, dz) ]);
+% lengthZArray(2) = length([ myCeil(endo_z - endo_r, dz): dz: myFloor(endo_z + endo_r, dz) ]);
 
 % shift the grid point to the curve.
 lx = length(x_grid_table);

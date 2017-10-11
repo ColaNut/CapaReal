@@ -140,7 +140,7 @@ if T_flagXZ == 1
 
     % shading interp
 
-    colormap jet;
+    colormap gray;
     set(gca,'fontsize',20);
     set(gca,'LineWidth',2.0);
     caxis([5, 50]);
@@ -156,7 +156,7 @@ if T_flagXZ == 1
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(tumor_y / dy + h_torso / (2 * dy) + 1) );
     % paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
     % plotMap( paras2dXZ, dx, dz );
-    saveas(figure(21), 'LiverTmprtrXZ.jpg');
+    saveas(figure(21), 'LiverTmprtrXZ(bw).jpg');
 end
 
 if T_flagXY == 1
@@ -252,7 +252,7 @@ if T_flagXY == 1
     toc;
 
     % shading interp
-    colormap jet;
+    colormap gray;
     set(gca,'fontsize',20);
     set(gca,'LineWidth',2.0);
     caxis([5, 50]);
@@ -270,7 +270,7 @@ if T_flagXY == 1
     % paras2dXY = genParas2dXY( tumor_z, paras, dx, dy, dz );
     % plotXY( paras2dXY, dx, dy );
     % plotMap( paras2dXZ, dx, dz, top_x0, top_dx, down_dx );
-    saveas(figure(22), 'LiverTmprtrXY.jpg');
+    saveas(figure(22), 'LiverTmprtrXY(bw).jpg');
 end
 
 if T_flagYZ == 1
@@ -366,7 +366,7 @@ if T_flagYZ == 1
     toc;
 
     % shading interp
-    colormap jet;
+    colormap gray;
     set(gca,'fontsize',20);
     set(gca,'LineWidth',2.0);
     cb = colorbar;
@@ -384,6 +384,6 @@ if T_flagYZ == 1
     % paras2dYZ = genParas2dYZ( tumor_x, paras, dy, dz );
     % plotYZ( paras2dYZ, dy, dz );
     % plotMap( paras2dXZ, dx, dz, top_x0, top_dx, down_dx );
-    saveas(figure(23), 'LiverTmprtrYZ.jpg');
+    saveas(figure(23), 'LiverTmprtrYZ(bw).jpg');
 end
 

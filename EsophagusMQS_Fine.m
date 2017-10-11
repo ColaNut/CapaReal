@@ -262,11 +262,27 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
     end
 end 
 
+% === === % ====================================================== % === === %
+% === === % Get mediumTable_ext, SegMed_ext and GridShiftTable_ext % === === %
+% === === % ======================================================  % === === %
+% to-do
+dx_ext = dx / 2;
+dy_ext = dy / 2;
+dz_ext = dz / 2;
+x_idx_max_ext = x_idx_max * 2 - 1;
+y_idx_max_ext = y_idx_max * 2 - 1;
+z_idx_max_ext = z_idx_max * 2 - 1;
+mediumTable_ext = zeros(x_idx_max_ext, y_idx_max_ext, z_idx_max_ext, 'uint8');
+SegMed_ext = zeros(x_idx_max_ext, y_idx_max_ext, z_idx_max_ext, 6, 8, 'uint8');
+GridShiftTable_ext = cell( air_x / dx_ext + 1, h_torso / dy_ext + 1, air_z / dz_ext + 1 );
+
+[ mediumTable_ext, SegMed_ext, GridShiftTable_ext ] = getExtVar(dx, dy, dz);
+
 % === === % ======================================== % === === %
 % === === % Draw The Second Rectangular Box Naming B % === === %
 % === === % ======================================== % === === %
 % region B: [-3, 3, 2, 8]
-% region C: [-1, 1, 4, 6]
+% region C: [-1, 1, 4, 6], which is discard in current version
 % domain B has actual size of [ w_x_B + dx, w_y_B + dy, w_z_B + dz ]
 w_x_B = 10 / 100;
 w_y_B = 10 / 100;
@@ -289,30 +305,71 @@ x_max_vertex_AinB = 2 * x_idx_max_AinB + 1;
 y_max_vertex_AinB = 2 * y_idx_max_AinB + 1;
 z_max_vertex_AinB = 2 * z_idx_max_AinB + 1;
 
-% to-do
-% The prolonged part of esophagus is not incorporated in the nest
-% implement grid shift for esophagus and tumor
-mediumTable_B = 3 * ones( x_idx_max_B, y_idx_max_B, z_idx_max_B, 'uint8');
+loadParas_Eso0924; % a parameters script
+RegionB = false(x_idx_max, y_idx_max, z_idx_max);
+m_Rght  = ( es_x + w_x_B / 2 ) / dx + air_x / (2 * dx) + 1;
+m_Lft   = ( es_x - w_x_B / 2 ) / dx + air_x / (2 * dx) + 1;
+n_Far   = ( 0    + w_y_B / 2 ) / dy + h_torso / (2 * dy) + 1;
+n_Near  = ( 0    - w_y_B / 2 ) / dy + h_torso / (2 * dy) + 1;
+ell_Top = ( es_z + w_z_B / 2 ) / dz + air_z / (2 * dz) + 1;
+ell_Dwn = ( es_z - w_z_B / 2 ) / dz + air_z / (2 * dz) + 1;
+RegionB(m_Lft: m_Rght, n_Near: n_Far, ell_Dwn: ell_Top) = true;
+
+% down-left-near
+m_v_Lft = (2 * m_Lft - 1) - 1;
+n_v_Near = (2 * n_Near - 1) - 1;
+ell_v_Dwn = (2 * ell_Dwn - 1) - 1;
+% top-right-far
+m_v_Rght = (2 * m_Rght - 1) + 1;
+n_v_Far = (2 * n_Far - 1) + 1;
+ell_v_Top = (2 * ell_Top - 1) + 1;
+vIdx_AinB = false(x_max_vertex, y_max_vertex, z_max_vertex);
+Exp_vIdx_AinB = false(x_max_vertex, y_max_vertex, z_max_vertex);
+vIdx_AinB(m_v_Lft: m_v_Rght, n_v_Near: n_v_Far, ell_v_Dwn: ell_v_Top) = true;
+Exp_vIdx_AinB(m_v_Lft - 1: m_v_Rght + 1, n_v_Near - 1: n_v_Far + 1, ell_v_Dwn - 1: ell_v_Top + 1) = true;
+
+% === === % =============================== % === === %
+% === === % Inherent SegMed_B from Domain A % === === %
+% === === % =============================== % === === %
+mediumTable_B = zeros( x_idx_max_B, y_idx_max_B, z_idx_max_B, 'uint8');
+SegMed_B = zeros( x_idx_max_B, y_idx_max_B, z_idx_max_B, 6, 8, 'uint8');
+GridShiftTable_B = cell( ( w_x_B + dx ) / dx_B + 1, ( w_y_B + dy ) / dy_B + 1, ( w_z_B + dz ) / dz_B + 1 );
+% the vIdx in Domain A is Idx in domain B and extended domain A
+mediumTable_B = mediumTable_ext(m_v_Lft: m_v_Rght, n_v_Near: n_v_Far, ell_v_Dwn: ell_v_Top, :);
+SegMed_B = SegMed_ext(m_v_Lft: m_v_Rght, n_v_Near: n_v_Far, ell_v_Dwn: ell_v_Top, :, :);
+GridShiftTable_B = GridShiftTable_ext(m_v_Lft: m_v_Rght, n_v_Near: n_v_Far, ell_v_Dwn: ell_v_Top);
+
+% === === % ======================================================= % === === %
+% === === % Updating GridShiftTable_B and mediumTable_B in Domain B % === === %
+% === === % ======================================================= % === === %
 GridShiftTableXZ_B = cell( ( w_y_B + dy ) / dy_B + 1, 1);
 for y = - ( w_y_B + dy ) / 2 : dy_B: ( w_y_B + dy ) / 2
     y_idx = y / dy_B + ( w_x_B + dy ) / (2 * dy_B) + 1;
-    loadParas_Eso0924; % a script
-    mediumTable_B(:, int64(y_idx), :) = getRoughMed_Eso_B( mediumTable_B(:, int64(y_idx), :), y_idx, w_x_B + dx, w_y_B + dy, w_z_B + dz, dx_B, dy_B, dz_B );
+    tumor_y_idx_far  = (tumor_y_es + tumor_hy_es / 2) / dy_B + ( w_y_B + dy ) / (2 * dy_B) + 1;
+    tumor_y_idx_near = (tumor_y_es - tumor_hy_es / 2) / dy_B + ( w_y_B + dy ) / (2 * dy_B) + 1;
+    mediumTable_B(:, int64(y_idx), :) = medFill_Eso( squeeze(mediumTable_B(:, int64(y_idx), :)), es_x, es_z, es_r, es_r, dx_B, dz_B, 1, w_x_B + dx, w_z_B + dz );
+    if y_idx <= tumor_y_idx_far && y_idx >= tumor_y_idx_near
+        mediumTable_B(:, int64(y_idx), :) = medFill_Eso( squeeze(mediumTable_B(:, int64(y_idx), :)), tumor_x_es, tumor_z_es, tumor_r_es, tumor_r_es, dx_B, dz_B, 9, w_x_B + dx, w_z_B + dz );
+        mediumTable_B(11: 13, int64(y_idx), 11) = 2;
+        mediumTable_B(11: 13, int64(y_idx), 12) = 42;
+    end
     [ GridShiftTableXZ_B{ int64(y_idx) }, mediumTable_B(:, int64(y_idx), :) ] = constructCoordinateXZ_all_Eso0924( w_x_B + dx, w_z_B + dz, dx_B, dz_B, mediumTable_B(:, int64(y_idx), :) );
 end
-GridShiftTable_B = cell( ( w_x_B + dx ) / dx_B + 1, ( w_y_B + dy ) / dy_B + 1, ( w_z_B + dz ) / dz_B + 1 );
-for y_idx = 1: 1: ( w_y_B + dy ) / dy_B + 1
-    tmp_table = GridShiftTableXZ_B{ y_idx };
-    for x_idx = 1: 1: ( w_x_B + dx ) / dx_B + 1
-        for z_idx = 1: 1: ( w_z_B + dz ) / dz_B + 1
-            GridShiftTable_B{ x_idx, y_idx, z_idx } = tmp_table{ x_idx, z_idx };
+
+% the shift-table in GridShiftTableXZ_B has higher priority than that stoted in GridShiftTable_B
+for y_idx_B = 1: 1: ( w_y_B + dy ) / dy_B + 1
+    tmp_table = GridShiftTableXZ_B{ y_idx_B };
+    for x_idx_B = 1: 1: ( w_x_B + dx ) / dx_B + 1
+        for z_idx_B = 1: 1: ( w_z_B + dz ) / dz_B + 1
+            if ~isempty( tmp_table{ x_idx_B, z_idx_B } )
+                GridShiftTable_B{ x_idx_B, y_idx_B, z_idx_B } = tmp_table{ x_idx_B, z_idx_B };
+            end
         end
     end
 end
 
-% to-do
-% inherent the GridShift from the main node
 shiftedCoordinateXYZ_B = constructCoordinateXYZ( GridShiftTable_B, [w_y_B + dx, w_x_B + dy, w_z_B + dz], dx_B, dy_B, dz_B );
+shiftedCoordinateXYZ_B(:, :, :, 3) = shiftedCoordinateXYZ_B(:, :, :, 3) + es_z;
 
 % Get vertex coordinate in domain B
 Vertex_Crdnt_B = zeros( x_max_vertex_B, y_max_vertex_B, z_max_vertex_B, 3 );
@@ -324,6 +381,8 @@ toc;
 figure(1);
 clf;
 hold on;
+paras2dXZ = genParas2d( 0, paras, dx, dy, dz );
+plotMap_Eso( paras2dXZ, dx, dz );
 plotGridLineXZ( shiftedCoordinateXYZ_B, ( y_idx_max_B + 1 ) / 2 );
 figure(2)
 clf;
@@ -331,79 +390,27 @@ hold on;
 plotGridLineYZ( shiftedCoordinateXYZ, ( x_idx_max_B + 1 ) / 2 );
 % return;
 
-% shift shiftedCoordinateXYZ_B and Vertex_Crdnt_B by [0, 0, 5].
-shiftedCoordinateXYZ_B(:, :, :, 3) = shiftedCoordinateXYZ_B(:, :, :, 3) + 5 / 100;
-Vertex_Crdnt_B(:, :, :, 3) = Vertex_Crdnt_B(:, :, :, 3) + 5 / 100;
-
-SegMed_B = ones( x_idx_max_B, y_idx_max_B, z_idx_max_B, 6, 8, 'uint8');
-% unvalid SegMed_B is also set to 30; 
-% no need to store the surrounding modified SegMed; since they are the same as their mother-tetrahedra
-
-% to-do
-% inherent the SegMed from the main node
-
-% using math to determine the SegMed
-% === % =========================== % === %
-% === % Fill The SegMed In Domain B % === %
-% === % =========================== % === %
-% SegMed determination may be wrong in the junction point of esophagus and spine
+% check mediumTable_B, SegMed_B and GridShiftTable_B
+% === === % ================================ % === === %
+% === === % Updating SegMed witihn esophagus % === === %
+% === === % ================================ % === === %
 for idx = 1: 1: x_idx_max_B * y_idx_max_B * z_idx_max_B
     [ m, n, ell ] = getMNL(idx, x_idx_max_B, y_idx_max_B, z_idx_max_B);
     if mediumTable_B(m, n, ell) < 10
         SegMed_B(m, n, ell, :, :) = mediumTable_B(m, n, ell);
     elseif m >= 2 && m <= x_idx_max_B - 1 && n >= 2 && n <= y_idx_max_B - 1 && ell >= 2 && ell <= z_idx_max_B - 1 
-        SegMed_B( m, n, ell, :, : ) = fillBndrySegMed( m, n, ell, ...
-                shiftedCoordinateXYZ_B, x_idx_max_B, y_idx_max_B, z_idx_max_B, mediumTable_B, 'Eso' );
+        if mediumTable_B(m, n, ell) == 41 || mediumTable_B(m, n, ell) == 42 || mediumTable_B(m, n, ell) == 1 || mediumTable_B(m, n, ell) == 2 || mediumTable_B(m, n, ell) == 9
+            SegMed_B( m, n, ell, :, : ) = fillBndrySegMed( m, n, ell, ...
+                    shiftedCoordinateXYZ_B, x_idx_max_B, y_idx_max_B, z_idx_max_B, mediumTable_B, 'Eso1009' );
+        end
     end
 end
-
-% return;
 
 % === % ==================================== % === %
 % === % Trimming: Invalid set to 30 (byndCD) % === %
 % === % ==================================== % === % 
-for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
-    [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
-    if ell == z_idx_max
-        SegMed(m, n, ell, :, :) = trimUp( squeeze( SegMed(m, n, ell, :, :) ), byndCD );
-    end
-    if ell == 1
-        SegMed(m, n, ell, :, :) = trimDown( squeeze( SegMed(m, n, ell, :, :) ), byndCD );
-    end
-    if m   == 1
-        SegMed(m, n, ell, :, :) = trimLeft( squeeze( SegMed(m, n, ell, :, :) ), byndCD );
-    end
-    if m   == x_idx_max
-        SegMed(m, n, ell, :, :) = trimRight( squeeze( SegMed(m, n, ell, :, :) ), byndCD );
-    end
-    if n   == y_idx_max
-        SegMed(m, n, ell, :, :) = trimFar( squeeze( SegMed(m, n, ell, :, :) ), byndCD );
-    end
-    if n   == 1
-        SegMed(m, n, ell, :, :) = trimNear( squeeze( SegMed(m, n, ell, :, :) ), byndCD );
-    end
-end
-for idx = 1: 1: x_idx_max_B * y_idx_max_B * z_idx_max_B
-    [ m, n, ell ] = getMNL(idx, x_idx_max_B, y_idx_max_B, z_idx_max_B);
-    if ell == z_idx_max_B
-        SegMed_B(m, n, ell, :, :) = trimUp( squeeze( SegMed_B(m, n, ell, :, :) ), byndCD );
-    end
-    if ell == 1
-        SegMed_B(m, n, ell, :, :) = trimDown( squeeze( SegMed_B(m, n, ell, :, :) ), byndCD );
-    end
-    if m   == 1
-        SegMed_B(m, n, ell, :, :) = trimLeft( squeeze( SegMed_B(m, n, ell, :, :) ), byndCD );
-    end
-    if m   == x_idx_max_B
-        SegMed_B(m, n, ell, :, :) = trimRight( squeeze( SegMed_B(m, n, ell, :, :) ), byndCD );
-    end
-    if n   == y_idx_max_B
-        SegMed_B(m, n, ell, :, :) = trimFar( squeeze( SegMed_B(m, n, ell, :, :) ), byndCD );
-    end
-    if n   == 1
-        SegMed_B(m, n, ell, :, :) = trimNear( squeeze( SegMed_B(m, n, ell, :, :) ), byndCD );
-    end
-end
+SegMed = setBndrySegMed(SegMed, byndCD, x_idx_max, y_idx_max, z_idx_max);
+SegMed_B = setBndrySegMed(SegMed_B, byndCD, x_idx_max_B, y_idx_max_B, z_idx_max_B);
 
 % to-do 
 % the line Cases is discard temporarily
@@ -412,7 +419,7 @@ validNum_B = getValidNum(x_idx_max_B, y_idx_max_B, z_idx_max_B);
 ExpandedNum = 48 * x_idx_max_B * y_idx_max_B * z_idx_max_B; 
 MedTetTableCell_B_tmp = cell(ExpandedNum, 1); % each row consists the indices of the four vertices and is medium value.
 validTetTable         = false(ExpandedNum, 1); 
-return;
+% return;
 
 tic;
 disp('Getting MedTetTableCell_B_tmp: ');
@@ -458,7 +465,9 @@ disp('Transfroming MedTetTable from my_sparse to Matlab sparse matrix')
 MedTetTable_B = mySparse2MatlabSparse( MedTetTableCell_B, validNum_B, N_v_B, 'Row' );
 toc;
 
-return;
+save('1010EsoMQS_preK1.mat');
+
+% return;
 
 % === === % ============ % === === %
 % === === % Filling Coil % === === %
@@ -513,22 +522,22 @@ l_G = length(P1);
 % undirected graph
 uG = G + G';
 
-Vrtx_bndry = zeros( x_max_vertex, y_max_vertex, z_max_vertex, 'uint8');
-%  2: computational domain boundary
-n_far  = y_idx_max - 1;
-n_near = 2;
-for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
-    [ m_v, n_v, ell_v ] = getMNL(vIdx, x_max_vertex, y_max_vertex, z_max_vertex);
-    borderFlag = getBorderFlag(m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex);
-    if my_F(borderFlag, 1)
-        Vrtx_bndry(m_v, n_v, ell_v) = 2;
-    end
-end
+% Vrtx_bndry = zeros( x_max_vertex, y_max_vertex, z_max_vertex, 'uint8');
+Vrtx_bndry_B = zeros( x_max_vertex_B, y_max_vertex_B, z_max_vertex_B, 'uint8');
+% %  2: computational domain boundary
+% n_far  = y_idx_max - 1;
+% n_near = 2;
+% for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
+%     [ m_v, n_v, ell_v ] = getMNL(vIdx, x_max_vertex, y_max_vertex, z_max_vertex);
+%     borderFlag = getBorderFlag(m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex);
+%     if my_F(borderFlag, 1)
+%         Vrtx_bndry(m_v, n_v, ell_v) = 2;
+%     end
+% end
 
 save('1003EsoMQS_preK.mat');
-return;
+% return;
 
-% grid shift error of circular current sheet
 % === % =========== % === %
 % === % Filling K_1 % === %
 % === % =========== % === %
@@ -570,7 +579,7 @@ for eIdx = 1: 1: N_e_B / 2
                 MedVal = MedTetTable_B( tetRow, v1234(1) );
                 % use tetRow to check the accordance of SigmaE and J_xyz
                 [ K1_6, B_k_Pnt ] = fillK1_FW_currentsheet( P1(eIdx), P2(eIdx), Candi(itr), Candi(TetFinder), ...
-                    G( :, P1(eIdx) ), G( :, P2(eIdx) ), G( :, Candi(itr) ), G( :, Candi(TetFinder) ), Vrtx_bndry, J_0, ...
+                    G( :, P1(eIdx) ), G( :, P2(eIdx) ), G( :, Candi(itr) ), G( :, Candi(TetFinder) ), Vrtx_bndry_B, J_0, ...
                     K1_6, B_k_Pnt, zeros(1, 3), MedVal, epsilon_r, mu_r, x_max_vertex_B, y_max_vertex_B, z_max_vertex_B, Vertex_Crdnt_B );
             end
         end
@@ -607,43 +616,15 @@ for eIdx = 1: 1: N_e_B / 2
 end
 toc;
 
+save('1010EsoMQS_K_Part1.mat', 'm_K1');
 return;
-% to-do
-% getting K1 matrix and b_k vector.
 
 % total_B_k = zeros(N_e, 1);
 total_m_K1 = cell(N_e_B, 1);
-% total_m_K2 = cell(N_e, 1);
-% total_m_KEV = cell(N_e, 1);
-% total_m_KVE = cell(1, N_e);
-load('1003EsoMQSPart1.mat', 'm_K1');
-% load('E:\Kevin\CapaReal\0721\0721K_Q1.mat', 'm_K1', 'm_K2', 'm_KEV', 'm_KVE');
-% total_B_k(1: l_G / 4) = B_k(1: l_G / 4);
+load('1010EsoMQS_K_Part1.mat', 'm_K1');
 total_m_K1(1: N_e_B / 2) = m_K1(1: N_e_B / 2);
-% total_m_K2(1: l_G / 4) = m_K2(1: l_G / 4);
-% total_m_KEV(1: l_G / 4) = m_KEV(1: l_G / 4);
-% total_m_KVE(1: l_G / 4) = m_KVE(1: l_G / 4);
-load('1003EsoMQSPart2.mat', 'm_K1');
-% load('E:\Kevin\CapaReal\0721\0721K_Q2.mat', 'm_K1', 'm_K2', 'm_KEV', 'm_KVE');
-% total_B_k(l_G / 4 + 1: l_G / 2) = B_k(l_G / 4 + 1: l_G / 2);
+load('1010EsoMQS_K_Part2.mat', 'm_K1');
 total_m_K1(N_e_B / 2 + 1: N_e_B) = m_K1(N_e_B / 2 + 1: N_e_B);
-% total_m_K2(l_G / 4 + 1: l_G / 2) = m_K2(l_G / 4 + 1: l_G / 2);
-% total_m_KEV(l_G / 4 + 1: l_G / 2) = m_KEV(l_G / 4 + 1: l_G / 2);
-% total_m_KVE(l_G / 4 + 1: l_G / 2) = m_KVE(l_G / 4 + 1: l_G / 2);
-% load('E:\Kevin\CapaReal\0721\0721K_Q3.mat', 'm_K1');
-% % load('E:\Kevin\CapaReal\0721\0721K_Q3.mat', 'm_K1', 'm_K2', 'm_KEV', 'm_KVE');
-% % total_B_k(l_G / 2 + 1: 3 * l_G / 4) = B_k(l_G / 2 + 1: 3 * l_G / 4);
-% total_m_K1(l_G / 2 + 1: 3 * l_G / 4) = m_K1(l_G / 2 + 1: 3 * l_G / 4);
-% % total_m_K2(l_G / 2 + 1: 3 * l_G / 4) = m_K2(l_G / 2 + 1: 3 * l_G / 4);
-% % total_m_KEV(l_G / 2 + 1: 3 * l_G / 4) = m_KEV(l_G / 2 + 1: 3 * l_G / 4);
-% % total_m_KVE(l_G / 2 + 1: 3 * l_G / 4) = m_KVE(l_G / 2 + 1: 3 * l_G / 4);
-% load('E:\Kevin\CapaReal\0721\0721K_Q4.mat', 'm_K1');
-% % load('E:\Kevin\CapaReal\0721\0721K_Q4.mat', 'm_K1', 'm_K2', 'm_KEV', 'm_KVE');
-% % total_B_k(3 * l_G / 4 + 1: l_G) = B_k(3 * l_G / 4 + 1: l_G);
-% total_m_K1(3 * l_G / 4 + 1: l_G) = m_K1(3 * l_G / 4 + 1: l_G);
-% % total_m_K2(3 * l_G / 4 + 1: l_G) = m_K2(3 * l_G / 4 + 1: l_G);
-% % total_m_KEV(3 * l_G / 4 + 1: l_G) = m_KEV(3 * l_G / 4 + 1: l_G);
-% % total_m_KVE(3 * l_G / 4 + 1: l_G) = m_KVE(3 * l_G / 4 + 1: l_G);
 
 M_K1 = sparse(N_e_B, N_e_B);
 % M_K2 = sparse(N_e, N_e);

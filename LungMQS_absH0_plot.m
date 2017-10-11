@@ -1,5 +1,5 @@
-clc; clear;
-load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0808LungMQSConformal\0808MQS_conformal_preK.mat')
+% clc; clear;   
+% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0808LungMQSConformal\0808MQS_conformal_preK.mat')
 % load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0823LungMQS\0823_8MHz_zerothOrder.mat');
 % load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0903LungMQS\0903LungMQS_1pnt2MHz_MuPrmPrm_zerothOrder.mat');
 load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0903LungMQS\0903LungMQS_1pnt2MHz_MuPrmPrm_secondOrder.mat');
@@ -74,7 +74,7 @@ toc;
 hold on;
 
 caxis(log10(myRange));
-colormap jet;
+colormap gray;
 % axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);
 xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
 ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
@@ -89,6 +89,6 @@ paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
 plotMap( paras2dXZ, dx, dz );
 plotRibXZ(Ribs, SSBone, dx, dz);
 % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-saveas(figure(8), fullfile(fname, strcat(CaseName, 'H2_XZ_MQS')), 'jpg');
+saveas(figure(8), fullfile(fname, strcat(CaseName, 'H2_XZ_MQS(bw)')), 'jpg');
 % saveas(figure(9), 'E_XZ_FullWave.jpg');
 % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');

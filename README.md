@@ -115,3 +115,13 @@ EsoEQS: Suspended for nested esophageal cancer.
     -- yet for small case 
   -- EsoMQS: 
     -- plot |E| and SAR
+
+10/11: 
+  -- plot LungEQS, LungMQS, Liver black-and-white figures
+  -- EsoEQS
+    -- Update SegMed in esophagus region
+    -- incorporate SegMed and shiftTable in Domain A
+    -- fail to speed up
+      -- detectRelapse.m
+  -- EsoMQS
+    -- incorporate SegMed and shiftTable in Domain A

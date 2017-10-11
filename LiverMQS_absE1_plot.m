@@ -3,7 +3,7 @@
 % % % === === % =================================  % === === %
 % clc; clear;
 % load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0824LiverMQS\0824preK1_liver.mat')
-% % load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0911LiverXiMod\MQS\0911_1dot2MHz_Liver_zerothOrder.mat');
+% % % load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0911LiverXiMod\MQS\0911_1dot2MHz_Liver_zerothOrder.mat');
 load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0911LiverXiMod\MQS\0912_1dot2MHz_Liver_zerothOrder.mat');
 load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0911LiverXiMod\MQS\0911_1dot2MHz_Liver_Q_s_MNP.mat', 'muPrmPrm_MNP', 'Omega_0');
 
@@ -14,15 +14,15 @@ sigma(2) = 0;
 % % === === % ========= % === === %
 % % === === % Flag Sets % === === %
 % % === === % ========= % === === %
-E_XZ_flag = 0;
-E_XY_flag = 0;
-E_YZ_flag = 0;
+E_XZ_flag = 1;
+E_XY_flag = 1;
+E_YZ_flag = 1;
 
 SAR_XZ_flag = 1;
 SAR_XY_flag = 1;
 SAR_YZ_flag = 1;
 
-SAR_XZ_MNP_flag = 0;
+SAR_XZ_MNP_flag = 1;
 
 % === === % ================================= % === === %
 % === === % J_0 modification part (cancelled) % === === %
@@ -137,7 +137,7 @@ if E_XZ_flag
     hold on;
 
     caxis(log10(myRange));
-    colormap jet;
+    colormap gray;
     % axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
@@ -153,9 +153,7 @@ if E_XZ_flag
     % plotMap( paras2dXZ, dx, dz );
     % plotRibXZ(Ribs, SSBone, dx, dz);
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    saveas(figure(27), fullfile(fname, strcat(CaseName, 'E1_XZ_MQS')), 'jpg');
-    % saveas(figure(9), 'E_XZ_FullWave.jpg');
-    % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
+    saveas(figure(27), fullfile(fname, strcat(CaseName, 'E1_XZ_MQS(bw)')), 'jpg');
 end
 
 if E_XY_flag
@@ -193,7 +191,7 @@ if E_XY_flag
     hold on;
 
     caxis(log10(myRange));
-    colormap jet;
+    colormap gray;
     % axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$y$ (cm)','Interpreter','LaTex', 'FontSize', 20);
@@ -208,9 +206,7 @@ if E_XY_flag
     % paras2dXY = genParas2dXY( tumor_z, paras, dx, dy, dz );
     % plotXY( paras2dXY, dx, dy );
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    saveas(figure(28), fullfile(fname, strcat(CaseName, 'E1_XY_MQS')), 'jpg');
-    % % saveas(figure(9), 'E_XZ_FullWave.jpg');
-    % % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
+    saveas(figure(28), fullfile(fname, strcat(CaseName, 'E1_XY_MQS(bw)')), 'jpg');
 end
 
 if E_YZ_flag
@@ -247,7 +243,7 @@ if E_YZ_flag
     hold on;
 
     caxis(log10(myRange));
-    colormap jet;
+    colormap gray;
     % axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);
     xlabel('$y$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
@@ -262,9 +258,7 @@ if E_YZ_flag
     % paras2dYZ = genParas2dYZ( tumor_x, paras, dy, dz );
     % plotYZ( paras2dYZ, dy, dz );
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    saveas(figure(29), fullfile(fname, strcat(CaseName, 'E1_YZ_MQS')), 'jpg');
-    % % saveas(figure(9), 'E_XZ_FullWave.jpg');
-    % % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
+    saveas(figure(29), fullfile(fname, strcat(CaseName, 'E1_YZ_MQS(bw)')), 'jpg');
 end
 
 % === === % ======== % === === %
@@ -312,7 +306,7 @@ if SAR_XZ_flag
     hold on;
 
     caxis(log10(myRange));
-    colormap jet;
+    colormap gray;
     % axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
@@ -328,9 +322,8 @@ if SAR_XZ_flag
     % plotMap( paras2dXZ, dx, dz );
     % plotRibXZ(Ribs, SSBone, dx, dz);
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    saveas(figure(31), fullfile(fname, strcat(CaseName, 'SAR_XZ_MQS')), 'jpg');
+    saveas(figure(31), fullfile(fname, strcat(CaseName, 'SAR_XZ_MQS(bw)')), 'jpg');
     % % saveas(figure(31), 'E_XZ_FullWave.jpg');
-    % % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
 end
 
 if SAR_XY_flag
@@ -370,7 +363,7 @@ if SAR_XY_flag
     hold on;
 
     caxis(log10(myRange));
-    colormap jet;
+    colormap gray;
     % axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$y$ (cm)','Interpreter','LaTex', 'FontSize', 20);
@@ -385,9 +378,8 @@ if SAR_XY_flag
     % paras2dXY = genParas2dXY( tumor_z, paras, dx, dy, dz );
     % plotXY( paras2dXY, dx, dy );
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    saveas(figure(32), fullfile(fname, strcat(CaseName, 'SAR_XY_MQS')), 'jpg');
+    saveas(figure(32), fullfile(fname, strcat(CaseName, 'SAR_XY_MQS(bw)')), 'jpg');
     % % saveas(figure(32), 'E_XZ_FullWave.jpg');
-    % % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
 end
 
 if SAR_YZ_flag
@@ -429,7 +421,7 @@ if SAR_YZ_flag
     hold on;
 
     caxis(log10(myRange));
-    colormap jet;
+    colormap gray;
     % axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);
     xlabel('$y$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
@@ -444,9 +436,8 @@ if SAR_YZ_flag
     % paras2dYZ = genParas2dYZ( tumor_x, paras, dy, dz );
     % plotYZ( paras2dYZ, dy, dz );
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    saveas(figure(33), fullfile(fname, strcat(CaseName, 'SAR_YZ_MQS')), 'jpg');
+    saveas(figure(33), fullfile(fname, strcat(CaseName, 'SAR_YZ_MQS(bw)')), 'jpg');
     % % saveas(figure(33), 'E_XZ_FullWave.jpg');
-    % % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
 end
 
 % === === % ============================= % === === %
@@ -496,7 +487,7 @@ if SAR_XZ_MNP_flag
     hold on;
 
     caxis(log10(myRange));
-    colormap jet;
+    colormap gray;
     % axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
@@ -512,7 +503,6 @@ if SAR_XZ_MNP_flag
     % plotMap( paras2dXZ, dx, dz );
     % plotRibXZ(Ribs, SSBone, dx, dz);
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    saveas(figure(34), fullfile(fname, strcat(CaseName, 'Liver_SAR_XZ_MNP_MQS')), 'jpg');
+    saveas(figure(34), fullfile(fname, strcat(CaseName, 'Liver_SAR_XZ_MNP_MQS(bw)')), 'jpg');
     % % saveas(figure(34), 'E_XZ_FullWave.jpg');
-    % % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
 end

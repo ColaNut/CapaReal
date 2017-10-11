@@ -1,6 +1,6 @@
 function [ PntMedTetTableCell, InvalidTetIdcs ] = getPntMedTetTable_B_arnd( PntSegMed_t, Med27Value, ...
                         p0, p0_v, m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, ...
-                        x_max_vertex_B, y_max_vertex_B, z_max_vertex_B, N_v, w_x_B, w_y_B, w_z_B, dx_B, dy_B, dz_B )
+                        x_max_vertex_B, y_max_vertex_B, z_max_vertex_B, N_v, m_v_Lft, n_v_Near, ell_v_Dwn, m_v_Rght, n_v_Far, ell_v_Top)
 
     loadParas_Eso0924;
     loadParas;
@@ -18,7 +18,7 @@ function [ PntMedTetTableCell, InvalidTetIdcs ] = getPntMedTetTable_B_arnd( PntS
     % === === % ================ % === === %
     if Med27Value(3, 5) % up
         FaceFlag = true;
-        [ m_v_B, n_v_B, ell_v_B ] = A_MNEllv_2_B_MNEllv(m_v, n_v, ell_v + 1, w_x_B, w_y_B, w_z_B);
+        [ m_v_B, n_v_B, ell_v_B ] = A_MNEllv_2_B_MNEllv(m_v, n_v, ell_v + 1, m_v_Lft, n_v_Near, ell_v_Dwn, m_v_Rght, n_v_Far, ell_v_Top);
         PntMedTetTableCell = cell(32 + 16, 1);
         p_face = get25pFace(m_v_B, n_v_B, ell_v_B, x_max_vertex_B, y_max_vertex_B, z_max_vertex_B, N_v, 'p1');
         tmpMaskMed = repmat(PntSegMed_t(:, 1), 1, 4)';
@@ -32,7 +32,7 @@ function [ PntMedTetTableCell, InvalidTetIdcs ] = getPntMedTetTable_B_arnd( PntS
         InvalidTetIdcs = NrmlRange([1: 8, 10, 11, 26, 27, 34, 35, 42, 43]);
     elseif Med27Value(2, 4) % left
         FaceFlag = true;
-        [ m_v_B, n_v_B, ell_v_B ] = A_MNEllv_2_B_MNEllv(m_v - 1, n_v, ell_v, w_x_B, w_y_B, w_z_B);
+        [ m_v_B, n_v_B, ell_v_B ] = A_MNEllv_2_B_MNEllv(m_v - 1, n_v, ell_v, m_v_Lft, n_v_Near, ell_v_Dwn, m_v_Rght, n_v_Far, ell_v_Top);
         PntMedTetTableCell = cell(32 + 16, 1);
         p_face = get25pFace(m_v_B, n_v_B, ell_v_B, x_max_vertex_B, y_max_vertex_B, z_max_vertex_B, N_v, 'p2');
         tmpMaskMed = repmat(PntSegMed_t(:, 2), 1, 4)';
@@ -46,7 +46,7 @@ function [ PntMedTetTableCell, InvalidTetIdcs ] = getPntMedTetTable_B_arnd( PntS
         InvalidTetIdcs = NrmlRange([4, 5, 9: 16, 17, 24, 33, 40, 44, 45]);
     elseif Med27Value(1, 5) % down
         FaceFlag = true;
-        [ m_v_B, n_v_B, ell_v_B ] = A_MNEllv_2_B_MNEllv(m_v, n_v, ell_v - 1, w_x_B, w_y_B, w_z_B);
+        [ m_v_B, n_v_B, ell_v_B ] = A_MNEllv_2_B_MNEllv(m_v, n_v, ell_v - 1, m_v_Lft, n_v_Near, ell_v_Dwn, m_v_Rght, n_v_Far, ell_v_Top);
         PntMedTetTableCell = cell(32 + 16, 1);
         p_face = get25pFace(m_v_B, n_v_B, ell_v_B, x_max_vertex_B, y_max_vertex_B, z_max_vertex_B, N_v, 'p3');
         tmpMaskMed = repmat(PntSegMed_t(:, 3), 1, 4)';
@@ -60,7 +60,7 @@ function [ PntMedTetTableCell, InvalidTetIdcs ] = getPntMedTetTable_B_arnd( PntS
         InvalidTetIdcs = NrmlRange([14, 15, 17: 24, 30, 31, 38, 39, 46, 47]);
     elseif Med27Value(2, 6) % p4 
         FaceFlag = true;
-        [ m_v_B, n_v_B, ell_v_B ] = A_MNEllv_2_B_MNEllv(m_v + 1, n_v, ell_v, w_x_B, w_y_B, w_z_B);
+        [ m_v_B, n_v_B, ell_v_B ] = A_MNEllv_2_B_MNEllv(m_v + 1, n_v, ell_v, m_v_Lft, n_v_Near, ell_v_Dwn, m_v_Rght, n_v_Far, ell_v_Top);
         PntMedTetTableCell = cell(32, 1);
         p_face = get25pFace(m_v_B, n_v_B, ell_v_B, x_max_vertex_B, y_max_vertex_B, z_max_vertex_B, N_v, 'p4');
         tmpMaskMed = repmat(PntSegMed_t(:, 4), 1, 4)';
@@ -72,7 +72,7 @@ function [ PntMedTetTableCell, InvalidTetIdcs ] = getPntMedTetTable_B_arnd( PntS
         InvalidTetIdcs = NrmlRange([1, 8, 20, 21, 25: 32, 36, 37, 41, 48]);
     elseif Med27Value(2, 8) % Far
         FaceFlag = true;
-        [ m_v_B, n_v_B, ell_v_B ] = A_MNEllv_2_B_MNEllv(m_v, n_v + 1, ell_v, w_x_B, w_y_B, w_z_B);
+        [ m_v_B, n_v_B, ell_v_B ] = A_MNEllv_2_B_MNEllv(m_v, n_v + 1, ell_v, m_v_Lft, n_v_Near, ell_v_Dwn, m_v_Rght, n_v_Far, ell_v_Top);
         PntMedTetTableCell = cell(32 + 16, 1);
         p_face = get25pFace(m_v_B, n_v_B, ell_v_B, x_max_vertex_B, y_max_vertex_B, z_max_vertex_B, N_v, 'p5');
         tmpMaskMed = repmat(PntSegMed_t(:, 5), 1, 4)';
@@ -86,7 +86,7 @@ function [ PntMedTetTableCell, InvalidTetIdcs ] = getPntMedTetTable_B_arnd( PntS
         InvalidTetIdcs = NrmlRange([13, 12, 3, 2, 25, 32, 33: 40, 19, 18]);
     elseif Med27Value(2, 2) % Near
         FaceFlag = true;
-        [ m_v_B, n_v_B, ell_v_B ] = A_MNEllv_2_B_MNEllv(m_v, n_v - 1, ell_v, w_x_B, w_y_B, w_z_B);
+        [ m_v_B, n_v_B, ell_v_B ] = A_MNEllv_2_B_MNEllv(m_v, n_v - 1, ell_v, m_v_Lft, n_v_Near, ell_v_Dwn, m_v_Rght, n_v_Far, ell_v_Top);
         PntMedTetTableCell = cell(32 + 16, 1);
         p_face = get25pFace(m_v_B, n_v_B, ell_v_B, x_max_vertex_B, y_max_vertex_B, z_max_vertex_B, N_v, 'p6');
         tmpMaskMed = repmat(PntSegMed_t(:, 6), 1, 4)';
@@ -158,7 +158,7 @@ function [ PntMedTetTableCell, InvalidTetIdcs ] = getPntMedTetTable_B_arnd( PntS
     %     PntsIdx  = get27Pnts_KEV( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
     %     if XYplane == 1 % only the first place is found 
     %         LineFlag  = true;
-    %         [ m_v_B, n_v_B, ell_v_B ] = A_MNEllv_2_B_MNEllv(m_v - 1, n_v - 1, ell_v, w_x_B, w_y_B, w_z_B);
+    %         [ m_v_B, n_v_B, ell_v_B ] = A_MNEllv_2_B_MNEllv(m_v - 1, n_v - 1, ell_v, m_v_Lft, n_v_Near, ell_v_Dwn, m_v_Rght, n_v_Far, ell_v_Top);
     %         LinePnts = get5LinePnt(m_v_B, n_v_B, ell_v_B, x_max_vertex_B, y_max_vertex_B, z_max_vertex_B, N_v, 'z');
     %         % to-do
     %         % implement getLine16Idx.m
@@ -168,7 +168,7 @@ function [ PntMedTetTableCell, InvalidTetIdcs ] = getPntMedTetTable_B_arnd( PntS
     %         LineFlag  = true;
     %     elseif XYplane == 7 
     %         LineFlag  = true;
-    %         [ m_v_B, n_v_B, ell_v_B ] = A_MNEllv_2_B_MNEllv(m_v - 1, n_v + 1, ell_v, w_x_B, w_y_B, w_z_B);
+    %         [ m_v_B, n_v_B, ell_v_B ] = A_MNEllv_2_B_MNEllv(m_v - 1, n_v + 1, ell_v, m_v_Lft, n_v_Near, ell_v_Dwn, m_v_Rght, n_v_Far, ell_v_Top);
     %         LinePnts = get5LinePnt(m_v_B, n_v_B, ell_v_B, x_max_vertex_B, y_max_vertex_B, z_max_vertex_B, N_v, 'z');
     %         nzCols = getLine16Idx(LinePnts, PntsIdx(2, 4), PntsIdx(2, 5), PntsIdx(2, 8));
     %         Med16 = [ PntSegMed_t(12), PntSegMed_t(33), PntSegMed_t(40), PntSegMed_t(13) ];

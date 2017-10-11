@@ -76,6 +76,12 @@ function lxFltr = getBndryNum(idx, lengthArray, varargin)
                 error('check');
             end
         end
+    elseif length(lengthArray) == 1 % esophagus flat boundary 1008
+        if idx <= cumArray(1)
+            lxFltr = 41;
+        else
+            error('check');
+        end
     else
         error('check');
     end

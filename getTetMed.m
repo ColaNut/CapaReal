@@ -8,7 +8,7 @@ function MedValue = getTetMed( TtrCrdnt, CtrlPntFlag, varargin )
 
     if nVarargs == 1
         OrganType = varargin{1};
-        if strcmp(OrganType, 'Eso')
+        if strcmp(OrganType, 'Eso') % rough eso version
             loadParas_Eso0924;
             AirOrTumor = 1;
             if y <= tumor_y_es + tumor_hy_es / 2 && y >= tumor_y_es - tumor_hy_es / 2
@@ -33,7 +33,30 @@ function MedValue = getTetMed( TtrCrdnt, CtrlPntFlag, varargin )
                     end
                 otherwise
                     error('check eso');
-                end
+            end
+        elseif strcmp(OrganType, 'Eso1009')
+            loadParas_Eso0924;
+            AirOrTumor = 1;
+            if y <= tumor_y_es + tumor_hy_es / 2 && y >= tumor_y_es - tumor_hy_es / 2
+                AirOrTumor = 9;
+            end
+            switch CtrlPntFlag
+                case 41
+                    % this may be wrong in the junction point of spine
+                    if ( (x - es_x) / es_r )^2 + ( (z - es_z) / es_r)^2 - 1 > 0 % exterior
+                        MedValue = 3;
+                    else % interior
+                        MedValue = AirOrTumor;
+                    end
+                case 42
+                    if z > es_z % uppper part of esophagus
+                        MedValue = 9;
+                    else % lower part of esophagus
+                        MedValue = 2;
+                    end
+                otherwise
+                    error('check eso');
+            end
         else
             error('check');
         end

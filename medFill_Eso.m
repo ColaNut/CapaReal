@@ -7,7 +7,7 @@ if c == 0
     return;
 end
 
-loadParas_Eso0924
+loadParas_Eso0924;
 
 lx = length( [ myCeil(x_0 - a, dx): dx: myFloor(x_0 + a, dx) ] );
 % z_grid_table = cell( size([ myCeil(z_0 - c, dz): dz: myFloor(z_0 + c, dz) ]') );
