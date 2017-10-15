@@ -125,3 +125,7 @@ EsoEQS: Suspended for nested esophageal cancer.
       -- detectRelapse.m
   -- EsoMQS
     -- incorporate SegMed and shiftTable in Domain A
+
+10/15: 
+  -- EsophagusEQS_Fine_Amend.m and EsophagusMQS_Fine_Amend are usable
+  -- before implement the new configuration

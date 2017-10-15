@@ -1,8 +1,8 @@
 A = bar_x_my_gmres;
 
 flag_XZ = 1;
-flag_XY = 0;
-flag_YZ = 0;
+flag_XY = 1;
+flag_YZ = 1;
 
 tumor_m = (tumor_x_es - es_x) / dx_B + ( w_x_B + dx ) / (2 * dx_B) + 1;
 tumor_n = (tumor_y_es - 0) / dy_B + ( w_y_B + dy ) / (2 * dy_B) + 1;
@@ -25,7 +25,7 @@ N_e = N_e_B;
 shiftedCoordinateXYZ = shiftedCoordinateXYZ_B;
 % masking end
 
-fname = 'E:\Kevin\CapaReal\1003EsoMQS';
+fname = 'f:\CapaReal\1011EsoMQS';
 
 if flag_XZ == 1
     H_XZ = zeros(x_idx_max_B, z_idx_max_B, 6, 8, 3); 

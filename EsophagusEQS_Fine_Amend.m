@@ -337,9 +337,6 @@ GridShiftTable_B(3: x_idx_max_B - 2, 3: y_idx_max_B - 2, 3: z_idx_max_B - 2) = G
 % === === % ======================================================= % === === %
 % === === % Updating GridShiftTable_B and mediumTable_B in Domain B % === === %
 % === === % ======================================================= % === === %
-% to-do
-% start from here:
-% get the bolus out of mediumTable_B
 GridShiftTableXZ_B = cell( ( w_y_B + dy ) / dy_B + 1, 1);
 for y = - ( w_y_B + dy ) / 2 : dy_B: ( w_y_B + dy ) / 2
     y_idx = y / dy_B + ( w_x_B + dy ) / (2 * dy_B) + 1;
@@ -355,12 +352,17 @@ for y = - ( w_y_B + dy ) / 2 : dy_B: ( w_y_B + dy ) / 2
 end
 
 % the shift-table in GridShiftTableXZ_B has higher priority than that stoted in GridShiftTable_B
+ReservedPnt = false(( w_x_B + dx ) / dx_B + 1, ( w_y_B + dy ) / dy_B + 1, ( w_z_B + dz ) / dz_B + 1);
+ReservedPnt( ( tumor_x_es + tumor_r_es - es_x ) / dx_B + ( w_x_B + dx ) / (2 * dx_B) + 1, :, ( tumor_z_es - es_z ) / dz_B + ( w_z_B + dz ) / (2 * dz_B) + 1 ) = true;
 for y_idx_B = 1: 1: ( w_y_B + dy ) / dy_B + 1
     tmp_table = GridShiftTableXZ_B{ y_idx_B };
     for x_idx_B = 1: 1: ( w_x_B + dx ) / dx_B + 1
         for z_idx_B = 1: 1: ( w_z_B + dz ) / dz_B + 1
-            if ~isempty( tmp_table{ x_idx_B, z_idx_B } )
+            if ~isempty( tmp_table{ x_idx_B, z_idx_B } ) 
                 GridShiftTable_B{ x_idx_B, y_idx_B, z_idx_B } = tmp_table{ x_idx_B, z_idx_B };
+            end
+            if ReservedPnt(x_idx_B, y_idx_B, z_idx_B)
+                GridShiftTable_B{ x_idx_B, y_idx_B, z_idx_B } = [];
             end
         end
     end
@@ -394,15 +396,17 @@ plotGridLineYZ( shiftedCoordinateXYZ, ( x_idx_max_B + 1 ) / 2 );
 % === === % ================================ % === === %
 for idx = 1: 1: x_idx_max_B * y_idx_max_B * z_idx_max_B
     [ m, n, ell ] = getMNL(idx, x_idx_max_B, y_idx_max_B, z_idx_max_B);
-    if mediumTable_B(m, n, ell) < 10
+    if mediumTable_B(m, n, ell) <= 8
         SegMed_B(m, n, ell, :, :) = mediumTable_B(m, n, ell);
     elseif m >= 2 && m <= x_idx_max_B - 1 && n >= 2 && n <= y_idx_max_B - 1 && ell >= 2 && ell <= z_idx_max_B - 1 
-        if mediumTable_B(m, n, ell) == 41 || mediumTable_B(m, n, ell) == 42 
+        if mediumTable_B(m, n, ell) == 41 || mediumTable_B(m, n, ell) == 42 || mediumTable_B(m, n, ell) == 9
             SegMed_B( m, n, ell, :, : ) = fillBndrySegMed( m, n, ell, ...
                     shiftedCoordinateXYZ_B, x_idx_max_B, y_idx_max_B, z_idx_max_B, mediumTable_B, 'Eso1009' );
         end
     end
 end
+save('1013Plotting.mat');
+return;
 
 % === === % ========== % === === %
 % === === % Test Start % === === %
@@ -417,7 +421,13 @@ validNum_AplusB = validNum - 48 * x_idx_max_AinB * y_idx_max_AinB * z_idx_max_Ai
                 + getValidNum(x_idx_max_B, y_idx_max_B, z_idx_max_B) ... % volume
                 + ( (4 - 1) + (2 - 1) )* 8 * (x_idx_max_AinB * y_idx_max_AinB + y_idx_max_AinB * z_idx_max_AinB + x_idx_max_AinB * z_idx_max_AinB) * 2 ... % 6 facets
                 ; % + (2 - 1) * 4 * (x_idx_max + y_idx_max + z_idx_max) * 4; % 12 lines
+ExpandedNum = 48 * (x_idx_max * y_idx_max * z_idx_max + x_idx_max_B * y_idx_max_B * z_idx_max_B) ...
+                + ( 4 + 2 ) * 8 * (x_idx_max_AinB * y_idx_max_AinB + y_idx_max_AinB * z_idx_max_AinB + x_idx_max_AinB * z_idx_max_AinB) * 2 ... % 6 facets
+                ; % + 2 * 4 * (x_idx_max + y_idx_max + z_idx_max) * 4; % 12 lines
+
+% mask the SegMed_B on the boundary to be 30
 SegMed_B = setBndrySegMed(SegMed_B, byndCD, x_idx_max_B, y_idx_max_B, z_idx_max_B);
+
 tic;
 disp('Getting MedTetTableCell_AplusB -- Domain B: ');
 BaseIdx = 48 * x_idx_max * y_idx_max * z_idx_max;
@@ -447,7 +457,9 @@ if size(MedTetTableCell_AplusB, 1) ~= validNum_AplusB
     error('check the construction');
 end
 
-% to-do -- done
+% mask the SegMed_B on the boundary to be 1
+SegMed_B = setBndrySegMed(SegMed_B, 1, x_idx_max_B, y_idx_max_B, z_idx_max_B);
+
 % the total vertex in regin A (original) + B (newly-imposed domain)
 % N_v_B = N_v + x_max_vertex_B * y_max_vertex_B * z_max_vertex_B ...
 %             - x_max_vertex_AinB * y_max_vertex_AinB * z_max_vertex_AinB; % actual number in column of MedTetTable_B
@@ -458,194 +470,24 @@ disp('Transfroming MedTetTable from my_sparse to Matlab sparse matrix')
 MedTetTable_B = mySparse2MatlabSparse( MedTetTableCell_AplusB, validNum_AplusB, total_N_v, 'Row' );
 toc;
 
-% to-do
-% a T-like fx to test for the correctness of SegMed_B
 T_flagXZ = 1;
 T_flagXY = 1;
 T_flagYZ = 1;
 
+% a T-like fx to test for the correctness of SegMed_B
 T_test;
-return;
-% === === % ======== % === === %
-% === === % Test End % === === %
-% === === % ======== % === === %
-
-% return;
-% save('EsoEQS_getExt.mat');
 % return;
 
-% === % ==================================== % === %
-% === % Trimming: Invalid set to 30 (byndCD) % === %
-% === % ==================================== % === % 
-% unvalid SegMed and SegMed_B are set to byndCD; 
-SegMed = setBndrySegMed(SegMed, byndCD, x_idx_max, y_idx_max, z_idx_max);
-SegMed_B = setBndrySegMed(SegMed_B, byndCD, x_idx_max_B, y_idx_max_B, z_idx_max_B);
-
-% to-do 
-% the line Cases is discard temporarily
-validNum = getValidNum(x_idx_max, y_idx_max, z_idx_max);
-validNum_AplusB = validNum - 48 * x_idx_max_AinB * y_idx_max_AinB * z_idx_max_AinB ...
-                + getValidNum(x_idx_max_B, y_idx_max_B, z_idx_max_B) ... % volume
-                + ( (4 - 1) + (2 - 1) )* 8 * (x_idx_max_AinB * y_idx_max_AinB + y_idx_max_AinB * z_idx_max_AinB + x_idx_max_AinB * z_idx_max_AinB) * 2 ... % 6 facets
-                ; % + (2 - 1) * 4 * (x_idx_max + y_idx_max + z_idx_max) * 4; % 12 lines
-ExpandedNum = 48 * (x_idx_max * y_idx_max * z_idx_max + x_idx_max_B * y_idx_max_B * z_idx_max_B) ...
-                + ( 4 + 2 ) * 8 * (x_idx_max_AinB * y_idx_max_AinB + y_idx_max_AinB * z_idx_max_AinB + x_idx_max_AinB * z_idx_max_AinB) * 2 ... % 6 facets
-                ; % + 2 * 4 * (x_idx_max + y_idx_max + z_idx_max) * 4; % 12 lines
-MedTetTableCell_AplusB_pre = cell(ExpandedNum, 1); % each row consists the indices of the four vertices and is medium value.
-validTetTable              = false(ExpandedNum, 1); 
-
-tic;
-disp('Getting MedTetTableCell_AplusB -- Domain A: ');
-for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
-    [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
-    m_v = 2 * m - 1;
-    n_v = 2 * n - 1;
-    ell_v = 2 * ell - 1;
-    PntMedTetTableCell  = cell(48, 1);
-    PntMedTetTableCell = getPntMedTetTable_2( squeeze( SegMed(m, n, ell, :, :) )', N_v, m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
-    MedTetTableCell_AplusB_pre( 48 * (idx - 1) + 1: 48 * idx ) = PntMedTetTableCell;
-    % to-do
-    % cuting domain B our of domain A
-    PntValidTet = false(48, 1);
-    PntValidTet( find( squeeze( SegMed(m, n, ell, :, :) )' ~= byndCD ) ) = true;
-    validTetTable( 48 * (idx - 1) + 1: 48 * idx ) = PntValidTet;
-end
-toc;
-
-tic;
-disp('Getting MedTetTableCell_AplusB -- Domain B: ');
-BaseIdx = 48 * x_idx_max * y_idx_max * z_idx_max;
-for idx = 1: 1: x_idx_max_B * y_idx_max_B * z_idx_max_B
-    [ m, n, ell ] = getMNL(idx, x_idx_max_B, y_idx_max_B, z_idx_max_B);
-    m_v = 2 * m - 1;
-    n_v = 2 * n - 1;
-    ell_v = 2 * ell - 1;
-    PntMedTetTableCell  = cell(48, 1);
-    PntMedTetTableCell = getPntMedTetTable_2( squeeze( SegMed_B(m, n, ell, :, :) )', N_v, m_v, n_v, ell_v, x_max_vertex_B, y_max_vertex_B, z_max_vertex_B );
-    MedTetTableCell_AplusB_pre( BaseIdx + 48 * (idx - 1) + 1: BaseIdx + 48 * idx ) = PntMedTetTableCell;
-    PntValidTet = false(48, 1);
-    PntValidTet( find( squeeze( SegMed_B(m, n, ell, :, :) )' ~= byndCD ) ) = true;
-    validTetTable( BaseIdx + 48 * (idx - 1) + 1: BaseIdx + 48 * idx ) = PntValidTet;
-end
-toc;
-% modify the PntMedTetTableCell in the range of [ BaseIdx + 1, BaseIdx + 48 * x_idx_max_B * y_idx_max_B * z_idx_max_B ]
-for idx = BaseIdx + 1: 1: BaseIdx + 48 * x_idx_max_B * y_idx_max_B * z_idx_max_B
-    TmpTet = MedTetTableCell_AplusB_pre{ idx };
-    TmpTet(1: 4) = TmpTet(1: 4) + N_v;
-    MedTetTableCell_AplusB_pre{ idx } = TmpTet;
-end
-
-% save('1011EsoEQS_PreSurrounding.mat');
-% return;
-% the line cases are discarded in the first simulation
-tic;
-disp('Getting MedTetTableCell_AplusB -- Surrounding Part of Domain B: ');
-BaseIdx = 48 * ( x_idx_max * y_idx_max * z_idx_max + x_idx_max_B * y_idx_max_B * z_idx_max_B );
-TetCounter = BaseIdx;
-% TetCounter2 = 0;
-% TetCounter3 = 0;
-for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
-    [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
-    if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
-        Med27Value = zeros(3, 9);
-        Med27Value = get27MedValue( m, n, ell, RegionB );
-        if ~isempty(find(Med27Value)) && RegionB(m, n, ell) == false
-            m_v = 2 * m - 1;
-            n_v = 2 * n - 1;
-            ell_v = 2 * ell - 1;
-            p0_v = ( ell_v - 1 ) * x_max_vertex * y_max_vertex + ( n_v - 1 ) * x_max_vertex + m_v;
-            % to-do (to be amended for the line case)
-            [ PntMedTetTableCell, InvalidTetIdcs ] = getPntMedTetTable_B_arnd( squeeze( SegMed(m, n, ell, :, :) )', Med27Value, ...
-                                    idx, p0_v, m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, ...
-                                    x_max_vertex_B, y_max_vertex_B, z_max_vertex_B, N_v, m_v_Lft, n_v_Near, ell_v_Dwn, m_v_Rght, n_v_Far, ell_v_Top );
-
-            MedTetTableCell_AplusB_pre( TetCounter + 1: TetCounter + length(PntMedTetTableCell) ) = PntMedTetTableCell;
-            validTetTable( TetCounter + 1: TetCounter + length(PntMedTetTableCell) ) = true;
-            TetCounter = TetCounter + length(PntMedTetTableCell);
-            % if ~isempty(InvalidTetIdcs)
-            %     if validTetTable(InvalidTetIdcs) ~= true(length(InvalidTetIdcs), 1)
-            %         [m, n, ell]
-            %         idx
-            %     end
-            %     TetCounter3 = TetCounter3 + length(InvalidTetIdcs);
-            % end
-            % eliminate the exisinting large tetrahedra
-            validTetTable(InvalidTetIdcs) = false;
-        end
-        if RegionB(m, n, ell)
-            % if length( find(validTetTable(48 * (idx - 1) + 1: 48 * idx)) ) ~= 48
-            %     error('check');
-            % end
-            % TetCounter2 = TetCounter2 + 48;
-            validTetTable(48 * (idx - 1) + 1: 48 * idx) = false;
-        end
-    end
-end
-toc;
-
-MedTetTableCell_AplusB = MedTetTableCell_AplusB_pre;
-MedTetTableCell_AplusB(~validTetTable) = [];
-
-if size(MedTetTableCell_AplusB, 1) ~= validNum_AplusB
-    error('check the construction');
-end
-
-% to-do -- done
-% the total vertex in regin A (original) + B (newly-imposed domain)
-% N_v_B = N_v + x_max_vertex_B * y_max_vertex_B * z_max_vertex_B ...
-%             - x_max_vertex_AinB * y_max_vertex_AinB * z_max_vertex_AinB; % actual number in column of MedTetTable_B
-total_N_v = N_v + x_max_vertex_B * y_max_vertex_B * z_max_vertex_B;
-MedTetTable_B = sparse(validNum_AplusB, total_N_v);
-tic;
-disp('Transfroming MedTetTable from my_sparse to Matlab sparse matrix')
-MedTetTable_B = mySparse2MatlabSparse( MedTetTableCell_AplusB, validNum_AplusB, total_N_v, 'Row' );
-toc;
-
-% return;
-% load('PostSurrounding.mat');
-
-% to-do 
 % === % ======================== % === %
 % === % Fill Up Time for sparseS % === %
 % === % ======================== % === % 
+% sparseS = cell(total_N_v, 1);
+load('1012sparseS.mat', 'sparseS');
+
 SegMed = setBndrySegMed(SegMed, 1, x_idx_max, y_idx_max, z_idx_max);
 SegMed_B = setBndrySegMed(SegMed_B, 1, x_idx_max_B, y_idx_max_B, z_idx_max_B);
 
-sparseS = cell(total_N_v, 1);
 B_phi = zeros(total_N_v, 1);
-BndryFlag = false(total_N_v, 1);
-tic;
-disp('The filling time of S phi = b_phi in Domain A: ');
-parfor vIdx = 1: 1: N_v
-    [ m_v, n_v, ell_v ] = getMNL(vIdx, x_max_vertex, y_max_vertex, z_max_vertex);
-    if m_v >= 2  && m_v <= x_max_vertex - 1 && n_v >= 2 && n_v <= y_max_vertex - 1 && ell_v >= 2 && ell_v <= z_max_vertex - 1 
-        if vIdx_AinB(m_v, n_v, ell_v)
-            sparseS{ vIdx } = [ vIdx, 1 ];
-        elseif Exp_vIdx_AinB(m_v, n_v, ell_v)
-            BndryFlag(vIdx) = true;
-        else
-            flag = getMNL_flag(m_v, n_v, ell_v);
-            % flag = '000' or '111' -> SegMedIn = zeros(6, 8, 'uint8');
-            % flag = 'otherwise'    -> SegMedIn = zeros(2, 8, 'uint8');
-            SegMedIn = FetchSegMed( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex, SegMed, flag );
-            sparseS{ vIdx } = fillNrml_S( m_v, n_v, ell_v, flag, ...
-                Vertex_Crdnt, x_max_vertex, y_max_vertex, z_max_vertex, SegMedIn, epsilon_r, Omega_0 );
-        end
-    elseif ell_v == z_max_vertex
-        sparseS{ vIdx } = fillTop_A( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
-    elseif ell_v == 1
-        sparseS{ vIdx } = fillBttm_A( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
-    elseif m_v == x_max_vertex && ell_v >= 2 && ell_v <= z_max_vertex - 1 
-        sparseS{ vIdx } = fillRight_A( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
-    elseif m_v == 1 && ell_v >= 2 && ell_v <= z_max_vertex - 1 
-        sparseS{ vIdx } = fillLeft_A( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
-    elseif n_v == y_max_vertex && m_v >= 2 && m_v <= x_max_vertex - 1 && ell_v >= 2 && ell_v <= z_max_vertex - 1 
-        sparseS{ vIdx } = fillFront_A( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
-    elseif n_v == 1 && m_v >= 2 && m_v <= x_max_vertex - 1 && ell_v >= 2 && ell_v <= z_max_vertex - 1 
-        sparseS{ vIdx } = fillBack_A( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
-    end
-end
-toc;
 
 tic;
 disp('The filling time of S phi = b_phi in domain B: ');
@@ -661,41 +503,8 @@ parfor vIdx = 1: 1: x_max_vertex_B * y_max_vertex_B * z_max_vertex_B
         num = uint8(size(pre_vector, 2)) / 2;
         pre_vector( 1: num ) = pre_vector( 1: num ) + N_v;
         sparseS{ N_v + vIdx } = pre_vector;
-    else
-        BndryFlag(N_v + vIdx) = true;
-    end
-end
-toc;
-
-tic;
-disp('The Filling Time of S \cdot Phi = b_phi on the boundary of Domain A and Damain B: ');
-tic;
-% detect for: AB-boundary point and idx in domain B
-parfor vIdx = 1: 1: total_N_v
-    if BndryFlag(vIdx)
-        S1_row = zeros(1, total_N_v);
-        CandiTet = find( MedTetTable_B(:, vIdx));
-        for itr = 1: 1: length(CandiTet)
-            % v is un-ordered vertices; while p is ordered vertices.
-            % fix the problem in the determination of v1234 here .
-            TetRow = MedTetTableCell_AplusB{ CandiTet(itr) };
-            v1234 = TetRow(1: 4);
-            if length(v1234) ~= 4
-                error('check');
-            end
-            MedVal = TetRow(5);
-            % this judgement below is based on the current test case
-            if MedTetTable_B( CandiTet(itr), v1234(1) ) ~= MedTetTable_B( CandiTet(itr), v1234(2) )
-                error('check');
-            end
-            p1234 = horzcat( v1234(find(v1234 == vIdx)), v1234(find(v1234 ~= vIdx)));
-            S1_row = fillS1_Eso( p1234, S1_row, epsilon_r(MedVal), ...
-                        N_v, x_max_vertex, y_max_vertex, z_max_vertex, ...
-                        x_max_vertex_B, y_max_vertex_B, z_max_vertex_B, ...
-                        Vertex_Crdnt, Vertex_Crdnt_B, ...
-                        m_v_Lft, n_v_Near, ell_v_Dwn, m_v_Rght, n_v_Far, ell_v_Top );
-        end
-        sparseS{ vIdx } = Mrow2myRow(S1_row);
+    % else
+    %     BndryFlag(N_v + vIdx) = true;
     end
 end
 toc;
@@ -703,10 +512,8 @@ toc;
 SegMed = setBndrySegMed(SegMed, byndCD, x_idx_max, y_idx_max, z_idx_max);
 SegMed_B = setBndrySegMed(SegMed_B, byndCD, x_idx_max_B, y_idx_max_B, z_idx_max_B);
 
-% save('1011EsoEQS_preElectrode.mat');
-% return;
-% this version is actually effected by the PutOnTopElctrd_liver fx.
-% load('0929PreElectrode.mat');
+% save('1012EsoEQS_preElectrode.mat');
+
 B_phi = zeros(total_N_v, 1);
 y_mid = ( h_torso / ( 2 * dy ) ) + 1;
 BndryTable = zeros( x_max_vertex, y_max_vertex, z_max_vertex );
@@ -765,84 +572,24 @@ FigsScriptEsophagusEQS_Fine;
 % load('1001EsophagusEQS.mat');
 
 return;
-% to-do
-% get BndryTable_ext
-% get BndryTable_B from BndryTable_ext
 % === === === === === === === === % ============================ % === === === === === === === === %
 % === === === === === === === === % Preparing Q_s and BndryTable % === === === === === === === === %
 % === === === === === === === === % ============================ % === === === === === === === === %
-% % to-do
-% % update the BndryTable_B
-% % filling BndryTable in domain A
 % BndryTable = zeros( x_max_vertex, y_max_vertex, z_max_vertex );
 % % 13: bolus-muscle boundary
 n_far  = y_idx_max - 1;
 n_near = 2;
 BM_bndryNum = 13;
-% for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
-%     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
-%     if n >= n_near && n <= n_far && mediumTable(m, n, ell) == BM_bndryNum
-%         m_v = 2 * m - 1;
-%         n_v = 2 * n - 1;
-%         ell_v = 2 * ell - 1;
-%         BndryTable(m_v - 1: m_v + 1, n_v - 1: n_v + 1, ell_v - 1: ell_v + 1) ...
-%             = getSheetPnts(m, n, ell, x_idx_max, y_idx_max, shiftedCoordinateXYZ, mediumTable, ...
-%                 BndryTable(m_v - 1: m_v + 1, n_v - 1: n_v + 1, ell_v - 1: ell_v + 1), BM_bndryNum );
-%     end
-% end
-% BndryTable(:, 1, :) = BndryTable(:, 2, :);
-% BndryTable(:, end, :) = BndryTable(:, end - 1, :);
-
-% % Extract from BndryTable to mediumTable_B 
-
-% % start from here.
-% % check the two function A_MNEllv_2_B_MNEll.m and A_MNEllv_2_B_MNEllv.m
-% tic;
-% disp('mediumTable_B Inherent The BndryTable In Domain A');
-% for vIdx = 1: 1: x_max_vertex * y_max_vertex * z_max_vertex
-%     [ m_v, n_v, ell_v ] = getMNL(vIdx, x_max_vertex, y_max_vertex, z_max_vertex);
-%     if BndryTable( m_v, n_v, ell_v ) && m_v <= m_v_Rght && m_v >= m_v_Lft ...
-%             && n_v <= n_v_Far && n_v >= n_v_Near && ell_v <= ell_v_Top && ell_v >= ell_v_Dwn
-%         [ m_B, n_B, ell_B ] = A_MNEllv_2_B_MNEll_prev(m_v, n_v, ell_v, w_x_B, w_y_B, w_z_B);
-%         mediumTable_B( m_B, n_B, ell_B ) = BndryTable( m_v, n_v, ell_v );
-%     end
-% end
-% toc;
 
 % EsoTumorBndry = 42;
-% % filling BndryTable_B in domain B
 BndryTable_B = zeros( x_max_vertex_B, y_max_vertex_B, z_max_vertex_B );
-% for idx_B = 1: 1: x_idx_max_B * y_idx_max_B * z_idx_max_B
-%     [ m_B, n_B, ell_B ] = getMNL(idx_B, x_idx_max_B, y_idx_max_B, z_idx_max_B);
-%     if mediumTable_B(m_B, n_B, ell_B) == BM_bndryNum && m_B >= 2 && m_B <= x_idx_max_B - 1 ...
-%             && n_B >= 2 && n_B <= y_idx_max_B - 1 && ell_B >= 2 && ell_B <= z_idx_max_B - 1 
-%         m_v_B = 2 * m_B - 1;
-%         n_v_B = 2 * n_B - 1;
-%         ell_v_B = 2 * ell_B - 1;
-%         BndryTable_B(m_v_B - 1: m_v_B + 1, n_v_B - 1: n_v_B + 1, ell_v_B - 1: ell_v_B + 1) ...
-%             = getSheetPnts(m_B, n_B, ell_B, x_idx_max_B, y_idx_max_B, shiftedCoordinateXYZ_B, mediumTable_B, ...
-%                 BndryTable_B(m_v_B - 1: m_v_B + 1, n_v_B - 1: n_v_B + 1, ell_v_B - 1: ell_v_B + 1), BM_bndryNum );
-%     end
-% end
 
-% BndryTable_B(21, :, 21) = EsoTumorBndry;
-% BndryTable_B(22, :, 22) = EsoTumorBndry;
-% BndryTable_B(23, :, 23) = EsoTumorBndry;
-% BndryTable_B(24, :, 22) = EsoTumorBndry;
-% BndryTable_B(25, :, 21) = EsoTumorBndry;
-% BndryTable_B(24, :, 20) = EsoTumorBndry;
-% BndryTable_B(23, :, 19) = EsoTumorBndry;
-% BndryTable_B(22, :, 20) = EsoTumorBndry;
-
-% % mask EsoTumorBndry as BM_bndryNum
-% BndryTable_B(find(BndryTable_B == EsoTumorBndry)) = BM_bndryNum;
-
-% return;
-% Set boundary SegMed back to an valid medium number, i.e. 1
+% Set boundary SegMed back to be 1
 SegMed = setBndrySegMed(SegMed, 1, x_idx_max, y_idx_max, z_idx_max);
 SegMed_B = setBndrySegMed(SegMed_B, 1, x_idx_max_B, y_idx_max_B, z_idx_max_B);
 
 bar_x_my_gmres1 = bar_x_my_gmresPhi;
+
 SigmaE = zeros(x_idx_max, y_idx_max, z_idx_max, 6, 8, 3);
 Q_s    = zeros(x_idx_max, y_idx_max, z_idx_max, 6, 8);
 tic;
@@ -892,9 +639,7 @@ SegMed_B = setBndrySegMed(SegMed_B, byndCD, x_idx_max_B, y_idx_max_B, z_idx_max_
 % === % =========== % === %
 % === % Getting Q_s % === %
 % === % =========== % === % 
-% to-do
-% the facets and line boundary tetrahdron are ignored
-Q_s_Vector       = zeros(ExpandedNum, 1);
+Q_s_Vector_pre       = zeros(ExpandedNum, 1);
 tic;
 disp('Rearranging Q_s In Domain A:');
 for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
@@ -908,7 +653,7 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
     tmp = zeros(8, 6);
     tmp = squeeze(Q_s(m, n, ell, :, :))';
     PntQ_s = tmp(:);
-    Q_s_Vector( 48 * (idx - 1) + 1: 48 * idx ) = PntQ_s;
+    Q_s_Vector_pre( 48 * (idx - 1) + 1: 48 * idx ) = PntQ_s;
 end
 toc;
 
@@ -926,13 +671,13 @@ for idx = 1: 1: x_idx_max_B * y_idx_max_B * z_idx_max_B
     tmp = zeros(8, 6);
     tmp = squeeze(Q_s_B(m, n, ell, :, :))';
     PntQ_s = tmp(:);
-    Q_s_Vector( BaseIdx + 48 * (idx - 1) + 1: BaseIdx + 48 * idx ) = PntQ_s;
+    Q_s_Vector_pre( BaseIdx + 48 * (idx - 1) + 1: BaseIdx + 48 * idx ) = PntQ_s;
 end
 toc;
 
+Q_s_Vector = Q_s_Vector_pre;
 Q_s_Vector(~validTetTable) = [];
 
-% return;
 % === === === === === === === === % ================ % === === === === === === === === %
 % === === === === === === === === % Temperature part % === === === === === === === === %
 % === === === === === === === === % ================ % === === === === === === === === %
@@ -966,49 +711,83 @@ parfor vIdx = 1: 1: total_N_v
 end
 toc;
 
-m_U   = cell(total_N_v, 1);
-m_V   = cell(total_N_v, 1);
+% to-do 
+% amending for mUVd
+% m_U   = cell(total_N_v, 1);
+% m_V   = cell(total_N_v, 1);
 bar_d = zeros(total_N_v, 1);
+load('1012m_U_m_V.mat', 'm_U', 'm_V');
+Tumor_vTable_B = false(total_N_v, 1);
+
+% boundary of the amending region
+m_B_Rght  = ( es_x + 2.5 / 100 - es_x ) / dx_B + ( w_x_B + dx ) / (2 * dx_B) + 1;
+m_B_Lft   = ( es_x - 2.5 / 100 - es_x ) / dx_B + ( w_x_B + dx ) / (2 * dx_B) + 1;
+n_B_Far   = ( 0    + 2.5 / 100 - 0 ) / dy_B + ( w_y_B + dy ) / (2 * dy_B) + 1;
+n_B_Near  = ( 0    - 2.5 / 100 - 0 ) / dy_B + ( w_y_B + dy ) / (2 * dy_B) + 1;
+ell_B_Top = ( es_z + 2.5 / 100 - es_z ) / dz_B + ( w_z_B + dz ) / (2 * dz_B) + 1;
+ell_B_Dwn = ( es_z - 2.5 / 100 - es_z ) / dz_B + ( w_z_B + dz ) / (2 * dz_B) + 1;
+
+% down-left-near
+m_v_B_Lft = (2 * m_B_Lft - 1) - 1;
+n_v_B_Near = (2 * n_B_Near - 1) - 1;
+ell_v_B_Dwn = (2 * ell_B_Dwn - 1) - 1;
+% top-right-far
+m_v_B_Rght = (2 * m_B_Rght - 1) + 1;
+n_v_B_Far = (2 * n_B_Far - 1) + 1;
+ell_v_B_Top = (2 * ell_B_Top - 1) + 1;
+Amend_Region = false( x_max_vertex_B, y_max_vertex_B, z_max_vertex_B );
+Amend_Region(m_v_B_Lft: m_v_B_Rght, n_v_B_Near: n_v_B_Far, ell_v_B_Dwn: ell_v_B_Top) = true;
+
+% to-do
+% get Tumor_vTable_B
+for vIdx_B = 1: 1: x_max_vertex_B * y_max_vertex_B * z_max_vertex_B
+    [ m_v_B, n_v_B, ell_v_B ] = getMNL(vIdx_B, x_max_vertex_B, y_max_vertex_B, z_max_vertex_B );
+    if Amend_Region( m_v_B, n_v_B, ell_v_B )
+        Tumor_vTable_B(N_v + vIdx_B) = true;
+    end
+end
 tic;
 disp('The Filling Time of m_U, m_V and d in Finner Grid Coordinate: ');
 % note for the boudary point, i.e., fillTop_A, fillBttm_A, fillRight_A, fillLeft_A, fillFront_A, fillBack_A
 tic;
-parfor vIdx = 1: 1: total_N_v / 2 
+parfor vIdx = 1: 1: total_N_v
     if bioChecker_total(vIdx)
-        % vFlag = 0, 1, 2 and 3 correspond to invalid AinB, valid A, valid A boundary and valid B, respectively.
-        vFlag = VrtxValidFx(vIdx, N_v, x_max_vertex, y_max_vertex, z_max_vertex, m_v_Lft, n_v_Near, ell_v_Dwn, m_v_Rght, n_v_Far, ell_v_Top );
-        if ~vFlag % invalid AinB
-            m_U{ vIdx } = [ vIdx, 1 ];
-            m_V{ vIdx } = [ vIdx, 1 ];
-        else % vFlag == 1 || vFlag == 2 || vFlag == 3 ( valid A || valid A boundary ||valid B )
-            U_row = zeros(1, total_N_v);
-            V_row = zeros(1, total_N_v);
-            Pnt_d = 0;
-            CandiTet = find( MedTetTable_B(:, vIdx));
-            for itr = 1: 1: length(CandiTet)
-                % v is un-ordered vertices; while p is ordered vertices.
-                TetRow = MedTetTableCell_AplusB{ CandiTet(itr) };
-                v1234 = TetRow(1: 4);
-                if length(v1234) ~= 4
-                    error('check');
+        if Tumor_vTable_B(vIdx)
+            % vFlag = 0, 1, 2 and 3 correspond to invalid AinB, valid A, valid A boundary and valid B, respectively.
+            vFlag = VrtxValidFx(vIdx, N_v, x_max_vertex, y_max_vertex, z_max_vertex, m_v_Lft, n_v_Near, ell_v_Dwn, m_v_Rght, n_v_Far, ell_v_Top );
+            if ~vFlag % invalid AinB
+                m_U{ vIdx } = [ vIdx, 1 ];
+                m_V{ vIdx } = [ vIdx, 1 ];
+            else % vFlag == 1 || vFlag == 2 || vFlag == 3 ( valid A || valid A boundary ||valid B )
+                U_row = zeros(1, total_N_v);
+                V_row = zeros(1, total_N_v);
+                Pnt_d = 0;
+                CandiTet = find( MedTetTable_B(:, vIdx));
+                for itr = 1: 1: length(CandiTet)
+                    % v is un-ordered vertices; while p is ordered vertices.
+                    TetRow = MedTetTableCell_AplusB{ CandiTet(itr) };
+                    v1234 = TetRow(1: 4);
+                    if length(v1234) ~= 4
+                        error('check');
+                    end
+                    MedVal = TetRow(5);
+                    % this judgement below is based on the current test case
+                    if MedTetTable_B( CandiTet(itr), v1234(1) ) ~= MedTetTable_B( CandiTet(itr), v1234(2) )
+                        error('check');
+                    end
+                    if MedVal >= 3 && MedVal <= 9
+                        p1234 = horzcat( v1234(find(v1234 == vIdx)), v1234(find(v1234 ~= vIdx)));
+                        [ U_row, V_row, Pnt_d ] = fillUVd_B( p1234, N_v, U_row, V_row, Pnt_d, ...
+                                    dt, Q_s_Vector_mod(CandiTet(itr)) + Q_met(MedVal), rho(MedVal), xi(MedVal), zeta(MedVal), cap(MedVal), rho_b, cap_b, alpha, T_blood, T_bolus, ...
+                                    x_max_vertex, y_max_vertex, z_max_vertex, x_max_vertex_B, y_max_vertex_B, z_max_vertex_B, ...
+                                    Vertex_Crdnt, Vertex_Crdnt_B, BndryTable, BndryTable_B, BM_bndryNum, ...
+                                    m_v_Lft, n_v_Near, ell_v_Dwn, m_v_Rght, n_v_Far, ell_v_Top );
+                    end
                 end
-                MedVal = TetRow(5);
-                % this judgement below is based on the current test case
-                if MedTetTable_B( CandiTet(itr), v1234(1) ) ~= MedTetTable_B( CandiTet(itr), v1234(2) )
-                    error('check');
-                end
-                if MedVal >= 3 && MedVal <= 9
-                    p1234 = horzcat( v1234(find(v1234 == vIdx)), v1234(find(v1234 ~= vIdx)));
-                    [ U_row, V_row, Pnt_d ] = fillUVd_B( p1234, N_v, U_row, V_row, Pnt_d, ...
-                                dt, Q_s_Vector_mod(CandiTet(itr)) + Q_met(MedVal), rho(MedVal), xi(MedVal), zeta(MedVal), cap(MedVal), rho_b, cap_b, alpha, T_blood, T_bolus, ...
-                                x_max_vertex, y_max_vertex, z_max_vertex, x_max_vertex_B, y_max_vertex_B, z_max_vertex_B, ...
-                                Vertex_Crdnt, Vertex_Crdnt_B, BndryTable, BndryTable_B, BM_bndryNum, ...
-                                m_v_Lft, n_v_Near, ell_v_Dwn, m_v_Rght, n_v_Far, ell_v_Top );
-                end
+                m_U{vIdx} = Mrow2myRow(U_row);
+                m_V{vIdx} = Mrow2myRow(V_row);
+                bar_d(vIdx) = Pnt_d;
             end
-            m_U{vIdx} = Mrow2myRow(U_row);
-            m_V{vIdx} = Mrow2myRow(V_row);
-            bar_d(vIdx) = Pnt_d;
         end
     else
         m_U{vIdx} = [vIdx, 1];
@@ -1016,25 +795,6 @@ parfor vIdx = 1: 1: total_N_v / 2
     end
 end
 toc;
-
-save('1011EsoEQS_part1.mat', 'm_U', 'm_V', 'bar_d');
-return
-
-m_U_total   = cell(total_N_v, 1);
-m_V_total   = cell(total_N_v, 1);
-bar_d_total = zeros(total_N_v, 1);
-load('1011EsoEQS_part1.mat', 'm_U', 'm_V', 'bar_d');
-m_U_total(1: ceil(total_N_v / 2)) = m_U(1: ceil(total_N_v / 2));
-m_V_total(1: ceil(total_N_v / 2)) = m_V(1: ceil(total_N_v / 2));
-bar_d_total(1: ceil(total_N_v / 2)) = bar_d(1: ceil(total_N_v / 2));
-load('1011EsoEQS_part2.mat', 'm_U', 'm_V', 'bar_d');
-m_U_total(ceil(total_N_v / 2) + 1: total_N_v) = m_U(ceil(total_N_v / 2) + 1: total_N_v);
-m_V_total(ceil(total_N_v / 2) + 1: total_N_v) = m_V(ceil(total_N_v / 2) + 1: total_N_v);
-bar_d_total(ceil(total_N_v / 2) + 1: total_N_v) = bar_d(ceil(total_N_v / 2) + 1: total_N_v);
-
-m_U = m_U_total;
-m_V = m_V_total;
-bar_d = bar_d_total;
 
 M_U   = sparse(total_N_v, total_N_v);
 M_V   = sparse(total_N_v, total_N_v);
@@ -1044,47 +804,47 @@ M_U = mySparse2MatlabSparse( m_U, total_N_v, total_N_v, 'Row' );
 M_V = mySparse2MatlabSparse( m_V, total_N_v, total_N_v, 'Row' );
 toc;
 
-% bar_d = zeros(total_N_v, 1);
-% disp('The filling time d_m: ');
-% tic;
-% parfor vIdx = 1: 1: total_N_v
-%     Pnt_d = 0;
-%     if bioChecker_total(vIdx)
-%         if VrtxValidFx(vIdx, N_v, x_max_vertex, y_max_vertex, z_max_vertex, m_v_Lft, n_v_Near, ell_v_Dwn, m_v_Rght, n_v_Far, ell_v_Top );
-%         % if vFlag == 1 || vFlag == 3 % valid A || valid B )
-%             CandiTet = find( MedTetTable_B(:, vIdx));
-%             for itr = 1: 1: length(CandiTet)
-%                 % v is un-ordered vertices; while p is ordered vertices.
-%                 % fix the problem in the determination of v1234 here .
-%                 TetRow = MedTetTableCell_AplusB{ CandiTet(itr) };
-%                 v1234 = TetRow(1: 4);
-%                 if length(v1234) ~= 4
-%                     error('check');
-%                 end
-%                 MedVal = TetRow(5);
-%                 % MedVal = MedTetTable( CandiTet(itr), v1234(1) );
-%                 % this judgement below is based on the current test case
-%                 % if MedVal == 5 
-%                 if MedVal >= 3 && MedVal <= 9
-%                     %               %  air,  bolus, muscle, lung, tumor, bone, fat
-%                     % Q_met          = [ 0,      0,   4200, 1700,  8000,  0,   5 ]';
-%                     if MedTetTable_B( CandiTet(itr), v1234(1) ) ~= MedTetTable_B( CandiTet(itr), v1234(2) )
-%                         error('check');
-%                     end
-%                     p1234 = horzcat( v1234(find(v1234 == vIdx)), v1234(find(v1234 ~= vIdx))); 
-%                     Pnt_d = filld_Fine( p1234, N_v, Pnt_d, ...
-%                                     dt, Q_s_Vector_mod(CandiTet(itr)) + Q_met(MedVal), rho(MedVal), xi(MedVal), zeta(MedVal), cap(MedVal), rho_b, cap_b, alpha, T_blood, T_bolus, ...
-%                                     x_max_vertex, y_max_vertex, z_max_vertex, x_max_vertex_B, y_max_vertex_B, z_max_vertex_B, ...
-%                                     Vertex_Crdnt, Vertex_Crdnt_B, ...
-%                                     BndryTable, BndryTable_B, BM_bndryNum, ...
-%                                     m_v_Lft, n_v_Near, ell_v_Dwn, m_v_Rght, n_v_Far, ell_v_Top );
-%                 end
-%             end
-%             bar_d(vIdx) = Pnt_d;
-%         end
-%     end
-% end
-% toc;
+bar_d = zeros(total_N_v, 1);
+disp('The filling time d_m: ');
+tic;
+parfor vIdx = 1: 1: total_N_v
+    Pnt_d = 0;
+    if bioChecker_total(vIdx)
+        if VrtxValidFx(vIdx, N_v, x_max_vertex, y_max_vertex, z_max_vertex, m_v_Lft, n_v_Near, ell_v_Dwn, m_v_Rght, n_v_Far, ell_v_Top );
+        % if vFlag == 1 || vFlag == 3 % valid A || valid B )
+            CandiTet = find( MedTetTable_B(:, vIdx));
+            for itr = 1: 1: length(CandiTet)
+                % v is un-ordered vertices; while p is ordered vertices.
+                % fix the problem in the determination of v1234 here .
+                TetRow = MedTetTableCell_AplusB{ CandiTet(itr) };
+                v1234 = TetRow(1: 4);
+                if length(v1234) ~= 4
+                    error('check');
+                end
+                MedVal = TetRow(5);
+                % MedVal = MedTetTable( CandiTet(itr), v1234(1) );
+                % this judgement below is based on the current test case
+                % if MedVal == 5 
+                if MedVal >= 3 && MedVal <= 9
+                    %               %  air,  bolus, muscle, lung, tumor, bone, fat
+                    % Q_met          = [ 0,      0,   4200, 1700,  8000,  0,   5 ]';
+                    if MedTetTable_B( CandiTet(itr), v1234(1) ) ~= MedTetTable_B( CandiTet(itr), v1234(2) )
+                        error('check');
+                    end
+                    p1234 = horzcat( v1234(find(v1234 == vIdx)), v1234(find(v1234 ~= vIdx))); 
+                    Pnt_d = filld_Fine( p1234, N_v, Pnt_d, ...
+                                    dt, Q_s_Vector_mod(CandiTet(itr)) + Q_met(MedVal), rho(MedVal), xi(MedVal), zeta(MedVal), cap(MedVal), rho_b, cap_b, alpha, T_blood, T_bolus, ...
+                                    x_max_vertex, y_max_vertex, z_max_vertex, x_max_vertex_B, y_max_vertex_B, z_max_vertex_B, ...
+                                    Vertex_Crdnt, Vertex_Crdnt_B, ...
+                                    BndryTable, BndryTable_B, BM_bndryNum, ...
+                                    m_v_Lft, n_v_Near, ell_v_Dwn, m_v_Rght, n_v_Far, ell_v_Top );
+                end
+            end
+            bar_d(vIdx) = Pnt_d;
+        end
+    end
+end
+toc;
 
 % === % ============================= % === %
 % === % Initialization of Temperature % === %

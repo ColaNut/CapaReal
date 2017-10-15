@@ -15,7 +15,7 @@ function SegMed = fillBndrySegMed( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y
 
     % p1
     tmpMidLyr = p1FaceMidLyr( PntsCrdnt );
-    if PntsMed(3, 5) < 10
+    if PntsMed(3, 5) <= 8
         SegMed(1, :) = ones( size(SegMed(1, :)) ) * PntsMed(3, 5);
     else
         SegMed(1, :) = fillSideBndrySegMed( squeeze( MidPntsCrdnt(3, :, :) ), ...
@@ -24,7 +24,7 @@ function SegMed = fillBndrySegMed( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y
 
     % p2
     tmpMidCrdnt = p2Face( MidPntsCrdnt );
-    if PntsMed(2, 4) < 10
+    if PntsMed(2, 4) <= 8
         SegMed(2, :) = ones( size(SegMed(2, :)) ) * PntsMed(2, 4);
     else
         SegMed(2, :) = fillSideBndrySegMed( squeeze( tmpMidCrdnt ), ...
@@ -33,7 +33,7 @@ function SegMed = fillBndrySegMed( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y
 
     % p3
     tmpMidCrdnt = p3Face( MidPntsCrdnt );
-    if PntsMed(1, 5) < 10
+    if PntsMed(1, 5) <= 8
         SegMed(3, :) = ones( size(SegMed(3, :)) ) * PntsMed(1, 5);
     else
         tmpMed2Layers = p3FaceMed( PntsMed );
@@ -43,7 +43,7 @@ function SegMed = fillBndrySegMed( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y
 
     % p4
     tmpMidCrdnt = p4Face( MidPntsCrdnt );
-    if PntsMed(2, 6) < 10
+    if PntsMed(2, 6) <= 8
         SegMed(4, :) = ones( size(SegMed(4, :)) ) * PntsMed(2, 6);
     else
         tmpMed2Layers = p4FaceMed( PntsMed );
@@ -53,7 +53,7 @@ function SegMed = fillBndrySegMed( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y
 
     % p5
     tmpMidCrdnt = p5Face( MidPntsCrdnt );
-    if PntsMed(2, 8) < 10
+    if PntsMed(2, 8) <= 8
         SegMed(5, :) = ones( size(SegMed(5, :)) ) * PntsMed(2, 8);
     else
         tmpMed2Layers = p5FaceMed( PntsMed );
@@ -63,7 +63,7 @@ function SegMed = fillBndrySegMed( m, n, ell, shiftedCoordinateXYZ, x_idx_max, y
 
     % p6
     tmpMidCrdnt = p6Face( MidPntsCrdnt );
-    if PntsMed(2, 2) < 10
+    if PntsMed(2, 2) <= 8
         SegMed(6, :) = ones( size(SegMed(6, :)) ) * PntsMed(2, 2);
     else
         tmpMed2Layers = p6FaceMed( PntsMed );

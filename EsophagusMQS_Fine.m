@@ -640,9 +640,9 @@ toc;
 
 % to-do
 % Amending for B_k
-EsphgsMQS_Bk_amend_Fine;
+EsphgsMQS_Bk_amend_Fine1011;
 
-return;
+% return;
 M_K = sparse(N_e_B, N_e_B);
 M_K = M_K1;
 % M_K = M_K1 - Epsilon_0 * Mu_0 * Omega_0^2 * M_K2 - M_KEV * M_sparseGVV_inv_spai * M_KVE;
@@ -671,12 +671,12 @@ bar_x_my_gmres = gmres( nrmlM_K, nrmlB_k, int_itr_num, tol, ext_itr_num );
 toc;
 bar_x_my_gmres1 = bar_x_my_gmres;
 
-Fname = '1003';
+Fname = '1011';
 % to-do
 % plotting function
-% AFigsScript_Eso;
+AFigsScript_Eso;
 % save('0922EsoMQS_1cmCoil.mat');
-save('1003EsoMQS.mat');
+save('1011EsoMQS.mat');
 return;
 
 % Set boundary SegMed back to an valid medium number, i.e. 1
@@ -727,9 +727,11 @@ for idx = 1: 1: x_idx_max_B * y_idx_max_B * z_idx_max_B
 end
 toc;
 
+Q_s_Vector(~validTetTable) = [];
+
 % to-do
 % resume the BndryTable_B part
-% BndryTable_B = zeros( x_max_vertex_B, y_max_vertex_B, z_max_vertex_B );
+BndryTable_B = zeros( x_max_vertex_B, y_max_vertex_B, z_max_vertex_B );
 % % 13: bolus-muscle boundary
 % BM_bndryNum = 13;
 % for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
@@ -773,7 +775,7 @@ Q_s_Vector_mod = Q_s_Vector;
 % === === === === === === % ================ % === === === === === === === %
 dt = 15; % 20 seconds
 % timeNum_all = 60; % 1 minutes
-timeNum_all = 50 * 60; % 50 minutes
+timeNum_all = 30 * 60; % 50 minutes
 loadThermalParas_Esophagus;
 
 % === % =================== % === %
@@ -825,6 +827,24 @@ parfor vIdx = 1: 1: N_v_B
     end
 end
 toc;
+
+% save('EsoMQS_UVd_part1.mat', 'm_U', 'm_V', 'bar_d');
+
+m_U_total   = cell(N_v_B, 1);
+m_V_total   = cell(N_v_B, 1);
+bar_d_total = zeros(N_v_B, 1);
+load('EsoMQS_UVd_part1.mat', 'm_U', 'm_V', 'bar_d');
+m_U_total(1: ceil(N_v_B / 2)) = m_U(1: ceil(N_v_B / 2));
+m_V_total(1: ceil(N_v_B / 2)) = m_V(1: ceil(N_v_B / 2));
+bar_d_total(1: ceil(N_v_B / 2)) = bar_d(1: ceil(N_v_B / 2));
+load('EsoMQS_UVd_part2.mat', 'm_U', 'm_V', 'bar_d');
+m_U_total(ceil(N_v_B / 2) + 1: N_v_B) = m_U(ceil(N_v_B / 2) + 1: N_v_B);
+m_V_total(ceil(N_v_B / 2) + 1: N_v_B) = m_V(ceil(N_v_B / 2) + 1: N_v_B);
+bar_d_total(ceil(N_v_B / 2) + 1: N_v_B) = bar_d(ceil(N_v_B / 2) + 1: N_v_B);
+
+m_U = m_U_total;
+m_V = m_V_total;
+bar_d = bar_d_total;
 
 M_U   = sparse(N_v_B, N_v_B);
 M_V   = sparse(N_v_B, N_v_B);

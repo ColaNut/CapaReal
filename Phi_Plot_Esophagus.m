@@ -64,19 +64,19 @@ if flag_XZ == 1
                 P3_Crdt(2) = [];
                 P4_Crdt(2) = [];
 
-                if n_v_4(1) == n_v_0_B && n_v_4(2) == n_v_0_B && n_v_4(3) == n_v_0_B
+                if n_v_4(1) == n_v_0_B && n_v_4(2) == n_v_0_B && n_v_4(3) == n_v_0_B && n_v_4(4) > n_v_0_B
                     valid = true;
                     f = [1 2 3];
                     v = [ P1_Crdt; P2_Crdt; P3_Crdt ];
-                elseif n_v_4(1) == n_v_0_B && n_v_4(2) == n_v_0_B && n_v_4(4) == n_v_0_B
+                elseif n_v_4(1) == n_v_0_B && n_v_4(2) == n_v_0_B && n_v_4(4) == n_v_0_B && n_v_4(3) > n_v_0_B
                     valid = true;
                     f = [1 2 4];
                     v = [ P1_Crdt; P2_Crdt; P4_Crdt ];
-                elseif n_v_4(1) == n_v_0_B && n_v_4(3) == n_v_0_B && n_v_4(4) == n_v_0_B
+                elseif n_v_4(1) == n_v_0_B && n_v_4(3) == n_v_0_B && n_v_4(4) == n_v_0_B && n_v_4(2) > n_v_0_B
                     valid = true;
                     f = [1 3 4];
                     v = [ P1_Crdt; P3_Crdt; P4_Crdt ];
-                elseif n_v_4(2) == n_v_0_B && n_v_4(3) == n_v_0_B && n_v_4(4) == n_v_0_B
+                elseif n_v_4(2) == n_v_0_B && n_v_4(3) == n_v_0_B && n_v_4(4) == n_v_0_B && n_v_4(1) > n_v_0_B
                     valid = true;
                     f = [2 3 4];
                     v = [ P2_Crdt; P3_Crdt; P4_Crdt ];
@@ -104,20 +104,21 @@ if flag_XZ == 1
     colormap jet;
     set(gca,'fontsize',20);
     set(gca,'LineWidth',2.0);
-    caxis([0, 10]);
+    caxis([0, 15]);
     axis equal;
     axis( [ - 5, 5, 0, 10 ] );
     cb = colorbar;
     box on;
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 25);
     ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 25);
+    ylabel(cb, '$\left| \Phi \right|$ ($V$)', 'Interpreter','LaTex', 'FontSize', 20);
     set(cb, 'FontSize', 18);
     hold on;
     paras2dXZ = genParas2d( tumor_y_es, paras, dx, dy, dz );
     plotMap_Eso( paras2dXZ, dx, dz );
     plotRibXZ(Ribs, SSBone, dx, dz);
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    saveas(figure(41), 'EsoEQS_PhiXZ0929.jpg');
+    saveas(figure(41), 'EsoEQS_PhiXZ1011.jpg');
 
     % figure(46);
     % clf;
@@ -228,7 +229,7 @@ if flag_XZ == 1
     % paras2dXZ = genParas2d( tumor_y_es, paras, dx, dy, dz );
     % plotMap_Eso( paras2dXZ, dx, dz );
     % plotRibXZ(Ribs, SSBone, dx, dz);
-    % saveas(figure(46), 'EsoEQS_SARXZ0929.jpg');
+    % saveas(figure(46), 'EsoEQS_SARXZ1011.jpg');
 
 end
 
@@ -283,19 +284,19 @@ if flag_XY == 1
                 P3_Crdt(3) = [];
                 P4_Crdt(3) = [];
 
-                if ell_v_4(1) == ell_v_0_B && ell_v_4(2) == ell_v_0_B && ell_v_4(3) == ell_v_0_B
+                if ell_v_4(1) == ell_v_0_B && ell_v_4(2) == ell_v_0_B && ell_v_4(3) == ell_v_0_B && ell_v_4(4) >= ell_v_0_B
                     valid = true;
                     f = [1 2 3];
                     v = [ P1_Crdt; P2_Crdt; P3_Crdt ];
-                elseif ell_v_4(1) == ell_v_0_B && ell_v_4(2) == ell_v_0_B && ell_v_4(4) == ell_v_0_B
+                elseif ell_v_4(1) == ell_v_0_B && ell_v_4(2) == ell_v_0_B && ell_v_4(4) == ell_v_0_B && ell_v_4(3) >= ell_v_0_B
                     valid = true;
                     f = [1 2 4];
                     v = [ P1_Crdt; P2_Crdt; P4_Crdt ];
-                elseif ell_v_4(1) == ell_v_0_B && ell_v_4(3) == ell_v_0_B && ell_v_4(4) == ell_v_0_B
+                elseif ell_v_4(1) == ell_v_0_B && ell_v_4(3) == ell_v_0_B && ell_v_4(4) == ell_v_0_B && ell_v_4(2) >= ell_v_0_B
                     valid = true;
                     f = [1 3 4];
                     v = [ P1_Crdt; P3_Crdt; P4_Crdt ];
-                elseif ell_v_4(2) == ell_v_0_B && ell_v_4(3) == ell_v_0_B && ell_v_4(4) == ell_v_0_B
+                elseif ell_v_4(2) == ell_v_0_B && ell_v_4(3) == ell_v_0_B && ell_v_4(4) == ell_v_0_B && ell_v_4(1) >= ell_v_0_B
                     valid = true;
                     f = [2 3 4];
                     v = [ P2_Crdt; P3_Crdt; P4_Crdt ];
@@ -322,7 +323,7 @@ if flag_XY == 1
     colormap jet;
     set(gca,'fontsize',20);
     set(gca,'LineWidth',2.0);
-    caxis([0, 10]);
+    caxis([0, 15]);
     axis equal;
     axis( [ - 5, 5, - 5, 5 ] );
     cb = colorbar;
@@ -331,12 +332,13 @@ if flag_XY == 1
     box on;
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 25);
     ylabel('$y$ (cm)','Interpreter','LaTex', 'FontSize', 25);
+    ylabel(cb, '$\left| \Phi \right|$ ($V$)', 'Interpreter','LaTex', 'FontSize', 20);
     paras2dXY = genParas2dXY( tumor_z_es, paras, dx, dy, dz );
     plotXY_Eso( paras2dXY, dx, dy );
     % plotGridLineXY( shiftedCoordinateXYZ, tumor_ell_v );
     % plotMap( paras2dXZ, dx, dz, top_x0, top_dx, down_dx );
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    saveas(figure(42), 'EsoEQS_PhiXY0929.jpg');
+    saveas(figure(42), 'EsoEQS_PhiXY1011.jpg');
 
     % figure(47);
     % clf;
@@ -420,7 +422,7 @@ if flag_XY == 1
     % colormap jet;
     % set(gca,'fontsize',20);
     % set(gca,'LineWidth',2.0);
-    % caxis([0, 10]);
+    % caxis([0, 15]);
     % axis equal;
     % axis( [ - 5, 5, - 5, 5 ] );
     % cb = colorbar;
@@ -434,7 +436,7 @@ if flag_XY == 1
     % % plotGridLineXY( shiftedCoordinateXYZ, tumor_ell_v );
     % % plotMap( paras2dXZ, dx, dz, top_x0, top_dx, down_dx );
     % % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    % saveas(figure(47), 'EsoEQS_SARXY0929.jpg');
+    % saveas(figure(47), 'EsoEQS_SARXY1011.jpg');
 end
 
 if flag_YZ == 1
@@ -488,19 +490,19 @@ if flag_YZ == 1
                 P3_Crdt(1) = [];
                 P4_Crdt(1) = [];
 
-                if m_v_4(1) == m_v_0_B && m_v_4(2) == m_v_0_B && m_v_4(3) == m_v_0_B
+                if m_v_4(1) == m_v_0_B && m_v_4(2) == m_v_0_B && m_v_4(3) == m_v_0_B && m_v_4(4) >= m_v_0_B
                     valid = true;
                     f = [1 2 3];
                     v = [ P1_Crdt; P2_Crdt; P3_Crdt ];
-                elseif m_v_4(1) == m_v_0_B && m_v_4(2) == m_v_0_B && m_v_4(4) == m_v_0_B
+                elseif m_v_4(1) == m_v_0_B && m_v_4(2) == m_v_0_B && m_v_4(4) == m_v_0_B && m_v_4(3) >= m_v_0_B
                     valid = true;
                     f = [1 2 4];
                     v = [ P1_Crdt; P2_Crdt; P4_Crdt ];
-                elseif m_v_4(1) == m_v_0_B && m_v_4(3) == m_v_0_B && m_v_4(4) == m_v_0_B
+                elseif m_v_4(1) == m_v_0_B && m_v_4(3) == m_v_0_B && m_v_4(4) == m_v_0_B && m_v_4(2) >= m_v_0_B
                     valid = true;
                     f = [1 3 4];
                     v = [ P1_Crdt; P3_Crdt; P4_Crdt ];
-                elseif m_v_4(2) == m_v_0_B && m_v_4(3) == m_v_0_B && m_v_4(4) == m_v_0_B
+                elseif m_v_4(2) == m_v_0_B && m_v_4(3) == m_v_0_B && m_v_4(4) == m_v_0_B && m_v_4(1) >= m_v_0_B
                     valid = true;
                     f = [2 3 4];
                     v = [ P2_Crdt; P3_Crdt; P4_Crdt ];
@@ -529,17 +531,18 @@ if flag_YZ == 1
     set(gca,'LineWidth',2.0);
     cb = colorbar;
     set(cb, 'FontSize', 18);
-    caxis([0, 10]);
+    caxis([0, 15]);
     axis equal;
     axis( [ - 5, 5, 0, 10 ] );
     hold on;
     box on;
     xlabel('$y$ (cm)', 'Interpreter','LaTex', 'FontSize', 25);
     ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 25);
+    ylabel(cb, '$\left| \Phi \right|$ ($V$)', 'Interpreter','LaTex', 'FontSize', 20);
     paras2dYZ = genParas2dYZ( tumor_x_es, paras, dy, dz );
     plotYZ_Eso( paras2dYZ, dy, dz );
     % plotGridLineYZ( shiftedCoordinateXYZ, tumor_m_v );
     % plotMap( paras2dXZ, dx, dz, top_x0, top_dx, down_dx );
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    saveas(figure(43), 'EsoEQS_PhiYZ0929.jpg');
+    saveas(figure(43), 'EsoEQS_PhiYZ1011.jpg');
 end

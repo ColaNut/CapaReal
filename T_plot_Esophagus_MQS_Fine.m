@@ -78,19 +78,19 @@ if T_flagXZ == 1
                         P3_Crdt(2) = [];
                         P4_Crdt(2) = [];
 
-                        if n_v_4(1) == tumor_n_v_B && n_v_4(2) == tumor_n_v_B && n_v_4(3) == tumor_n_v_B
+                        if n_v_4(1) == tumor_n_v_B && n_v_4(2) == tumor_n_v_B && n_v_4(3) == tumor_n_v_B && n_v_4(4) > tumor_n_v_B
                             valid = true;
                             f = [1 2 3];
                             v = [ P1_Crdt; P2_Crdt; P3_Crdt ];
-                        elseif n_v_4(1) == tumor_n_v_B && n_v_4(2) == tumor_n_v_B && n_v_4(4) == tumor_n_v_B
+                        elseif n_v_4(1) == tumor_n_v_B && n_v_4(2) == tumor_n_v_B && n_v_4(4) == tumor_n_v_B && n_v_4(3) > tumor_n_v_B
                             valid = true;
                             f = [1 2 4];
                             v = [ P1_Crdt; P2_Crdt; P4_Crdt ];
-                        elseif n_v_4(1) == tumor_n_v_B && n_v_4(3) == tumor_n_v_B && n_v_4(4) == tumor_n_v_B
+                        elseif n_v_4(1) == tumor_n_v_B && n_v_4(3) == tumor_n_v_B && n_v_4(4) == tumor_n_v_B && n_v_4(2) > tumor_n_v_B
                             valid = true;
                             f = [1 3 4];
                             v = [ P1_Crdt; P3_Crdt; P4_Crdt ];
-                        elseif n_v_4(2) == tumor_n_v_B && n_v_4(3) == tumor_n_v_B && n_v_4(4) == tumor_n_v_B
+                        elseif n_v_4(2) == tumor_n_v_B && n_v_4(3) == tumor_n_v_B && n_v_4(4) == tumor_n_v_B && n_v_4(1) > tumor_n_v_B
                             valid = true;
                             f = [2 3 4];
                             v = [ P2_Crdt; P3_Crdt; P4_Crdt ];
@@ -101,8 +101,8 @@ if T_flagXZ == 1
                         if valid
                             if MedVal >= 3
                                 col = T_0 + [ T_xz( m_v_4(f(1)), ell_v_4(f(1)) ); T_xz( m_v_4(f(2)), ell_v_4(f(2)) ); T_xz( m_v_4(f(3)), ell_v_4(f(3)) ) ];
-                            elseif MedVal == 2
-                                col = repmat(T_bolus, 3, 1);
+                            % elseif MedVal == 2
+                            %     col = repmat(0, 3, 1);
                             % elseif MedVal == 1
                             %     col = repmat(T_air, 3, 1);
                             end
@@ -125,14 +125,14 @@ if T_flagXZ == 1
     axis( [ - 5, 5, 0, 10 ] );
     cb = colorbar;
     box on;
-    xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 25);
-    ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 25);
+    xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
+    ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
     set(cb, 'FontSize', 18);
     hold on;
     paras2dXZ = genParas2d( tumor_y_es, paras, dx, dy, dz );
     plotMap_Eso( paras2dXZ, dx, dz );
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    saveas(figure(21), 'EsoMQSTmprtrXZ1003.jpg');
+    saveas(figure(21), 'EsoMQSTmprtrXZ1011.jpg');
 end
 
 if T_flagXY == 1
@@ -147,7 +147,7 @@ if T_flagXY == 1
     for vIdxXY = 1: 1: x_max_vertex_B * y_max_vertex_B
         [ m_v_B, n_v_B ] = getML(vIdxXY, x_max_vertex_B);
         vIdx = ( ell_v_B - 1 ) * x_max_vertex_B * y_max_vertex_B + ( n_v_B - 1 ) * x_max_vertex_B + m_v_B;
-        T_xy(m_v, n_v) = T_end( vIdx );
+        T_xy(m_v_B, n_v_B) = T_end( vIdx );
     end
     toc;
 
@@ -192,19 +192,19 @@ if T_flagXY == 1
                         P3_Crdt(3) = [];
                         P4_Crdt(3) = [];
 
-                        if ell_v_4(1) == tumor_ell_v_B && ell_v_4(2) == tumor_ell_v_B && ell_v_4(3) == tumor_ell_v_B
+                        if ell_v_4(1) == tumor_ell_v_B && ell_v_4(2) == tumor_ell_v_B && ell_v_4(3) == tumor_ell_v_B && ell_v_4(4) >= tumor_ell_v_B
                             valid = true;
                             f = [1 2 3];
                             v = [ P1_Crdt; P2_Crdt; P3_Crdt ];
-                        elseif ell_v_4(1) == tumor_ell_v_B && ell_v_4(2) == tumor_ell_v_B && ell_v_4(4) == tumor_ell_v_B
+                        elseif ell_v_4(1) == tumor_ell_v_B && ell_v_4(2) == tumor_ell_v_B && ell_v_4(4) == tumor_ell_v_B && ell_v_4(3) >= tumor_ell_v_B
                             valid = true;
                             f = [1 2 4];
                             v = [ P1_Crdt; P2_Crdt; P4_Crdt ];
-                        elseif ell_v_4(1) == tumor_ell_v_B && ell_v_4(3) == tumor_ell_v_B && ell_v_4(4) == tumor_ell_v_B
+                        elseif ell_v_4(1) == tumor_ell_v_B && ell_v_4(3) == tumor_ell_v_B && ell_v_4(4) == tumor_ell_v_B && ell_v_4(2) >= tumor_ell_v_B
                             valid = true;
                             f = [1 3 4];
                             v = [ P1_Crdt; P3_Crdt; P4_Crdt ];
-                        elseif ell_v_4(2) == tumor_ell_v_B && ell_v_4(3) == tumor_ell_v_B && ell_v_4(4) == tumor_ell_v_B
+                        elseif ell_v_4(2) == tumor_ell_v_B && ell_v_4(3) == tumor_ell_v_B && ell_v_4(4) == tumor_ell_v_B && ell_v_4(1) >= tumor_ell_v_B
                             valid = true;
                             f = [2 3 4];
                             v = [ P2_Crdt; P3_Crdt; P4_Crdt ];
@@ -215,8 +215,8 @@ if T_flagXY == 1
                         if valid
                             if MedVal >= 3
                                 col = T_0 + [ T_xy( m_v_4(f(1)), n_v_4(f(1)) ); T_xy( m_v_4(f(2)), n_v_4(f(2)) ); T_xy( m_v_4(f(3)), n_v_4(f(3)) ) ];
-                            elseif MedVal == 2
-                                col = repmat(T_bolus, 3, 1);
+                            % elseif MedVal == 2
+                            %     col = repmat(0, 3, 1);
                             % elseif MedVal == 1
                             %     col = repmat(T_air, 3, 1);
                             end
@@ -240,14 +240,14 @@ if T_flagXY == 1
     set(cb, 'FontSize', 18);
     hold on;
     box on;
-    xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 25);
-    ylabel('$y$ (cm)','Interpreter','LaTex', 'FontSize', 25);
+    xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
+    ylabel('$y$ (cm)','Interpreter','LaTex', 'FontSize', 20);
     paras2dXY = genParas2dXY( tumor_z_es, paras, dx, dy, dz );
     plotXY_Eso( paras2dXY, dx, dy );
     % plotGridLineXY( shiftedCoordinateXYZ, tumor_ell_v );
     % plotMap( paras2dXZ, dx, dz, top_x0, top_dx, down_dx );
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    saveas(figure(22), 'EsoMQSTmprtrXY1003.jpg');
+    saveas(figure(22), 'EsoMQSTmprtrXY1011.jpg');
 end
 
 if T_flagYZ == 1
@@ -307,19 +307,19 @@ if T_flagYZ == 1
                         P3_Crdt(1) = [];
                         P4_Crdt(1) = [];
 
-                        if m_v_4(1) == tumor_m_v_B && m_v_4(2) == tumor_m_v_B && m_v_4(3) == tumor_m_v_B
+                        if m_v_4(1) == tumor_m_v_B && m_v_4(2) == tumor_m_v_B && m_v_4(3) == tumor_m_v_B && m_v_4(4) >= tumor_m_v_B
                             valid = true;
                             f = [1 2 3];
                             v = [ P1_Crdt; P2_Crdt; P3_Crdt ];
-                        elseif m_v_4(1) == tumor_m_v_B && m_v_4(2) == tumor_m_v_B && m_v_4(4) == tumor_m_v_B
+                        elseif m_v_4(1) == tumor_m_v_B && m_v_4(2) == tumor_m_v_B && m_v_4(4) == tumor_m_v_B && m_v_4(3) >= tumor_m_v_B
                             valid = true;
                             f = [1 2 4];
                             v = [ P1_Crdt; P2_Crdt; P4_Crdt ];
-                        elseif m_v_4(1) == tumor_m_v_B && m_v_4(3) == tumor_m_v_B && m_v_4(4) == tumor_m_v_B
+                        elseif m_v_4(1) == tumor_m_v_B && m_v_4(3) == tumor_m_v_B && m_v_4(4) == tumor_m_v_B && m_v_4(2) >= tumor_m_v_B
                             valid = true;
                             f = [1 3 4];
                             v = [ P1_Crdt; P3_Crdt; P4_Crdt ];
-                        elseif m_v_4(2) == tumor_m_v_B && m_v_4(3) == tumor_m_v_B && m_v_4(4) == tumor_m_v_B
+                        elseif m_v_4(2) == tumor_m_v_B && m_v_4(3) == tumor_m_v_B && m_v_4(4) == tumor_m_v_B && m_v_4(1) >= tumor_m_v_B
                             valid = true;
                             f = [2 3 4];
                             v = [ P2_Crdt; P3_Crdt; P4_Crdt ];
@@ -330,8 +330,8 @@ if T_flagYZ == 1
                         if valid
                             if MedVal >= 3
                                 col = T_0 + [ T_yz( n_v_4(f(1)), ell_v_4(f(1)) ); T_yz( n_v_4(f(2)), ell_v_4(f(2)) ); T_yz( n_v_4(f(3)), ell_v_4(f(3)) ) ];
-                            elseif MedVal == 2
-                                col = repmat(T_bolus, 3, 1);
+                            % elseif MedVal == 2
+                            %     col = repmat(0, 3, 1);
                             % elseif MedVal == 1
                             %     col = repmat(T_air, 3, 1);
                             end
@@ -355,13 +355,13 @@ if T_flagYZ == 1
     axis( [ - 5, 5, 0, 10 ] );
     hold on;
     box on;
-    xlabel('$y$ (cm)', 'Interpreter','LaTex', 'FontSize', 25);
-    ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 25);
+    xlabel('$y$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
+    ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
     paras2dYZ = genParas2dYZ( tumor_x_es, paras, dy, dz );
     plotYZ_Eso( paras2dYZ, dy, dz );
     % plotGridLineYZ( shiftedCoordinateXYZ, tumor_m_v );
     % plotMap( paras2dXZ, dx, dz, top_x0, top_dx, down_dx );
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    saveas(figure(23), 'EsoMQSTmprtrYZ1003.jpg');
+    saveas(figure(23), 'EsoMQSTmprtrYZ1011.jpg');
 end
 

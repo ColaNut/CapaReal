@@ -36,9 +36,9 @@ function MedValue = getTetMed( TtrCrdnt, CtrlPntFlag, varargin )
             end
         elseif strcmp(OrganType, 'Eso1009')
             loadParas_Eso0924;
-            AirOrTumor = 1;
+            tumorRegion = false;
             if y <= tumor_y_es + tumor_hy_es / 2 && y >= tumor_y_es - tumor_hy_es / 2
-                AirOrTumor = 9;
+                tumorRegion = true;
             end
             switch CtrlPntFlag
                 case 41
@@ -46,13 +46,25 @@ function MedValue = getTetMed( TtrCrdnt, CtrlPntFlag, varargin )
                     if ( (x - es_x) / es_r )^2 + ( (z - es_z) / es_r)^2 - 1 > 0 % exterior
                         MedValue = 3;
                     else % interior
-                        MedValue = AirOrTumor;
+                        if ~tumorRegion
+                            MedValue = 1;
+                        else
+                            if z < es_z
+                                MedValue = 1;
+                            else
+                                MedValue = 9;
+                            end
+                        end
                     end
-                case 42
-                    if z > es_z % uppper part of esophagus
-                        MedValue = 9;
-                    else % lower part of esophagus
-                        MedValue = 2;
+                case {9, 42}
+                    if tumorRegion
+                        if z > es_z % uppper part of esophagus
+                            MedValue = 9;
+                        else % lower part of esophagus
+                            MedValue = 1;
+                        end
+                    else
+                        MedValue = 1;
                     end
                 otherwise
                     error('check eso');

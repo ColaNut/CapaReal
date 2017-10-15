@@ -1,4 +1,4 @@
-function plotMap_Eso( paras, dx, dz, varargin )
+function plotMap_Eso1014( paras, dx, dz, varargin )
 
 % m -> cm
 air_x = paras(1) * 100;
@@ -47,9 +47,31 @@ tumor_r_es = 100 * tumor_r_es;
 
 % plot the esophagus
 % plotEllipse( x_es + r_es, z_es, x_es - r_es, z_es, r_es, dx, dz );
-plotEllipse( es_x + es_r, es_z, es_x - es_r, es_z, es_r, dx, dz );
+plotEllipse_Eso( es_x + es_r, es_z, es_x - es_r, es_z, es_r, dx, dz );
 % % plot the tumor
 % plotEllipse( tumor_x_es + tumor_r_es, tumor_z_es + tumor_r_es / 2, tumor_x_es - tumor_r_es, tumor_z_es + tumor_r_es / 2, tumor_r_es / 2, dx, dz );
+% plot two non-continuous line
+x_horz1 = es_x - dx: dx / 10: es_x - dx / 2;
+plot( x_horz1, ( es_z - dz / 4 ) * ones( size(x_horz1) ), 'Color', [0.5, 0.5, 0.5], 'LineWidth', 2.5);
+x_horz2 = es_x + dx / 2: dx / 10: es_x + dx;
+plot( x_horz2, ( es_z - dz / 4 ) * ones( size(x_horz2) ), 'Color', [0.5, 0.5, 0.5], 'LineWidth', 2.5);
+
+x_axUp = es_x - dx / 2: dx: es_x + dx / 2;
+plot( x_axUp, ( es_z - dz / 2 ) * ones( size(x_axUp) ), 'Color', [0.5, 0.5, 0.5], 'LineWidth', 2.5);
+plot( x_axUp, ( es_z + dz / 2 ) * ones( size(x_axUp) ), 'Color', [0.5, 0.5, 0.5], 'LineWidth', 2.5);
+
+% the tumor boundary
+x_axUp2 = es_x - dx / 2: dx / 10: es_x + dx / 2;
+plot( x_axUp2, ( es_z + dz / 4 ) * ones( size(x_axUp2) ), 'Color', [0.5, 0.5, 0.5], 'LineWidth', 2.5);
+
+% x_axO1 = es_x - dx / 2: dx / 20: es_x - dx / 4;
+% plot( x_axO1, - x_axO1 + es_z, 'Color', [0.5, 0.5, 0.5], 'LineWidth', 2.5);
+% x_axO2 = es_x + dx / 4: dx / 20: es_x + dx / 2;
+% plot( x_axO2, x_axO2 + es_z, 'Color', [0.5, 0.5, 0.5], 'LineWidth', 2.5);
+
+y_axUp = es_z - dz / 2: dz: es_z + dz / 2;
+plot( ( es_x + dx / 2 ) * ones( size(y_axUp) ), y_axUp, 'Color', [0.5, 0.5, 0.5], 'LineWidth', 2.5);
+plot( ( es_x - dx / 2 ) * ones( size(y_axUp) ), y_axUp, 'Color', [0.5, 0.5, 0.5], 'LineWidth', 2.5);
 
 % % plot electrode
 % t = linspace( 0, 2 * pi, 400 );

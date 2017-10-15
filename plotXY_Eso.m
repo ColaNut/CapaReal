@@ -50,8 +50,8 @@ end
 if isreal(r_lung_b)
     plotEllipse( r_lung_x + r_lung_a, r_lung_y, r_lung_x - r_lung_a, r_lung_y, r_lung_b, dx, dy );
 end
-% plot esophgeal tumor
-plotEllipse( tumor_x_es + tumor_r_es, tumor_y_es, tumor_x_es - tumor_r_es, tumor_y_es, tumor_hy_es / 2, dx, dy );
+% % plot esophgeal tumor
+% plotEllipse( tumor_x_es + tumor_r_es, tumor_y_es, tumor_x_es - tumor_r_es, tumor_y_es, tumor_hy_es / 2, dx, dy );
 
 x_grid = - myCeil(air_x / 2, dx): dx: myCeil(air_x / 2, dx);
 y_grid = - myCeil(h_torso / 2, dy): dy: myCeil(h_torso / 2, dy);

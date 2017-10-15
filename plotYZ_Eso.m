@@ -49,7 +49,7 @@ end
 if isreal(r_lung_c)
     plotEllipse( r_lung_b, r_lung_z, - r_lung_b, r_lung_z, r_lung_c, dy, dz );
 end
-plotEllipse( tumor_y_es + 2 * tumor_r_es, tumor_z_es + tumor_r_es / 2, tumor_y_es - 2 *tumor_r_es, tumor_z_es + tumor_r_es / 2, tumor_r_es / 2, dy, dz );
+% plotEllipse( tumor_y_es + 2 * tumor_r_es, tumor_z_es + tumor_r_es / 2, tumor_y_es - 2 *tumor_r_es, tumor_z_es + tumor_r_es / 2, tumor_r_es / 2, dy, dz );
 % plotEllipse( tumor_y_es + tumor_r_es, tumor_z_es + tumor_r_es, tumor_y_es - tumor_r_es, tumor_z_es + tumor_r_es, tumor_r_es, dy, dz );
 
 y_idx = - h_torso / 2: dy: h_torso / 2;

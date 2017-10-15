@@ -10,7 +10,7 @@ function [ PntSARseg, TtrVol, MidPnts9Crdnt ] = calSARsegYZ_vrtx( m_B, n_B, ell_
     MidPntsCrdnt = zeros( 3, 9, 3 );
     tmpMidCrdnt  = zeros( 1, 9, 3 );
     MidPhi       = zeros( 3, 9 );
-    tmpMidPhi    = zeros( 9 );
+    tmpMidPhi    = zeros( 9, 1 );
     PntSegValue  = PntSegMed_B;
 
     m_v_B = 2 * m_B - 1;

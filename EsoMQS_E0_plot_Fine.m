@@ -27,7 +27,7 @@ shiftedCoordinateXYZ = shiftedCoordinateXYZ_B;
 tmpSegMed = SegMed;
 tmpSegMed(find(tmpSegMed >= 10)) = 1;
 
-fname = 'E:\Kevin\CapaReal\1003EsoMQS';
+fname = 'f:\CapaReal\1011EsoMQS';
 
 if flag_XZ == 1
     E_XZ = zeros(x_idx_max_B, z_idx_max_B, 6, 8, 3); 
@@ -72,7 +72,7 @@ SAR_XZ = sigma( squeeze(tmpSegMed(:, tumor_n, :, :, :)) ) .* E_XZabs.^2 ./ (2 * 
 
 % x-1; y-2; z-3; total field-4; SAR-5
 if flag_XZ == 1
-    for dirFlag = 5: 1: 5
+    for dirFlag = 1: 1: 5
         n = tumor_n;
         XZCrdnt = zeros( x_idx_max_B, z_idx_max_B, 3);
         x_mesh      = zeros( z_idx_max_B, x_idx_max_B );
@@ -247,7 +247,7 @@ SAR_XY = zeros(x_idx_max, y_idx_max, 6, 8);
 SAR_XY = sigma( squeeze(tmpSegMed(:, :, tumor_ell, :, :)) ) .* E_XYabs.^2 ./ (2 * rho( squeeze(tmpSegMed(:, :, tumor_ell, :, :)) ));
 
 if flag_XY == 1
-    for dirFlag = 5: 1: 5
+    for dirFlag = 1: 1: 5
         % CrossEll = int64( w_z / (2 * dz) + 1 );
         ell = tumor_ell;
         XYCrdnt = zeros( x_idx_max, y_idx_max, 3, 3);
@@ -431,7 +431,7 @@ SAR_YZ = zeros(y_idx_max, z_idx_max, 6, 8);
 SAR_YZ = sigma( squeeze(tmpSegMed(tumor_m, :, :, :, :)) ) .* E_YZabs.^2 ./ (2 * rho( squeeze(tmpSegMed(tumor_m, :, :, :, :)) ));
 
 if flag_YZ == 1
-    for dirFlag = 5: 1: 5
+    for dirFlag = 1: 1: 5
         % CrossM = int64( w_x / (2 * dx) + 1 );
         m = tumor_m;
         YZCrdnt = zeros( y_idx_max, z_idx_max, 3);
