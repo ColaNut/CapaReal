@@ -1,4 +1,4 @@
-function plotMap_Eso1014( paras, dx, dz, varargin )
+function plotMap_EsoMQS1017( paras, dx, dz, varargin )
 
 % m -> cm
 air_x = paras(1) * 100;
@@ -69,9 +69,14 @@ plot( x_axUp2, ( es_z + dz / 4 ) * ones( size(x_axUp2) ), 'Color', [0.5, 0.5, 0.
 % x_axO2 = es_x + dx / 4: dx / 20: es_x + dx / 2;
 % plot( x_axO2, x_axO2 + es_z, 'Color', [0.5, 0.5, 0.5], 'LineWidth', 2.5);
 
-y_axUp = es_z - dz / 2: dz / 4: es_z + dz / 4;
+y_axUp = es_z - dz / 2: dz / 8: es_z + dz / 4;
 plot( ( es_x + dx / 2 ) * ones( size(y_axUp) ), y_axUp, 'Color', [0.5, 0.5, 0.5], 'LineWidth', 2.5);
 plot( ( es_x - dx / 2 ) * ones( size(y_axUp) ), y_axUp, 'Color', [0.5, 0.5, 0.5], 'LineWidth', 2.5);
+
+% plot the coil
+y_axCoil = es_z: dz / 8: es_z + dz / 2;
+plot( ( es_x + dx / 2 ) * ones( size(y_axCoil) ), y_axCoil, 'Color', [0, 0, 0], 'LineWidth', 2.5);
+plot( ( es_x - dx / 2 ) * ones( size(y_axCoil) ), y_axCoil, 'Color', [0, 0, 0], 'LineWidth', 2.5);
 
 % % plot electrode
 % t = linspace( 0, 2 * pi, 400 );

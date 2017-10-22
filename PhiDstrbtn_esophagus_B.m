@@ -1,8 +1,8 @@
 % Vertex_Crdnt_B_unshift(:, :, :, 3) = Vertex_Crdnt_B(:, :, :, 3);
 % Vertex_Crdnt_B(:, :, :, 3) = Vertex_Crdnt_B(:, :, :, 3) + es_z;
-% load('1013Plotting.mat');
-fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\1013EsoEQS';
-CaseName = '1013';
+% load('1015Plotting.mat');
+fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\1015EsoEQS';
+CaseName = '1015';
 tumor_m = (tumor_x_es - es_x) / dx_B + ( w_x_B + dx ) / (2 * dx_B) + 1;
 tumor_n = (tumor_y_es - 0) / dy_B + ( w_y_B + dy ) / (2 * dy_B) + 1;
 tumor_ell = (tumor_z_es - es_z) / dz_B + ( w_z_B + dz ) / (2 * dz_B) + 1;
@@ -39,12 +39,12 @@ if flag_XZ == 1
             % ThrMedValue( :, 2, : ) = mediumTable( :, n, : );
             % SegValueXZ( m, ell, :, : ) = squeeze( SegMed( m, n, ell, :, : ) );
         end
-        if n == tumor_n_v + 1
+        if n_v_B == tumor_n_v + 1
             PhiXZ( m_v_B, 3, ell_v_B ) = bar_x_my_gmresPhi(N_v + vIdx_B);
             % ThrXYZCrndt( :, 3, :, :) = shiftedCoordinateXYZ( :, n, :, :);
             % ThrMedValue( :, 3, : ) = mediumTable( :, n, : );
         end
-        if n == tumor_n_v - 1
+        if n_v_B == tumor_n_v - 1
             PhiXZ( m_v_B, 1, ell_v_B ) = bar_x_my_gmresPhi(N_v + vIdx_B);
             % ThrXYZCrndt( :, 1, :, :) = shiftedCoordinateXYZ( :, n, :, :);
             % ThrMedValue( :, 1, : ) = mediumTable( :, n, : );
@@ -75,7 +75,7 @@ if flag_XZ == 1
     view(2);
     hold on;
     paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
-    plotMap_Eso( paras2dXZ, dx, dz );
+    plotMap_Eso1014( paras2dXZ, dx, dz );
     plotRibXZ(Ribs, SSBone, dx, dz);
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
     % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
@@ -91,6 +91,9 @@ if flag_XZ == 1
     for idx = 1: 1: x_idx_max_B * z_idx_max_B
         [ m_B, ell_B ] = getML(idx, x_idx_max_B);
         n_B = tumor_n;
+        if m_B == 12 && ell_B == 13
+            ;
+        end
         if m_B >= 2 && m_B <= x_idx_max_B - 1 && ell_B >= 2 && ell_B <= z_idx_max_B - 1 
             [ SARsegXZ( m_B, ell_B, :, : ), TtrVol( m_B, ell_B, :, : ), MidPnts9Crdnt( m_B, ell_B, :, : ) ] ...
                         = calSARsegXZ_vrtx( m_B, int64(n_B), ell_B, PhiXZ, x_max_vertex_B, y_max_vertex_B, ...
@@ -154,7 +157,7 @@ if flag_XZ == 1
     % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
     box on;
     view(2);
-    plotMap_Eso( paras2dXZ, dx, dz );
+    plotMap_Eso1014( paras2dXZ, dx, dz );
     plotRibXZ(Ribs, SSBone, dx, dz);
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
     saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
@@ -182,13 +185,13 @@ if flag_XY == 1
             % SegValueXY( m, n, :, : ) = squeeze( SegMed( m, n, ell, :, : ) );
         end
 
-        if ell == tumor_ell_v + 1
+        if ell_v_B == tumor_ell_v + 1
             PhiXY( m_v_B, n_v_B, 3 ) = bar_x_my_gmresPhi(N_v + vIdx_B);
             % ThrXYZCrndt( :, :, 3, :) = shiftedCoordinateXYZ( :, :, ell, :);
             % ThrMedValue( :, :, 3 ) = mediumTable( :, :, ell );
         end
 
-        if ell == tumor_ell_v - 1
+        if ell_v_B == tumor_ell_v - 1
             PhiXY( m_v_B, n_v_B, 1 ) = bar_x_my_gmresPhi(N_v + vIdx_B);
             % ThrXYZCrndt( :, :, 1, :) = shiftedCoordinateXYZ( :, :, ell, :);
             % ThrMedValue( :, :, 1 ) = mediumTable( :, :, ell );
@@ -378,6 +381,9 @@ if flag_YZ == 1
         [ n_B, ell_B ] = getML(idx, y_idx_max_B);
         m_B = tumor_m;
         if n_B >= 2 && n_B <= y_idx_max_B - 1 && ell_B >= 2 && ell_B <= z_idx_max_B - 1 
+            if n_B == 12 && ell_B == 13
+                ;
+            end
             [ SARsegYZ( n_B, ell_B, :, : ), TtrVol( n_B, ell_B, :, : ), MidPnts9Crdnt( n_B, ell_B, :, : ) ] ...
                     = calSARsegYZ_vrtx( int64(m_B), n_B, ell_B, PhiYZ, x_max_vertex_B, y_max_vertex_B, ...
                     Vertex_Crdnt_B, squeeze(SegMed_B(m_B, n_B, ell_B, :, :)), sigma, rho );

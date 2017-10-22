@@ -25,7 +25,7 @@ ell_v_0_B = 2 * ( (es_z - es_z) / dz_B + ( w_z_B + dz ) / (2 * dz_B) + 1 ) - 1;
 ell_v_0_B = ell_v_0_B + 1;
 
 h_x = 2;
-h_y = 8;
+h_y = 6;
 
 %     y
 %     ^
@@ -49,7 +49,7 @@ Vrtx_bndry_B(m_v_0_B - h_x + 1: m_v_0_B + h_x - 1, n_v_0_B + h_y, ell_v_0_B - 1:
 Vrtx_bndry_B(m_v_0_B - h_x, n_v_0_B - h_y + 1: n_v_0_B + h_y - 1, ell_v_0_B - 1: ell_v_0_B + 1) = 6;
 
 B_k = zeros(N_e_B, 1);
-% J_0 = 1000; % surface current density: 5000 (A/m)
+% J_0 = 650; % surface current density: 5000 (A/m)
 tic; 
 disp('The filling time of B_k: ');
 parfor eIdx = 1: 1: N_e_B

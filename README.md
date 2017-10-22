@@ -129,3 +129,7 @@ EsoEQS: Suspended for nested esophageal cancer.
 10/15: 
   -- EsophagusEQS_Fine_Amend.m and EsophagusMQS_Fine_Amend are usable
   -- before implement the new configuration
+
+10/22:
+  -- plot for shifted T for EQS and MQS
+  -- Add short, double and octant coil

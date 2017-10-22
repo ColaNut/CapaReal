@@ -6,9 +6,9 @@ y_idx_near = (endo_y - 0 - tumor_hy_es / 2) / dy_B + ( w_y_B + dy ) / (2 * dy_B)
 y_vIdx_far = 2 * y_idx_far - 1;
 y_vIdx_near = 2 * y_idx_near - 1;
 
-m_v_0_B = 2 * ( (endo_x - es_x) / dx_B + ( w_x_B + dx ) / (2 * dx_B) + 1 ) - 1;
-n_v_0_B = 2 * ( (endo_y - 0) / dy_B + ( w_y_B + dy ) / (2 * dy_B) + 1 ) - 1;
-ell_v_0_B = 2 * ( (endo_z - es_z) / dz_B + ( w_z_B + dz ) / (2 * dz_B) + 1 ) - 1;
+m_v_0_B = 2 * ( (tumor_x_es - es_x) / dx_B + ( w_x_B + dx ) / (2 * dx_B) + 1 ) - 1;
+n_v_0_B = 2 * ( (tumor_y_es - 0) / dy_B + ( w_y_B + dy ) / (2 * dy_B) + 1 ) - 1;
+ell_v_0_B = 2 * ( (tumor_z_es - es_z) / dz_B + ( w_z_B + dz ) / (2 * dz_B) + 1 ) - 1 + 1;
 
 if flag_XZ == 1
     Phi_xz = zeros(x_max_vertex_B, z_max_vertex_B);
@@ -118,7 +118,7 @@ if flag_XZ == 1
     plotMap_Eso( paras2dXZ, dx, dz );
     plotRibXZ(Ribs, SSBone, dx, dz);
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    saveas(figure(41), 'EsoEQS_PhiXZ1011.jpg');
+    saveas(figure(41), 'EsoEQS_PhiXZ1015.jpg');
 
     % figure(46);
     % clf;
@@ -229,7 +229,7 @@ if flag_XZ == 1
     % paras2dXZ = genParas2d( tumor_y_es, paras, dx, dy, dz );
     % plotMap_Eso( paras2dXZ, dx, dz );
     % plotRibXZ(Ribs, SSBone, dx, dz);
-    % saveas(figure(46), 'EsoEQS_SARXZ1011.jpg');
+    % saveas(figure(46), 'EsoEQS_SARXZ1015.jpg');
 
 end
 
@@ -338,7 +338,7 @@ if flag_XY == 1
     % plotGridLineXY( shiftedCoordinateXYZ, tumor_ell_v );
     % plotMap( paras2dXZ, dx, dz, top_x0, top_dx, down_dx );
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    saveas(figure(42), 'EsoEQS_PhiXY1011.jpg');
+    saveas(figure(42), 'EsoEQS_PhiXY1015.jpg');
 
     % figure(47);
     % clf;
@@ -436,7 +436,7 @@ if flag_XY == 1
     % % plotGridLineXY( shiftedCoordinateXYZ, tumor_ell_v );
     % % plotMap( paras2dXZ, dx, dz, top_x0, top_dx, down_dx );
     % % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    % saveas(figure(47), 'EsoEQS_SARXY1011.jpg');
+    % saveas(figure(47), 'EsoEQS_SARXY1015.jpg');
 end
 
 if flag_YZ == 1
@@ -544,5 +544,5 @@ if flag_YZ == 1
     % plotGridLineYZ( shiftedCoordinateXYZ, tumor_m_v );
     % plotMap( paras2dXZ, dx, dz, top_x0, top_dx, down_dx );
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    saveas(figure(43), 'EsoEQS_PhiYZ1011.jpg');
+    saveas(figure(43), 'EsoEQS_PhiYZ1015.jpg');
 end

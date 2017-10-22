@@ -1,8 +1,8 @@
-A = bar_x_my_gmres;
+A = bar_x_my_gmres * 450 / 400;
 
 flag_XZ = 1;
-flag_XY = 1;
-flag_YZ = 1;
+flag_XY = 0;
+flag_YZ = 0;
 
 tumor_m = (tumor_x_es - es_x) / dx_B + ( w_x_B + dx ) / (2 * dx_B) + 1;
 tumor_n = (tumor_y_es - 0) / dy_B + ( w_y_B + dy ) / (2 * dy_B) + 1;
@@ -25,7 +25,7 @@ N_e = N_e_B;
 shiftedCoordinateXYZ = shiftedCoordinateXYZ_B;
 % masking end
 
-fname = 'f:\CapaReal\1011EsoMQS';
+fname = 'f:\CapaReal\1017EsoMQS_short';
 
 if flag_XZ == 1
     H_XZ = zeros(x_idx_max_B, z_idx_max_B, 6, 8, 3); 
@@ -134,6 +134,19 @@ if flag_XZ == 1
             end
             toc;
         elseif dirFlag == 4
+            figure(dirFlag);
+            clf;
+            myRange = [ 1e-1, 1e4 ];
+            caxis(myRange);
+            axis equal;
+            axis( [ - 5, 5, 0, 10 ] );
+            cbar = colorbar('peer', gca, 'Yscale', 'log');
+            set(gca, 'Visible', 'off')
+            log_axes = axes('Position', get(gca, 'Position'));
+            ylabel(cbar, '$\left| \bar{H} \ \right|$ (A/m)', 'Interpreter','LaTex', 'FontSize', 20);
+            set(cbar, 'FontSize', 18 );
+            hold on;
+
             tic;
             disp('Time to plot H_XZabs');
             for idx = 1: 1: x_idx_max_B * z_idx_max_B
@@ -150,7 +163,37 @@ if flag_XZ == 1
                 end
             end
             toc;
+
+            caxis(log10(myRange));
+            colormap jet;
+            xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
+            ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
+            axis equal;
+            axis( [ - 5, 5, 0, 10 ] );
+            set(log_axes,'fontsize',20);
+            set(log_axes,'LineWidth',2.0);
+            % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
+            box on;
+            view(2);
+            paras2dXZ = genParas2d( tumor_y_es, paras, dx, dy, dz );
+            plotMap_EsoMQS1017( paras2dXZ, dx, dz );
+            plotRibXZ(Ribs, SSBone, dx, dz);
+            saveas(figure(dirFlag), fullfile(fname, 'H_XZ'), 'jpg');
+            saveas(figure(dirFlag), fullfile(fname, 'H_XZ'), 'eps');
         else
+            figure(dirFlag);
+            clf;
+            myRange = [ 1e-1, 1e4 ];
+            caxis(myRange);
+            axis equal;
+            axis( [ - 5, 5, 0, 10 ] );
+            cbar = colorbar('peer', gca, 'Yscale', 'log');
+            set(gca, 'Visible', 'off')
+            log_axes = axes('Position', get(gca, 'Position'));
+            ylabel(cbar, 'SAR (watt/kg)', 'Interpreter','LaTex', 'FontSize', 20);
+            set(cbar, 'FontSize', 18 );
+            hold on;
+
             tic;
             disp('Time to plot SAR_XZ_MNP');
             for idx = 1: 1: x_idx_max_B * z_idx_max_B
@@ -167,42 +210,61 @@ if flag_XZ == 1
                 end
             end
             toc;
+
+            caxis(log10(myRange));
+            colormap jet;
+            xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
+            ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
+            axis equal;
+            axis( [ - 5, 5, 0, 10 ] );
+            set(log_axes,'fontsize',20);
+            set(log_axes,'LineWidth',2.0);
+            % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
+            box on;
+            view(2);
+            paras2dXZ = genParas2d( tumor_y_es, paras, dx, dy, dz );
+            plotMap_EsoMQS1017( paras2dXZ, dx, dz );
+            plotRibXZ(Ribs, SSBone, dx, dz);
+            saveas(figure(dirFlag), fullfile(fname, 'SAR_XZ_MNP'), 'jpg');
+            saveas(figure(dirFlag), fullfile(fname, 'SAR_XZ_MNP'), 'eps');
         end
                 
 
-        % caxis(myRange);
-        colorbar
-        switch dirFlag
-            % case 1
-            %     set(colorbar, 'YTick', [-450, -400: 100: 300]);
-            case 2
-                % set(colorbar, 'YTick', [-450: 50: 450]);
-            % case 3
-            %     set(colorbar, 'YTick', [-450, -400: 100: 300]);
+        if dirFlag <= 3
+            % caxis(myRange);
+            colorbar
+            switch dirFlag
+                % case 1
+                %     set(colorbar, 'YTick', [-450, -400: 100: 300]);
+                case 2
+                    % set(colorbar, 'YTick', [-450: 50: 450]);
+                % case 3
+                %     set(colorbar, 'YTick', [-450, -400: 100: 300]);
+            end
+            % caxis(log10(myRange));
+            colormap jet;
+            axis equal;
+            % axis( [ - 100 * w_x / 2 + 0.5, 100 * w_x / 2 - 0.5, - 100 * w_z / 2 + 0.5, 100 * w_z / 2 - 0.5 ]);
+            axis( [ - 5, 5, 0, 10 ] );
+            caxis( [- 1, 4] );
+            xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
+            ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
+            set(gca,'fontsize',20);
+            set(gca,'LineWidth',2.0);
+            % set(log_axes,'fontsize',20);
+            % set(log_axes,'LineWidth',2.0);
+            zlabel('$H$ (A/m)','Interpreter','LaTex', 'FontSize', 20);
+            box on;
+            view(2);
+            hold on;
+            % plotMQS( Paras_Mag );
+            paras2dXZ = genParas2d( tumor_y_es, paras, dx, dy, dz );
+            plotMap_EsoMQS1017( paras2dXZ, dx, dz );
+            % plotGridLineXZ( shiftedCoordinateXYZ, CrossN );
+            saveas(figure(dirFlag), fullfile(fname, strcat('H_XZ', num2str(dirFlag))), 'jpg');
+            % save( strcat( fname, '\', CaseDate, 'TmprtrFigXZ.mat') );
+            % save('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0108\Case0108TmprtrFigXZ.mat');
         end
-        % caxis(log10(myRange));
-        colormap jet;
-        axis equal;
-        % axis( [ - 100 * w_x / 2 + 0.5, 100 * w_x / 2 - 0.5, - 100 * w_z / 2 + 0.5, 100 * w_z / 2 - 0.5 ]);
-        axis( [ - 5, 5, 0, 10 ] );
-        caxis( [- 1, 4] );
-        xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
-        ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
-        set(gca,'fontsize',20);
-        set(gca,'LineWidth',2.0);
-        % set(log_axes,'fontsize',20);
-        % set(log_axes,'LineWidth',2.0);
-        zlabel('$H$ (A/m)','Interpreter','LaTex', 'FontSize', 20);
-        box on;
-        view(2);
-        hold on;
-        % plotMQS( Paras_Mag );
-        paras2dXZ = genParas2d( tumor_y_es, paras, dx, dy, dz );
-        plotMap_Eso( paras2dXZ, dx, dz );
-        % plotGridLineXZ( shiftedCoordinateXYZ, CrossN );
-        saveas(figure(dirFlag), fullfile(fname, strcat('H_XZ', num2str(dirFlag))), 'jpg');
-        % save( strcat( fname, '\', CaseDate, 'TmprtrFigXZ.mat') );
-        % save('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0108\Case0108TmprtrFigXZ.mat');
     end
 end
 

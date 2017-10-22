@@ -15,7 +15,7 @@ if A_flag == 1
     flag_XY = 1;
     flag_YZ = 1;
     
-    Fname = '0918EsoMQS';
+    Fname = '0916EsoMQS';
     % Fname = 'K1_0711';
     % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0614MQSDirection';
     % fname = 'D:\Kevin\CapaReal\0711K1';
@@ -24,7 +24,7 @@ if A_flag == 1
     % CaseDate = 'Case0220_1cmFat';
     % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0823LungMQS\';
     % fname = 'D:\Kevin\CapaReal\0824LiverMQS\';
-    fname = 'f:\CapaReal\1011EsoMQS';
+    fname = 'f:\CapaReal\1017EsoMQS_octant';
     % fname = 'E:\Kevin\CapaReal\0829LungMQS_1MHz\';
     SAR_flag = 1;
     EsoMQS_H0_plot_Fine;

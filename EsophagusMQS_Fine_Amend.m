@@ -1,472 +1,487 @@
-% % === % ========================================= % === %
-% % === % Topic: Endocavitory Magnetic hyperthermia % === %
-% % === % Starting Dates: 1002                      % === %
-% % === % ========================================= % === %
-% % === % ========================================= % === %
-% % === % Construction of coordinate and grid shift % === %
-% % === % ========================================= % === %
+% % % === % ========================================= % === %
+% % % === % Topic: Endocavitory Magnetic hyperthermia % === %
+% % % === % Starting Dates: 1002                      % === %
+% % % === % ========================================= % === %
+% % % === % ========================================= % === %
+% % % === % Construction of coordinate and grid shift % === %
+% % % === % ========================================= % === %
+% % clc; clear;
+% % digits;
+% % disp('Esophagus: MQS');
+% % Mu_0          = 4 * pi * 10^(-7);
+% % Epsilon_0     = 10^(-9) / (36 * pi);
+% % Omega_0       = 2 * pi * 1.2 * 10^6; % 2 * pi * 1.2 MHz
+
+% % % parameters
+% %               % [ air, bolus, muscle,  lung,  lung,    bone,    fat, reserved, esophageal tumor ]';
+% % rho           = [   1,  1020,   1020,   394,   394,    1790,    900,        0,             1040 ]';
+% % epsilon_r_pre = [   1,     1,   1387,  1102,  1102,    22.6,  20.31,        0,                1 ]'; % which is not used for MQS
+% % sigma         = [   0,     0,   0.54,  0.33,  0.33, 0.00283, 0.0237,        0,             0.71 ]';
+% % epsilon_r     = epsilon_r_pre - i * sigma ./ ( Omega_0 * Epsilon_0 );
+
+
+% % % There 'must' be a grid point at the origin.
+% % loadParas;
+% % % paras = [ h_torso, air_x, air_z, ...
+% % %         bolus_a, bolus_c, skin_a, skin_c, muscle_a, muscle_c, ...
+% % %         l_lung_x, l_lung_z, l_lung_a, l_lung_b, l_lung_c, ...
+% % %         r_lung_x, r_lung_z, r_lung_a, r_lung_b, l_lung_c, ...
+% % %         tumor_x, tumor_y, tumor_z, tumor_r ];
+
+% % Ribs = zeros(7, 9);
+% % SSBone = zeros(1, 8);
+% % [ Ribs, SSBone ] = BoneParas;
+% % % Ribs = [ rib_hr, rib_wy, rib_rad, 
+% % %           l_rib_x, l_rib_y, l_rib_z, 
+% % %           r_rib_x, r_rib_y, r_rib_z ];
+% % % SSBone = [ spine_hx, spine_hz, spine_wy, spine_x, spine_z, 
+% % %            sternum_hx, sternum_hz, sternum_wy, sternum_x, sternum_z ];
+
+% % x_idx_max = air_x / dx + 1;
+% % y_idx_max = h_torso / dy + 1;
+% % z_idx_max = air_z / dz + 1;
+
+% % GridShiftTableXZ = cell( h_torso / dy + 1, 1);
+% % % GridShiftTableXZ: store [ 1, distance ], [ 3, distance ] and [ 2, distance ] for $x$-, $y$- and $z$ shift.
+
+% % mediumTable = ones( x_idx_max, y_idx_max, z_idx_max, 'uint8');
+% % % check the 6, 7, 8 number in the mediumTable; not accord with size(rho) ?
+% % % Normal Points: [ air, bolus, muscle, lung, tumor, ribs, spine, sternum, esophageal tumor ] -> [  1,  2,  3,  4,  5,  6,  7,  8, 9 ]
+% % % Interfaces:    [ air-bolus, bolus-muscle, muscle-lung, lung-tumor ]      -> [ 11, 13, 12*, 14, 15 ] % temperarily set to 12
+% % % Bone Interfaces: [ Ribs-others, spine-others, sternum-others ]           -> [ 16, 17, 18 ] 
+% % byndCD = 30; % beyond computation: 30
+% % EsBndryNum = 31;
+% % EsTumorNum = 9;
+
+% % for y = - h_torso / 2: dy: h_torso / 2
+% %     paras2dXZ = genParas2d( y, paras, dx, dy, dz );
+% %     % paras2dXZ = [ air_x, air_z, bolus_a, bolus_c, skin_a, skin_c, muscle_a, muscle_c, ...
+% %     %     l_lung_x, l_lung_z, l_lung_a_prime, l_lung_c_prime, ...
+% %     %     r_lung_x, r_lung_z, r_lung_a_prime, r_lung_c_prime, ...
+% %     %     tumor_x, tumor_z, tumor_r_prime ];
+% %     y_idx = y / dy + h_torso / (2 * dy) + 1;
+% %     mediumTable(:, int64(y_idx), :) = getRoughMed( mediumTable(:, int64(y_idx), :), paras2dXZ, dx, dz, 'no_fat' );
+% %     [ GridShiftTableXZ{ int64(y_idx) }, mediumTable(:, int64(y_idx), :) ] = constructCoordinateXZ_all( paras2dXZ, dx, dz, mediumTable(:, int64(y_idx), :) );
+% % end
+
+% % % 1 to 7, corresponding to 1-st to 7-th rib.
+% % RibValid = 0; 
+% % SSBoneValid = false;
+% % BoneMediumTable = ones( x_idx_max, y_idx_max, z_idx_max, 'uint8');
+% % for y = - h_torso / 2: dy: h_torso / 2
+% %     [ RibValid, SSBoneValid ] = Bone2d(y, Ribs, SSBone, dy, h_torso);
+% %     y_idx = y / dy + h_torso / (2 * dy) + 1;
+% %     [ GridShiftTableXZ{ int64(y_idx) }, BoneMediumTable(:, int64(y_idx), :) ] ...
+% %         = UpdateBoneMed( y, mediumTable(:, int64(y_idx), :), Ribs, SSBone, RibValid, SSBoneValid, ...
+% %                             dx, dz, air_x, air_z, x_idx_max, z_idx_max, GridShiftTableXZ{ int64(y_idx) } );
+% % end
+% % for x = - air_x / 2: dx: air_x / 2
+% %     paras2dYZ = genParas2dYZ( x, paras, dy, dz );
+% %     y_grid_table = fillGridTableY_all( paras2dYZ, dy, dz );
+% %     x_idx = x / dx + air_x / (2 * dx) + 1;
+% %     [ GridShiftTableXZ, mediumTable ] = constructGridShiftTableXYZ( GridShiftTableXZ, int64(x_idx), y_grid_table, h_torso, air_z, dy, dz, mediumTable, paras2dYZ );
+% % end
+% % % re-organize the GridShiftTable
+% % GridShiftTable = cell( air_x / dx + 1, h_torso / dy + 1, air_z / dz + 1 );
+% % for y_idx = 1: 1: h_torso / dy + 1
+% %     tmp_table = GridShiftTableXZ{ y_idx };
+% %     for x_idx = 1: 1: air_x / dx + 1
+% %         for z_idx = 1: 1: air_z / dz + 1
+% %             GridShiftTable{ x_idx, y_idx, z_idx } = tmp_table{ x_idx, z_idx };
+% %         end
+% %     end
+% % end
+% % shiftedCoordinateXYZ = constructCoordinateXYZ( GridShiftTable, paras, dx, dy, dz );
+
+% % sparseA = cell( x_idx_max * y_idx_max * z_idx_max, 1 );
+% % B = zeros( x_idx_max * y_idx_max * z_idx_max, 1 );
+% % SegMed = ones( x_idx_max, y_idx_max, z_idx_max, 6, 8, 'uint8');
+
+% % x_max_vertex = 2 * ( x_idx_max - 1 ) + 1;
+% % y_max_vertex = 2 * ( y_idx_max - 1 ) + 1;
+% % z_max_vertex = 2 * ( z_idx_max - 1 ) + 1;
+% % N_v = x_max_vertex * y_max_vertex * z_max_vertex;
+% % N_e = 7 * (x_max_vertex - 1) * (y_max_vertex - 1) * (z_max_vertex - 1) ...
+% %     + 3 * ( (x_max_vertex - 1) * (y_max_vertex - 1) + (y_max_vertex - 1) * (z_max_vertex - 1) + (x_max_vertex - 1) * (z_max_vertex - 1) ) ...
+% %     + ( (x_max_vertex - 1) + (y_max_vertex - 1) + (z_max_vertex - 1) );
+% % Vertex_Crdnt = zeros( x_max_vertex, y_max_vertex, z_max_vertex, 3 );
+% % tic;
+% % disp('Calculation of vertex coordinate');
+% % Vertex_Crdnt = buildCoordinateXYZ_Vertex( shiftedCoordinateXYZ );
+% % toc;
+
+% % % figure(1);
+% % % clf;
+% % % paras2dXZ = genParas2d( 0, paras, dx, dy, dz );
+% % % plotMap_Eso( paras2dXZ, dx, dz );
+% % % plotRibXZ(Ribs, SSBone, dx, dz);
+% % % plotGridLineXZ( shiftedCoordinateXYZ, uint64(0 / dy + h_torso / (2 * dy) + 1) );
+% % % axis( [- 5, 5, 0, 10] );
+% % % return;
+
+% % % === % ============================ % === %
+% % % === % Filling time of Rough SegMed % === %
+% % % === % ============================ % === %
+% % sparseA = cell( x_idx_max * y_idx_max * z_idx_max, 1 );
+% % B = zeros( x_idx_max * y_idx_max * z_idx_max, 1 );
+% % MskMedTab = mediumTable; 
+% % % normal point remains the same, the boundary point are forced to zero
+% % MskMedTab( find(MskMedTab >= 10) ) = 0;
+
+% % disp('The fill up time of SegMed: ');
+% % tic;
+% % for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+% %     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
+% %     p0 = idx;
+% %     if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
+% %         if MskMedTab(p0) ~= 0 && BoneMediumTable(p0) == 1 % normal normal point
+% %         % if mediumTable(p0) == 1 || mediumTable(p0) == 2 || mediumTable(p0) == 3 || mediumTable(p0) == 4 || mediumTable(p0) == 5 
+% %             [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillNrmlPt_A( m, n, ell, ...
+% %                             shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab );
+% %         elseif MskMedTab(p0) == 0 && BoneMediumTable(p0) == 1 % normal bondary point
+% %             [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
+% %                 shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
+% %                 epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
+% %         elseif MskMedTab(p0) ~= 0 && BoneMediumTable(p0) >= 16 && BoneMediumTable(p0) <= 18 % rib normal point
+% %             [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillNrmlRibPt_A( m, n, ell, ...
+% %                 shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
+% %                     MskMedTab, BoneMediumTable, epsilon_r );
+% %         elseif MskMedTab(p0) == 0 && BoneMediumTable(p0) == 16  % rib boundary point
+% %             [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrRibPt_A( m, n, ell, ...
+% %                 shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
+% %                     MskMedTab, BoneMediumTable, epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
+% %         else
+% %             error('check');
+% %         end
+% %     elseif ell == z_idx_max
+% %         sparseA{ p0 } = fillTop_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
+% %     elseif ell == 1
+% %         sparseA{ p0 } = fillBttm_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
+% %     elseif m == x_idx_max && ell >= 2 && ell <= z_idx_max - 1 
+% %         sparseA{ p0 } = fillRight_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
+% %     elseif m == 1 && ell >= 2 && ell <= z_idx_max - 1 
+% %         sparseA{ p0 } = fillLeft_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
+% %     elseif n == y_idx_max && m >= 2 && m <= x_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
+% %         sparseA{ p0 } = fillFront_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
+% %     elseif n == 1 && m >= 2 && m <= x_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
+% %         sparseA{ p0 } = fillBack_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
+% %     end
+% % end
+% % toc;
+% % % warning messages occurr in the above determination of SegMed; ammended by the below SegMed determination process
+% % for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+% %     % idx = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
+% %     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
+% %     p0 = idx;
+% %     if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
+% %         if mediumTable(p0) == 11 % air-bolus boundary pnt
+% %             % check the validity of the LHS accepance.
+% %             % update the bolus
+% %             SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
+% %                                             squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 2, 'inner' );
+
+% %             [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
+% %                 shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
+% %                 epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
+% %         elseif mediumTable(p0) == 13 % bolus-muscle pnt
+% %             % update the bolus
+% %             SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
+% %                                             squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 2, 'outer' );
+% %             % update the fat tissue
+% %             SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
+% %                                             squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 7, 'inner' );
+
+% %             if BoneMediumTable(p0) == 1 % normal bondary point
+% %                 [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
+% %                     shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
+% %                     epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
+% %             elseif BoneMediumTable(p0) == 16  % rib boundary point
+% %                 [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrRibPt_A( m, n, ell, ...
+% %                     shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
+% %                         MskMedTab, BoneMediumTable, epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
+% %             else
+% %                 error('check');
+% %             end
+% %         % if fat is incorporated, the following code is needed.
+% %         % elseif mediumTable(p0) == 12 % fat-muscle
+% %         %     % update the fat tissue
+% %         %     SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
+% %         %                                     squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 7, 'outer' );
+% %         %     if MskMedTab(p0) ~= 0
+% %         %         error('check');
+% %         %     end
+% %         %     if BoneMediumTable(p0) == 1 % normal bondary point
+% %         %         [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
+% %         %             shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
+% %         %             epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
+% %         %     elseif BoneMediumTable(p0) == 16  % rib boundary point
+% %         %         [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrRibPt_A( m, n, ell, ...
+% %         %             shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
+% %         %                 MskMedTab, BoneMediumTable, epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
+% %         %     else
+% %         %         error('check');
+% %         %     end
+% %         end
+% %     end
+% % end
+
+% % % === % ========================================= % === %
+% % % === % Fill the SegMed on the computation domain % === %
+% % % === % ========================================= % === % 
+% % % x- and z-direction.
+% % for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+% %     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
+% %     if m == 1 || m == x_idx_max || ell == 1 && ell == z_idx_max 
+% %         SegMed(m, n, ell, :, :) = uint8(1);
+% %     end
+% % end 
+% % % y-direction.
+% % for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+% %     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
+% %     if n == 1 || n == y_idx_max
+% %         tmpSeg = zeros(6, 8, 'uint8');
+% %         SegCopy = zeros(8, 1, 'uint8');
+% %         SegCopy(1) = SegMed(m, 2, ell, 4, 1);
+% %         SegCopy(2) = SegMed(m, 2, ell, 1, 1);
+% %         SegCopy(3) = SegMed(m, 2, ell, 1, 3);
+% %         SegCopy(4) = SegMed(m, 2, ell, 2, 1);
+% %         SegCopy(5) = SegMed(m, 2, ell, 2, 5);
+% %         SegCopy(6) = SegMed(m, 2, ell, 3, 1);
+% %         SegCopy(7) = SegMed(m, 2, ell, 3, 3);
+% %         SegCopy(8) = SegMed(m, 2, ell, 4, 5);
+
+% %         tmpSeg(4, 1) = SegCopy(1); tmpSeg(4, 2) = SegCopy(1); tmpSeg(4, 3) = SegCopy(1); tmpSeg(4, 4) = SegCopy(1); tmpSeg(5, 4) = SegCopy(1); tmpSeg(6, 1) = SegCopy(1);
+% %         tmpSeg(1, 1) = SegCopy(2); tmpSeg(1, 2) = SegCopy(2); tmpSeg(1, 7) = SegCopy(2); tmpSeg(1, 8) = SegCopy(2); tmpSeg(5, 3) = SegCopy(2); tmpSeg(6, 2) = SegCopy(2); 
+% %         tmpSeg(1, 3) = SegCopy(3); tmpSeg(1, 4) = SegCopy(3); tmpSeg(1, 5) = SegCopy(3); tmpSeg(1, 6) = SegCopy(3); tmpSeg(5, 2) = SegCopy(3); tmpSeg(6, 3) = SegCopy(3); 
+% %         tmpSeg(2, 1) = SegCopy(4); tmpSeg(2, 2) = SegCopy(4); tmpSeg(2, 3) = SegCopy(4); tmpSeg(2, 4) = SegCopy(4); tmpSeg(5, 1) = SegCopy(4); tmpSeg(6, 4) = SegCopy(4); 
+% %         tmpSeg(2, 5) = SegCopy(5); tmpSeg(2, 6) = SegCopy(5); tmpSeg(2, 7) = SegCopy(5); tmpSeg(2, 8) = SegCopy(5); tmpSeg(5, 8) = SegCopy(5); tmpSeg(6, 5) = SegCopy(5); 
+% %         tmpSeg(3, 1) = SegCopy(6); tmpSeg(3, 2) = SegCopy(6); tmpSeg(3, 7) = SegCopy(6); tmpSeg(3, 8) = SegCopy(6); tmpSeg(5, 7) = SegCopy(6); tmpSeg(6, 6) = SegCopy(6); 
+% %         tmpSeg(3, 3) = SegCopy(7); tmpSeg(3, 4) = SegCopy(7); tmpSeg(3, 5) = SegCopy(7); tmpSeg(3, 6) = SegCopy(7); tmpSeg(5, 6) = SegCopy(7); tmpSeg(6, 7) = SegCopy(7); 
+% %         tmpSeg(4, 5) = SegCopy(8); tmpSeg(4, 6) = SegCopy(8); tmpSeg(4, 7) = SegCopy(8); tmpSeg(4, 8) = SegCopy(8); tmpSeg(5, 5) = SegCopy(8); tmpSeg(6, 8) = SegCopy(8); 
+% %         SegMed(m, n, ell, :, :) = tmpSeg;
+% %     end
+% % end 
+
+% % % === === % ====================================================== % === === %
+% % % === === % Get mediumTable_ext, SegMed_ext and GridShiftTable_ext % === === %
+% % % === === % ======================================================  % === === %
+% % % to-do
+% % dx_ext = dx / 2;
+% % dy_ext = dy / 2;
+% % dz_ext = dz / 2;
+% % x_idx_max_ext = x_idx_max * 2 - 1;
+% % y_idx_max_ext = y_idx_max * 2 - 1;
+% % z_idx_max_ext = z_idx_max * 2 - 1;
+% % mediumTable_ext = zeros(x_idx_max_ext, y_idx_max_ext, z_idx_max_ext, 'uint8');
+% % SegMed_ext = zeros(x_idx_max_ext, y_idx_max_ext, z_idx_max_ext, 6, 8, 'uint8');
+% % GridShiftTable_ext = cell( air_x / dx_ext + 1, h_torso / dy_ext + 1, air_z / dz_ext + 1 );
+
+% % [ mediumTable_ext, SegMed_ext, GridShiftTable_ext ] = getExtVar(dx, dy, dz);
+
 % clc; clear;
-% digits;
-% disp('Esophagus: MQS');
-% Mu_0          = 4 * pi * 10^(-7);
-% Epsilon_0     = 10^(-9) / (36 * pi);
-% Omega_0       = 2 * pi * 1.2 * 10^6; % 2 * pi * 1.2 MHz
+% load('1012PreB.mat');
+% % === === % ======================================== % === === %
+% % === === % Draw The Second Rectangular Box Naming B % === === %
+% % === === % ======================================== % === === %
+% % region B: [-3, 3, 2, 8]
+% % region C: [-1, 1, 4, 6], which is discard in current version
+% % domain B has actual size of [ w_x_B + dx, w_y_B + dy, w_z_B + dz ]
+% w_x_B = 10 / 100;
+% w_y_B = 10 / 100;
+% w_z_B = 10 / 100; % w_x_B, w_y_B and w_z_B must be on the grid of domain A
+% dx_B = dx / 2;
+% dy_B = dy / 2;
+% dz_B = dz / 2;
+% % Domain B
+% x_idx_max_B = ( w_x_B + dx ) / dx_B + 1;
+% y_idx_max_B = ( w_y_B + dy ) / dy_B + 1;
+% z_idx_max_B = ( w_z_B + dz ) / dz_B + 1;
+% x_max_vertex_B = 2 * x_idx_max_B - 1;
+% y_max_vertex_B = 2 * y_idx_max_B - 1;
+% z_max_vertex_B = 2 * z_idx_max_B - 1;
+% % Larger Grid on Domain B; 
+% x_idx_max_AinB = w_x_B / ( 2 * dx_B ) + 1; % dx_A = 2 * dx_B
+% y_idx_max_AinB = w_y_B / ( 2 * dy_B ) + 1; % dy_A = 2 * dy_B
+% z_idx_max_AinB = w_z_B / ( 2 * dz_B ) + 1; % dz_A = 2 * dz_B
+% x_max_vertex_AinB = 2 * x_idx_max_AinB + 1;
+% y_max_vertex_AinB = 2 * y_idx_max_AinB + 1;
+% z_max_vertex_AinB = 2 * z_idx_max_AinB + 1;
 
-% % parameters
-%               % [ air, bolus, muscle,  lung,  lung,    bone,    fat, reserved, esophageal tumor ]';
-% rho           = [   1,  1020,   1020,   394,   394,    1790,    900,        0,             1040 ]';
-% epsilon_r_pre = [   1,     1,   1387,  1102,  1102,    22.6,  20.31,        0,                1 ]'; % which is not used for MQS
-% sigma         = [   0,     0,   0.54,  0.33,  0.33, 0.00283, 0.0237,        0,             0.71 ]';
-% epsilon_r     = epsilon_r_pre - i * sigma ./ ( Omega_0 * Epsilon_0 );
+% loadParas_Eso0924; % a parameters script
+% RegionB = false(x_idx_max, y_idx_max, z_idx_max);
+% m_Rght  = ( es_x + w_x_B / 2 ) / dx + air_x / (2 * dx) + 1;
+% m_Lft   = ( es_x - w_x_B / 2 ) / dx + air_x / (2 * dx) + 1;
+% n_Far   = ( 0    + w_y_B / 2 ) / dy + h_torso / (2 * dy) + 1;
+% n_Near  = ( 0    - w_y_B / 2 ) / dy + h_torso / (2 * dy) + 1;
+% ell_Top = ( es_z + w_z_B / 2 ) / dz + air_z / (2 * dz) + 1;
+% ell_Dwn = ( es_z - w_z_B / 2 ) / dz + air_z / (2 * dz) + 1;
+% RegionB(m_Lft: m_Rght, n_Near: n_Far, ell_Dwn: ell_Top) = true;
 
+% % down-left-near
+% m_v_Lft = (2 * m_Lft - 1) - 1;
+% n_v_Near = (2 * n_Near - 1) - 1;
+% ell_v_Dwn = (2 * ell_Dwn - 1) - 1;
+% % top-right-far
+% m_v_Rght = (2 * m_Rght - 1) + 1;
+% n_v_Far = (2 * n_Far - 1) + 1;
+% ell_v_Top = (2 * ell_Top - 1) + 1;
 
-% % There 'must' be a grid point at the origin.
-% loadParas;
-% % paras = [ h_torso, air_x, air_z, ...
-% %         bolus_a, bolus_c, skin_a, skin_c, muscle_a, muscle_c, ...
-% %         l_lung_x, l_lung_z, l_lung_a, l_lung_b, l_lung_c, ...
-% %         r_lung_x, r_lung_z, r_lung_a, r_lung_b, l_lung_c, ...
-% %         tumor_x, tumor_y, tumor_z, tumor_r ];
+% % === === % =============================== % === === %
+% % === === % Inherent SegMed_B from Domain A % === === %
+% % === === % =============================== % === === %
+% mediumTable_B = zeros( x_idx_max_B, y_idx_max_B, z_idx_max_B, 'uint8');
+% SegMed_B = zeros( x_idx_max_B, y_idx_max_B, z_idx_max_B, 6, 8, 'uint8');
+% GridShiftTable_B = cell( ( w_x_B + dx ) / dx_B + 1, ( w_y_B + dy ) / dy_B + 1, ( w_z_B + dz ) / dz_B + 1 );
+% % the vIdx in Domain A is Idx in domain B and extended domain A
+% mediumTable_B = mediumTable_ext(m_v_Lft: m_v_Rght, n_v_Near: n_v_Far, ell_v_Dwn: ell_v_Top, :);
+% SegMed_B = SegMed_ext(m_v_Lft: m_v_Rght, n_v_Near: n_v_Far, ell_v_Dwn: ell_v_Top, :, :);
+% GridShiftTable_B = GridShiftTable_ext(m_v_Lft: m_v_Rght, n_v_Near: n_v_Far, ell_v_Dwn: ell_v_Top);
 
-% Ribs = zeros(7, 9);
-% SSBone = zeros(1, 8);
-% [ Ribs, SSBone ] = BoneParas;
-% % Ribs = [ rib_hr, rib_wy, rib_rad, 
-% %           l_rib_x, l_rib_y, l_rib_z, 
-% %           r_rib_x, r_rib_y, r_rib_z ];
-% % SSBone = [ spine_hx, spine_hz, spine_wy, spine_x, spine_z, 
-% %            sternum_hx, sternum_hz, sternum_wy, sternum_x, sternum_z ];
-
-% x_idx_max = air_x / dx + 1;
-% y_idx_max = h_torso / dy + 1;
-% z_idx_max = air_z / dz + 1;
-
-% GridShiftTableXZ = cell( h_torso / dy + 1, 1);
-% % GridShiftTableXZ: store [ 1, distance ], [ 3, distance ] and [ 2, distance ] for $x$-, $y$- and $z$ shift.
-
-% mediumTable = ones( x_idx_max, y_idx_max, z_idx_max, 'uint8');
-% % check the 6, 7, 8 number in the mediumTable; not accord with size(rho) ?
-% % Normal Points: [ air, bolus, muscle, lung, tumor, ribs, spine, sternum, esophageal tumor ] -> [  1,  2,  3,  4,  5,  6,  7,  8, 9 ]
-% % Interfaces:    [ air-bolus, bolus-muscle, muscle-lung, lung-tumor ]      -> [ 11, 13, 12*, 14, 15 ] % temperarily set to 12
-% % Bone Interfaces: [ Ribs-others, spine-others, sternum-others ]           -> [ 16, 17, 18 ] 
-% byndCD = 30; % beyond computation: 30
-% EsBndryNum = 31;
-% EsTumorNum = 9;
-
-% for y = - h_torso / 2: dy: h_torso / 2
-%     paras2dXZ = genParas2d( y, paras, dx, dy, dz );
-%     % paras2dXZ = [ air_x, air_z, bolus_a, bolus_c, skin_a, skin_c, muscle_a, muscle_c, ...
-%     %     l_lung_x, l_lung_z, l_lung_a_prime, l_lung_c_prime, ...
-%     %     r_lung_x, r_lung_z, r_lung_a_prime, r_lung_c_prime, ...
-%     %     tumor_x, tumor_z, tumor_r_prime ];
-%     y_idx = y / dy + h_torso / (2 * dy) + 1;
-%     mediumTable(:, int64(y_idx), :) = getRoughMed( mediumTable(:, int64(y_idx), :), paras2dXZ, dx, dz, 'no_fat' );
-%     [ GridShiftTableXZ{ int64(y_idx) }, mediumTable(:, int64(y_idx), :) ] = constructCoordinateXZ_all( paras2dXZ, dx, dz, mediumTable(:, int64(y_idx), :) );
+% % === === % ======================================================= % === === %
+% % === === % Updating GridShiftTable_B and mediumTable_B in Domain B % === === %
+% % === === % ======================================================= % === === %
+% GridShiftTableXZ_B = cell( ( w_y_B + dy ) / dy_B + 1, 1);
+% for y = - ( w_y_B + dy ) / 2 : dy_B: ( w_y_B + dy ) / 2
+%     y_idx = y / dy_B + ( w_x_B + dy ) / (2 * dy_B) + 1;
+%     tumor_y_idx_far  = (tumor_y_es + tumor_hy_es / 2) / dy_B + ( w_y_B + dy ) / (2 * dy_B) + 1;
+%     tumor_y_idx_near = (tumor_y_es - tumor_hy_es / 2) / dy_B + ( w_y_B + dy ) / (2 * dy_B) + 1;
+%     % fill in muscle medium
+%     mediumTable_B(:, int64(y_idx), :) = medFill_Eso( squeeze(mediumTable_B(:, int64(y_idx), :)), es_x, es_z, es_r, es_r, dx_B, dz_B, 3, w_x_B + dx, w_z_B + dz );
+%     % fill in air medium
+%     mediumTable_B((x_idx_max_B + 1) / 2, int64(y_idx), (z_idx_max_B + 1) / 2) = 1;
+%     if y_idx <= tumor_y_idx_far && y_idx >= tumor_y_idx_near
+%         mediumTable_B(:, int64(y_idx), :) = medFill_Eso( squeeze(mediumTable_B(:, int64(y_idx), :)), tumor_x_es, tumor_z_es, tumor_r_es, tumor_r_es, dx_B, dz_B, 9, w_x_B + dx, w_z_B + dz );
+%         mediumTable_B(11: 13, int64(y_idx), 11) = 1;
+%         mediumTable_B(11: 13, int64(y_idx), 12) = 42;
+%     end
+%     [ GridShiftTableXZ_B{ int64(y_idx) }, mediumTable_B(:, int64(y_idx), :) ] = constructCoordinateXZ_all_Eso0924( w_x_B + dx, w_z_B + dz, dx_B, dz_B, mediumTable_B(:, int64(y_idx), :) );
 % end
 
-% % 1 to 7, corresponding to 1-st to 7-th rib.
-% RibValid = 0; 
-% SSBoneValid = false;
-% BoneMediumTable = ones( x_idx_max, y_idx_max, z_idx_max, 'uint8');
-% for y = - h_torso / 2: dy: h_torso / 2
-%     [ RibValid, SSBoneValid ] = Bone2d(y, Ribs, SSBone, dy, h_torso);
-%     y_idx = y / dy + h_torso / (2 * dy) + 1;
-%     [ GridShiftTableXZ{ int64(y_idx) }, BoneMediumTable(:, int64(y_idx), :) ] ...
-%         = UpdateBoneMed( y, mediumTable(:, int64(y_idx), :), Ribs, SSBone, RibValid, SSBoneValid, ...
-%                             dx, dz, air_x, air_z, x_idx_max, z_idx_max, GridShiftTableXZ{ int64(y_idx) } );
-% end
-% for x = - air_x / 2: dx: air_x / 2
-%     paras2dYZ = genParas2dYZ( x, paras, dy, dz );
-%     y_grid_table = fillGridTableY_all( paras2dYZ, dy, dz );
-%     x_idx = x / dx + air_x / (2 * dx) + 1;
-%     [ GridShiftTableXZ, mediumTable ] = constructGridShiftTableXYZ( GridShiftTableXZ, int64(x_idx), y_grid_table, h_torso, air_z, dy, dz, mediumTable, paras2dYZ );
-% end
-% % re-organize the GridShiftTable
-% GridShiftTable = cell( air_x / dx + 1, h_torso / dy + 1, air_z / dz + 1 );
-% for y_idx = 1: 1: h_torso / dy + 1
-%     tmp_table = GridShiftTableXZ{ y_idx };
-%     for x_idx = 1: 1: air_x / dx + 1
-%         for z_idx = 1: 1: air_z / dz + 1
-%             GridShiftTable{ x_idx, y_idx, z_idx } = tmp_table{ x_idx, z_idx };
+% % the shift-table in GridShiftTableXZ_B has higher priority than that stoted in GridShiftTable_B
+% ReservedPnt = false(( w_x_B + dx ) / dx_B + 1, ( w_y_B + dy ) / dy_B + 1, ( w_z_B + dz ) / dz_B + 1);
+% ReservedPnt( ( tumor_x_es + tumor_r_es - es_x ) / dx_B + ( w_x_B + dx ) / (2 * dx_B) + 1, :, ( tumor_z_es - es_z ) / dz_B + ( w_z_B + dz ) / (2 * dz_B) + 1 ) = true;
+% for y_idx_B = 1: 1: ( w_y_B + dy ) / dy_B + 1
+%     tmp_table = GridShiftTableXZ_B{ y_idx_B };
+%     for x_idx_B = 1: 1: ( w_x_B + dx ) / dx_B + 1
+%         for z_idx_B = 1: 1: ( w_z_B + dz ) / dz_B + 1
+%             if ~isempty( tmp_table{ x_idx_B, z_idx_B } ) 
+%                 GridShiftTable_B{ x_idx_B, y_idx_B, z_idx_B } = tmp_table{ x_idx_B, z_idx_B };
+%             end
+%             if ReservedPnt(x_idx_B, y_idx_B, z_idx_B)
+%                 GridShiftTable_B{ x_idx_B, y_idx_B, z_idx_B } = [];
+%             end
 %         end
 %     end
 % end
-% shiftedCoordinateXYZ = constructCoordinateXYZ( GridShiftTable, paras, dx, dy, dz );
 
-% sparseA = cell( x_idx_max * y_idx_max * z_idx_max, 1 );
-% B = zeros( x_idx_max * y_idx_max * z_idx_max, 1 );
-% SegMed = ones( x_idx_max, y_idx_max, z_idx_max, 6, 8, 'uint8');
+% shiftedCoordinateXYZ_B = constructCoordinateXYZ( GridShiftTable_B, [w_y_B + dx, w_x_B + dy, w_z_B + dz], dx_B, dy_B, dz_B );
+% shiftedCoordinateXYZ_B(:, :, :, 3) = shiftedCoordinateXYZ_B(:, :, :, 3) + es_z;
 
-% x_max_vertex = 2 * ( x_idx_max - 1 ) + 1;
-% y_max_vertex = 2 * ( y_idx_max - 1 ) + 1;
-% z_max_vertex = 2 * ( z_idx_max - 1 ) + 1;
-% N_v = x_max_vertex * y_max_vertex * z_max_vertex;
-% N_e = 7 * (x_max_vertex - 1) * (y_max_vertex - 1) * (z_max_vertex - 1) ...
-%     + 3 * ( (x_max_vertex - 1) * (y_max_vertex - 1) + (y_max_vertex - 1) * (z_max_vertex - 1) + (x_max_vertex - 1) * (z_max_vertex - 1) ) ...
-%     + ( (x_max_vertex - 1) + (y_max_vertex - 1) + (z_max_vertex - 1) );
-% Vertex_Crdnt = zeros( x_max_vertex, y_max_vertex, z_max_vertex, 3 );
+% % Get vertex coordinate in domain B
+% Vertex_Crdnt_B = zeros( x_max_vertex_B, y_max_vertex_B, z_max_vertex_B, 3 );
 % tic;
 % disp('Calculation of vertex coordinate');
-% Vertex_Crdnt = buildCoordinateXYZ_Vertex( shiftedCoordinateXYZ );
+% Vertex_Crdnt_B = buildCoordinateXYZ_Vertex( shiftedCoordinateXYZ_B );
 % toc;
 
-% % figure(1);
-% % clf;
-% % paras2dXZ = genParas2d( 0, paras, dx, dy, dz );
-% % plotMap_Eso( paras2dXZ, dx, dz );
-% % plotRibXZ(Ribs, SSBone, dx, dz);
-% % plotGridLineXZ( shiftedCoordinateXYZ, uint64(0 / dy + h_torso / (2 * dy) + 1) );
-% % axis( [- 5, 5, 0, 10] );
+% figure(1);
+% clf;
+% hold on;
+% paras2dXZ = genParas2d( 0, paras, dx, dy, dz );
+% plotMap_Eso( paras2dXZ, dx, dz );
+% plotGridLineXZ( shiftedCoordinateXYZ_B, ( y_idx_max_B + 1 ) / 2 );
+% figure(2)
+% clf;
+% hold on;
+% plotGridLineYZ( shiftedCoordinateXYZ, ( x_idx_max_B + 1 ) / 2 );
+
+% % === === % ================================ % === === %
+% % === === % Updating SegMed witihn esophagus % === === %
+% % === === % ================================ % === === %
+% % get the Eso_Region
+% m_B_Rght_Eso  = ( es_x + 1 / 100 - es_x ) / dx_B + ( w_x_B + dx ) / (2 * dx_B) + 1;
+% m_B_Lft_Eso   = ( es_x - 1 / 100 - es_x ) / dx_B + ( w_x_B + dx ) / (2 * dx_B) + 1;
+% n_B_Far_Eso   = ( 0    + 5 / 100 - 0 ) / dy_B + ( w_y_B + dy ) / (2 * dy_B) + 1;
+% n_B_Near_Eso  = ( 0    - 5 / 100 - 0 ) / dy_B + ( w_y_B + dy ) / (2 * dy_B) + 1;
+% ell_B_Top_Eso = ( es_z + 1 / 100 - es_z ) / dz_B + ( w_z_B + dz ) / (2 * dz_B) + 1;
+% ell_B_Dwn_Eso = ( es_z - 1 / 100 - es_z ) / dz_B + ( w_z_B + dz ) / (2 * dz_B) + 1;
+% Eso_Region = false( x_idx_max_B, y_idx_max_B, z_idx_max_B );
+% Eso_Region(m_B_Lft_Eso: m_B_Rght_Eso, n_B_Near_Eso: n_B_Far_Eso, ell_B_Dwn_Eso: ell_B_Top_Eso) = true;
+
+% % no need to update the mediumTable_B for full ?
+% for idx = 1: 1: x_idx_max_B * y_idx_max_B * z_idx_max_B
+%     [ m, n, ell ] = getMNL(idx, x_idx_max_B, y_idx_max_B, z_idx_max_B);
+%     if Eso_Region(m, n, ell)
+%         % possible feed in: 1, 3, 9, 41, 42: discard others
+%         SegMed_B( m, n, ell, :, : ) = fillBndrySegMed1015( m, n, ell, squeeze(SegMed_B( m, n, ell, :, : )), ...
+%                 shiftedCoordinateXYZ_B, x_idx_max_B, y_idx_max_B, z_idx_max_B, mediumTable_B, 'Eso1015' );
+%     % elseif mediumTable_B(m, n, ell) <= 8
+%     %     SegMed_B(m, n, ell, :, :) = mediumTable_B(m, n, ell);
+%     end
+% end
+
+% % === % ==================================== % === %
+% % === % Trimming: Invalid set to 30 (byndCD) % === %
+% % === % ==================================== % === % 
+% SegMed = setBndrySegMed(SegMed, byndCD, x_idx_max, y_idx_max, z_idx_max);
+% SegMed_B = setBndrySegMed(SegMed_B, byndCD, x_idx_max_B, y_idx_max_B, z_idx_max_B);
+
+% validNum = getValidNum(x_idx_max, y_idx_max, z_idx_max);
+% validNum_B = getValidNum(x_idx_max_B, y_idx_max_B, z_idx_max_B); 
+% ExpandedNum = 48 * x_idx_max_B * y_idx_max_B * z_idx_max_B; 
+% MedTetTableCell_B_tmp = cell(ExpandedNum, 1); % each row consists the indices of the four vertices and is medium value.
+% validTetTable         = false(ExpandedNum, 1); 
 % % return;
 
-% % === % ============================ % === %
-% % === % Filling time of Rough SegMed % === %
-% % === % ============================ % === %
-% sparseA = cell( x_idx_max * y_idx_max * z_idx_max, 1 );
-% B = zeros( x_idx_max * y_idx_max * z_idx_max, 1 );
-% MskMedTab = mediumTable; 
-% % normal point remains the same, the boundary point are forced to zero
-% MskMedTab( find(MskMedTab >= 10) ) = 0;
-
-% disp('The fill up time of SegMed: ');
 % tic;
-% for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
-%     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
-%     p0 = idx;
-%     if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
-%         if MskMedTab(p0) ~= 0 && BoneMediumTable(p0) == 1 % normal normal point
-%         % if mediumTable(p0) == 1 || mediumTable(p0) == 2 || mediumTable(p0) == 3 || mediumTable(p0) == 4 || mediumTable(p0) == 5 
-%             [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillNrmlPt_A( m, n, ell, ...
-%                             shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab );
-%         elseif MskMedTab(p0) == 0 && BoneMediumTable(p0) == 1 % normal bondary point
-%             [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
-%                 shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
-%                 epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
-%         elseif MskMedTab(p0) ~= 0 && BoneMediumTable(p0) >= 16 && BoneMediumTable(p0) <= 18 % rib normal point
-%             [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillNrmlRibPt_A( m, n, ell, ...
-%                 shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
-%                     MskMedTab, BoneMediumTable, epsilon_r );
-%         elseif MskMedTab(p0) == 0 && BoneMediumTable(p0) == 16  % rib boundary point
-%             [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrRibPt_A( m, n, ell, ...
-%                 shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
-%                     MskMedTab, BoneMediumTable, epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
-%         else
-%             error('check');
-%         end
-%     elseif ell == z_idx_max
-%         sparseA{ p0 } = fillTop_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
-%     elseif ell == 1
-%         sparseA{ p0 } = fillBttm_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
-%     elseif m == x_idx_max && ell >= 2 && ell <= z_idx_max - 1 
-%         sparseA{ p0 } = fillRight_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
-%     elseif m == 1 && ell >= 2 && ell <= z_idx_max - 1 
-%         sparseA{ p0 } = fillLeft_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
-%     elseif n == y_idx_max && m >= 2 && m <= x_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
-%         sparseA{ p0 } = fillFront_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
-%     elseif n == 1 && m >= 2 && m <= x_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
-%         sparseA{ p0 } = fillBack_A( m, n, ell, x_idx_max, y_idx_max, z_idx_max );
-%     end
+% disp('Getting MedTetTableCell_B_tmp: ');
+% for idx = 1: 1: x_idx_max_B * y_idx_max_B * z_idx_max_B
+%     [ m, n, ell ] = getMNL(idx, x_idx_max_B, y_idx_max_B, z_idx_max_B);
+%     m_v = 2 * m - 1;
+%     n_v = 2 * n - 1;
+%     ell_v = 2 * ell - 1;
+%     PntMedTetTableCell  = cell(48, 1);
+%     PntMedTetTableCell = getPntMedTetTable_2( squeeze( SegMed_B(m, n, ell, :, :) )', N_v, m_v, n_v, ell_v, x_max_vertex_B, y_max_vertex_B, z_max_vertex_B );
+%     MedTetTableCell_B_tmp( 48 * (idx - 1) + 1: 48 * idx ) = PntMedTetTableCell;
+%     PntValidTet = false(48, 1);
+%     PntValidTet( find( squeeze( SegMed_B(m, n, ell, :, :) )' ~= byndCD ) ) = true;
+%     validTetTable( 48 * (idx - 1) + 1: 48 * idx ) = PntValidTet;
 % end
 % toc;
-% % warning messages occurr in the above determination of SegMed; ammended by the below SegMed determination process
-% for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
-%     % idx = ( ell - 1 ) * x_idx_max * y_idx_max + ( n - 1 ) * x_idx_max + m;
-%     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
-%     p0 = idx;
-%     if m >= 2 && m <= x_idx_max - 1 && n >= 2 && n <= y_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1 
-%         if mediumTable(p0) == 11 % air-bolus boundary pnt
-%             % check the validity of the LHS accepance.
-%             % update the bolus
-%             SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
-%                                             squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 2, 'inner' );
 
-%             [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
-%                 shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
-%                 epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
-%         elseif mediumTable(p0) == 13 % bolus-muscle pnt
-%             % update the bolus
-%             SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
-%                                             squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 2, 'outer' );
-%             % update the fat tissue
-%             SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
-%                                             squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 7, 'inner' );
+% RegionB = false(x_idx_max, y_idx_max, z_idx_max);
+% m_Rght  = ( es_x + w_x_B / 2 ) / dx + air_x / (2 * dx) + 1;
+% m_Lft   = ( es_x - w_x_B / 2 ) / dx + air_x / (2 * dx) + 1;
+% n_Far   = ( 0    + w_y_B / 2 ) / dy + h_torso / (2 * dy) + 1;
+% n_Near  = ( 0    - w_y_B / 2 ) / dy + h_torso / (2 * dy) + 1;
+% ell_Top = ( es_z + w_z_B / 2 ) / dz + air_z / (2 * dz) + 1;
+% ell_Dwn = ( es_z - w_z_B / 2 ) / dz + air_z / (2 * dz) + 1;
+% RegionB(m_Lft: m_Rght, n_Near: n_Far, ell_Dwn: ell_Top) = true;
 
-%             if BoneMediumTable(p0) == 1 % normal bondary point
-%                 [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
-%                     shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
-%                     epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
-%             elseif BoneMediumTable(p0) == 16  % rib boundary point
-%                 [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrRibPt_A( m, n, ell, ...
-%                     shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
-%                         MskMedTab, BoneMediumTable, epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
-%             else
-%                 error('check');
-%             end
-%         % if fat is incorporated, the following code is needed.
-%         % elseif mediumTable(p0) == 12 % fat-muscle
-%         %     % update the fat tissue
-%         %     SegMed(m, n, ell, :, :) = BndryUpdate( m, n, ell, shiftedCoordinateXYZ, ...
-%         %                                     squeeze( SegMed(m, n, ell, :, :) ), mediumTable, 7, 'outer' );
-%         %     if MskMedTab(p0) ~= 0
-%         %         error('check');
-%         %     end
-%         %     if BoneMediumTable(p0) == 1 % normal bondary point
-%         %         [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrPt_A( m, n, ell, ...
-%         %             shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, MskMedTab, ...
-%         %             epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
-%         %     elseif BoneMediumTable(p0) == 16  % rib boundary point
-%         %         [ sparseA{ p0 }, SegMed( m, n, ell, :, : ) ] = fillBndrRibPt_A( m, n, ell, ...
-%         %             shiftedCoordinateXYZ, x_idx_max, y_idx_max, z_idx_max, ...
-%         %                 MskMedTab, BoneMediumTable, epsilon_r, squeeze( SegMed(m, n, ell, :, :) ) );
-%         %     else
-%         %         error('check');
-%         %     end
-%         end
-%     end
+% MedTetTableCell_B = MedTetTableCell_B_tmp;
+% MedTetTableCell_B(~validTetTable) = [];
+
+% if size(MedTetTableCell_B, 1) ~= validNum_B
+%     error('check the construction');
 % end
 
-% % === % ========================================= % === %
-% % === % Fill the SegMed on the computation domain % === %
-% % === % ========================================= % === % 
-% % x- and z-direction.
-% for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
-%     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
-%     if m == 1 || m == x_idx_max || ell == 1 && ell == z_idx_max 
-%         SegMed(m, n, ell, :, :) = uint8(1);
-%     end
-% end 
-% % y-direction.
-% for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
-%     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
-%     if n == 1 || n == y_idx_max
-%         tmpSeg = zeros(6, 8, 'uint8');
-%         SegCopy = zeros(8, 1, 'uint8');
-%         SegCopy(1) = SegMed(m, 2, ell, 4, 1);
-%         SegCopy(2) = SegMed(m, 2, ell, 1, 1);
-%         SegCopy(3) = SegMed(m, 2, ell, 1, 3);
-%         SegCopy(4) = SegMed(m, 2, ell, 2, 1);
-%         SegCopy(5) = SegMed(m, 2, ell, 2, 5);
-%         SegCopy(6) = SegMed(m, 2, ell, 3, 1);
-%         SegCopy(7) = SegMed(m, 2, ell, 3, 3);
-%         SegCopy(8) = SegMed(m, 2, ell, 4, 5);
+% % to-do -- done
+% % the total vertex in regin A (original) + B (newly-imposed domain)
+% N_v_B = x_max_vertex_B * y_max_vertex_B * z_max_vertex_B; 
+% N_e_B = 7 * (x_max_vertex_B - 1) * (y_max_vertex_B - 1) * (z_max_vertex_B - 1) ...
+%     + 3 * ( (x_max_vertex_B - 1) * (y_max_vertex_B - 1) + (y_max_vertex_B - 1) * (z_max_vertex_B - 1) + (x_max_vertex_B - 1) * (z_max_vertex_B - 1) ) ...
+%     + ( (x_max_vertex_B - 1) + (y_max_vertex_B - 1) + (z_max_vertex_B - 1) );
+% MedTetTable_B = sparse(validNum_B, N_v_B);
+% tic;
+% disp('Transfroming MedTetTable from my_sparse to Matlab sparse matrix')
+% MedTetTable_B = mySparse2MatlabSparse( MedTetTableCell_B, validNum_B, N_v_B, 'Row' );
+% toc;
 
-%         tmpSeg(4, 1) = SegCopy(1); tmpSeg(4, 2) = SegCopy(1); tmpSeg(4, 3) = SegCopy(1); tmpSeg(4, 4) = SegCopy(1); tmpSeg(5, 4) = SegCopy(1); tmpSeg(6, 1) = SegCopy(1);
-%         tmpSeg(1, 1) = SegCopy(2); tmpSeg(1, 2) = SegCopy(2); tmpSeg(1, 7) = SegCopy(2); tmpSeg(1, 8) = SegCopy(2); tmpSeg(5, 3) = SegCopy(2); tmpSeg(6, 2) = SegCopy(2); 
-%         tmpSeg(1, 3) = SegCopy(3); tmpSeg(1, 4) = SegCopy(3); tmpSeg(1, 5) = SegCopy(3); tmpSeg(1, 6) = SegCopy(3); tmpSeg(5, 2) = SegCopy(3); tmpSeg(6, 3) = SegCopy(3); 
-%         tmpSeg(2, 1) = SegCopy(4); tmpSeg(2, 2) = SegCopy(4); tmpSeg(2, 3) = SegCopy(4); tmpSeg(2, 4) = SegCopy(4); tmpSeg(5, 1) = SegCopy(4); tmpSeg(6, 4) = SegCopy(4); 
-%         tmpSeg(2, 5) = SegCopy(5); tmpSeg(2, 6) = SegCopy(5); tmpSeg(2, 7) = SegCopy(5); tmpSeg(2, 8) = SegCopy(5); tmpSeg(5, 8) = SegCopy(5); tmpSeg(6, 5) = SegCopy(5); 
-%         tmpSeg(3, 1) = SegCopy(6); tmpSeg(3, 2) = SegCopy(6); tmpSeg(3, 7) = SegCopy(6); tmpSeg(3, 8) = SegCopy(6); tmpSeg(5, 7) = SegCopy(6); tmpSeg(6, 6) = SegCopy(6); 
-%         tmpSeg(3, 3) = SegCopy(7); tmpSeg(3, 4) = SegCopy(7); tmpSeg(3, 5) = SegCopy(7); tmpSeg(3, 6) = SegCopy(7); tmpSeg(5, 6) = SegCopy(7); tmpSeg(6, 7) = SegCopy(7); 
-%         tmpSeg(4, 5) = SegCopy(8); tmpSeg(4, 6) = SegCopy(8); tmpSeg(4, 7) = SegCopy(8); tmpSeg(4, 8) = SegCopy(8); tmpSeg(5, 5) = SegCopy(8); tmpSeg(6, 8) = SegCopy(8); 
-%         SegMed(m, n, ell, :, :) = tmpSeg;
-%     end
-% end 
-
-% % === === % ====================================================== % === === %
-% % === === % Get mediumTable_ext, SegMed_ext and GridShiftTable_ext % === === %
-% % === === % ======================================================  % === === %
-% % to-do
-% dx_ext = dx / 2;
-% dy_ext = dy / 2;
-% dz_ext = dz / 2;
-% x_idx_max_ext = x_idx_max * 2 - 1;
-% y_idx_max_ext = y_idx_max * 2 - 1;
-% z_idx_max_ext = z_idx_max * 2 - 1;
-% mediumTable_ext = zeros(x_idx_max_ext, y_idx_max_ext, z_idx_max_ext, 'uint8');
-% SegMed_ext = zeros(x_idx_max_ext, y_idx_max_ext, z_idx_max_ext, 6, 8, 'uint8');
-% GridShiftTable_ext = cell( air_x / dx_ext + 1, h_torso / dy_ext + 1, air_z / dz_ext + 1 );
-
-% [ mediumTable_ext, SegMed_ext, GridShiftTable_ext ] = getExtVar(dx, dy, dz);
-
-clc; clear;
-load('1012PreB.mat');
-% === === % ======================================== % === === %
-% === === % Draw The Second Rectangular Box Naming B % === === %
-% === === % ======================================== % === === %
-% region B: [-3, 3, 2, 8]
-% region C: [-1, 1, 4, 6], which is discard in current version
-% domain B has actual size of [ w_x_B + dx, w_y_B + dy, w_z_B + dz ]
-w_x_B = 10 / 100;
-w_y_B = 10 / 100;
-w_z_B = 10 / 100; % w_x_B, w_y_B and w_z_B must be on the grid of domain A
-dx_B = dx / 2;
-dy_B = dy / 2;
-dz_B = dz / 2;
-% Domain B
-x_idx_max_B = ( w_x_B + dx ) / dx_B + 1;
-y_idx_max_B = ( w_y_B + dy ) / dy_B + 1;
-z_idx_max_B = ( w_z_B + dz ) / dz_B + 1;
-x_max_vertex_B = 2 * x_idx_max_B - 1;
-y_max_vertex_B = 2 * y_idx_max_B - 1;
-z_max_vertex_B = 2 * z_idx_max_B - 1;
-% Larger Grid on Domain B; 
-x_idx_max_AinB = w_x_B / ( 2 * dx_B ) + 1; % dx_A = 2 * dx_B
-y_idx_max_AinB = w_y_B / ( 2 * dy_B ) + 1; % dy_A = 2 * dy_B
-z_idx_max_AinB = w_z_B / ( 2 * dz_B ) + 1; % dz_A = 2 * dz_B
-x_max_vertex_AinB = 2 * x_idx_max_AinB + 1;
-y_max_vertex_AinB = 2 * y_idx_max_AinB + 1;
-z_max_vertex_AinB = 2 * z_idx_max_AinB + 1;
-
-loadParas_Eso0924; % a parameters script
-RegionB = false(x_idx_max, y_idx_max, z_idx_max);
-m_Rght  = ( es_x + w_x_B / 2 ) / dx + air_x / (2 * dx) + 1;
-m_Lft   = ( es_x - w_x_B / 2 ) / dx + air_x / (2 * dx) + 1;
-n_Far   = ( 0    + w_y_B / 2 ) / dy + h_torso / (2 * dy) + 1;
-n_Near  = ( 0    - w_y_B / 2 ) / dy + h_torso / (2 * dy) + 1;
-ell_Top = ( es_z + w_z_B / 2 ) / dz + air_z / (2 * dz) + 1;
-ell_Dwn = ( es_z - w_z_B / 2 ) / dz + air_z / (2 * dz) + 1;
-RegionB(m_Lft: m_Rght, n_Near: n_Far, ell_Dwn: ell_Top) = true;
-
-% down-left-near
-m_v_Lft = (2 * m_Lft - 1) - 1;
-n_v_Near = (2 * n_Near - 1) - 1;
-ell_v_Dwn = (2 * ell_Dwn - 1) - 1;
-% top-right-far
-m_v_Rght = (2 * m_Rght - 1) + 1;
-n_v_Far = (2 * n_Far - 1) + 1;
-ell_v_Top = (2 * ell_Top - 1) + 1;
-
-% === === % =============================== % === === %
-% === === % Inherent SegMed_B from Domain A % === === %
-% === === % =============================== % === === %
-mediumTable_B = zeros( x_idx_max_B, y_idx_max_B, z_idx_max_B, 'uint8');
-SegMed_B = zeros( x_idx_max_B, y_idx_max_B, z_idx_max_B, 6, 8, 'uint8');
-GridShiftTable_B = cell( ( w_x_B + dx ) / dx_B + 1, ( w_y_B + dy ) / dy_B + 1, ( w_z_B + dz ) / dz_B + 1 );
-% the vIdx in Domain A is Idx in domain B and extended domain A
-mediumTable_B = mediumTable_ext(m_v_Lft: m_v_Rght, n_v_Near: n_v_Far, ell_v_Dwn: ell_v_Top, :);
-SegMed_B = SegMed_ext(m_v_Lft: m_v_Rght, n_v_Near: n_v_Far, ell_v_Dwn: ell_v_Top, :, :);
-GridShiftTable_B = GridShiftTable_ext(m_v_Lft: m_v_Rght, n_v_Near: n_v_Far, ell_v_Dwn: ell_v_Top);
-
-% === === % ======================================================= % === === %
-% === === % Updating GridShiftTable_B and mediumTable_B in Domain B % === === %
-% === === % ======================================================= % === === %
-GridShiftTableXZ_B = cell( ( w_y_B + dy ) / dy_B + 1, 1);
-for y = - ( w_y_B + dy ) / 2 : dy_B: ( w_y_B + dy ) / 2
-    y_idx = y / dy_B + ( w_x_B + dy ) / (2 * dy_B) + 1;
-    tumor_y_idx_far  = (tumor_y_es + tumor_hy_es / 2) / dy_B + ( w_y_B + dy ) / (2 * dy_B) + 1;
-    tumor_y_idx_near = (tumor_y_es - tumor_hy_es / 2) / dy_B + ( w_y_B + dy ) / (2 * dy_B) + 1;
-    mediumTable_B(:, int64(y_idx), :) = medFill_Eso( squeeze(mediumTable_B(:, int64(y_idx), :)), es_x, es_z, es_r, es_r, dx_B, dz_B, 1, w_x_B + dx, w_z_B + dz );
-    if y_idx <= tumor_y_idx_far && y_idx >= tumor_y_idx_near
-        mediumTable_B(:, int64(y_idx), :) = medFill_Eso( squeeze(mediumTable_B(:, int64(y_idx), :)), tumor_x_es, tumor_z_es, tumor_r_es, tumor_r_es, dx_B, dz_B, 9, w_x_B + dx, w_z_B + dz );
-        mediumTable_B(11: 13, int64(y_idx), 11) = 1;
-        mediumTable_B(11: 13, int64(y_idx), 12) = 42;
-    end
-    [ GridShiftTableXZ_B{ int64(y_idx) }, mediumTable_B(:, int64(y_idx), :) ] = constructCoordinateXZ_all_Eso0924( w_x_B + dx, w_z_B + dz, dx_B, dz_B, mediumTable_B(:, int64(y_idx), :) );
-end
-
-% the shift-table in GridShiftTableXZ_B has higher priority than that stoted in GridShiftTable_B
-ReservedPnt = false(( w_x_B + dx ) / dx_B + 1, ( w_y_B + dy ) / dy_B + 1, ( w_z_B + dz ) / dz_B + 1);
-ReservedPnt( ( tumor_x_es + tumor_r_es - es_x ) / dx_B + ( w_x_B + dx ) / (2 * dx_B) + 1, :, ( tumor_z_es - es_z ) / dz_B + ( w_z_B + dz ) / (2 * dz_B) + 1 ) = true;
-for y_idx_B = 1: 1: ( w_y_B + dy ) / dy_B + 1
-    tmp_table = GridShiftTableXZ_B{ y_idx_B };
-    for x_idx_B = 1: 1: ( w_x_B + dx ) / dx_B + 1
-        for z_idx_B = 1: 1: ( w_z_B + dz ) / dz_B + 1
-            if ~isempty( tmp_table{ x_idx_B, z_idx_B } ) 
-                GridShiftTable_B{ x_idx_B, y_idx_B, z_idx_B } = tmp_table{ x_idx_B, z_idx_B };
-            end
-            if ReservedPnt(x_idx_B, y_idx_B, z_idx_B)
-                GridShiftTable_B{ x_idx_B, y_idx_B, z_idx_B } = [];
-            end
-        end
-    end
-end
-
-shiftedCoordinateXYZ_B = constructCoordinateXYZ( GridShiftTable_B, [w_y_B + dx, w_x_B + dy, w_z_B + dz], dx_B, dy_B, dz_B );
-shiftedCoordinateXYZ_B(:, :, :, 3) = shiftedCoordinateXYZ_B(:, :, :, 3) + es_z;
-
-% Get vertex coordinate in domain B
-Vertex_Crdnt_B = zeros( x_max_vertex_B, y_max_vertex_B, z_max_vertex_B, 3 );
-tic;
-disp('Calculation of vertex coordinate');
-Vertex_Crdnt_B = buildCoordinateXYZ_Vertex( shiftedCoordinateXYZ_B );
-toc;
-
-figure(1);
-clf;
-hold on;
-paras2dXZ = genParas2d( 0, paras, dx, dy, dz );
-plotMap_Eso( paras2dXZ, dx, dz );
-plotGridLineXZ( shiftedCoordinateXYZ_B, ( y_idx_max_B + 1 ) / 2 );
-figure(2)
-clf;
-hold on;
-plotGridLineYZ( shiftedCoordinateXYZ, ( x_idx_max_B + 1 ) / 2 );
-
-% === === % ================================ % === === %
-% === === % Updating SegMed witihn esophagus % === === %
-% === === % ================================ % === === %
-for idx = 1: 1: x_idx_max_B * y_idx_max_B * z_idx_max_B
-    [ m, n, ell ] = getMNL(idx, x_idx_max_B, y_idx_max_B, z_idx_max_B);
-    if mediumTable_B(m, n, ell) <= 8
-        SegMed_B(m, n, ell, :, :) = mediumTable_B(m, n, ell);
-    elseif m >= 2 && m <= x_idx_max_B - 1 && n >= 2 && n <= y_idx_max_B - 1 && ell >= 2 && ell <= z_idx_max_B - 1 
-        if mediumTable_B(m, n, ell) == 41 || mediumTable_B(m, n, ell) == 42 || mediumTable_B(m, n, ell) == 9
-            SegMed_B( m, n, ell, :, : ) = fillBndrySegMed( m, n, ell, ...
-                    shiftedCoordinateXYZ_B, x_idx_max_B, y_idx_max_B, z_idx_max_B, mediumTable_B, 'Eso1009' );
-        end
-    end
-end
-
-% === % ==================================== % === %
-% === % Trimming: Invalid set to 30 (byndCD) % === %
-% === % ==================================== % === % 
-SegMed = setBndrySegMed(SegMed, byndCD, x_idx_max, y_idx_max, z_idx_max);
-SegMed_B = setBndrySegMed(SegMed_B, byndCD, x_idx_max_B, y_idx_max_B, z_idx_max_B);
-
-validNum = getValidNum(x_idx_max, y_idx_max, z_idx_max);
-validNum_B = getValidNum(x_idx_max_B, y_idx_max_B, z_idx_max_B); 
-ExpandedNum = 48 * x_idx_max_B * y_idx_max_B * z_idx_max_B; 
-MedTetTableCell_B_tmp = cell(ExpandedNum, 1); % each row consists the indices of the four vertices and is medium value.
-validTetTable         = false(ExpandedNum, 1); 
-% return;
-
-tic;
-disp('Getting MedTetTableCell_B_tmp: ');
-for idx = 1: 1: x_idx_max_B * y_idx_max_B * z_idx_max_B
-    [ m, n, ell ] = getMNL(idx, x_idx_max_B, y_idx_max_B, z_idx_max_B);
-    m_v = 2 * m - 1;
-    n_v = 2 * n - 1;
-    ell_v = 2 * ell - 1;
-    PntMedTetTableCell  = cell(48, 1);
-    PntMedTetTableCell = getPntMedTetTable_2( squeeze( SegMed_B(m, n, ell, :, :) )', N_v, m_v, n_v, ell_v, x_max_vertex_B, y_max_vertex_B, z_max_vertex_B );
-    MedTetTableCell_B_tmp( 48 * (idx - 1) + 1: 48 * idx ) = PntMedTetTableCell;
-    PntValidTet = false(48, 1);
-    PntValidTet( find( squeeze( SegMed_B(m, n, ell, :, :) )' ~= byndCD ) ) = true;
-    validTetTable( 48 * (idx - 1) + 1: 48 * idx ) = PntValidTet;
-end
-toc;
-
-RegionB = false(x_idx_max, y_idx_max, z_idx_max);
-m_Rght  = ( es_x + w_x_B / 2 ) / dx + air_x / (2 * dx) + 1;
-m_Lft   = ( es_x - w_x_B / 2 ) / dx + air_x / (2 * dx) + 1;
-n_Far   = ( 0    + w_y_B / 2 ) / dy + h_torso / (2 * dy) + 1;
-n_Near  = ( 0    - w_y_B / 2 ) / dy + h_torso / (2 * dy) + 1;
-ell_Top = ( es_z + w_z_B / 2 ) / dz + air_z / (2 * dz) + 1;
-ell_Dwn = ( es_z - w_z_B / 2 ) / dz + air_z / (2 * dz) + 1;
-RegionB(m_Lft: m_Rght, n_Near: n_Far, ell_Dwn: ell_Top) = true;
-
-MedTetTableCell_B = MedTetTableCell_B_tmp;
-MedTetTableCell_B(~validTetTable) = [];
-
-if size(MedTetTableCell_B, 1) ~= validNum_B
-    error('check the construction');
-end
-
-% to-do -- done
-% the total vertex in regin A (original) + B (newly-imposed domain)
-N_v_B = x_max_vertex_B * y_max_vertex_B * z_max_vertex_B; 
-N_e_B = 7 * (x_max_vertex_B - 1) * (y_max_vertex_B - 1) * (z_max_vertex_B - 1) ...
-    + 3 * ( (x_max_vertex_B - 1) * (y_max_vertex_B - 1) + (y_max_vertex_B - 1) * (z_max_vertex_B - 1) + (x_max_vertex_B - 1) * (z_max_vertex_B - 1) ) ...
-    + ( (x_max_vertex_B - 1) + (y_max_vertex_B - 1) + (z_max_vertex_B - 1) );
-MedTetTable_B = sparse(validNum_B, N_v_B);
-tic;
-disp('Transfroming MedTetTable from my_sparse to Matlab sparse matrix')
-MedTetTable_B = mySparse2MatlabSparse( MedTetTableCell_B, validNum_B, N_v_B, 'Row' );
-toc;
-
-save('1012EsoMQS_preK1.mat');
+% save('1015EsoMQS_preK1.mat');
 
 % return;
+
+load('1015EsoMQS_preK1.mat');
 
 % === === === === === === === === % ========== % === === === === === === === === %
 % === === === === === === === === % K part (1) % === === === === === === === === %
@@ -517,16 +532,7 @@ uG = G + G';
 
 % Vrtx_bndry = zeros( x_max_vertex, y_max_vertex, z_max_vertex, 'uint8');
 Vrtx_bndry_B = zeros( x_max_vertex_B, y_max_vertex_B, z_max_vertex_B, 'uint8');
-% %  2: computational domain boundary
-% n_far  = y_idx_max - 1;
-% n_near = 2;
-% for vIdx = 1: 1: x_max_vertex_B * y_max_vertex_B * z_max_vertex_B
-%     [ m_v, n_v, ell_v ] = getMNL(vIdx, x_max_vertex_B, y_max_vertex_B, z_max_vertex_B);
-%     borderFlag = getBorderFlag(m_v, n_v, ell_v, x_max_vertex_B, y_max_vertex_B, z_max_vertex_B);
-%     if my_F(borderFlag, 1)
-%         Vrtx_bndry_B(m_v, n_v, ell_v) = 2;
-%     end
-% end
+% Vrtx_bndry_B is incorporated in the EsphgsMQS_Bk_amend_Fine1011 part
 
 % === % =========== % === %
 % === % Filling K_1 % === %
@@ -534,7 +540,7 @@ Vrtx_bndry_B = zeros( x_max_vertex_B, y_max_vertex_B, z_max_vertex_B, 'uint8');
 B_k = zeros(N_e_B, 1);
 m_K1 = cell(N_e_B, 1);
 edgeChecker = false(l_G, 1);
-J_0 = 1000; % surface current density: 400 (A/m) at 1.2 MHz
+J_0 = 650; % surface current density: 400 (A/m) at 1.2 MHz
 
 % to-do 
 % amend for K_1
@@ -572,91 +578,90 @@ parfor eIdx = 1: 1: N_e_B
 end
 toc;
 
-tic; 
-disp( 'The filling time of K_1 and B_k, part 1:' );
-parfor eIdx = 1: 1: N_e_B / 2
-    % eIdx = full( G(P2(lGidx), P1(lGidx)) );
-    if Tumor_eTable_B(eIdx)
-        Candi = [];
-        % get candidate points
-        P1_cand = uG(:, P1(eIdx));
-        P2_cand = uG(:, P2(eIdx));
-        P1_nz = find(P1_cand);
-        P2_nz = find(P2_cand);
-        for CandiFinder = 1: 1: length(P1_nz)
-            if find(P2_nz == P1_nz(CandiFinder))
-                Candi = horzcat(Candi, P1_nz(CandiFinder));
-            end
-        end
-        % get adjacent tetrahdron
-        K1_6 = zeros(1, N_e); 
-        % K2_6 = zeros(1, N_e); 
-        % Kev_4 = zeros(1, N_e); 
-        % Kve_4 = zeros(N_e, 1); 
-        B_k_Pnt = 0;
-        for TetFinder = 1: 1: length(Candi) - 1
-            for itr = TetFinder + 1: length(Candi)
-                if uG( Candi(TetFinder), Candi(itr) )
-                    % linked to become a tetrahedron
-                    v1234 = [ P1(eIdx), P2(eIdx), Candi(itr), Candi(TetFinder) ];
-                    tetRow = find( sum( logical(MedTetTable_B(:, v1234)), 2 ) == 4 );
-                    if length(tetRow) ~= 1
-                        error('check te construction of MedTetTable_B');
-                    end
-                    MedVal = MedTetTable_B( tetRow, v1234(1) );
-                    % use tetRow to check the accordance of SigmaE and J_xyz
-                    [ K1_6, B_k_Pnt ] = fillK1_FW_currentsheet( P1(eIdx), P2(eIdx), Candi(itr), Candi(TetFinder), ...
-                        G( :, P1(eIdx) ), G( :, P2(eIdx) ), G( :, Candi(itr) ), G( :, Candi(TetFinder) ), Vrtx_bndry_B, J_0, ...
-                        K1_6, B_k_Pnt, zeros(1, 3), MedVal, epsilon_r, mu_r, x_max_vertex_B, y_max_vertex_B, z_max_vertex_B, Vertex_Crdnt_B );
-                end
-            end
-        end
+% tic; 
+% disp( 'The filling time of K_1 and B_k, part 1:' );
+% parfor eIdx = 1: 1: N_e_B / 2
+%     % eIdx = full( G(P2(lGidx), P1(lGidx)) );
+%     if Tumor_eTable_B(eIdx)
+%         Candi = [];
+%         % get candidate points
+%         P1_cand = uG(:, P1(eIdx));
+%         P2_cand = uG(:, P2(eIdx));
+%         P1_nz = find(P1_cand);
+%         P2_nz = find(P2_cand);
+%         for CandiFinder = 1: 1: length(P1_nz)
+%             if find(P2_nz == P1_nz(CandiFinder))
+%                 Candi = horzcat(Candi, P1_nz(CandiFinder));
+%             end
+%         end
+%         % get adjacent tetrahdron
+%         K1_6 = zeros(1, N_e); 
+%         % K2_6 = zeros(1, N_e); 
+%         % Kev_4 = zeros(1, N_e); 
+%         % Kve_4 = zeros(N_e, 1); 
+%         B_k_Pnt = 0;
+%         for TetFinder = 1: 1: length(Candi) - 1
+%             for itr = TetFinder + 1: length(Candi)
+%                 if uG( Candi(TetFinder), Candi(itr) )
+%                     % linked to become a tetrahedron
+%                     v1234 = [ P1(eIdx), P2(eIdx), Candi(itr), Candi(TetFinder) ];
+%                     tetRow = find( sum( logical(MedTetTable_B(:, v1234)), 2 ) == 4 );
+%                     if length(tetRow) ~= 1
+%                         error('check te construction of MedTetTable_B');
+%                     end
+%                     MedVal = MedTetTable_B( tetRow, v1234(1) );
+%                     % use tetRow to check the accordance of SigmaE and J_xyz
+%                     [ K1_6, B_k_Pnt ] = fillK1_FW_currentsheet( P1(eIdx), P2(eIdx), Candi(itr), Candi(TetFinder), ...
+%                         G( :, P1(eIdx) ), G( :, P2(eIdx) ), G( :, Candi(itr) ), G( :, Candi(TetFinder) ), Vrtx_bndry_B, J_0, ...
+%                         K1_6, B_k_Pnt, zeros(1, 3), MedVal, epsilon_r, mu_r, x_max_vertex_B, y_max_vertex_B, z_max_vertex_B, Vertex_Crdnt_B );
+%                 end
+%             end
+%         end
 
-        if isempty(K1_6) 
-        % if isempty(K1_6) || isempty(K2_6) || isempty(Kev_4)
-            disp('K1, K2 or KEV: empty');
-            [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
-            [ m_v, n_v, ell_v, edgeNum ]
-        end
-        if isnan(K1_6) 
-        % if isnan(K1_6) | isinf(K1_6) | isnan(K2_6) | isinf(K2_6)
-            disp('K1 or K2: NaN or Inf');
-            [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
-            [ m_v, n_v, ell_v, edgeNum ]
-        end
-        % if isnan(Kev_4) | isinf(Kev_4)
-        %     disp('Kev: NaN or Inf');
-        %     [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
-        %     [ m_v, n_v, ell_v, edgeNum ]
-        % end
-        if edgeChecker(eIdx) == true
-            lGidx
-            [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
-            [ m_v, n_v, ell_v, edgeNum ]
-            error('check')
-        end
+%         if isempty(K1_6) 
+%         % if isempty(K1_6) || isempty(K2_6) || isempty(Kev_4)
+%             disp('K1, K2 or KEV: empty');
+%             [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
+%             [ m_v, n_v, ell_v, edgeNum ]
+%         end
+%         if isnan(K1_6) 
+%         % if isnan(K1_6) | isinf(K1_6) | isnan(K2_6) | isinf(K2_6)
+%             disp('K1 or K2: NaN or Inf');
+%             [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
+%             [ m_v, n_v, ell_v, edgeNum ]
+%         end
+%         % if isnan(Kev_4) | isinf(Kev_4)
+%         %     disp('Kev: NaN or Inf');
+%         %     [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
+%         %     [ m_v, n_v, ell_v, edgeNum ]
+%         % end
+%         if edgeChecker(eIdx) == true
+%             lGidx
+%             [ m_v, n_v, ell_v, edgeNum ] = eIdx2vIdx(eIdx, x_max_vertex, y_max_vertex, z_max_vertex);
+%             [ m_v, n_v, ell_v, edgeNum ]
+%             error('check')
+%         end
 
-        edgeChecker(eIdx) = true;
+%         edgeChecker(eIdx) = true;
         
-        m_K1{eIdx} = Mrow2myRow(K1_6);
-        B_k(eIdx) = B_k_Pnt;
-    end
-end
-toc;
+%         m_K1{eIdx} = Mrow2myRow(K1_6);
+%         B_k(eIdx) = B_k_Pnt;
+%     end
+% end
+% toc;
 
-
-save('1013EsoMQS_K_Part1.mat', 'm_K1');
-return;
+% save('1015EsoMQS_K_Part1.mat', 'm_K1');
+% return;
 
 % total_m_K1 = cell(N_e_B, 1);
 load('1012total_m_K1.mat', 'total_m_K1');
 
 % % total_B_k = zeros(N_e, 1);
-load('1013EsoMQS_K_Part1.mat', 'm_K1');
+load('1015EsoMQS_K_Part1.mat', 'm_K1');
 FirstHalf  = find( Tumor_eTable_B(1: N_e_B / 2) );
 SecondHalf = N_e_B / 2 + find( Tumor_eTable_B(N_e_B / 2 + 1: N_e_B) );
 total_m_K1( FirstHalf ) = m_K1( FirstHalf );
-load('1013EsoMQS_K_Part2.mat', 'm_K1');
+load('1015EsoMQS_K_Part2.mat', 'm_K1');
 total_m_K1( SecondHalf ) = m_K1( SecondHalf );
 
 M_K1 = sparse(N_e_B, N_e_B);
@@ -673,7 +678,7 @@ toc;
 
 % to-do
 % Amending for B_k
-EsphgsMQS_Bk_amend_Fine1011;
+EsphgsMQS_Bk_amend_Fine_double;
 
 % return;
 M_K = sparse(N_e_B, N_e_B);
@@ -704,12 +709,12 @@ bar_x_my_gmres = gmres( nrmlM_K, nrmlB_k, int_itr_num, tol, ext_itr_num );
 toc;
 bar_x_my_gmres1 = bar_x_my_gmres;
 
-Fname = '1013';
+Fname = '1016_double';
 % to-do
 % plotting function
 AFigsScript_Eso;
 % save('0922EsoMQS_1cmCoil.mat');
-% save('1011EsoMQS.mat');
+save('1016EsoMQS_double.mat');
 return;
 
 % Set boundary SegMed back to an valid medium number, i.e. 1
@@ -782,9 +787,9 @@ for vIdx = 1: 1: validNum_B
     end
 end
 
-Q_s_MNP_mod = Q_s_MNP;
+Q_s_MNP_mod = Q_s_MNP * ( 450 / 650 )^2;;
 % Q_s_MNP_mod = Q_s_MNP * ( 1500 / 400 )^2;
-Q_s_Vector_mod = Q_s_Vector;
+Q_s_Vector_mod = Q_s_Vector * ( 450 / 650 )^2;;
 % Q_s_Vector_mod = Q_s_Vector * ( 1500 / 400 )^2;
 
 % === === === === === === % ================ % === === === === === === === %
@@ -801,16 +806,18 @@ loadThermalParas_Esophagus;
 % to-do 
 % amending for mUVd
 bar_d = zeros(N_v_B, 1);
-load('1011EsoMQS.mat', 'm_U', 'm_V');
+load('1015EsoMQS_Tmprtr.mat', 'm_U', 'm_V');
+% load('1011EsoMQS.mat', 'm_U', 'm_V');
 % m_U_total = m_U;
 % m_V_total = m_V;
 Tumor_vTable_B = false(N_v_B, 1);
+BM_bndryNum = 13;
 
 % boundary of the amending region
 m_B_Rght  = ( es_x + 2.5 / 100 - es_x ) / dx_B + ( w_x_B + dx ) / (2 * dx_B) + 1;
 m_B_Lft   = ( es_x - 2.5 / 100 - es_x ) / dx_B + ( w_x_B + dx ) / (2 * dx_B) + 1;
-n_B_Far   = ( 0    + 2.5 / 100 - 0 ) / dy_B + ( w_y_B + dy ) / (2 * dy_B) + 1;
-n_B_Near  = ( 0    - 2.5 / 100 - 0 ) / dy_B + ( w_y_B + dy ) / (2 * dy_B) + 1;
+n_B_Far   = ( 0    + 5   / 100 - 0 ) / dy_B + ( w_y_B + dy ) / (2 * dy_B) + 1;
+n_B_Near  = ( 0    - 5   / 100 - 0 ) / dy_B + ( w_y_B + dy ) / (2 * dy_B) + 1;
 ell_B_Top = ( es_z + 2.5 / 100 - es_z ) / dz_B + ( w_z_B + dz ) / (2 * dz_B) + 1;
 ell_B_Dwn = ( es_z - 2.5 / 100 - es_z ) / dz_B + ( w_z_B + dz ) / (2 * dz_B) + 1;
 
@@ -834,53 +841,53 @@ for vIdx_B = 1: 1: x_max_vertex_B * y_max_vertex_B * z_max_vertex_B
 end
 tic;
 
-% m_U   = cell(N_v_B, 1);
-% m_V   = cell(N_v_B, 1);
-bar_d = zeros(N_v_B, 1);
-disp('The filling time of m_U, m_V: ');
-tic;
-parfor vIdx = 1: 1: N_v_B
-    if Tumor_vTable_B(vIdx)
-        bioValid = false;
-        U_row = zeros(1, N_v_B);
-        V_row = zeros(1, N_v_B);
-        Pnt_d = 0;
-        CandiTet = find( MedTetTable_B(:, vIdx));
-        for itr = 1: 1: length(CandiTet)
-            % v is un-ordered vertices; while p is ordered vertices.
-            % fix the problem in the determination of v1234 here .
-            TetRow = MedTetTableCell_B{ CandiTet(itr) };
-            v1234 = TetRow(1: 4);
-            if length(v1234) ~= 4
-                error('check');
-            end
-            MedVal = TetRow(5);
-            % MedVal = MedTetTable( CandiTet(itr), v1234(1) );
-            % this judgement below is based on the current test case
-            if MedVal >= 3 && MedVal <= 9
-                bioValid = true;
-                if MedTetTable_B( CandiTet(itr), v1234(1) ) ~= MedTetTable_B( CandiTet(itr), v1234(2) )
-                    error('check');
-                end
-                % check the validity of Q_s_Vector input.
-                p1234 = horzcat( v1234(find(v1234 == vIdx)), v1234(find(v1234 ~= vIdx)));
-                [ U_row, V_row, Pnt_d ] = fillUVd( p1234, BndryTable_B, U_row, V_row, Pnt_d, ...
-                            dt, Q_s_Vector(CandiTet(itr)) + Q_met(MedVal) + Q_s_MNP_mod(CandiTet(itr)), rho(MedVal), xi(MedVal), zeta(MedVal), cap(MedVal), rho_b, cap_b, alpha, T_blood, T_bolus, ...
-                            x_max_vertex_B, y_max_vertex_B, z_max_vertex_B, Vertex_Crdnt_B, BM_bndryNum );
-            end
-        end
+% % m_U   = cell(N_v_B, 1);
+% % m_V   = cell(N_v_B, 1);
+% bar_d = zeros(N_v_B, 1);
+% disp('The filling time of m_U, m_V: ');
+% tic;
+% parfor vIdx = 1: 1: N_v_B
+%     if Tumor_vTable_B(vIdx)
+%         bioValid = false;
+%         U_row = zeros(1, N_v_B);
+%         V_row = zeros(1, N_v_B);
+%         Pnt_d = 0;
+%         CandiTet = find( MedTetTable_B(:, vIdx));
+%         for itr = 1: 1: length(CandiTet)
+%             % v is un-ordered vertices; while p is ordered vertices.
+%             % fix the problem in the determination of v1234 here .
+%             TetRow = MedTetTableCell_B{ CandiTet(itr) };
+%             v1234 = TetRow(1: 4);
+%             if length(v1234) ~= 4
+%                 error('check');
+%             end
+%             MedVal = TetRow(5);
+%             % MedVal = MedTetTable( CandiTet(itr), v1234(1) );
+%             % this judgement below is based on the current test case
+%             if MedVal >= 3 && MedVal <= 9
+%                 bioValid = true;
+%                 if MedTetTable_B( CandiTet(itr), v1234(1) ) ~= MedTetTable_B( CandiTet(itr), v1234(2) )
+%                     error('check');
+%                 end
+%                 % check the validity of Q_s_Vector input.
+%                 p1234 = horzcat( v1234(find(v1234 == vIdx)), v1234(find(v1234 ~= vIdx)));
+%                 [ U_row, V_row, Pnt_d ] = fillUVd( p1234, BndryTable_B, U_row, V_row, Pnt_d, ...
+%                             dt, Q_s_Vector(CandiTet(itr)) + Q_met(MedVal) + Q_s_MNP_mod(CandiTet(itr)), rho(MedVal), xi(MedVal), zeta(MedVal), cap(MedVal), rho_b, cap_b, alpha, T_blood, T_bolus, ...
+%                             x_max_vertex_B, y_max_vertex_B, z_max_vertex_B, Vertex_Crdnt_B, BM_bndryNum );
+%             end
+%         end
 
-        if bioValid
-            m_U{vIdx} = Mrow2myRow(U_row);
-            m_V{vIdx} = Mrow2myRow(V_row);
-            bar_d(vIdx) = Pnt_d;
-        else
-            m_U{vIdx} = [vIdx, 1];
-            m_V{vIdx} = [vIdx, 1];
-        end
-    end
-end
-toc;
+%         if bioValid
+%             m_U{vIdx} = Mrow2myRow(U_row);
+%             m_V{vIdx} = Mrow2myRow(V_row);
+%             bar_d(vIdx) = Pnt_d;
+%         else
+%             m_U{vIdx} = [vIdx, 1];
+%             m_V{vIdx} = [vIdx, 1];
+%         end
+%     end
+% end
+% toc;
 
 % save('EsoMQS_UVd_part1.mat', 'm_U', 'm_V', 'bar_d');
 
@@ -983,6 +990,7 @@ T_flagXY = 1;
 T_flagYZ = 1;
 
 T_plot_Esophagus_MQS_Fine;
+save('1016EsoMQS_Tmprtr_double450.mat');
 return;
 
 % === === % ===================== % === === %

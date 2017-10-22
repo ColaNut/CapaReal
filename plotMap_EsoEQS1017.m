@@ -73,6 +73,9 @@ y_axUp = es_z - dz / 2: dz / 4: es_z + dz / 4;
 plot( ( es_x + dx / 2 ) * ones( size(y_axUp) ), y_axUp, 'Color', [0.5, 0.5, 0.5], 'LineWidth', 2.5);
 plot( ( es_x - dx / 2 ) * ones( size(y_axUp) ), y_axUp, 'Color', [0.5, 0.5, 0.5], 'LineWidth', 2.5);
 
+% plot electrode
+plot( x_axUp2, ( es_z + dz / 4 ) * ones( size(x_axUp2) ), 'Color', [0, 0, 0], 'LineWidth', 2.5);
+
 % % plot electrode
 % t = linspace( 0, 2 * pi, 400 );
 % X = bolus_a * cos(t);

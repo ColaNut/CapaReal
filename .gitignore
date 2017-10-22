@@ -4,6 +4,7 @@
 *.fig
 *.xlsx
 *.vsd
+*.eps
 RibIdx.txt
 3cmBolus.txt
 1cmFat.txt

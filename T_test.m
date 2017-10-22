@@ -105,12 +105,13 @@ if T_flagXZ == 1
                         end
                         if valid
                             if MedVal >= 3
-                                col = [ T_xz( m_v_4(f(1)), ell_v_4(f(1)) ); T_xz( m_v_4(f(2)), ell_v_4(f(2)) ); T_xz( m_v_4(f(3)), ell_v_4(f(3)) ) ];
+                                col = (MedVal - 1) + [ T_xz( m_v_4(f(1)), ell_v_4(f(1)) ); T_xz( m_v_4(f(2)), ell_v_4(f(2)) ); T_xz( m_v_4(f(3)), ell_v_4(f(3)) ) ];
+                            end
                             % elseif MedVal == 2
                             %     col = repmat(0, 3, 1);
                             % elseif MedVal == 1
                             %     col = repmat(T_air, 3, 1);
-                            end
+                            % end
                             patch('Faces', [1, 2, 3], 'Vertices', v, 'FaceVertexCData', col, 'FaceColor', 'interp', 'LineStyle', 'none');
                         end
                     end
@@ -125,7 +126,7 @@ if T_flagXZ == 1
     colormap jet;
     set(gca,'fontsize',20);
     set(gca,'LineWidth',2.0);
-    caxis([0, 2]);
+    caxis([0, 9]);
     axis equal;
     axis( [ - 5, 5, 0, 10 ] );
     cb = colorbar;
@@ -135,7 +136,7 @@ if T_flagXZ == 1
     set(cb, 'FontSize', 18);
     hold on;
     paras2dXZ = genParas2d( tumor_y_es, paras, dx, dy, dz );
-    plotMap_Eso( paras2dXZ, dx, dz );
+    plotMap_Eso1014( paras2dXZ, dx, dz );
     plotGridLineXZ( shiftedCoordinateXYZ_B, tumor_n_B );
     % saveas(figure(21), 'EsoEQSTmprtrXZ1011.jpg');
 end
@@ -217,7 +218,8 @@ if T_flagXY == 1
                         end
                         if valid
                             if MedVal >= 3
-                                col = [ T_xy( m_v_4(f(1)), n_v_4(f(1)) ); T_xy( m_v_4(f(2)), n_v_4(f(2)) ); T_xy( m_v_4(f(3)), n_v_4(f(3)) ) ];
+                                col = (MedVal - 1) + [ T_xz( m_v_4(f(1)), ell_v_4(f(1)) ); T_xz( m_v_4(f(2)), ell_v_4(f(2)) ); T_xz( m_v_4(f(3)), ell_v_4(f(3)) ) ];
+                                % col = [ T_xy( m_v_4(f(1)), n_v_4(f(1)) ); T_xy( m_v_4(f(2)), n_v_4(f(2)) ); T_xy( m_v_4(f(3)), n_v_4(f(3)) ) ];
                             % elseif MedVal == 2
                             %     col = repmat(0, 3, 1);
                             % elseif MedVal == 1
@@ -236,7 +238,7 @@ if T_flagXY == 1
     colormap jet;
     set(gca,'fontsize',20);
     set(gca,'LineWidth',2.0);
-    caxis([0, 2]);
+    caxis([0, 9]);
     axis equal;
     axis( [ - 5, 5, - 5, 5 ] );
     cb = colorbar;
@@ -330,7 +332,8 @@ if T_flagYZ == 1
                         end
                         if valid
                             if MedVal >= 3
-                                col = [ T_yz( n_v_4(f(1)), ell_v_4(f(1)) ); T_yz( n_v_4(f(2)), ell_v_4(f(2)) ); T_yz( n_v_4(f(3)), ell_v_4(f(3)) ) ];
+                                col = (MedVal - 1) + [ T_xz( m_v_4(f(1)), ell_v_4(f(1)) ); T_xz( m_v_4(f(2)), ell_v_4(f(2)) ); T_xz( m_v_4(f(3)), ell_v_4(f(3)) ) ];
+                                % col = [ T_yz( n_v_4(f(1)), ell_v_4(f(1)) ); T_yz( n_v_4(f(2)), ell_v_4(f(2)) ); T_yz( n_v_4(f(3)), ell_v_4(f(3)) ) ];
                             % elseif MedVal == 2
                             %     col = repmat(0, 3, 1);
                             % elseif MedVal == 1
@@ -351,7 +354,7 @@ if T_flagYZ == 1
     set(gca,'LineWidth',2.0);
     cb = colorbar;
     set(cb, 'FontSize', 18);
-    caxis([0, 2]);
+    caxis([0, 9]);
     axis equal;
     axis( [ - 5, 5, 0, 10 ] );
     hold on;
@@ -365,4 +368,3 @@ if T_flagYZ == 1
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
     % saveas(figure(23), 'EsoEQSTmprtrYZ1011.jpg');
 end
-

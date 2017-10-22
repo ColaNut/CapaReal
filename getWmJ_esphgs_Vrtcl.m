@@ -179,6 +179,14 @@ if CoeffFlag
         J = J_0 * [ - 1, 0, 0 ];
     elseif ~isempty(find(FlagSet == 6))
         J = J_0 * [ 0, - 1, 0 ];
+    elseif ~isempty(find(FlagSet == 8))
+        J = J_0 * [ 1, 1, 0 ] / sqrt(2);
+    elseif ~isempty(find(FlagSet == 9))
+        J = J_0 * [ - 1, 1, 0 ] / sqrt(2);
+    elseif ~isempty(find(FlagSet == 10))
+        J = J_0 * [ - 1, - 1, 0 ] / sqrt(2);
+    elseif ~isempty(find(FlagSet == 11))
+        J = J_0 * [ 1, - 1, 0 ] / sqrt(2);
     else
         error('check the input of flags');
     end
@@ -191,6 +199,9 @@ if projArea < 0
 end
 
 if TtrVol ~= 0
+    % if ~isempty(find(FlagSet == 8)) || ~isempty(find(FlagSet == 9)) || ~isempty(find(FlagSet == 10)) || ~isempty(find(FlagSet == 11))
+    %   BkTet = dot( GradDiff, J ) * projArea * sqrt(2) / (9 * sqrt(2) * TtrVol);
+    % end
     BkTet = dot( GradDiff, J ) * projArea / (9 * TtrVol);
     % BkTet = dot( GradDiff, J ) * sqrt( 1 + (A_1 / A_3)^2 + (A_2 / A_3)^2 ) * projArea / (9 * TtrVol);
 else
@@ -202,9 +213,7 @@ end
 insideFlag = false;
 if CoeffFlag 
     TestVec = zeros(1, 2);
-    % if J == zeros(3, 1) 
-    %     J = J_0 * [ - z, 0, x ]' / norm( [ - z, 0, x ] );
-    % end
+    
     switch CoeffFlag
         case 123
             testPnt = P1_Crdt;
