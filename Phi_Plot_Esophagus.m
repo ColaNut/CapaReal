@@ -6,9 +6,9 @@ y_idx_near = (endo_y - 0 - tumor_hy_es / 2) / dy_B + ( w_y_B + dy ) / (2 * dy_B)
 y_vIdx_far = 2 * y_idx_far - 1;
 y_vIdx_near = 2 * y_idx_near - 1;
 
-m_v_0_B = 2 * ( (tumor_x_es - es_x) / dx_B + ( w_x_B + dx ) / (2 * dx_B) + 1 ) - 1;
-n_v_0_B = 2 * ( (tumor_y_es - 0) / dy_B + ( w_y_B + dy ) / (2 * dy_B) + 1 ) - 1;
-ell_v_0_B = 2 * ( (tumor_z_es - es_z) / dz_B + ( w_z_B + dz ) / (2 * dz_B) + 1 ) - 1 + 1;
+m_v_0_B = 2 * ( (tumor_x_es - dx_B - es_x) / dx_B + ( w_x_B + dx ) / (2 * dx_B) + 1 ) - 1;
+n_v_0_B = 2 * ( (tumor_y_es - tumor_hy_es / 2 - 0) / dy_B + ( w_y_B + dy ) / (2 * dy_B) + 1 ) - 1;
+ell_v_0_B = 2 * ( (tumor_z_es + dz_B - es_z) / dz_B + ( w_z_B + dz ) / (2 * dz_B) + 1 ) - 1 + 1;
 
 if flag_XZ == 1
     Phi_xz = zeros(x_max_vertex_B, z_max_vertex_B);

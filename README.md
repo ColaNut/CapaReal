@@ -133,3 +133,9 @@ EsoEQS: Suspended for nested esophageal cancer.
 10/22:
   -- plot for shifted T for EQS and MQS
   -- Add short, double and octant coil
+
+10/23:
+  -- the loadParas and and loadParas_Eso0924 has been used in many functions.
+
+10/30:
+  -- the esophageal cancer has been suspended -> directed to LungEQS modification
