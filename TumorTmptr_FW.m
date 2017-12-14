@@ -24,7 +24,7 @@ Duration1 = 5 * 60;
 trans1 = Duration1 / dt;
 Duration2 = 30 * 60;
 trans2 = trans1 + Duration2 / dt;
-Duration3 = 20 * 60;
+Duration3 = 15 * 60;
 trans3 = trans2 + Duration3 / dt;
 timeNum_all = Duration1 + Duration2 + Duration3;
 
@@ -43,11 +43,11 @@ clf;
 set(gca,'fontsize',18);
 set(gca,'LineWidth',2.0);
 
-if max_flag 
-    plot(0: dt / 60: timeNum_all / 60, T_0 + squeeze(bar_b(386465, :)), 'k', 'LineWidth', 2.5);
-else
+% if max_flag 
+%     plot(0: dt / 60: timeNum_all / 60, T_0 + squeeze(bar_b(386465, :)), 'k', 'LineWidth', 2.5);
+% else
     plot(0: dt / 60: timeNum_all / 60, T_0 + squeeze(bar_b(vIdx_tumor, :)), 'k', 'LineWidth', 2.5);
-end
+% end
 
 set(gca,'fontsize',18);
 set(gca,'LineWidth',2.0);

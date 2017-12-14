@@ -29,6 +29,15 @@ function MedValue = getTetMed1015( MedValue, TtrCrdnt, CtrlPntFlag, varargin )
                     end
                 end
             end
+        elseif strcmp(OrganType, 'Adipose')
+            loadParas;
+            if ( x / ( skin_a + dx / 2 ) )^2 + ( z / ( skin_c + dx / 2 ) )^2 - 1 < 0 % interior of adpose layer
+                if ( x / skin_a )^2 + ( z / skin_c )^2 - 1 > 0 % 1cm boundary line from the skin
+                    if MedValue ~= 6 % donnot update of bone
+                        MedValue = 3;
+                    end
+                end
+            end
         else
             error('check');
         end

@@ -140,7 +140,7 @@ if T_flagXZ == 1
 
     % shading interp
 
-    colormap gray;
+    colormap jet;
     set(gca,'fontsize',20);
     set(gca,'LineWidth',2.0);
     caxis([5, 50]);
@@ -148,14 +148,15 @@ if T_flagXZ == 1
     axis( [ - 20, 20, - 15, 15 ] );
     cb = colorbar;
     box on;
-    xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 25);
-    ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 25);
+    xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
+    ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
+    ylabel(cb, '$T$ ($^\circ$C)', 'Interpreter','LaTex', 'FontSize', 20);
     set(cb, 'FontSize', 18);
     hold on;
     paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
     plotMap( paras2dXZ, dx, dz );
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    saveas(figure(21), 'TestTmprtrXZ0903(bw).jpg');
+    saveas(figure(21), 'TestTmprtrXZ1103.jpg');
 end
 
 if T_flagXY == 1
@@ -251,7 +252,7 @@ if T_flagXY == 1
     toc;
 
     % shading interp
-    colormap gray;
+    colormap jet;
     set(gca,'fontsize',20);
     set(gca,'LineWidth',2.0);
     caxis([5, 50]);
@@ -261,14 +262,15 @@ if T_flagXY == 1
     set(cb, 'FontSize', 18);
     hold on;
     box on;
-    xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 25);
-    ylabel('$y$ (cm)','Interpreter','LaTex', 'FontSize', 25);
+    xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
+    ylabel('$y$ (cm)','Interpreter','LaTex', 'FontSize', 20);
+    ylabel(cb, '$T$ ($^\circ$C)', 'Interpreter','LaTex', 'FontSize', 20);
     paras2dXY = genParas2dXY( tumor_z, paras, dx, dy, dz );
     plotXY( paras2dXY, dx, dy );
     % plotGridLineXY( shiftedCoordinateXYZ, tumor_ell_v );
     % plotMap( paras2dXZ, dx, dz, top_x0, top_dx, down_dx );
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    saveas(figure(22), 'TestTmprtrXY0903(bw).jpg');
+    saveas(figure(22), 'TestTmprtrXY1103.jpg');
 end
 
 if T_flagYZ == 1
@@ -364,7 +366,7 @@ if T_flagYZ == 1
     toc;
 
     % shading interp
-    colormap gray;
+    colormap jet;
     set(gca,'fontsize',20);
     set(gca,'LineWidth',2.0);
     cb = colorbar;
@@ -374,13 +376,14 @@ if T_flagYZ == 1
     axis( [ - 15, 15, - 15, 15 ] );
     hold on;
     box on;
-    xlabel('$y$ (cm)', 'Interpreter','LaTex', 'FontSize', 25);
-    ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 25);
+    xlabel('$y$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
+    ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
+    ylabel(cb, '$T$ ($^\circ$C)', 'Interpreter','LaTex', 'FontSize', 20);
     paras2dYZ = genParas2dYZ( tumor_x, paras, dy, dz );
     plotYZ( paras2dYZ, dy, dz );
     % plotGridLineYZ( shiftedCoordinateXYZ, tumor_m_v );
     % plotMap( paras2dXZ, dx, dz, top_x0, top_dx, down_dx );
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    saveas(figure(23), 'TestTmprtrYZ0903(bw).jpg');
+    saveas(figure(23), 'TestTmprtrYZ1103.jpg');
 end
 
