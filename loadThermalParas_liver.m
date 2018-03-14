@@ -37,7 +37,7 @@ cap_b          = 4180;
 % cirrhotic liver with tumor version -v3
                % air, bolus,  muscle, cirrhotic liver,      tumor,    bone,    fat
 cap            = [ 0,  4200,    3500,            3690,       3960 ]';
-xi             = [ 0,     0, 8.3/1e6,        0.91/1e6,   3.17/1e6 ]';
+xi             = [ 0,     0, 2.2/1e6,        0.91/1e6,   3.17/1e6 ]';
 % xi             = [ 0,     0, 8.3/1e6, 23.8/1e6, 1.92/1e6 ]';
 zeta           = [ 0,     0,     0.6,            0.48,       0.57 ]';
               %  air,  bolus, muscle,            lung,    tumor 

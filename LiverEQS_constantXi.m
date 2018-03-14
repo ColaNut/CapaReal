@@ -555,9 +555,9 @@ T_flagXZ = 1;
 T_flagXY = 1;
 T_flagYZ = 1;
 
-T_plot_liverEQS;
+T_plot_liverEQS_constantXi;
 
-save('0110CirrhoticLiverEQS.mat');
+save('0110CirrhoticLiverEQS_constantXi.mat');
 
 return;
 

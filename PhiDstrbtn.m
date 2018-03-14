@@ -16,9 +16,12 @@ tumor_ell = tumor_z / dz + air_z / (2 * dz) + 1;
 % flag_XY = 0;
 % flag_YZ = 0;
 
+
+fname = 'E:\Kevin\CapaReal';
 % % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\TexFile2';
 % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0108';
-% % CaseName = 'Sigma';
+% CaseName = 'Adipose0304';
+CaseName = 'Original0304';
 % counter = 0;
 % for y = tumor_y + dy: dy: tumor_y + dy
 % counter = counter + 1;
@@ -105,6 +108,7 @@ if flag_XZ == 1
     cb = colorbar;
     % caxis([-50, 50]);
     caxis([0, 100]);
+    % caxis([0, 15]);
     ylabel(cb, '$\left| \Phi \right|$ ($V$)', 'Interpreter','LaTex', 'FontSize', 20);
     set(cb, 'FontSize', 18);
     box on;
@@ -117,7 +121,7 @@ if flag_XZ == 1
     plotRibXZ(Ribs, SSBone, dx, dz);
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
     % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'fig');
-    % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
+    saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
 
     % calculate the E field
     SARseg = zeros( x_idx_max, z_idx_max, 6, 8 );
@@ -174,16 +178,6 @@ if flag_XZ == 1
     % plot SAR XZ
     figure(2);
     clf;
-    myRange = [ 1e-1, 1e4 ];
-    caxis(myRange);
-    axis equal;
-    axis( [ - 20, 20, - 15, 15 ] );
-    cbar = colorbar('peer', gca, 'Yscale', 'log');
-    set(gca, 'Visible', 'off')
-    log_axes = axes('Position', get(gca, 'Position'));
-    ylabel(cbar, 'SAR (watt/kg)', 'Interpreter','LaTex', 'FontSize', 20);
-    set(cbar, 'FontSize', 18 );
-    hold on;
 
     % disp('Time to plot SAR');
     % tic;
@@ -210,6 +204,9 @@ if flag_XZ == 1
         ell = int64( ( idx - m ) / x_idx_max + 1 );
 
         if m >= 2 && m <= x_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1
+            if m == tumor_m && ell == tumor_ell
+                ;
+            end
             Intrplt9Pnts     = getIntrplt9Pnts(m, ell, IntrpltPnts);
             PntMidPnts9Crdnt = squeeze( MidPnts9Crdnt(m, ell, :, :) );
             PntMidPnts9Crdnt(:, 2) = [];
@@ -219,16 +216,38 @@ if flag_XZ == 1
 
     end
     toc;
-
-    caxis(log10(myRange));
+    
+    myRange_specific = [ 1e-1, 1e-0, 1e1, 1e2, 1e3, 1e4 ];
+    myRange = [ myRange_specific(1), myRange_specific(end) ];
+    cb = colorbar;
     colormap jet;
-    % axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);
-    xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
-    ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
+    caxis(log10(myRange));
     axis equal;
     axis( [ - 20, 20, - 15, 15 ] );
-    set(log_axes,'fontsize',20);
-    set(log_axes,'LineWidth',2.0);
+    % set(cb, 'FontSize', 18, 'YTick', log10(myRange_specific), 'YTickLabel', myRange_specific);
+    set(cb, 'FontSize', 15, 'YTick', log10(myRange_specific), 'TickLabelInterpreter', 'latex', 'YTickLabel', {'$10^{-1}$', '$10^0$', '$10^1$', '$10^2$', '$10^3$', '$10^4$'});
+
+    % cbar = colorbar('peer', gca, 'Yscale', 'log');
+    % cbar = colorbar;
+    % set(gca, 'Visible', 'off')
+    % log_axes = axes('Position', get(gca, 'Position'));
+    cb.Label.Interpreter = 'LaTex';
+    cb.Label.String = 'SAR (watt/kg)';
+    cb.Label.FontSize = 15;
+    % set(cb, 'ylabel', 'SAR (watt/kg)', 'Interpreter','LaTex', 'FontSize', 20);
+    % set(cbar, 'FontSize', 18, 'YTick',log(myRange_specific),'YTickLabel',myRange_specific );
+    hold on;
+    
+    % caxis(log10(myRange));
+    % axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);
+    xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 15);
+    ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 15);
+    axis equal;
+    axis( [ - 20, 20, - 15, 15 ] );
+    set(gca,'fontsize', 15);
+    set(gca,'LineWidth',2.0);
+    % set(log_axes,'fontsize',20);
+    % set(log_axes,'LineWidth',2.0);
     % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
     box on;
     view(2);
@@ -236,7 +255,7 @@ if flag_XZ == 1
     plotRibXZ(Ribs, SSBone, dx, dz);
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
     % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'fig');
-    % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
+    saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
     % save( strcat( fname, '\', CaseDate, 'TmprtrFigXZ.mat') );
     % save('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0108\Case0108TmprtrFigXZ.mat');
 end
@@ -330,7 +349,7 @@ if flag_XY == 1
     plotXY( paras2dXY, dx, dy );
     % plotGridLineXY( shiftedCoordinateXYZ, tumor_ell );
     % saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'fig');
-    % saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'jpg');
+    saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'jpg');
 
     % calculate the E field
     SARseg = zeros( x_idx_max, y_idx_max, 6, 8 );
@@ -378,19 +397,9 @@ if flag_XY == 1
     end
     toc;
 
-    % plot electrode SAR
     figure(7);
     clf;
-    myRange = [ 9.99e-2, 1e4 ];
-    caxis(myRange);
-    axis equal;
-    axis( [ - 20, 20, - 15, 15 ]);
-    cbar = colorbar('peer', gca, 'Yscale', 'log');
-    set(gca, 'Visible', 'off')
-    log_axes = axes('Position', get(gca, 'Position'));
-    ylabel(cbar, 'SAR (watt/kg)', 'Interpreter','LaTex', 'FontSize', 20);
-    set(cbar, 'FontSize', 18 );
-    hold on;
+
     % disp('Time to plot SAR');
     % tic;
     % for idx = 1: 1: x_idx_max * y_idx_max
@@ -439,15 +448,33 @@ if flag_XY == 1
     end
     toc;
 
+    % plot electrode SAR
+    myRange_specific = [ 1e-1, 1e-0, 1e1, 1e2, 1e3, 1e4 ];
+    myRange = [ myRange_specific(1), myRange_specific(end) ];
+    cb = colorbar;
+    colormap jet;
     caxis(log10(myRange));
+    axis equal;
+    axis( [ - 20, 20, - 15, 15 ] );
+    % set(cb, 'FontSize', 18, 'YTick', log10(myRange_specific), 'YTickLabel', myRange_specific);
+    set(cb, 'FontSize', 15, 'YTick', log10(myRange_specific), 'TickLabelInterpreter', 'latex', 'YTickLabel', {'$10^{-1}$', '$10^0$', '$10^1$', '$10^2$', '$10^3$', '$10^4$'});
+
+    cb.Label.Interpreter = 'LaTex';
+    cb.Label.String = 'SAR (watt/kg)';
+    cb.Label.FontSize = 15;
+    hold on;
+
+    % caxis(log10(myRange));
     colormap jet;
     xlabel('$x$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$y$ (cm)','Interpreter','LaTex', 'FontSize', 20);
     axis equal;
     axis( [ - 20, 20, - 15, 15 ]);
+    set(gca,'fontsize', 15);
+    set(gca,'LineWidth', 2.0);
     % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 18);
-    set(log_axes,'fontsize',20);
-    set(log_axes,'LineWidth',2.0);
+    % set(log_axes,'fontsize',20);
+    % set(log_axes,'LineWidth',2.0);
     box on;
     view(2);
     % axis( [ - 100 * air_x / 2, 100 * air_x / 2, - 100 * h_torso / 2, 100 * h_torso / 2 ]);
@@ -455,7 +482,7 @@ if flag_XY == 1
     plotXY( paras2dXY, dx, dy );
     % plotGridLineXY( shiftedCoordinateXYZ, tumor_ell );
     % saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'fig');
-    % saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'jpg');
+    saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'jpg');
     % save( strcat( fname, '\', CaseDate, 'TmprtrFigXY.mat') );
 end
 
@@ -530,7 +557,7 @@ if flag_YZ == 1
     cb = colorbar;
     % caxis([-50, 50])
     caxis([0, 100]);;
-    % caxis([0, 100]);
+    % caxis([0, 15]);
     ylabel(cb, '$\left| \Phi \right|$ ($V$)', 'Interpreter','LaTex', 'FontSize', 20);
     set(cb, 'FontSize', 18);
     box on;
@@ -550,7 +577,7 @@ if flag_YZ == 1
     box on;
     view(2);
     % saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'fig');
-    % saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'jpg');
+    saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'jpg');
 
     % calculate the E field
     SARseg = zeros( y_idx_max, z_idx_max, 6, 8 );
@@ -603,16 +630,7 @@ if flag_YZ == 1
     % plot SAR
     figure(12);
     clf;
-    myRange = [ 9.99e-2, 1e4 ];
-    caxis(myRange);
-    axis equal;
-    axis( [ - 15, 15, - 15, 15 ]);
-    cbar = colorbar('peer', gca, 'Yscale', 'log');
-    set(gca, 'Visible', 'off')
-    log_axes = axes('Position', get(gca, 'Position'));
-    ylabel(cbar, 'SAR (watt/kg)', 'Interpreter','LaTex', 'FontSize', 20);
-    set(cbar, 'FontSize', 18);
-    hold on;
+
     % disp('Time to plot SAR');
     % tic;
     % for idx = 1: 1: y_idx_max * z_idx_max
@@ -660,22 +678,40 @@ if flag_YZ == 1
     end
     toc;
 
-    caxis(log10(myRange));
+    % plot electrode SAR
+    myRange_specific = [ 1e-1, 1e-0, 1e1, 1e2, 1e3, 1e4 ];
+    myRange = [ myRange_specific(1), myRange_specific(end) ];
+    cb = colorbar;
     colormap jet;
-    set(log_axes,'fontsize',20);
-    set(log_axes,'LineWidth',2.0);
+    caxis(log10(myRange));
+    axis equal;
+    axis( [ - 15, 15, - 15, 15 ]);
+    % set(cb, 'FontSize', 18, 'YTick', log10(myRange_specific), 'YTickLabel', myRange_specific);
+    set(cb, 'FontSize', 15, 'YTick', log10(myRange_specific), 'TickLabelInterpreter', 'latex', 'YTickLabel', {'$10^{-1}$', '$10^0$', '$10^1$', '$10^2$', '$10^3$', '$10^4$'});
+
+    cb.Label.Interpreter = 'LaTex';
+    cb.Label.String = 'SAR (watt/kg)';
+    cb.Label.FontSize = 15;
+    hold on;
+
+    % caxis(log10(myRange));
+    colormap jet;
+    % set(log_axes,'fontsize',20);
+    % set(log_axes,'LineWidth',2.0);
     box on;
     xlabel('$y$ (cm)', 'Interpreter','LaTex', 'FontSize', 20);
     ylabel('$z$ (cm)','Interpreter','LaTex', 'FontSize', 20);
-    set(log_axes, 'Xtick', [-15, -10, -5, 0, 5, 10, 15]); 
+    % set(log_axes, 'Xtick', [-15, -10, -5, 0, 5, 10, 15]); 
     % zlabel('$\hbox{SAR}$ (watt/$m^3$)','Interpreter','LaTex', 'FontSize', 20);
     plotYZ( paras2dYZ, dy, dz );
     % plotGridLineYZ( shiftedCoordinateXYZ, tumor_m );
     axis equal;
     axis( [ - 15, 15, - 15, 15 ]);
+    set(gca,'fontsize', 15);
+    set(gca,'LineWidth',2.0);
     % axis( [ - 100 * h_torso / 2, 100 * h_torso / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);
     view(2);
     % saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'fig');
-    % saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'jpg');
+    saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'jpg');
     % save( strcat( fname, '\', CaseDate, 'TmprtrFigYZ.mat') ); 
 end

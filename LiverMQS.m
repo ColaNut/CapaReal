@@ -7,24 +7,18 @@
 % === % ========================================== % === %
 clc; clear;
 digits;
-disp('Liver: MQS, no fat and bones');
+disp('Liver: MQS, with fat; no bones');
 
 Mu_0          = 4 * pi * 10^(-7);
 Epsilon_0     = 10^(-9) / (36 * pi);
 Omega_0       = 2 * pi * 8 * 10^6; % 2 * pi * 8 MHz
 % V_0           = 86.26; 
 
-% % first case: parameters
-%               % [ air, bolus, muscle, liver,  tumor,  bone,   fat ]';
-% rho           = [   1,  1020,   1020,  1080,  1040,  1790,   900 ]';
-% epsilon_r_pre = [   1, 113.0,    113,   338,   338,   7.3,    20 ]';
-% sigma         = [   0,  0.61,   0.61,  0.42,  0.42, 0.028, 0.047 ]';
-% epsilon_r     = epsilon_r_pre - i * sigma ./ ( Omega_0 * Epsilon_0 );
-
 % cirrhotic -liver parameters
               % [ air, bolus, muscle, liver,  tumor,  bone,   fat ]';
 rho           = [   1,  1020,   1020,  1000,  1080,  1790,   900 ]';
 epsilon_r_pre = [   1, 113.0,    113,   338,   338,   7.3,    20 ]';
+% sigma should be modified ?
 sigma         = [   0,  0.61,   0.61,  0.42,  0.42, 0.028, 0.047 ]';
 epsilon_r     = epsilon_r_pre - i * sigma ./ ( Omega_0 * Epsilon_0 );
 
@@ -69,14 +63,9 @@ for y = - h_torso / 2: dy: h_torso / 2
     %     liver_x, liver_z, liver_x_0, liver_z_0, liver_a_prime, liver_c_prime, liver_rotate, m_1, m_2, ...
     %     tumor_x, tumor_y, tumor_z, tumor_r_prime ];
     y_idx = y / dy + h_torso / (2 * dy) + 1;
-    if y_idx == tumor_n
-        ;
-    end
     mediumTable(:, int64(y_idx), :) = getRoughMed_liver( mediumTable(:, int64(y_idx), :), paras2dXZ_liver, y, dx, dz, 'no_fat' );
     [ GridShiftTableXZ{ int64(y_idx) }, mediumTable(:, int64(y_idx), :) ] = constructCoordinateXZ_all_liver( paras2dXZ_liver, dx, dz, mediumTable(:, int64(y_idx), :) );
 end
-
-% % return;
 
 % % 1 to 7, corresponding to 1-st to 7-th rib.
 % RibValid = 0; 
@@ -131,7 +120,6 @@ shiftedCoordinateXYZ = constructCoordinateXYZ( GridShiftTable, paras, dx, dy, dz
 % === % ============== % === %
 % === % Plotting Liver % === %
 % === % ============== % === %
-
 % counter = 1;
 % for y = - h_torso / 2: dy: h_torso / 2
 %     figure(counter);
@@ -143,32 +131,35 @@ shiftedCoordinateXYZ = constructCoordinateXYZ( GridShiftTable, paras, dx, dy, dz
 %     axis equal;
 % end
 
-figure(1);
-clf;
-hold on;
-plotLiverXZ( paras, tumor_y, dx, dz );
-plotGridLineXZ( shiftedCoordinateXYZ, uint64(tumor_y / dy + h_torso / (2 * dy) + 1) );
-axis equal;
+% figure(1);
+% clf;
+% hold on;
+% plotLiverXZ( paras, tumor_y, dx, dz );
+% plotGridLineXZ( shiftedCoordinateXYZ, uint64(tumor_y / dy + h_torso / (2 * dy) + 1) );
+% axis equal;
 
-figure(2);
-clf;
-hold on;
-plotLiverXY( paras, tumor_z, dx, dy );
-plotGridLineXY( shiftedCoordinateXYZ, uint64(tumor_z / dz + air_z / (2 * dz) + 1) );
-axis equal;
+% figure(2);
+% clf;
+% hold on;
+% plotLiverXY( paras, tumor_z, dx, dy );
+% plotGridLineXY( shiftedCoordinateXYZ, uint64(tumor_z / dz + air_z / (2 * dz) + 1) );
+% axis equal;
 
-figure(3);
-clf;
-hold on;
-plotLiverYZ( paras, tumor_x, dy, dz );
-plotGridLineYZ( shiftedCoordinateXYZ, uint64(tumor_x / dx + air_x / (2 * dx) + 1) );
-axis equal;
+% figure(3);
+% clf;
+% hold on;
+% plotLiverYZ( paras, tumor_x, dy, dz );
+% plotGridLineYZ( shiftedCoordinateXYZ, uint64(tumor_x / dx + air_x / (2 * dx) + 1) );
+% axis equal;
 
 % return;
 
 % % BlsBndryMsk = zeros(x_idx_max, z_idx_max);c  
 % % BlsBndryMsk = get1cmBlsBndryMsk( bolus_a, bolus_c, muscle_a, muscle_c, dx, dz, x_idx_max, z_idx_max, air_x, air_z );
 
+% === === % ===================== % === === %
+% === === % Load Basic Parameters % === === %
+% === === % ===================== % === === %
 sparseA = cell( x_idx_max * y_idx_max * z_idx_max, 1 );
 B = zeros( x_idx_max * y_idx_max * z_idx_max, 1 );
 SegMed = ones( x_idx_max, y_idx_max, z_idx_max, 6, 8, 'uint8');
@@ -764,7 +755,7 @@ end
 
 Vrtx_bndry( find(Vrtx_bndry == 11) ) = 1;
 
-save('0824preK1_liver.mat');
+load('0824preK1_liver.mat');
 
 return;
 

@@ -52,12 +52,12 @@ cap_b          = 4180;
 %               %  air,  bolus, muscle, lung, tumor, bone, fat
 % Q_met          = [ 0,      0,   4200,     1700,     8000,       0,      5 ]';
 
-% latest version (11/03)
-               % air, bolus,    muscle,     lung,    tumor,      bone,      fat
-cap            = [ 0,  4200,      3500,     3886,     3886,      1300,     2300 ]';
-xi             = [ 0,     0, 0.612/1e6, 6.68/1e6, 2.53/1e6, 0.167/1e6, 0.54/1e6 ]';
-zeta           = [ 0,     0,       0.5,      0.4,     0.39,     0.436,     0.34 ]';
-Q_met          = [ 0,     0,      4200,     1700,     8000,         0,        5 ]';
+% % latest version (2017/11/03)
+%                % air, bolus,    muscle,     lung,    tumor,      bone,      fat
+% cap            = [ 0,  4200,      3500,     3886,     3886,      1300,     2300 ]';
+% xi             = [ 0,     0, 0.612/1e6, 6.68/1e6, 2.53/1e6, 0.167/1e6, 0.54/1e6 ]';
+% zeta           = [ 0,     0,       0.5,      0.4,     0.39,     0.436,     0.34 ]';
+% Q_met          = [ 0,     0,      4200,     1700,     8000,         0,        5 ]';
 
 % % test version ( [ 0.44 or 0.11 ] for normal lung tissue in the latest version (08/09); [ 1.23 or 2.53 ] for \xi in tumor )
 %                % air, bolus,  muscle,     lung,    tumor,    bone,    fat
@@ -77,3 +77,10 @@ Q_met          = [ 0,     0,      4200,     1700,     8000,         0,        5 
 % cap            = [ 0,  4200,    3500,     3886,     3795,    1300,    3500 ]';
 % xi             = [ 0,     0, 8.3/1e6, 3.71/1e5, 1.92/1e6, 4.2/1e7, 8.3/1e6 ]';
 % zeta           = [ 0,     0,     0.5,     0.45,     0.14,   0.436,     0.5 ]';
+
+% "non-linear v.s. constant" version (2018/01/30)
+               % air, bolus,    muscle,     lung,    tumor,      bone,      fat
+cap            = [ 0,  4200,      3500,     3886,     3886,      1300,     2300 ]';
+xi             = [ 0,     0,   8.3/1e6, 6.68/1e6, 2.53/1e6, 0.167/1e6,  0.6/1e6 ]';
+zeta           = [ 0,     0,       0.5,      0.4,     0.39,     0.436,     0.34 ]';
+Q_met          = [ 0,     0,      4200,     1700,     8000,         0,        5 ]';
