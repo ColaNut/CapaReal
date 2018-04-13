@@ -158,3 +158,10 @@ Liver EQS, MQS
 Lung EQS
         -- (1) PhiDstrbtn modification
             -- test for the additional adipose tissue
+
+04/13: the branch ``High_Impedance_Fat'' should have been named ``Low_Impedance_Fat''
+Lung EQS
+    Constant \xi: 
+        -- \xi_{\rm muscle} = 2.18e-6
+        -- \xi_{\rm adipose} = 0.6e-6
+    The 10-fold \sigma of adipose tissue is applied.
