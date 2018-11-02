@@ -1,36 +1,36 @@
-% % clc; clear;
-% % % load('E:\Kevin\CapaReal\Case0107\Power250.mat');
-% % load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0107\Power300.mat');
-% % % load( 'Power300.mat' );
-% %               % air, bolus, muscle, lung, tumor
-% % % rho           = [ 1,  1020,  1020,  242.6, 1040 ]';
-% % % save('TestCase2.mat');
-% % % load('RealCase3.mat');
+% clc; clear;
+% % load('E:\Kevin\CapaReal\Case0107\Power250.mat');
+% load('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0107\Power300.mat');
+% % load( 'Power300.mat' );
+%               % air, bolus, muscle, lung, tumor
+% % rho           = [ 1,  1020,  1020,  242.6, 1040 ]';
+% % save('TestCase2.mat');
+% % load('RealCase3.mat');
 
-% % % XZmidY      = zeros( z_idx_max, x_idx_max );
-% tumor_m = tumor_x_es / dx + air_x / (2 * dx) + 1;
-% tumor_n = tumor_y_es / dy + h_torso / (2 * dy) + 1;
-% tumor_ell = tumor_z_es / dz + air_z / (2 * dz) + 1;
+% % XZmidY      = zeros( z_idx_max, x_idx_max );
+tumor_m = tumor_x_es / dx + air_x / (2 * dx) + 1;
+tumor_n = tumor_y_es / dy + h_torso / (2 * dy) + 1;
+tumor_ell = tumor_z_es / dz + air_z / (2 * dz) + 1;
 
-% % flag_XZ = 1;
-% % flag_XY = 0;
-% % flag_YZ = 0;
+% flag_XZ = 1;
+% flag_XY = 0;
+% flag_YZ = 0;
 
-% % % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\TexFile2';
-% % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0108';
-% % % CaseName = 'Sigma';
-% % counter = 0;
-% % for y = tumor_y + dy: dy: tumor_y + dy
-% % counter = counter + 1;
-% bar_x_my_gmres_mod = zeros(x_idx_max * y_idx_max * z_idx_max, 1);
-% for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
-%     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
-%     m_v = 2 * m - 1;
-%     n_v = 2 * n - 1;
-%     ell_v = 2 * ell - 1;
-%     p0_v = ( ell_v - 1 ) * x_max_vertex * y_max_vertex + ( n_v - 1 ) * x_max_vertex + m_v;
-%     bar_x_my_gmres_mod(idx) = bar_x_my_gmresPhi(p0_v);
-% end
+% % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\TexFile2';
+% fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0108';
+% % CaseName = 'Sigma';
+% counter = 0;
+% for y = tumor_y + dy: dy: tumor_y + dy
+% counter = counter + 1;
+bar_x_my_gmres_mod = zeros(x_idx_max * y_idx_max * z_idx_max, 1);
+for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+    [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
+    m_v = 2 * m - 1;
+    n_v = 2 * n - 1;
+    ell_v = 2 * ell - 1;
+    p0_v = ( ell_v - 1 ) * x_max_vertex * y_max_vertex + ( n_v - 1 ) * x_max_vertex + m_v;
+    bar_x_my_gmres_mod(idx) = bar_x_my_gmresPhi(p0_v);
+end
 
 if flag_XZ == 1
 

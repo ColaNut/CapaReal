@@ -3,9 +3,9 @@ function Xi = muscleXi(TetTmprtr)
     % note that the 36 is the initial temperature 
     TetTmprtr = TetTmprtr + 36;
 
-    if TetTmprtr < 5 || TetTmprtr > 50
-        error('check the input temperature')
-    end
+    % if TetTmprtr < 5 || TetTmprtr > 50
+    %     error('check the input temperature')
+    % end
     Xi = 4.41 * 1e-7 + 3.48 * 1e-6 * exp( - (TetTmprtr - 45)^2 / 12 );
 end
 

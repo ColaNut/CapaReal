@@ -11,7 +11,20 @@
 % === % ========================================= % === %
 clc; clear;
 digits;
-disp('Lung EQS, with increased conductivity of adipose tissue');
+disp('Lung EQS');
+disp('The dielectric properties of a patch of dipose tissue, right above tumor, is modeled as those of muscle tissue with conductiviy by times 2.5');
+disp('Test with 0.5 cm modified region(only the superficial adipose region is modified by 0.5 cm)');
+disp('Left the lung part uneffected');
+disp('Test with 2.5 times of conductiviy in adipose tissue');
+disp('Test with 2.5 times of conductiviy in the injected region');
+disp('Imitate the Case 1');
+disp('Widen the injection site in the x direction');
+disp('Reconsider the rib problem');
+% disp('Restricted Region for the upper electrode and lower electrode');
+disp('Whole adipose tissue modified (0731)');
+disp('Reduced fat of both upper and lower region');
+
+% revise for the restricted adipose conductivity enhencement
 
 Mu_0          = 4 * pi * 10^(-7);
 Epsilon_0     = 10^(-9) / (36 * pi);
@@ -20,13 +33,14 @@ V_0           = 86.26;
 
 % parameters
 % rho           = [ 1,  1020,  1020,  1050, 1040 ]';
-              % [ air, bolus, muscle, lung,  tumor,  bone,   fat ]';
-rho           = [   1,  1020,   1020,  394,  697,  1790,   900 ]';
+              %     1      2       3     4       5      6       7                       8                    9
+              % [ air, bolus, muscle, lung,  tumor,  bone,    fat, saline injected muscle, saline injected fat ]';
+rho           = [   1,  1020,   1020,  394,    697,  1790,    900,                   1020, 900 ]';
 % epsilon_r_pre = [ 1, 113.0,   184, 264.9,  402,    7.3]';
 % sigma         = [ 0,  0.61, 0.685,  0.42, 0.68, 0.028 ]';
-epsilon_r_pre = [   1,   172,   172, 264.9,   402,    39,   13.7 ]';
+epsilon_r_pre = [   1,   172,   172, 264.9,   402,    39,    13.7,                    172,                13.7 ]';
 % sigma         = [   0,  0.69,  0.69,  0.42,  0.68, 0.045, 0.0245 ]';
-sigma         = [   0,  0.69,  0.69,  0.42,  0.68, 0.045,  0.245 ]';
+sigma         = [   0,  0.69,  0.69,  0.42,  0.68, 0.045,  0.0245,             0.69 * 2.5,        0.0245 * 2.5 ]';
 epsilon_r     = epsilon_r_pre - i * sigma ./ ( Omega_0 * Epsilon_0 );
 
 % A grid point 'must' be at (0, 0, 0)
@@ -135,6 +149,7 @@ disp('Calculation of vertex coordinate');
 Vertex_Crdnt = buildCoordinateXYZ_Vertex( shiftedCoordinateXYZ );
 toc;
 
+% save('BasicParameters.mat');
 % === % ================= % === %
 % === % Filling time of S % === %
 % === % ================= % === %
@@ -312,6 +327,121 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
     end
 end 
 
+% === % ============================ % === %
+% === % Masking SegMed as SegMed_mod % === %
+% === % ============================ % === % 
+
+% SegMed = ones( x_idx_max, y_idx_max, z_idx_max, 6, 8, 'uint8');
+% % extend the BndryTable
+tumor_m   = tumor_x / dx + air_x / (2 * dx) + 1;
+tumor_n   = tumor_y / dy + h_torso / (2 * dy) + 1;
+tumor_ell = tumor_z / dz + air_z / (2 * dz) + 1;
+tumor_m_v    = 2 * tumor_m - 1;
+tumor_n_v    = 2 * tumor_n - 1;
+tumor_ell_v  = 2 * tumor_ell - 1;
+
+% % === % ========================================= % === %
+% % === % Strip-shape saline water injection region % === %
+% % === % ========================================= % === %
+% Local_Valid = false(N_v, 1); 
+% for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+%     [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
+%     if m >= tumor_m - 6 && m <= tumor_m + 6 && n >= tumor_n - 6 && n <= tumor_n + 6 
+%         if ( ell >= tumor_ell && ell >= tumor_ell + 9 )
+%         % if ell >= tumor_ell && ell <= tumor_ell + 6
+%             % the injected region 
+%             Local_Valid(idx) = true; 
+%         end 
+%     end 
+%     if Local_Valid(idx)
+%         for SegIdx = 1: 1: 48
+%             if SegMed(m, n, ell, SegIdx ) == uint8(7);
+%                 SegMed(m, n, ell, SegIdx ) = uint8(8);
+%             end 
+%         end 
+%     end
+% end
+
+% update the injected region ( update the SegMed )
+% run through all the tetrahedra and determined the sub-electrode region simutaneously 
+% check the validity of the following code
+disp('The Updating Time for the Injection of Saline Water');
+tic; 
+for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
+    [ m, n, ell ] = getMNL(idx, x_idx_max, y_idx_max, z_idx_max);
+    
+    PntsIdx       = zeros( 3, 9 );
+    PntsCrdnt     = zeros( 3, 9, 3 );
+    MidPntsCrdnt  = zeros( 3, 9, 3 );
+    Tet48Crdnt    = zeros( 6, 8, 3 );
+    
+    % upper electrode region
+    if m >= tumor_m - 8 && m <= tumor_m + 8 && n > tumor_n - 10 && n < tumor_n + 10 ...
+        && ell >= tumor_ell && ell <= tumor_ell + 6
+        [ PntsIdx, PntsCrdnt ]  = get27Pnts( m, n, ell, x_idx_max, y_idx_max, shiftedCoordinateXYZ );
+        MidPntsCrdnt            = calMid27Pnts( PntsCrdnt );
+
+        % obtain Tet48Crdnt
+        Tet48Crdnt = get48TetCrdnt( MidPntsCrdnt );
+
+        % check the 48 tetrahedra centering at some point
+        for fIdx = 1: 1: 6
+            for nIdx = 1: 1: 8
+                % check whether( Tet48Crdnt(fIdx, nIdx, :) ) is in the region of interest
+                if is_sub_electrode_ROI( squeeze( Tet48Crdnt(fIdx, nIdx, :) ) )
+                    if SegMed(m, n, ell, fIdx, nIdx) == uint8(3) || SegMed(m, n, ell, fIdx, nIdx) == uint8(7) 
+                        SegMed(m, n, ell, fIdx, nIdx) = uint8(8);
+                    end
+                end
+                % Within the restricted region, modified the fat to mod-fat
+                % if SegMed(m, n, ell, fIdx, nIdx) == uint8(7)
+                %     SegMed(m, n, ell, fIdx, nIdx) = uint8(9);
+                % end
+            end
+        end
+    end
+
+    % check the validity of the following code
+    % lower electrode region
+    if m >= tumor_m - 10 && m <= tumor_m + 10 && n > tumor_n - 10 && n < tumor_n + 10 ...
+        && ell >= tumor_ell - 14 && ell <= tumor_ell - 6
+        [ PntsIdx, PntsCrdnt ]  = get27Pnts( m, n, ell, x_idx_max, y_idx_max, shiftedCoordinateXYZ );
+        MidPntsCrdnt            = calMid27Pnts( PntsCrdnt );
+
+        % obtain Tet48Crdnt
+        Tet48Crdnt = get48TetCrdnt( MidPntsCrdnt );
+
+        % check the 48 tetrahedra centering at some point
+        for fIdx = 1: 1: 6
+            for nIdx = 1: 1: 8
+                if is_above_electrode_ROI( squeeze( Tet48Crdnt(fIdx, nIdx, :) ) )
+                    if SegMed(m, n, ell, fIdx, nIdx) == uint8(3) || SegMed(m, n, ell, fIdx, nIdx) == uint8(7) 
+                        SegMed(m, n, ell, fIdx, nIdx) = uint8(8);
+                    end
+                end
+                % Within the restricted region, modified the fat to mod-fat
+                % if SegMed(m, n, ell, fIdx, nIdx) == uint8(7)
+                %     SegMed(m, n, ell, fIdx, nIdx) = uint8(9);
+                % end
+            end
+        end
+    end
+
+    % % left-hand side region
+    % SegMed(tumor_m - 7, tumor_n - 5: tumor_n + 5, tumor_ell + 0, :, : ) = uint8(8);
+    % SegMed(tumor_m - 6, tumor_n - 5: tumor_n + 5, tumor_ell + 1, :, : ) = uint8(8);
+    % SegMed(tumor_m - 5, tumor_n - 5: tumor_n + 5, tumor_ell + 2, :, : ) = uint8(8);
+    % SegMed(tumor_m - 4, tumor_n - 5: tumor_n + 5, tumor_ell + 3, :, : ) = uint8(8);
+    % SegMed(tumor_m - 3: tumor_m - 2, tumor_n - 5: tumor_n + 5, tumor_ell + 4, :, : ) = uint8(8);
+    % % central region 
+    % SegMed(tumor_m - 1: tumor_m + 1, tumor_n - 5: tumor_n + 5, tumor_ell + 5, :, : ) = uint8(8);
+    % % right-hand side region
+    % SegMed(tumor_m + 2: tumor_m + 7, tumor_n - 5: tumor_n + 5, tumor_ell + 6, :, : ) = uint8(8);
+end
+toc; 
+
+SegMed( find(SegMed == uint8(7)) ) = uint8(9);
+
 % === % =================================== % === %
 % === % Fill Up Time for sparseS and SegMed % === %
 % === % =================================== % === % 
@@ -356,14 +486,6 @@ TpElctrdPos = 19;
 sparseS = PutOnDwnElctrd( sparseS, squeeze(mediumTable(:, y_mid, :)), tumor_x, tumor_y, ...
                         dx, dy, dz, air_x, air_z, h_torso, x_max_vertex, y_max_vertex );
 
-% % extend the BndryTable
-tumor_m   = tumor_x / dx + air_x / (2 * dx) + 1;
-tumor_n   = tumor_y / dy + h_torso / (2 * dy) + 1;
-tumor_ell = tumor_z / dz + air_z / (2 * dz) + 1;
-tumor_m_v    = 2 * tumor_m - 1;
-tumor_n_v    = 2 * tumor_n - 1;
-tumor_ell_v  = 2 * tumor_ell - 1;
-
 % % implement FirstIdx and LastIdx
 % TumorXZ = squeeze(BndryTable(:, tumor_n_v, :));
 % [ m_1, ell_1 ] = getML(find(TumorXZ, 1), x_max_vertex);
@@ -399,7 +521,7 @@ tol = 1e-6;
 ext_itr_num = 5;
 int_itr_num = 20;
 
-bar_x_my_gmres = zeros(size(B_phi));
+bar_x_my_gmresPhi = zeros(size(B_phi));
 M_S = mySparse2MatlabSparse( sparseS, N_v, N_v, 'Row' );
 tic;
 disp('Calculation time of iLU: ')
@@ -432,7 +554,7 @@ UpElecTb = false( x_idx_max, y_idx_max, z_idx_max );
 [ sparseA, B, UpElecTb ] = UpElectrode( sparseA, B, Xtable, Ztable, paras, V_0, x_idx_max, y_idx_max, dx, dy, dz, z_idx_max );
 CurrentEst;
 
-% return;
+return;
 
 % bar_x_my_gmresPhi = bar_x_my_gmresPhi_ori;
 % bar_x_my_gmresPhi_ori = bar_x_my_gmresPhi;
@@ -461,7 +583,6 @@ for idx = 1: 1: x_idx_max * y_idx_max * z_idx_max
         SegMed(m, n, ell, :, :) = trimNear( squeeze( SegMed(m, n, ell, :, :) ), 1 );
     end
 end
-
 
 % ignore the K part in version.20180130
 % % === === === === === === === === % ========== % === === === === === === === === %
@@ -800,7 +921,12 @@ T_flagXY = 1;
 T_flagYZ = 1;
 
 T_plot;
-% save('20180315LungEQS_Tmprtr_constantXi.mat');
+% save('20180513LungEQS_Tmprtr_constantXi_adiposeMod_partialMuscleMod.mat');
+max(max(bar_b))
+max(max(T_xz))
+max(max(T_xy))
+max(max(T_yz))
+T_yz(tumor_n_v, tumor_ell_v)
 
 return;
 
@@ -1024,7 +1150,7 @@ w_x = air_x;
 w_z = air_z;
 AFigsScript;
 
-% tic;
+% tic;  
 % disp('Calculation time of iLU: ')
 % [ L_K, U_K ] = ilu( nrmlM_K, struct('type', 'ilutp', 'droptol', 1e-2) );
 % toc;

@@ -165,3 +165,13 @@ Lung EQS
         -- \xi_{\rm muscle} = 2.18e-6
         -- \xi_{\rm adipose} = 0.6e-6
     The 10-fold \sigma of adipose tissue is applied.
+
+
+2018/11/2 -- latest version
+Lung EQS
+    I have 
+    1. injected saline water to both adipose tissue and muscle tissue.
+    2. apply the liposuction to the model. 
+
+I have ruined the previous README.md OAO: I replace the updated one with the older one in the remote computer.
+I hope the current code are the latest. 

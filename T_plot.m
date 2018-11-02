@@ -1,7 +1,7 @@
 T_end = bar_b(:, end);
 
 tumor_m = tumor_x / dx + air_x / (2 * dx) + 1;
-tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1;
+tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1 - 1;
 tumor_ell = tumor_z / dz + air_z / (2 * dz) + 1;
 
 disp('Checking bio and bolus related vetrices: ');
@@ -143,7 +143,7 @@ if T_flagXZ == 1
     colormap jet;
     set(gca,'fontsize',20);
     set(gca,'LineWidth',2.0);
-    caxis([5, 50]);
+    caxis([5, 60]);
     axis equal;
     axis( [ - 20, 20, - 15, 15 ] );
     cb = colorbar;
@@ -155,8 +155,9 @@ if T_flagXZ == 1
     hold on;
     paras2dXZ = genParas2d( tumor_y, paras, dx, dy, dz );
     plotMap( paras2dXZ, dx, dz );
+    plotRibXZ(Ribs, SSBone, dx, dz);
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    saveas(figure(21), 'TmprtrXZ_constXi_fat_0318.jpg');
+    % saveas(figure(21), 'TmprtrXZ_0615Case1.jpg');
 end
 
 if T_flagXY == 1
@@ -255,7 +256,7 @@ if T_flagXY == 1
     colormap jet;
     set(gca,'fontsize',20);
     set(gca,'LineWidth',2.0);
-    caxis([5, 50]);
+    caxis([5, 60]);
     axis equal;
     axis( [ - 20, 20, - 15, 15 ] );
     cb = colorbar;
@@ -270,7 +271,7 @@ if T_flagXY == 1
     % plotGridLineXY( shiftedCoordinateXYZ, tumor_ell_v );
     % plotMap( paras2dXZ, dx, dz, top_x0, top_dx, down_dx );
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    saveas(figure(22), 'TmprtrXY_constXi_fat_0318.jpg');
+    % saveas(figure(22), 'TmprtrXY_0615Case1.jpg');
 end
 
 if T_flagYZ == 1
@@ -371,7 +372,7 @@ if T_flagYZ == 1
     set(gca,'LineWidth',2.0);
     cb = colorbar;
     set(cb, 'FontSize', 18);
-    caxis([5, 50]);
+    caxis([5, 60]);
     axis equal;
     axis( [ - 15, 15, - 15, 15 ] );
     hold on;
@@ -384,6 +385,6 @@ if T_flagYZ == 1
     % plotGridLineYZ( shiftedCoordinateXYZ, tumor_m_v );
     % plotMap( paras2dXZ, dx, dz, top_x0, top_dx, down_dx );
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
-    saveas(figure(23), 'TmprtrYZ_constXi_fat_0318.jpg');
+    % saveas(figure(23), 'TmprtrYZ_0615Case1.jpg');
 end
 

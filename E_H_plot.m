@@ -5,34 +5,34 @@ tumor_m = tumor_x / dx + air_x / (2 * dx) + 1;
 tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1;
 tumor_ell = tumor_z / dz + air_z / (2 * dz) + 1;
 
-if flag_XZ == 1
-    H_XZ = zeros(x_idx_max, z_idx_max, 6, 8, 3); 
-    E_XZ = zeros(x_idx_max, z_idx_max, 6, 8, 3); 
-    % CrossN = int64( w_y / (2 * dy) + 1 );
-    n = tumor_n;
-    tic;
-    disp('Getting E^(1): XZ');
-    for idx = 1: 1: x_idx_max * z_idx_max
-        [ m, ell ] = getML(idx, x_idx_max);
-        if m >= 2 && m <= x_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1
-            m_v = 2 * m - 1;
-            n_v = 2 * n - 1;
-            ell_v = 2 * ell - 1;
-            % get 27 Pnts
-            PntsIdx = zeros( 3, 9 ); 
-            PntsIdx = get27Pnts_KEV( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
-            PntsIdx_t = PntsIdx';
-            G_27cols = sparse(N_v, 27);
-            G_27cols = G(:, PntsIdx_t(:));
-            % the getH_2 is now modified to getE^{(1)}: E^(1) = - j omega \mu_0 A^(1) field, 
-            % where \mu_0 is amended for a dropped scaling in the GMRES procedure.
-            H_XZ(m, ell, :, :, :) = getH_2( PntsIdx, Vertex_Crdnt, A, G_27cols, mu_r, squeeze(SegMed(m, n, ell, :, :)), x_max_vertex, y_max_vertex, z_max_vertex );
-            E_XZ(m, ell, :, :, :) = - j * Omega_0 * Mu_0 * getEfromA( PntsIdx, Vertex_Crdnt, A, G_27cols, mu_r, squeeze(SegMed(m, n, ell, :, :)), x_max_vertex, y_max_vertex, z_max_vertex );
-        end
-    end
-    toc;
-    % save( strcat( fname, '\E1_XZ.mat'), 'H_XZ' );
-end
+% if flag_XZ == 1
+%     H_XZ = zeros(x_idx_max, z_idx_max, 6, 8, 3); 
+%     E_XZ = zeros(x_idx_max, z_idx_max, 6, 8, 3); 
+%     % CrossN = int64( w_y / (2 * dy) + 1 );
+%     n = tumor_n;
+%     tic;
+%     disp('Getting E^(1): XZ');
+%     for idx = 1: 1: x_idx_max * z_idx_max
+%         [ m, ell ] = getML(idx, x_idx_max);
+%         if m >= 2 && m <= x_idx_max - 1 && ell >= 2 && ell <= z_idx_max - 1
+%             m_v = 2 * m - 1;
+%             n_v = 2 * n - 1;
+%             ell_v = 2 * ell - 1;
+%             % get 27 Pnts
+%             PntsIdx = zeros( 3, 9 ); 
+%             PntsIdx = get27Pnts_KEV( m_v, n_v, ell_v, x_max_vertex, y_max_vertex, z_max_vertex );
+%             PntsIdx_t = PntsIdx';
+%             G_27cols = sparse(N_v, 27);
+%             G_27cols = G(:, PntsIdx_t(:));
+%             % the getH_2 is now modified to getE^{(1)}: E^(1) = - j omega \mu_0 A^(1) field, 
+%             % where \mu_0 is amended for a dropped scaling in the GMRES procedure.
+%             H_XZ(m, ell, :, :, :) = getH_2( PntsIdx, Vertex_Crdnt, A, G_27cols, mu_r, squeeze(SegMed(m, n, ell, :, :)), x_max_vertex, y_max_vertex, z_max_vertex );
+%             E_XZ(m, ell, :, :, :) = - j * Omega_0 * Mu_0 * getEfromA( PntsIdx, Vertex_Crdnt, A, G_27cols, mu_r, squeeze(SegMed(m, n, ell, :, :)), x_max_vertex, y_max_vertex, z_max_vertex );
+%         end
+%     end
+%     toc;
+%     % save( strcat( fname, '\E1_XZ.mat'), 'H_XZ' );
+% end
 
 if flag_XZ == 1
     for dirFlag = 1: 1: 3

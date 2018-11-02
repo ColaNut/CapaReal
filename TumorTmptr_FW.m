@@ -43,38 +43,39 @@ clf;
 set(gca,'fontsize',18);
 set(gca,'LineWidth',2.0);
 
+
 % if max_flag 
 %     plot(0: dt / 60: timeNum_all / 60, T_0 + squeeze(bar_b(386465, :)), 'k', 'LineWidth', 2.5);
 % else
     plot(0: dt / 60: timeNum_all / 60, T_0 + squeeze(bar_b(vIdx_tumor, :)), 'k', 'LineWidth', 2.5);
 % end
 
-set(gca,'fontsize',18);
-set(gca,'LineWidth',2.0);
-box on;
-xlabel('$t$ (min)', 'Interpreter','LaTex', 'FontSize', 20);
-ylabel('$T$ ($^\circ$C)','Interpreter','LaTex', 'FontSize', 20);
-axis( [ 0, 50, 35, 50 ] );
-box off;
-ax1 = gca;
-hold on;
-time_clnl = 0: 5: 50;
-T_clnl    = [ 36.01, 39.37, 42.15, 43.98, 44.24, 44.36, 44.13, 44.43, 44.93, 44.94, 45.08 ];
-plot(time_clnl, T_clnl, 'k--', 'LineWidth', 2.5);
+% set(gca,'fontsize',18);
+% set(gca,'LineWidth',2.0);
+% box on;
+% xlabel('$t$ (min)', 'Interpreter','LaTex', 'FontSize', 20);
+% ylabel('$T$ ($^\circ$C)','Interpreter','LaTex', 'FontSize', 20);
+% axis( [ 0, 50, 35, 50 ] );
+% box off;
+% ax1 = gca;
+% hold on;
+% time_clnl = 0: 5: 50;
+% T_clnl    = [ 36.01, 39.37, 42.15, 43.98, 44.24, 44.36, 44.13, 44.43, 44.93, 44.94, 45.08 ];
+% plot(time_clnl, T_clnl, 'k--', 'LineWidth', 2.5);
 
-time_clnl2 = [   0,   5,   5,  10,  15,  20,  25,  30,  35,  35,  40,  45,  50 ];
-power      = [ 250, 250, 280, 280, 280, 280, 280, 280, 280, 300, 300, 300, 300 ];
-% plot(time_clnl, power, 'LineWidth', 2.5);
-ax2 = axes('Position',get(ax1,'Position'),...
-       'XAxisLocation','top',...
-       'YAxisLocation','right',...
-       'Color','none',...
-       'XColor','k','YColor','k', 'XTickLabel',[] );
-line(time_clnl2, power, 'Parent', ax2, 'Color', 'k', 'LineWidth', 2.5, 'LineStyle', '--', 'Marker', 'o');
-% plot(ax2,   time_clnl2, power, 'ko');
-% line(time_clnl2, power, 'Parent', ax2, 'Color', 'k', 'LineWidth', 2.5, 'LineStyle', 'o');
-set(gca,'fontsize',18);
-set(gca,'LineWidth',2.0);
-axis( [ 0, 50, 200, 500 ]);
-ylabel('$W$ (watt)','Interpreter','LaTex', 'FontSize', 18);
-linkaxes([ax1 ax2],'x');
+% time_clnl2 = [   0,   5,   5,  10,  15,  20,  25,  30,  35,  35,  40,  45,  50 ];
+% power      = [ 250, 250, 280, 280, 280, 280, 280, 280, 280, 300, 300, 300, 300 ];
+% % plot(time_clnl, power, 'LineWidth', 2.5);
+% ax2 = axes('Position',get(ax1,'Position'),...
+%        'XAxisLocation','top',...
+%        'YAxisLocation','right',...
+%        'Color','none',...
+%        'XColor','k','YColor','k', 'XTickLabel',[] );
+% line(time_clnl2, power, 'Parent', ax2, 'Color', 'k', 'LineWidth', 2.5, 'LineStyle', '--', 'Marker', 'o');
+% % plot(ax2,   time_clnl2, power, 'ko');
+% % line(time_clnl2, power, 'Parent', ax2, 'Color', 'k', 'LineWidth', 2.5, 'LineStyle', 'o');
+% set(gca,'fontsize',18);
+% set(gca,'LineWidth',2.0);
+% axis( [ 0, 50, 200, 500 ]);
+% ylabel('$W$ (watt)','Interpreter','LaTex', 'FontSize', 18);
+% linkaxes([ax1 ax2],'x');

@@ -9,19 +9,18 @@
 
 % % XZmidY      = zeros( z_idx_max, x_idx_max );
 tumor_m = tumor_x / dx + air_x / (2 * dx) + 1;
-tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1;
+tumor_n = tumor_y / dy + h_torso / (2 * dy) + 1 - 1;
 tumor_ell = tumor_z / dz + air_z / (2 * dz) + 1;
 
 % flag_XZ = 1;
 % flag_XY = 0;
 % flag_YZ = 0;
 
-
 fname = 'E:\Kevin\CapaReal';
 % % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\TexFile2';
 % fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0108';
 % CaseName = 'Adipose0304';
-CaseName = 'Original0304';
+CaseName = 'Mod0604';
 % counter = 0;
 % for y = tumor_y + dy: dy: tumor_y + dy
 % counter = counter + 1;
@@ -62,7 +61,7 @@ if flag_XZ == 1
         
         ell = int64( ( idx - m - ( n - 1 ) * x_idx_max ) / ( x_idx_max * y_idx_max ) + 1 );
 
-        y = tumor_y;
+        y = tumor_y - 0.01;
         % y = tumor_y - dy;
         % y = - h_torso / 2 + dy;
         % y = - 10 / 100;
@@ -121,7 +120,7 @@ if flag_XZ == 1
     plotRibXZ(Ribs, SSBone, dx, dz);
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
     % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'fig');
-    saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
+    % saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
 
     % calculate the E field
     SARseg = zeros( x_idx_max, z_idx_max, 6, 8 );
@@ -255,7 +254,7 @@ if flag_XZ == 1
     plotRibXZ(Ribs, SSBone, dx, dz);
     % plotGridLineXZ( shiftedCoordinateXYZ, uint64(y / dy + h_torso / (2 * dy) + 1) );
     % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'fig');
-    saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
+    % saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
     % save( strcat( fname, '\', CaseDate, 'TmprtrFigXZ.mat') );
     % save('D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\Case0108\Case0108TmprtrFigXZ.mat');
 end
@@ -349,7 +348,7 @@ if flag_XY == 1
     plotXY( paras2dXY, dx, dy );
     % plotGridLineXY( shiftedCoordinateXYZ, tumor_ell );
     % saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'fig');
-    saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'jpg');
+    % saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'jpg');
 
     % calculate the E field
     SARseg = zeros( x_idx_max, y_idx_max, 6, 8 );
@@ -457,11 +456,11 @@ if flag_XY == 1
     axis equal;
     axis( [ - 20, 20, - 15, 15 ] );
     % set(cb, 'FontSize', 18, 'YTick', log10(myRange_specific), 'YTickLabel', myRange_specific);
-    set(cb, 'FontSize', 15, 'YTick', log10(myRange_specific), 'TickLabelInterpreter', 'latex', 'YTickLabel', {'$10^{-1}$', '$10^0$', '$10^1$', '$10^2$', '$10^3$', '$10^4$'});
+    set(cb, 'FontSize', 20, 'YTick', log10(myRange_specific), 'TickLabelInterpreter', 'latex', 'YTickLabel', {'$10^{-1}$', '$10^0$', '$10^1$', '$10^2$', '$10^3$', '$10^4$'});
 
     cb.Label.Interpreter = 'LaTex';
     cb.Label.String = 'SAR (watt/kg)';
-    cb.Label.FontSize = 15;
+    cb.Label.FontSize = 20;
     hold on;
 
     % caxis(log10(myRange));
@@ -482,7 +481,7 @@ if flag_XY == 1
     plotXY( paras2dXY, dx, dy );
     % plotGridLineXY( shiftedCoordinateXYZ, tumor_ell );
     % saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'fig');
-    saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'jpg');
+    % saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'jpg');
     % save( strcat( fname, '\', CaseDate, 'TmprtrFigXY.mat') );
 end
 
@@ -577,7 +576,7 @@ if flag_YZ == 1
     box on;
     view(2);
     % saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'fig');
-    saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'jpg');
+    % saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'jpg');
 
     % calculate the E field
     SARseg = zeros( y_idx_max, z_idx_max, 6, 8 );
@@ -687,11 +686,11 @@ if flag_YZ == 1
     axis equal;
     axis( [ - 15, 15, - 15, 15 ]);
     % set(cb, 'FontSize', 18, 'YTick', log10(myRange_specific), 'YTickLabel', myRange_specific);
-    set(cb, 'FontSize', 15, 'YTick', log10(myRange_specific), 'TickLabelInterpreter', 'latex', 'YTickLabel', {'$10^{-1}$', '$10^0$', '$10^1$', '$10^2$', '$10^3$', '$10^4$'});
+    set(cb, 'FontSize', 20, 'YTick', log10(myRange_specific), 'TickLabelInterpreter', 'latex', 'YTickLabel', {'$10^{-1}$', '$10^0$', '$10^1$', '$10^2$', '$10^3$', '$10^4$'});
 
     cb.Label.Interpreter = 'LaTex';
     cb.Label.String = 'SAR (watt/kg)';
-    cb.Label.FontSize = 15;
+    cb.Label.FontSize = 20;
     hold on;
 
     % caxis(log10(myRange));
@@ -712,6 +711,6 @@ if flag_YZ == 1
     % axis( [ - 100 * h_torso / 2, 100 * h_torso / 2, - 100 * air_z / 2, 100 * air_z / 2 ]);
     view(2);
     % saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'fig');
-    saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'jpg');
+    % saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'jpg');
     % save( strcat( fname, '\', CaseDate, 'TmprtrFigYZ.mat') ); 
 end

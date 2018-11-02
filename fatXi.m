@@ -3,9 +3,9 @@ function Xi = fatXi(TetTmprtr)
     % note that the 36 is the initial temperature 
     TetTmprtr = TetTmprtr + 36;
 
-    if TetTmprtr < 5 || TetTmprtr > 50
-        error('check the input temperature')
-    end
+%     if TetTmprtr < 5 || TetTmprtr > 50
+%         error('check the input temperature')
+%     end
     Xi = 4 * 1e-7 + 4 * 1e-7 * exp( - (TetTmprtr - 45)^2 / 12 );
 end
 

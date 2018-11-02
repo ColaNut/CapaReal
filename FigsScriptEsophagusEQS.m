@@ -7,14 +7,14 @@ if PhiSAR_flag == 1
     flag_YZ = 1;
 
     PhiDstrbtn_esophagus;
-    CaseName = '0922';
-    fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0922EsoEQS';
-    saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
-    saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
-    saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'jpg');
-    saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'jpg');
-    saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'jpg');
-    saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'jpg');
+%     CaseName = '0922';
+%     fname = 'D:\Kevin\GraduateSchool\Projects\ProjectBio\Simlation\CapaReal\0922EsoEQS';
+%     saveas(figure(1), fullfile(fname, strcat(CaseName, 'PhiXZ')), 'jpg');
+%     saveas(figure(2), fullfile(fname, strcat(CaseName, 'SARXZ')), 'jpg');
+%     saveas(figure(6), fullfile(fname, strcat(CaseName, 'PhiXY')), 'jpg');
+%     saveas(figure(7), fullfile(fname, strcat(CaseName, 'SARXY')), 'jpg');
+%     saveas(figure(11), fullfile(fname, strcat(CaseName, 'PhiYZ')), 'jpg');
+%     saveas(figure(12), fullfile(fname, strcat(CaseName, 'SARYZ')), 'jpg');
 end
 
 TumorTmptr_flag = 0;
